@@ -1,0 +1,7 @@
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+### NPM
+node_modules/*
+dist/*

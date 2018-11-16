@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "scripts": {
+    "debug-build": "npm install && docker-compose build && tsc -w -p ./src",
+    "release-build": "npm install && tsc -p ./src && docker build . -t bake:release",
+    "compile": "tsc -p ./src",
+    "watch": "tsc -w -p ./src",
+    "debug": "node --inspect-brk=0.0.0.0:9229 dist/index.js",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.7",
+    "typescript": "^3.1.6",
+    "nodemon": "^1.18.6",
+    "q": "^1.5.1"
+  },
+  "main": "./dist/index.js"
+}
