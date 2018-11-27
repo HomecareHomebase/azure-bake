@@ -1,1 +1,1 @@
-console.log('Getting ready to bake something');
+import cli, {IAzOptions, IAzError} from 'azcli-npm'

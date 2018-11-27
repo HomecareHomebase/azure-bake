@@ -1,0 +1,38 @@
+name: test-package
+shortName: tstpkg
+version: 1.0.0
+resourceGroup: true
+rgOverride: rg-test-cool
+variables:
+  test1: "['hello'.concat(' ', 'world')]"
+  test2: value2
+recipes:
+  rec1:
+    dependsOn:
+    ingredients:
+      storage:
+          type: infrastucture
+          template: storage
+          parameters:
+      storage2:
+          type: infrastucture
+          template: ./arm/storage.json
+          parameters:
+      webapp:
+          type: software
+          template: webapp
+          parameters:
+      custom:
+          type: function
+          template: customEval
+          parameters:
+  rec2:
+      dependsOn: 
+        - rec4
+  rec3:
+      dependsOn: 
+        - rec1
+  rec4:
+      dependsOn:
+        - rec1
+
