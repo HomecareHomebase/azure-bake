@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "name": "wpoctest2",
+            "apiVersion": "2018-07-01",
+            "location": "eastus",
+            "properties": {
+                "accessTier": "Hot"
+            },
+            "dependsOn": []
+        }
+    ]
+
+}

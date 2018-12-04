@@ -7,6 +7,8 @@ RUN set -x \
                               curl \
                               openssl \
                               jq \
+                              bash \
+                              py-pip \
         && apk add --virtual=build \
                              gcc \
                              libffi-dev \
@@ -19,8 +21,8 @@ RUN set -x \
                              openssl-dev \
                              python-dev \  
                              make \ 
-                             py-pip \
         && pip install --upgrade pip \
+        && pip install setuptools \
         && pip install azure-cli \    
         && apk del --purge build
 
@@ -29,9 +31,8 @@ COPY package.json .
 COPY node_modules ./node_modules
 COPY dist ./dist
 
-
 #setup placeholder paths for config/package
 RUN mkdir config
 RUN mkdir package
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "start", "--", "-f", "/app/bake/package/bake.yaml" ]

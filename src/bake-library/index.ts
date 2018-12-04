@@ -1,20 +1,6 @@
 import {BakeEval} from './eval'
+import {BakeVariable} from './bake-variable'
+import {BakeData} from './bake-data'
+import * as functions from './functions'
 
-export {BakeEval}
-
-export class BakeData {
-
-    private static _currentPackage : any
-
-    public static setPackage(source: any): void {
-        this._currentPackage = source
-    }
-
-    public static get Environment(): any {
-        return this._currentPackage.Environment
-    }
-    
-    public static get Config(): any {
-        return this._currentPackage.Config
-    }
-}
+export {BakeData, BakeEval, BakeVariable, functions}

@@ -2,22 +2,15 @@ name: test-package
 shortName: tstpkg
 version: 1.0.0
 resourceGroup: true
-rgOverride: rg-test-cool
+rgOverride: whilke-poc
+parallelRegions: false
 variables:
-  test1: "['hello'.concat(' ', 'world')]"
+  test1: "[util.variable('test2','default')]"
   test2: value2
 recipes:
   rec1:
     dependsOn:
     ingredients:
-      storage:
-          type: infrastucture
-          template: storage
-          parameters:
-      storage2:
-          type: infrastucture
-          template: ./arm/storage.json
-          parameters:
       webapp:
           type: software
           template: webapp
@@ -32,7 +25,16 @@ recipes:
   rec3:
       dependsOn: 
         - rec1
+      ingredients:
+        storage1:
+            type: infrastucture
+            template: ./test/arm.json
+            parameters:
   rec4:
       dependsOn:
         - rec1
-
+      ingredients:
+        storage2:
+            type: infrastucture
+            template: ./test/arm2.json
+            parameters:

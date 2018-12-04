@@ -1,24 +1,46 @@
-import { BakePackage, IRecipe } from "./bake-loader";
-import cli from 'azcli-npm'
-import {BakeEval} from './bake-library'
-
-let toposort = require('toposort-class')
+import { BakePackage, IRecipe, IBakeRegion, IIngredient } from "./bake-loader";
+import cli, { AzError } from 'azcli-npm'
+import {BakeEval, BakeData} from './bake-library'
+import {IngredientFactory} from './ingredients'
+import {Logger} from './logger'
+import {red} from 'colors'
 
 export class BakeRunner {
-    constructor(bPackage: BakePackage, azcli: cli){
+    constructor(bPackage: BakePackage, azcli: cli, logger? : Logger){
 
         this._package = bPackage
         this._azcli = azcli
+        this._logger = logger || new Logger()
     }
 
     _package: BakePackage
     _azcli: cli
+    _logger: Logger
 
-    private async _executeRecipe(name: string, recipe: IRecipe): Promise<string> {
+    private async asyncForEach<T>(map: Map<string,T>, callback: (ingredient: T, name: string)=>Promise<void>) {
+
+        let keys = map.keys()
+        for(let key of keys){
+            let ingredient = map.get(key) || <T>{}
+            await callback(ingredient, key)
+        }
+      }
+
+    private async _executeRecipe(name: string, recipe: IRecipe, region: IBakeRegion, logger: Logger): Promise<string> {
+
+        logger.log('Mixing recipe')
+        await this.asyncForEach<IIngredient>(recipe.ingredients, async (ingredient, ingName)=>{
+
+            let exec = IngredientFactory.Build(ingName, ingredient, region, logger)
+            if (exec) {
+                await exec.Execute()
+            }
+        })
+        logger.log('Finished mixing')
         return name
     }
 
-    private async _executeBakeLoop(recipeNames: string[], finished: string[]) : Promise<boolean> {
+    private async _executeBakeLoop(recipeNames: string[], finished: string[], region: IBakeRegion, logger: Logger) : Promise<boolean> {
 
         let recipes = this._package.Config.recipes
         let count = recipeNames.length
@@ -43,7 +65,8 @@ export class BakeRunner {
             })
 
             if (depsDone){
-                let promise = this._executeRecipe(recipeNames[i], recipe)
+                let recipeLogger = new Logger(logger.getPre().concat(recipeName))
+                let promise = this._executeRecipe(recipeName, recipe, region, recipeLogger)
                 executing.push(promise)
             }
         }
@@ -54,34 +77,10 @@ export class BakeRunner {
         return recipeNames.length != finished.length
     }
 
-    private _expandGlobalVariables(): void {
-        this._package.Config.variables.forEach( (variable, name)=> {
+    private async _bakeRegion(region: IBakeRegion): Promise<boolean> {
 
-            let expanded = BakeEval.Eval(variable)
-            this._package.Config.variables.set(name, expanded)
-        })
-    }
-
-    public login(): boolean {
-
-        var result = this._package.Authenticate( (auth) =>{
-            try {
-                if (auth.certPath)
-                    this._azcli.loginWithCert(auth.tenantId, auth.serviceId, auth.certPath)
-                else
-                    this._azcli.login(auth.tenantId, auth.serviceId, auth.secretKey)
-                return true
-            } catch(e) {
-                return false
-            }            
-        })
-        return result
-    }
-
-    public async bake(): Promise<void> {
-
-        this._expandGlobalVariables()
-        
+        let regionLogger = new Logger( this._logger.getPre().concat(region.name))
+        regionLogger.log('Starting deployment')
         let recipes = this._package.Config.recipes
 
         //we could build a DAG and execute that way, but we expect the number of recipes in a package to be small enough
@@ -92,10 +91,48 @@ export class BakeRunner {
         })
 
         let finished: string[] = []
-        let loopHasRemaining = await this._executeBakeLoop(recipeNames, finished)
+        let loopHasRemaining = await this._executeBakeLoop(recipeNames, finished, region, regionLogger)
         while(loopHasRemaining) {
-            loopHasRemaining = await this._executeBakeLoop(recipeNames, finished)
+            loopHasRemaining = await this._executeBakeLoop(recipeNames, finished, region, regionLogger)
         }
-   
+
+        return true
+    }
+
+    public login(): boolean {
+
+        this._logger.log("logging into azure...")
+        var result = this._package.Authenticate( (auth) =>{
+            try {
+                if (auth.certPath)
+                    this._azcli.loginWithCert(auth.tenantId, auth.serviceId, auth.certPath)
+                else
+                    this._azcli.login(auth.tenantId, auth.serviceId, auth.secretKey)
+
+                //set the correct subscription
+
+                this._logger.log('Setting subscription Id ' + auth.subscriptionId)
+                this._azcli.setSubscription(auth.subscriptionId)
+
+                return true
+            } catch(e) {
+                var error = <AzError>e
+                this._logger.error(red("login failed: " + error.message))
+                return false
+            }            
+        })
+        return result
+    }
+
+    public async bake(): Promise<void> {
+
+        BakeData.setPackage(this._package, this._azcli)
+        
+        let region = <IBakeRegion>{
+            name: "EastUS",
+            shortName: "eus"
+        }
+
+        await this._bakeRegion(region)
     }
 }

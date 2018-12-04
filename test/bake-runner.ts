@@ -24,8 +24,8 @@ describe('bake-runner', () => {
         var result = runner.login()
         expect(result).true
 
-        runner.bake()
-       
+        runner.bake()   
+        console.log(runner._package.Config.variables.get('test1').value)    
     });
 
   });
