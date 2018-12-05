@@ -17,15 +17,15 @@ export interface IBakeEnvironment {
     variabes: Map<string, BakeVariable>
 }
 
-export interface IIngredient {
+export interface IIngredientProperties {
     type: string,
     template: string,
     parameters: Map<string,BakeVariable>
 }
 
-export interface IRecipe {
+export interface IIngredient {
+    properties: IIngredientProperties,
     dependsOn: Array<string>
-    ingredients: Map<string,IIngredient>
 }
 
 export interface IBakeConfig {
@@ -36,7 +36,7 @@ export interface IBakeConfig {
     rgOverride: BakeVariable,
 
     variables: Map<string,BakeVariable>
-    recipes: Map<string, IRecipe>
+    recipe: Map<string, IIngredient>
 }
 
 export interface IBakeRegion {
@@ -124,7 +124,6 @@ export class BakePackage {
         let file = fs.readFileSync(source, 'utf8')
         let config: IBakeConfig = YAML.load(file)
 
-
         //start with config vars based on env based vars
         let vars = this.objToVariableMap(config.variables)
 
@@ -134,13 +133,11 @@ export class BakePackage {
 
         //fix up json objects to act as hashmaps.
         config.rgOverride = new BakeVariable(<any>config.rgOverride);
-        config.recipes = this.objToStrMap(config.recipes)
-        config.recipes.forEach(recipe=>{
-            recipe.dependsOn = recipe.dependsOn || []
-            recipe.ingredients = this.objToStrMap(recipe.ingredients || {})
-            recipe.ingredients.forEach(ingredient=> {
-                ingredient.parameters = this.objToVariableMap(ingredient.parameters || {})
-            })
+        config.recipe = this.objToStrMap(config.recipe)
+        config.recipe.forEach(ingredient=>{
+            ingredient.dependsOn = ingredient.dependsOn || []
+            ingredient.properties = ingredient.properties || <IIngredientProperties>{}
+            ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})
         })
 
         this._validatePackage(config)

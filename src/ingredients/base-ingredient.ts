@@ -1,8 +1,9 @@
 import { IBakeConfig, IIngredient, IBakeRegion } from "../bake-loader";
 import cli from 'azcli-npm'
 import { Logger } from "../logger";
+import * as colors from 'colors'
 
-export abstract class BaseIngredient {
+export class BaseIngredient {
 
     constructor(name: string, config: IBakeConfig, ingredient: IIngredient, azcli: cli, region: IBakeRegion, logger: Logger) {
 
@@ -13,7 +14,7 @@ export abstract class BaseIngredient {
         this._region = region
         this._logger = new Logger(logger.getPre().concat(name))
 
-        this._logger.log('adding ingredient type[' + ingredient.type +'] template[' + ingredient.template + ']')
+        this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] template[' + colors.cyan(ingredient.properties.template) + ']')
     }
 
     _config: IBakeConfig
@@ -23,6 +24,10 @@ export abstract class BaseIngredient {
     _logger: Logger
     _name: string
 
-    public abstract async Execute(): Promise<boolean> 
+    public async Execute(): Promise<string> {
+
+        return this._name
+
+    }
 
 }

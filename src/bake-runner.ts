@@ -1,9 +1,9 @@
-import { BakePackage, IRecipe, IBakeRegion, IIngredient } from "./bake-loader";
+import { BakePackage, IBakeRegion, IIngredient } from "./bake-loader";
 import cli, { AzError } from 'azcli-npm'
 import {BakeEval, BakeData} from './bake-library'
 import {IngredientFactory} from './ingredients'
 import {Logger} from './logger'
-import {red} from 'colors'
+import {red, cyan} from 'colors'
 
 export class BakeRunner {
     constructor(bPackage: BakePackage, azcli: cli, logger? : Logger){
@@ -17,47 +17,24 @@ export class BakeRunner {
     _azcli: cli
     _logger: Logger
 
-    private async asyncForEach<T>(map: Map<string,T>, callback: (ingredient: T, name: string)=>Promise<void>) {
+    private async _executeBakeLoop(ingredientNames: string[], finished: string[], region: IBakeRegion, logger: Logger) : Promise<boolean> {
 
-        let keys = map.keys()
-        for(let key of keys){
-            let ingredient = map.get(key) || <T>{}
-            await callback(ingredient, key)
-        }
-      }
-
-    private async _executeRecipe(name: string, recipe: IRecipe, region: IBakeRegion, logger: Logger): Promise<string> {
-
-        logger.log('Mixing recipe')
-        await this.asyncForEach<IIngredient>(recipe.ingredients, async (ingredient, ingName)=>{
-
-            let exec = IngredientFactory.Build(ingName, ingredient, region, logger)
-            if (exec) {
-                await exec.Execute()
-            }
-        })
-        logger.log('Finished mixing')
-        return name
-    }
-
-    private async _executeBakeLoop(recipeNames: string[], finished: string[], region: IBakeRegion, logger: Logger) : Promise<boolean> {
-
-        let recipes = this._package.Config.recipes
-        let count = recipeNames.length
+        let recipe = this._package.Config.recipe
+        let count = ingredientNames.length
 
         let executing: Array<Promise<string>> = []
         for(let i=0; i<count; ++i){
 
-            let recipeName: string = recipeNames[i]
-            let recipe: IRecipe = recipes.get(recipeName) || <IRecipe>{}
+            let ingredientName: string = ingredientNames[i]
+            let ingredient: IIngredient = recipe.get(ingredientName) || <IIngredient>{}
 
             //check if we've already run this
-            let idx = finished.findIndex(x=>x==recipeName)
+            let idx = finished.findIndex(x=>x==ingredientName)
             if (idx >=0) continue
 
-            //check if recipe dependencies are all finished
+            //check if igredient dependencies are all finished
             let depsDone = true
-            recipe.dependsOn.forEach(dep=>{
+            ingredient.dependsOn.forEach(dep=>{
                 let idx = finished.findIndex(x=>x==dep)
                 if (idx == -1) {
                     depsDone = false
@@ -65,37 +42,40 @@ export class BakeRunner {
             })
 
             if (depsDone){
-                let recipeLogger = new Logger(logger.getPre().concat(recipeName))
-                let promise = this._executeRecipe(recipeName, recipe, region, recipeLogger)
-                executing.push(promise)
+                let exec = IngredientFactory.Build(ingredientName, ingredient, region, logger)
+                if (exec) {
+                    let promise = exec.Execute()
+                    executing.push(promise)
+                }    
             }
         }
 
         let results = await Promise.all(executing)
         results.forEach(r=>finished.push(r))
 
-        return recipeNames.length != finished.length
+        return ingredientNames.length != finished.length
     }
 
     private async _bakeRegion(region: IBakeRegion): Promise<boolean> {
 
         let regionLogger = new Logger( this._logger.getPre().concat(region.name))
-        regionLogger.log('Starting deployment')
-        let recipes = this._package.Config.recipes
+        let recipe = this._package.Config.recipe
+        regionLogger.log('Baking recipe ' + cyan(this._package.Config.name))
 
         //we could build a DAG and execute that way, but we expect the number of recipes in a package to be small enough
         //that a simple unoptimized loop through will work here
-        let recipeNames: string[] = []
-        recipes.forEach((recipe, name) => {
-            recipeNames.push(name)
+        let ingredientNames: string[] = []
+        recipe.forEach((igredient, name) => {
+            ingredientNames.push(name)
         })
 
         let finished: string[] = []
-        let loopHasRemaining = await this._executeBakeLoop(recipeNames, finished, region, regionLogger)
+        let loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, region, regionLogger)
         while(loopHasRemaining) {
-            loopHasRemaining = await this._executeBakeLoop(recipeNames, finished, region, regionLogger)
+            loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, region, regionLogger)
         }
 
+        regionLogger.log('Finished baking')
         return true
     }
 

@@ -7,34 +7,32 @@ parallelRegions: false
 variables:
   test1: "[util.variable('test2','default')]"
   test2: value2
-recipes:
-  rec1:
+recipe:
+  webapp:
+    properties:
+      type: software
+      template: webapp
+      parameters:
     dependsOn:
-    ingredients:
-      webapp:
-          type: software
-          template: webapp
-          parameters:
-      custom:
-          type: function
-          template: customEval
-          parameters:
-  rec2:
-      dependsOn: 
-        - rec4
-  rec3:
-      dependsOn: 
-        - rec1
-      ingredients:
-        storage1:
-            type: infrastucture
-            template: ./test/arm.json
-            parameters:
-  rec4:
-      dependsOn:
-        - rec1
-      ingredients:
-        storage2:
-            type: infrastucture
-            template: ./test/arm2.json
-            parameters:
+      - storage1
+      - storage2
+  custom:
+    properties:
+      type: function
+      template: customEval
+      parameters:
+    dependsOn:
+      - storage1
+      - storage2
+  storage1:
+    properties:
+      type: infrastucture
+      template: ./test/arm.json
+      parameters:
+    dependsOn:    
+  storage2:
+    properties:
+      type: infrastucture
+      template: ./test/arm2.json
+      parameters:
+    dependsOn:    
