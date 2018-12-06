@@ -6,11 +6,6 @@ import * as fs from 'fs'
 import * as minimist from 'minimist'
 let argv = minimist(process.argv.slice(2))
 
-process.env.BAKE_AUTH_SERVICE_ID = "79d94f23-955c-4431-9b77-ea7e9c2565c3"
-process.env.BAKE_AUTH_SERVICE_KEY = "zfw3AYhVIn4AY6Mem9SaDVJ0j9+3SI1xxZrjxo5AFhg="
-process.env.BAKE_AUTH_TENANT_ID = "hchbazure.onmicrosoft.com"
-process.env.BAKE_AUTH_SUBSCRIPTION_ID = "9c1dbd64-75a9-457b-bd3f-6649fe9c82d8"
-
 function displayHelp() {
     console.log('bake [options] -f <bake-file>')
     console.log('options:')

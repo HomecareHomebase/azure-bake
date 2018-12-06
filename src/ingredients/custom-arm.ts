@@ -21,12 +21,24 @@ export class CustomArmIngredient extends BaseIngredient {
         let cli = this._ctx.CLI.start()
 
         try {
+
             this._logger.log('starting custom arm deployment for template: ' + this._ingredient.properties.template)
-            let json = await cli.arg('group').arg('deployment').arg('create')
+            let ctx = await cli.arg('group').arg('deployment').arg('create')
             .arg('-g=' + this._ctx.Config.rgOverride.value(this._ctx))
             .arg('-n=' + this._name)
             .arg('--template-file=' + this._ingredient.properties.template)
-            .execJsonAsync()
+
+            this._ingredient.properties.parameters.forEach( (v,n)=>
+            {
+                let p = n + "=" + v.value(this._ctx)
+                let param = "--parameters=" + p
+                ctx.arg(param)
+
+                this._logger.log('param: ' + p) 
+            })
+        
+            let json = await ctx.execJsonAsync()
+            
 
             this._logger.log('deployment finished')
             return this._name

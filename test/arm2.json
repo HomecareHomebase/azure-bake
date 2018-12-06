@@ -2,7 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-
+        "name":{
+            "type": "string"
+        }
     },
     "resources": [
         {
@@ -12,7 +14,7 @@
                 "tier": "Standard"
             },
             "kind": "StorageV2",
-            "name": "wpoctest2",
+            "name": "[parameters('name')]",
             "apiVersion": "2018-07-01",
             "location": "eastus",
             "properties": {
