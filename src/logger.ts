@@ -1,4 +1,4 @@
-import {red, green, blue} from 'colors'
+import {red, green, blue,yellow} from 'colors'
 
 export class Logger {
     constructor(pre?: string[]) {
@@ -30,11 +30,11 @@ export class Logger {
     }
     public warn(msg?: any, ...args: any[]) : void {
 
-        console.warn(this.getDt() + this.getPreStr() + msg, ...args)
+        console.warn(green(this.getDt()) + yellow(this.getPreStr() + msg), ...args)
     }
     public error(msg?: any, ...args: any[]) : void {
 
-        console.error(this.getDt() + this.getPreStr() + msg, ...args)
+        console.error(green(this.getDt()) + red(this.getPreStr() + msg), ...args)
     }
 
 }

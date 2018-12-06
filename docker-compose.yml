@@ -11,3 +11,4 @@ services:
     command: npm run debug
     volumes:
       - ./dist:/app/bake/dist
+      - ./test:/app/bake/package

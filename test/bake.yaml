@@ -3,7 +3,7 @@ shortName: tstpkg
 version: 1.0.0
 resourceGroup: true
 rgOverride: "[util.variable('test2','default')]"
-parallelRegions: false
+parallelRegions: true
 variables:
   test1: "[util.variable('test2','default')]"
   test2: whilke-poc
@@ -27,7 +27,7 @@ recipe:
   storage1:
     properties:
       type: infrastucture
-      template: ./test/arm.json
+      template: ./arm.json
       parameters:
         name: "[util.create_storage_name('wpoctest1')]"
         name 2: this is a long string
@@ -35,7 +35,7 @@ recipe:
   storage2:
     properties:
       type: infrastucture
-      template: ./test/arm2.json
+      template: ./arm2.json
       parameters:
         name: "[util.create_storage_name('wpoctest2')]"
     dependsOn:    

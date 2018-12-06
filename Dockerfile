@@ -31,8 +31,10 @@ COPY package.json .
 COPY node_modules ./node_modules
 COPY dist ./dist
 
+RUN npm link
+
 #setup placeholder paths for config/package
 RUN mkdir config
 RUN mkdir package
 
-CMD [ "npm", "start", "--", "-f", "/app/bake/package/bake.yaml" ]
+CMD [ "bake", "-f", "/app/bake/package/bake.yaml" ]

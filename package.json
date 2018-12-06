@@ -4,6 +4,9 @@
   "author": "HCHB",
   "license": "MIT",
   "version": "0.0.0",
+  "bin": {
+    "bake": "./dist/index.js"
+  },
   "scripts": {
     "debug-build": "npm install && docker-compose build && tsc -w -p ./src",
     "release-build": "npm install && tsc -p ./src && docker build . -t bake:release",
