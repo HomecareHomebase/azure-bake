@@ -2,11 +2,11 @@ name: test-package
 shortName: tstpkg
 version: 1.0.0
 resourceGroup: true
-rgOverride: whilke-poc
+rgOverride: "[util.variable('test2','default')]"
 parallelRegions: false
 variables:
   test1: "[util.variable('test2','default')]"
-  test2: value2
+  test2: whilke-poc
 recipe:
   webapp:
     properties:

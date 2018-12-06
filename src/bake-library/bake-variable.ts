@@ -1,4 +1,5 @@
 import {BakeEval} from './eval'
+import { DeploymentContext } from '../deployment-context';
 
 export class BakeVariable {
     constructor(value?: string){
@@ -7,11 +8,7 @@ export class BakeVariable {
 
     _value?: string
 
-    public toString() : string {
-        return BakeEval.Eval(this._value || "")
-    }
-
-    public get value(): string {
-        return this.toString()
+    public value(ctx: DeploymentContext): string {
+        return BakeEval.Eval(this._value || "", ctx)
     }
 }

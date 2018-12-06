@@ -1,12 +1,8 @@
-var util = require('./functions')
-
-function get(val: string ): string {
-    return val
-}
+import { DeploymentContext } from "../deployment-context";
 
 export class BakeEval {
 
-        public static Eval(data: string ): string{
+        public static Eval(data: string , ctx: DeploymentContext): string {
 
             let check = data.trim()
             //check if data is surrounded with [] to denote an eval
@@ -16,8 +12,15 @@ export class BakeEval {
 
             data = check.substr(1, check.length-2)
 
-            let evaled = eval(data)
+            let evaled = this.compile(data, ctx)
             return evaled
 
+        }
+
+        private static compile(data: string, ctx: DeploymentContext) : string {
+
+            var util = require('./functions')
+            util.setContext(ctx)
+            return eval(data)
         }
 }

@@ -1,9 +1,10 @@
 import { BakePackage, IBakeRegion, IIngredient } from "./bake-loader";
 import cli, { AzError } from 'azcli-npm'
-import {BakeEval, BakeData} from './bake-library'
+import {BakeEval} from './bake-library'
 import {IngredientFactory} from './ingredients'
 import {Logger} from './logger'
 import {red, cyan} from 'colors'
+import { DeploymentContext } from "./deployment-context";
 
 export class BakeRunner {
     constructor(bPackage: BakePackage, azcli: cli, logger? : Logger){
@@ -17,9 +18,9 @@ export class BakeRunner {
     _azcli: cli
     _logger: Logger
 
-    private async _executeBakeLoop(ingredientNames: string[], finished: string[], region: IBakeRegion, logger: Logger) : Promise<boolean> {
+    private async _executeBakeLoop(ingredientNames: string[], finished: string[], ctx: DeploymentContext) : Promise<boolean> {
 
-        let recipe = this._package.Config.recipe
+        let recipe = ctx.Config.recipe
         let count = ingredientNames.length
 
         let executing: Array<Promise<string>> = []
@@ -42,7 +43,7 @@ export class BakeRunner {
             })
 
             if (depsDone){
-                let exec = IngredientFactory.Build(ingredientName, ingredient, region, logger)
+                let exec = IngredientFactory.Build(ingredientName, ingredient, ctx)
                 if (exec) {
                     let promise = exec.Execute()
                     executing.push(promise)
@@ -56,11 +57,10 @@ export class BakeRunner {
         return ingredientNames.length != finished.length
     }
 
-    private async _bakeRegion(region: IBakeRegion): Promise<boolean> {
+    private async _bakeRegion(ctx: DeploymentContext): Promise<boolean> {
 
-        let regionLogger = new Logger( this._logger.getPre().concat(region.name))
-        let recipe = this._package.Config.recipe
-        regionLogger.log('Baking recipe ' + cyan(this._package.Config.name))
+        let recipe = ctx.Config.recipe
+        ctx.Logger.log('Baking recipe ' + cyan(ctx.Config.name))
 
         //we could build a DAG and execute that way, but we expect the number of recipes in a package to be small enough
         //that a simple unoptimized loop through will work here
@@ -70,12 +70,12 @@ export class BakeRunner {
         })
 
         let finished: string[] = []
-        let loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, region, regionLogger)
+        let loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
         while(loopHasRemaining) {
-            loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, region, regionLogger)
+            loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
         }
 
-        regionLogger.log('Finished baking')
+        ctx.Logger.log('Finished baking')
         return true
     }
 
@@ -106,13 +106,13 @@ export class BakeRunner {
 
     public async bake(): Promise<void> {
 
-        BakeData.setPackage(this._package, this._azcli)
-        
         let region = <IBakeRegion>{
             name: "EastUS",
             shortName: "eus"
         }
 
-        await this._bakeRegion(region)
+        let ctx = new DeploymentContext(this._package, region, this._azcli, 
+            new Logger(this._logger.getPre().concat(region.name)))
+        await this._bakeRegion(ctx)
     }
 }

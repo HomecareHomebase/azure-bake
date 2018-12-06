@@ -13,6 +13,8 @@ export interface IBakeAuthentication {
 
 export interface IBakeEnvironment {
     toolVersion: string,
+    environmentName: string,
+    environmentCode: string,
     authentication: IBakeAuthentication
     variabes: Map<string, BakeVariable>
 }
@@ -76,6 +78,9 @@ export class BakePackage {
         //load environment variables || defaults into an interface
         this._env.toolVersion = process.env.npm_package_version || "0.0.0"
 
+        this._env.environmentName = process.env.BAKE_ENV_NAME || ""
+        this._env.environmentCode = process.env.BAKE_ENV_CODE || ""
+        
         this._env.authentication = <IBakeAuthentication>{}
         this._env.authentication.subscriptionId = process.env.BAKE_AUTH_SUBSCRIPTION_ID || ""
         this._env.authentication.tenantId = process.env.BAKE_AUTH_TENANT_ID || ""
