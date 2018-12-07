@@ -19,12 +19,14 @@ export class CustomArmIngredient extends BaseIngredient {
         }
 
         let cli = this._ctx.CLI.start()
+        let util = require('../bake-library/functions')
+        util.setContext(this._ctx)
 
         try {
 
             this._logger.log('starting custom arm deployment for template: ' + this._ingredient.properties.template)
             let ctx = await cli.arg('group').arg('deployment').arg('create')
-            .arg('-g=' + this._ctx.Config.rgOverride.value(this._ctx))
+            .arg('-g=' + util.resource_group())
             .arg('-n=' + this._name)
             .arg('--template-file=' + this._ingredient.properties.template)
 

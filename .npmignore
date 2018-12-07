@@ -1,0 +1,7 @@
+src/
+.vscode/
+package/
+test/
+.dockerignore
+docker-compose.yml
+Dockerfile

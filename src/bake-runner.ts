@@ -59,24 +59,37 @@ export class BakeRunner {
 
     private async _bakeRegion(ctx: DeploymentContext): Promise<boolean> {
 
-        let recipe = ctx.Config.recipe
-        ctx.Logger.log('Baking recipe ' + cyan(ctx.Config.name))
+        try {
+            let util = require('./bake-library/functions')
+            util.setContext(ctx)
+            
+            let rg_name = util.resource_group()
+            let region_name = ctx.Region.shortName
+            ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
+            await ctx.CLI.start().arg('group').arg('create').arg('--location='+region_name).arg('--name='+rg_name).execAsync()
 
-        //we could build a DAG and execute that way, but we expect the number of recipes in a package to be small enough
-        //that a simple unoptimized loop through will work here
-        let ingredientNames: string[] = []
-        recipe.forEach((igredient, name) => {
-            ingredientNames.push(name)
-        })
+            let recipe = ctx.Config.recipe
+            ctx.Logger.log('Baking recipe ' + cyan(ctx.Config.name))
 
-        let finished: string[] = []
-        let loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
-        while(loopHasRemaining) {
-            loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
+            //we could build a DAG and execute that way, but we expect the number of recipes in a package to be small enough
+            //that a simple unoptimized loop through will work here
+            let ingredientNames: string[] = []
+            recipe.forEach((igredient, name) => {
+                ingredientNames.push(name)
+            })
+
+            let finished: string[] = []
+            let loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
+            while(loopHasRemaining) {
+                loopHasRemaining = await this._executeBakeLoop(ingredientNames, finished, ctx)
+            }
+
+            ctx.Logger.log('Finished baking')
+            return true
+        } catch(e) {
+            ctx.Logger.error(e)
+            return false
         }
-
-        ctx.Logger.log('Finished baking')
-        return true
     }
 
     public login(): boolean {
@@ -104,15 +117,26 @@ export class BakeRunner {
         return result
     }
 
-    public async bake(): Promise<void> {
+    public async bake(regions: Array<IBakeRegion>): Promise<void> {
 
-        let region = <IBakeRegion>{
-            name: "EastUS",
-            shortName: "eus"
+        if (this._package.Config.parallelRegions) {
+            let tasks: Array<Promise<boolean>> = []
+
+            regions.forEach(region=>{
+                let ctx = new DeploymentContext(this._package, region, this._azcli, 
+                    new Logger(this._logger.getPre().concat(region.name)))
+                let task = this._bakeRegion(ctx)
+                tasks.push(task)    
+            })
+            await Promise.all(tasks)    
+        } else {
+            let count = regions.length
+            for(let i=0; i < count;++i){
+                let region = regions[i]
+                let ctx = new DeploymentContext(this._package, region, this._azcli, 
+                    new Logger(this._logger.getPre().concat(region.name)))
+                await this._bakeRegion(ctx)
+            } 
         }
-
-        let ctx = new DeploymentContext(this._package, region, this._azcli, 
-            new Logger(this._logger.getPre().concat(region.name)))
-        await this._bakeRegion(ctx)
     }
 }

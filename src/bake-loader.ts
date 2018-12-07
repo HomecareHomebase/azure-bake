@@ -2,6 +2,7 @@ import * as YAML from 'js-yaml'
 import * as fs from 'fs'
 import {BakeVariable} from './bake-library'
 import { stringify } from 'querystring';
+import { Logger } from './logger';
 
 export interface IBakeAuthentication {
     subscriptionId: string
@@ -35,15 +36,17 @@ export interface IBakeConfig {
     shortName: string,
     version: string,
     resourceGroup: boolean,
-    rgOverride: BakeVariable,
+    rgOverride?: BakeVariable,
+    parallelRegions?: boolean
 
-    variables: Map<string,BakeVariable>
+    variables?: Map<string,BakeVariable>
     recipe: Map<string, IIngredient>
 }
 
 export interface IBakeRegion {
     name: string
     shortName: string
+    code: string
 }
 
 export class BakePackage {
@@ -94,8 +97,15 @@ export class BakePackage {
             process.env.BAKE_AUTH_TENANT_ID =""
 
         //yaml parse out the global variables.
-        let obj  =YAML.safeLoad(process.env.BAKE_VARIABLES || "")
-        this._env.variabes = this.objToVariableMap( obj || [] )
+        try {
+
+            let obj  =YAML.safeLoad(process.env.BAKE_VARIABLES || "")
+            this._env.variabes = this.objToVariableMap( obj || [] )
+        } catch (e) {
+            let logger = new Logger()
+            logger.error("Failed to load global environment variables")
+            logger.error(e)
+        }
     }
 
     private _validatePackage(config: IBakeConfig) {
@@ -127,16 +137,29 @@ export class BakePackage {
     private _loadPackage(source: string){
 
         let file = fs.readFileSync(source, 'utf8')
-        let config: IBakeConfig = YAML.load(file)
+        let config: IBakeConfig = <IBakeConfig>{}
+
+        try{
+            config = YAML.load(file)
+        } catch(e) {
+            let logger = new Logger()
+            logger.error("Failed to load bake file: " + source)
+            logger.error(e)
+            throw e
+        }
 
         //start with config vars based on env based vars
         let vars = this.objToVariableMap(config.variables)
 
         //merge config vars into the env vars (overwriting as needed)
-        config.variables = this._env.variabes
-        vars.forEach((v,n)=>config.variables.set(n, v))
+        config.variables = this._env.variabes || new Map<string,BakeVariable>()
+        vars.forEach((v,n)=> {
+            if (config.variables)
+                config.variables.set(n, v)
+        })
 
         //fix up json objects to act as hashmaps.
+        config.parallelRegions = config.parallelRegions==undefined? true : config.parallelRegions
         config.rgOverride = new BakeVariable(<any>config.rgOverride);
         config.recipe = this.objToStrMap(config.recipe)
         config.recipe.forEach(ingredient=>{
