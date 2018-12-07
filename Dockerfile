@@ -37,4 +37,4 @@ RUN npm link
 RUN mkdir config
 RUN mkdir package
 
-CMD [ "bake", "-f", "/app/bake/package/bake.yaml" ]
+CMD [ "bake", "serve", "/app/bake/package/bake.yaml" ]
