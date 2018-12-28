@@ -45,12 +45,12 @@ class clitasl {
             "BAKE_AUTH_SERVICE_CERT=" + (process.env.BAKE_AUTH_SERVICE_CERT || "") + "\r\n" +
             "BAKE_AUTH_SERVICE_KEY=" + (process.env.BAKE_AUTH_SERVICE_KEY || "") + "\r\n" +
             "BAKE_VARIABLES64=" + (process.env.BAKE_VARIABLES64 || "") + "\r\n";
-        console.log("BAKE_VARIABLES64=" + (process.env.BAKE_VARIABLES64 || "") + "\r\n");
         fs.writeFileSync(envFile, envContent);
         //clear out current env vars now
         process.env.BAKE_ENV_NAME = process.env.BAKE_ENV_CODE = process.env.BAKE_ENV_REGIONs = process.env.BAKE_AUTH_SUBSCRIPTION_ID =
             process.env.BAKE_AUTH_TENANT_ID = process.env.BAKE_AUTH_SERVICE_ID = process.env.BAKE_AUTH_SERVICE_KEY = process.env.BAKE_AUTH_SERVICE_CERT =
                 process.env.BAKE_VARIABLES64 = "";
+        let exitCode = 0;
         try {
             let p = tool.arg('run').arg('--rm').arg('-t')
                 .arg('--env-file=' + envFile)
@@ -58,11 +58,14 @@ class clitasl {
                 .execSync({
                 silent: true
             });
-            console.log(p.code);
+            exitCode = p.code;
             console.log(p.stdout);
         }
         finally {
             fs.unlinkSync(envFile);
+        }
+        if (exitCode != 0) {
+            throw new Error(exitCode.toString());
         }
     }
     static setupEnvironment() {
@@ -90,14 +93,11 @@ class clitasl {
         //gather up all environment variables.
         let bakeVars = "";
         for (let envvar in process.env) {
-            if (!envvar.toLocaleUpperCase().startsWith("BAKE_"))
+            if (!envvar.toLocaleUpperCase().startsWith("BAKE_") &&
+                !envvar.toLocaleUpperCase().startsWith("ENDPOINT_") &&
+                !envvar.toLocaleUpperCase().startsWith("INPUT_"))
                 bakeVars += envvar + ": '" + process.env[envvar] + "'\n";
         }
-        let vars = tl.getVariables();
-        vars.forEach((v) => {
-            if (!v.name.toLocaleUpperCase().startsWith("BAKE_"))
-                bakeVars += v.name + ": '" + v.value + "'\n";
-        });
         let b64 = buffer_1.Buffer.from(bakeVars, 'ascii').toString('base64');
         console.log('Setting environment for %s (%s)', envName, envCode);
         process.env.BAKE_ENV_NAME = envName;

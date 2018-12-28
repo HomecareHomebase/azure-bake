@@ -242,7 +242,13 @@ function run(){
 
     var result = runner.login()
     if (result) {
-        runner.bake(regions)
+        runner.bake(regions).catch(err=>{
+            runner._logger.error(err);
+            process.exit(2)
+        })
+    }
+    else{
+        process.exit(1)
     }
 }
 
@@ -268,10 +274,12 @@ function deploy(){
             .arg('--env-file=' + tmpFile)
             .arg(target)
             .execStream()
-        p.then(()=> {
+        p.then((r)=> {
             deleteEnvFile()
-        }).catch(()=>{
+            process.exit(r);
+        }).catch((r)=>{
             deleteEnvFile()
+            process.exit(15);
         })
     } finally {
     }

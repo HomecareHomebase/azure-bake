@@ -128,7 +128,13 @@ export class BakeRunner {
                 let task = this._bakeRegion(ctx)
                 tasks.push(task)    
             })
-            await Promise.all(tasks)    
+            let results = await Promise.all(tasks)    
+            let allResultsGood : boolean = true
+            results.forEach(result=>{if (!result)allResultsGood = false})
+            if (!allResultsGood) {
+                throw new Error('Not all regions deployed successfully')
+            }
+
         } else {
             let count = regions.length
             for(let i=0; i < count;++i){

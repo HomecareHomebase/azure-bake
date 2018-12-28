@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "azure-bake",
     "name": "Azure Bake Tools",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "publisher": "HCHB-Tools",
     "targets": [
         {
