@@ -8,6 +8,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as ps from 'process'
 import * as os from 'os'
+import {Buffer} from 'buffer'
 
 import * as minimist from 'minimist'
 import { Logger } from './logger';
@@ -115,7 +116,18 @@ function validateParams() {
         args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID
         args.serviceKey = argv['key'] || process.env.BAKE_AUTH_SERVICE_KEY
         args.serviceCert = argv['cert'] || process.env.BAKE_AUTH_SERVICE_CERT
-        args.variables = argv['variables'] || process.env.BAKE_VARIABLES
+        args.variables = argv['variables64'] || process.env.BAKE_VARIABLES64
+
+        if (args.variables)
+        {
+            args.variables = Buffer.from(args.variables, 'base64').toString('ascii')
+            process.env.BAKE_VARIABLES64 = ""
+        }
+        else
+        {
+            args.variables = argv['variables'] || process.env.BAKE_VARIABLES
+        }
+        
 
         if (!args.envName ||
             !args.envCode ||

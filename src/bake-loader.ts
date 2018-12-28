@@ -98,8 +98,8 @@ export class BakePackage {
 
         //yaml parse out the global variables.
         try {
-
-            let obj  =YAML.safeLoad(process.env.BAKE_VARIABLES || "")
+            let vars : string = process.env.BAKE_VARIABLES || ""
+            let obj  =YAML.safeLoad(vars)
             this._env.variabes = this.objToVariableMap( obj || [] )
         } catch (e) {
             let logger = new Logger()
