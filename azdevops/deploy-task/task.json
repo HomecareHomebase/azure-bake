@@ -8,8 +8,8 @@
     "author": "HCHB",
     "version": {
         "Major": 0,
-        "Minor": 1,
-        "Patch": 8
+        "Minor": 4,
+        "Patch": 0
     },
     "instanceNameFormat": "Azure Bake Deployment",
     "showEnvironmentVariables": true,
@@ -61,10 +61,17 @@
         {
             "name": "recipe",
             "type": "string",
-            "label": "Bake Recipe",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "",
+            "label": "Bake Recipe Docker Tag",
+            "required": false,
+            "helpMarkDown": "Either define a recipe docker tag, or use the field below to define the Devops artifact bake.artifact file",
+            "groupName":"general"
+        },
+        {
+            "name": "recipeArtifact",
+            "type": "filePath",
+            "label": "Bake Recipe Artifact File",
+            "helpMarkDown": "Path to an attached Devops bake.artifact file from an attached Artifact drop. If not defined, Recipe field above is used",
+            "required": false,
             "groupName":"general"
         }
     ],

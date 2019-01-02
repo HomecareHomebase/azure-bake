@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "azure-bake",
     "name": "Azure Bake Tools",
-    "version": "0.0.9",
+    "version": "0.4.0",
     "publisher": "HCHB-Tools",
     "targets": [
         {
@@ -16,6 +16,9 @@
     "files": [
         {
             "path": "deploy-task"
+        },
+        {
+            "path": "build-task"
         }
     ],
     "contributions": [
@@ -27,6 +30,16 @@
             ],
             "properties": {
                 "name": "deploy-task"
+            }
+        },
+        {
+            "id": "azure-bake-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "build-task"
             }
         }
     ]

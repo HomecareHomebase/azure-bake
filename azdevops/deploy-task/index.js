@@ -19,21 +19,33 @@ const tl = require("azure-pipelines-task-lib/task");
 const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 const buffer_1 = require("buffer");
-class clitasl {
+class clitask {
     static runMain() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const recipeName = tl.getInput('recipe', true);
+                const recipeName = tl.getInput('recipe', false);
+                const recipeArtifact = tl.getInput('recipeArtifact', false);
+                if (recipeName && recipeArtifact) {
+                    throw new Error('Both recipe and bake artifact file are defined, only one can be set');
+                }
+                if (!recipeArtifact && !recipeName) {
+                    throw new Error('One of recipe or bake artifact file must be defined');
+                }
                 this.setupCredentials();
                 this.setupEnvironment();
-                this.deployImage(recipeName);
+                this.deployImage(recipeName, recipeArtifact);
             }
             catch (err) {
                 tl.setResult(tl.TaskResult.Failed, err.message);
             }
         });
     }
-    static deployImage(recipe) {
+    static deployImage(recipe, recipeFile) {
+        if (recipeFile) {
+            let contents = fs.readFileSync(recipeFile);
+            recipe = contents.toString();
+            console.log('Deploying Bake recipe via Artifact output | ' + recipe);
+        }
         let tool = tl.tool('docker');
         let envFile = path.join(tl.getVariable('Agent.TempDirectory') || tl.getVariable('system.DefaultWorkingDirectory') || 'c:/temp/', 'bake.env');
         let envContent = "BAKE_ENV_NAME=" + process.env.BAKE_ENV_NAME + "\r\n" +
@@ -50,22 +62,21 @@ class clitasl {
         process.env.BAKE_ENV_NAME = process.env.BAKE_ENV_CODE = process.env.BAKE_ENV_REGIONs = process.env.BAKE_AUTH_SUBSCRIPTION_ID =
             process.env.BAKE_AUTH_TENANT_ID = process.env.BAKE_AUTH_SERVICE_ID = process.env.BAKE_AUTH_SERVICE_KEY = process.env.BAKE_AUTH_SERVICE_CERT =
                 process.env.BAKE_VARIABLES64 = "";
-        let exitCode = 0;
-        try {
-            let p = tool.arg('run').arg('--rm').arg('-t')
-                .arg('--env-file=' + envFile)
-                .arg(recipe)
-                .execSync({
-                silent: true
-            });
-            exitCode = p.code;
-            console.log(p.stdout);
-        }
-        finally {
-            fs.unlinkSync(envFile);
-        }
+        let p = tool.arg('run').arg('--rm').arg('-t')
+            .arg('--env-file=' + envFile)
+            .arg(recipe)
+            .exec();
+        p.then((code) => {
+            this.cleanupAndExit(envFile, code);
+        }, (err) => {
+            this.cleanupAndExit(envFile, 2);
+        });
+    }
+    static cleanupAndExit(envFile, exitCode) {
+        fs.unlinkSync(envFile);
         if (exitCode != 0) {
-            throw new Error(exitCode.toString());
+            tl.setResult(tl.TaskResult.Failed, "Deployment Failed");
+            process.exit(exitCode);
         }
     }
     static setupEnvironment() {
@@ -135,5 +146,5 @@ class clitasl {
         console.log('Setting up authentication for SUBID=%s TID=%s', subscriptionID, tenantId);
     }
 }
-exports.clitasl = clitasl;
-clitasl.runMain();
+exports.clitask = clitask;
+clitask.runMain();

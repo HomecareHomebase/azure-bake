@@ -4,22 +4,39 @@ import * as fs from 'fs'
 import {Buffer} from 'buffer'
 import { IExecOptions } from 'azure-pipelines-task-lib/toolrunner';
 
-export class clitasl {
+export class clitask {
 
     public static async runMain(){
 
         try{
-            const recipeName: string = tl.getInput('recipe', true)
+            const recipeName: string = tl.getInput('recipe', false)
+            const recipeArtifact: string = tl.getInput('recipeArtifact', false)
+
+            if (recipeName && recipeArtifact) {
+                throw new Error('Both recipe and bake artifact file are defined, only one can be set')
+            }
+
+            if (!recipeArtifact && !recipeName) {
+                throw new Error('One of recipe or bake artifact file must be defined')
+            }
+
             this.setupCredentials()
             this.setupEnvironment()
 
-            this.deployImage(recipeName)
+            this.deployImage(recipeName, recipeArtifact)
         } catch (err){
             tl.setResult(tl.TaskResult.Failed, err.message);
         }
 
     }
-    static deployImage(recipe: string): void {
+    static deployImage(recipe: string, recipeFile: string): void {
+
+        if (recipeFile) {
+            let contents = fs.readFileSync(recipeFile)
+            recipe = contents.toString()
+            console.log('Deploying Bake recipe via Artifact output | ' + recipe)
+        }
+
         let tool = tl.tool('docker')
 
         let envFile = path.join(tl.getVariable('Agent.TempDirectory') || tl.getVariable('system.DefaultWorkingDirectory') || 'c:/temp/', 'bake.env')
@@ -41,23 +58,25 @@ export class clitasl {
         process.env.BAKE_AUTH_TENANT_ID = process.env.BAKE_AUTH_SERVICE_ID = process.env.BAKE_AUTH_SERVICE_KEY = process.env.BAKE_AUTH_SERVICE_CERT =
         process.env.BAKE_VARIABLES64 = ""
 
-        let exitCode : number = 0
-        try {
-           let p = tool.arg('run').arg('--rm').arg('-t')
+        let p = tool.arg('run').arg('--rm').arg('-t')
                 .arg('--env-file=' + envFile)
                 .arg(recipe)
-                .execSync(<IExecOptions>{
-                    silent: true
-            })
+                .exec()
 
-            exitCode = p.code
-            console.log(p.stdout)
-        } finally {
-            fs.unlinkSync(envFile)
-        }
+            p.then((code)=>{
+                this.cleanupAndExit(envFile, code)
+            }, (err)=>{
+                this.cleanupAndExit(envFile, 2)
+            })            
+        
+    }
+
+    static cleanupAndExit(envFile: string, exitCode: number){
+        fs.unlinkSync(envFile)
         if (exitCode != 0)
         {
-            throw new Error(exitCode.toString())
+            tl.setResult(tl.TaskResult.Failed, "Deployment Failed");
+            process.exit(exitCode)
         }
     }
 
@@ -145,4 +164,4 @@ export class clitasl {
 }
 
 
-clitasl.runMain();
+clitask.runMain();
