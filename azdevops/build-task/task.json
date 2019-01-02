@@ -1,0 +1,167 @@
+{
+    "id": "9452690e-15a4-4faf-b145-dd363cd8140e",
+    "name": "azure-bake-build-task",
+    "friendlyName": "Azure Bake Build Task",
+    "description": "Azure Bake Build Task",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "HCHB",
+    "version": {
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "groups":[
+        {
+            "name": "containerRegistry",
+            "displayName": "Container Registry",
+            "isExpanded": true
+        },
+        {
+            "name": "general",
+            "displayName": "General",
+            "isExpanded": true
+        } ,
+        {
+            "name":"artifact",
+            "displayName":"Artifact Creation",
+            "isExpanded": false,
+            "visibleRule":"useArtifact == true"
+        }      
+    ],
+    "instanceNameFormat": "Azure Bake Build",
+    "inputs": [        
+        {
+            "name": "containerregistrytype",
+            "type": "pickList",
+            "label": "Container registry type",
+            "defaultValue": "Azure Container Registry",
+            "required": true,
+            "options": {
+                "Azure Container Registry": "Azure Container Registry",
+                "Container Registry": "Container Registry"
+            },
+            "groupName": "containerRegistry",
+            "helpMarkDown": "Select 'Azure Container Registry' to connect to it by using an Azure Service Connection. Select 'Container registry' to connect to Docker Hub or any other private container registry."
+        },
+        {
+            "name": "dockerRegistryEndpoint",
+            "type": "connectedService:dockerregistry",
+            "label": "Docker registry service connection",
+            "helpMarkDown": "Select a Docker registry service connection. Required for commands that need to authenticate with a registry.",
+            "groupName": "containerRegistry",
+            "visibleRule": "containerregistrytype = Container Registry"
+        },
+        {
+            "name": "azureSubscriptionEndpoint",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "helpMarkDown": "Select an Azure subscription",
+            "groupName": "containerRegistry",
+            "visibleRule": "containerregistrytype = Azure Container Registry"
+        },
+        {
+            "name": "azureContainerRegistry",
+            "label": "Azure container registry",
+            "type": "pickList",
+            "helpMarkDown": "Select an Azure Container Registry in the selected Azure Subscription. The container image will be built and pushed to this container registry.",
+            "visibleRule": "containerregistrytype = Azure Container Registry",
+            "defaultValue": "",
+            "groupName": "containerRegistry",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "groupName":"general",
+            "name": "runtimeVersion",
+            "type":"string",
+            "label":"Runtime Version",
+            "defaultValue":"latest",
+            "required":true,
+            "helpMarkDown":"Bake tool-image to build against (latest, v1.0.0, etc)"
+        },
+        {
+            "groupName":"general",
+            "name": "imageName",
+            "type":"string",
+            "label":"RecipeName (docker image)",
+            "required":true,
+            "defaultValue":"$(Build.Repository.Name):$(Build.BuildId)",
+            "helpMarkDown":"Docker image name to generate recipe for"
+        },
+        {
+            "groupName":"general",
+            "name":"bakeFile",
+            "type":"filePath",
+            "label":"Bake File",
+            "required": true,
+            "helpMarkDown":"bake.yaml file to generate a recipe for"
+        },    
+        {
+            "name": "tags",
+            "type": "multiLine",
+            "properties": {
+                "resizable": "true",
+                "rows": "2"
+            },
+            "label": "Tags",
+            "groupName": "general",
+            "helpMarkDown": "Additional docker tags"
+        },
+        {
+            "name": "qualifyImageName",
+            "type": "boolean",
+            "label": "Qualify image name",
+            "defaultValue": "true",
+            "groupName": "general",
+            "helpMarkDown": "Qualify the image name with the Docker registry service connection's hostname if not otherwise specified."
+        },
+        {
+            "name": "includeSourceTags",
+            "type": "boolean",
+            "label": "Include source tags",
+            "defaultValue": "false",
+            "groupName": "general",
+            "helpMarkDown": "Include Git tags when building and pushing the bake recipe"
+        },    
+        {
+            "name": "useArtifact",
+            "type": "boolean",
+            "label": "Include a bake artifact for use in Azure DevOps release pipeline",
+            "defaultValue": "false",
+            "groupName": "general"
+        },
+        {
+            "groupName":"artifact",
+            "name":"artifactOutput",
+            "type":"filePath",
+            "label":"Output folder for bake artifact",
+            "defaultValue":"$(Build.ArtifactStagingDirectory)",
+            "helpMarkDown":"The output artifact folder where the bake artifact file will be generated.  Empty is the root of the repo.  Use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) if files are not in the repo. Example: $(Build.ArtifactStagingDirectory)"
+        }, 
+        {
+            "name": "useLatestTag",
+            "type": "boolean",
+            "label": "Use git tag during Release Pipeline artifact deployment",
+            "defaultValue": "false",
+            "groupName":"artifact"
+        },
+        {
+            "groupName":"artifact",
+            "name":"artifactTag",
+            "type":"string",
+            "label":"Which tag to use during Release Pipeline artifact deployment",
+            "defaultValue":"$(Build.BuildId)",
+            "visibleRule":"useLatestTag != true"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "FileContentSynced": "Synced the file content to the disk. The content is %s."
+    }
+}
