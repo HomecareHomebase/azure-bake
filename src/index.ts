@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-import cli, { ShellRunner } from 'azcli-npm'
+import { ShellRunner } from 'azcli-npm'
 import {BakePackage, IBakeRegion} from './bake-loader'
 import {BakeRunner} from './bake-runner'
 import * as fs from 'fs'
@@ -220,10 +220,9 @@ function build(){
     }
 }
 
-function run(){
+async function run(): Promise<number> {
 
     let bakeFile:string = target
-    //let typeOverride = argv.type || ""
 
     //fix up the working folder to base at the bake file
     let basePath = path.dirname(bakeFile)
@@ -237,19 +236,17 @@ function run(){
     let regions: Array<IBakeRegion> = JSON.parse(process.env.BAKE_ENV_REGIONS || "")
 
     var pkg = new BakePackage(bakeFile)
-    var azcli = new cli()
-    var runner = new BakeRunner(pkg, azcli)
+    var runner = new BakeRunner(pkg)
 
-    var result = runner.login()
-    if (result) {
-        runner.bake(regions).catch(err=>{
-            runner._logger.error(err);
-            process.exit(2)
-        })
+    try{
+        var result = await runner.login()
+        if (result){
+            await runner.bake(regions)
+            return 0
+        }    
     }
-    else{
-        process.exit(1)
-    }
+    catch{}
+    return 1
 }
 
 function deploy(){
@@ -296,5 +293,5 @@ if (canExecute) {
 
     if (cmd == "mix") build()
     if (cmd == "serve") deploy()
-    if (cmd == "run") run()  
+    if (cmd == "run") run().then(code=> process.exit(code))
 }

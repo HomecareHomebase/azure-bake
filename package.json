@@ -47,6 +47,9 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "@azure/arm-resources": "^1.0.0",
+    "@azure/arm-subscriptions": "^0.1.0",
+    "@azure/ms-rest-nodeauth": "^0.8.3",
     "azcli-npm": "^1.1.3",
     "colors": "^1.3.2",
     "js-yaml": "^3.12.0",

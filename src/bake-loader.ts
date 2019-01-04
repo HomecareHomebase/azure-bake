@@ -1,7 +1,6 @@
 import * as YAML from 'js-yaml'
 import * as fs from 'fs'
 import {BakeVariable} from './bake-library'
-import { stringify } from 'querystring';
 import { Logger } from './logger';
 
 export interface IBakeAuthentication {
@@ -62,11 +61,14 @@ export class BakePackage {
     private _env: IBakeEnvironment
     public get  Environment():IBakeEnvironment {
 
-        //strip auth from the public accessor
+        //strip auth from the public accessor, except for sub id.
 
         //simple JSON wrap to clone config
         let env = JSON.parse(JSON.stringify(this._env))
         env.authentication = null
+        env.authentication = <IBakeAuthentication>{
+            subscriptionId : this._env.authentication.subscriptionId
+        }
         return env
     }
 
@@ -172,8 +174,8 @@ export class BakePackage {
         this._config = config
     }
 
-    public Authenticate( callback: (auth:IBakeAuthentication)=>boolean ) : boolean {
-        return callback(this._env.authentication)
+    public async Authenticate( callback: (auth:IBakeAuthentication)=>Promise<boolean> ) : Promise<boolean> {
+        return await callback(this._env.authentication)
     }
 
 }
