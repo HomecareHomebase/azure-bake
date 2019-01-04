@@ -1,4 +1,4 @@
-import { DeploymentContext } from "../deployment-context";
+import { DeploymentContext } from "./deployment-context";
 
 export class BakeEval {
 

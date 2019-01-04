@@ -1,5 +1,5 @@
 import {BakeVariable} from './bake-variable'
-import { DeploymentContext } from '../deployment-context';
+import { DeploymentContext } from './deployment-context';
 
 let ctx : DeploymentContext
 export function setContext(context: DeploymentContext) {

@@ -1,22 +1,20 @@
-import { BakePackage, IBakeRegion, IIngredient, IBakeAuthentication } from "./bake-loader";
-import {BakeEval} from './bake-library'
+import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig} from "@azbake/core";
 import {IngredientFactory} from './ingredients'
-import {Logger} from './logger'
 import {red, cyan} from 'colors'
-import { DeploymentContext } from "./deployment-context"
+import { DeploymentContext, Logger } from "@azbake/core"
 import * as msRestNodeAuth from "@azure/ms-rest-nodeauth"
 import {ResourceManagementClient, ResourceManagementModels, ResourceManagementMappers} from "@azure/arm-resources"
 import { ResourceGroup } from "@azure/arm-resources/esm/models";
 
 export class BakeRunner {
-    constructor(bPackage: BakePackage, logger? : Logger){
+    constructor(bPackage: IBakePackage, logger? : Logger){
 
         this._package = bPackage
         this._logger = logger || new Logger()
         this._AuthCreds = <msRestNodeAuth.TokenCredentialsBase>{}
     }
 
-    _package: BakePackage
+    _package: IBakePackage
     _logger: Logger
     _AuthCreds: msRestNodeAuth.TokenCredentialsBase
 
