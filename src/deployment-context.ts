@@ -1,20 +1,20 @@
 import { BakePackage, IBakeRegion, IBakeConfig, IBakeEnvironment } from "./bake-loader";
-import cli from "azcli-npm";
 import { Logger } from "./logger";
+import { TokenCredentialsBase } from "@azure/ms-rest-nodeauth";
 
 export class DeploymentContext {
-    constructor(bake : BakePackage, region: IBakeRegion, azcli: cli, logger: Logger) {
+    constructor(auth: TokenCredentialsBase, bake : BakePackage, region: IBakeRegion, logger: Logger) {
 
         this._package = bake
         this._region = region
-        this._cli = azcli
         this._logger = logger
+        this._auth = auth
     }
 
     _package: BakePackage
     _region: IBakeRegion
-    _cli: cli
     _logger: Logger
+    _auth: TokenCredentialsBase
 
     public get Config() : IBakeConfig {
         return this._package.Config
@@ -24,15 +24,15 @@ export class DeploymentContext {
         return this._package.Environment
     }
 
-    public get CLI(): cli {
-        return this._cli
-    }
-
     public get Region(): IBakeRegion {
         return this._region
     }
     
     public get Logger(): Logger {
         return this._logger
+    }
+
+    public get AuthToken(): TokenCredentialsBase {
+        return this._auth
     }
 }

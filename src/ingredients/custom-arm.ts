@@ -1,9 +1,9 @@
 import { BaseIngredient } from "./base-ingredient";
 import { IIngredient, IBakeConfig, IBakeRegion } from "../bake-loader";
 import * as fs from 'fs'
-import cli, { AzError } from "azcli-npm";
-import { Logger } from "../logger";
 import { DeploymentContext } from "../deployment-context";
+import { ResourceManagementClient } from "@azure/arm-resources";
+import { Deployment, DeploymentProperties } from "@azure/arm-resources/esm/models";
 
 export class CustomArmIngredient extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -18,29 +18,65 @@ export class CustomArmIngredient extends BaseIngredient {
             return this._name
         }
 
-        let cli = this._ctx.CLI.start()
         let util = require('../bake-library/functions')
         util.setContext(this._ctx)
 
         try {
 
             this._logger.log('starting custom arm deployment for template: ' + this._ingredient.properties.template)
-            let ctx = await cli.arg('group').arg('deployment').arg('create')
-            .arg('-g=' + util.resource_group())
-            .arg('-n=' + this._name)
-            .arg('--template-file=' + this._ingredient.properties.template)
+
+            //build the properties as a standard object.
+            let props : any = {
+            }
 
             this._ingredient.properties.parameters.forEach( (v,n)=>
             {
+                props[n] = {
+                    "value": v.value(this._ctx)
+                }
                 let p = n + "=" + v.value(this._ctx)
-                let param = "--parameters=" + p
-                ctx.arg(param)
-
                 this._logger.log('param: ' + p) 
             })
-        
-            let json = await ctx.execJsonAsync()
-            
+
+            let buffer = fs.readFileSync(this._ingredient.properties.template)
+            let contents = buffer.toString()
+            let deployment = <Deployment>{
+                properties : <DeploymentProperties>{
+                    template: JSON.parse(contents),
+                    parameters: props,
+                    mode: "Incremental"               
+                }
+            }
+
+            let client = new ResourceManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+
+            this._logger.log("validating deployment...")
+            let validate = await client.deployments.validate(util.resource_group(), this._name, deployment)
+            if (validate.error)
+            {
+                let errorMsg : string = "Validation failed (" + (validate.error.code || "unknown") + ")"
+                if (validate.error.target){
+                    errorMsg += "\nTarget: " + validate.error.target
+                }
+                if (validate.error.message) {
+                    errorMsg += "\nMessage: " + validate.error.message
+                }
+                if (validate.error.details){
+                    errorMsg += "\nDetails:"
+                    validate.error.details.forEach(x=>{
+                        errorMsg += "\n" + x.message
+                    })
+                }
+
+                this._ctx.Logger.error(errorMsg)
+                throw new Error('validate failed')
+            }
+
+            this._logger.log("starting deployment...")
+            let result = await client.deployments.createOrUpdate(util.resource_group(), this._name, deployment)  
+            if ( result._response.status >299){
+                throw new Error('ARM error ' + result._response.bodyAsText)
+            }
 
             this._logger.log('deployment finished')
             return this._name

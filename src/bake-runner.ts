@@ -1,22 +1,24 @@
-import { BakePackage, IBakeRegion, IIngredient } from "./bake-loader";
-import cli, { AzError } from 'azcli-npm'
+import { BakePackage, IBakeRegion, IIngredient, IBakeAuthentication } from "./bake-loader";
 import {BakeEval} from './bake-library'
 import {IngredientFactory} from './ingredients'
 import {Logger} from './logger'
 import {red, cyan} from 'colors'
-import { DeploymentContext } from "./deployment-context";
+import { DeploymentContext } from "./deployment-context"
+import * as msRestNodeAuth from "@azure/ms-rest-nodeauth"
+import {ResourceManagementClient, ResourceManagementModels, ResourceManagementMappers} from "@azure/arm-resources"
+import { ResourceGroup } from "@azure/arm-resources/esm/models";
 
 export class BakeRunner {
-    constructor(bPackage: BakePackage, azcli: cli, logger? : Logger){
+    constructor(bPackage: BakePackage, logger? : Logger){
 
         this._package = bPackage
-        this._azcli = azcli
         this._logger = logger || new Logger()
+        this._AuthCreds = <msRestNodeAuth.TokenCredentialsBase>{}
     }
 
     _package: BakePackage
-    _azcli: cli
     _logger: Logger
+    _AuthCreds: msRestNodeAuth.TokenCredentialsBase
 
     private async _executeBakeLoop(ingredientNames: string[], finished: string[], ctx: DeploymentContext) : Promise<boolean> {
 
@@ -65,8 +67,23 @@ export class BakeRunner {
             
             let rg_name = util.resource_group()
             let region_name = ctx.Region.shortName
-            ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
-            await ctx.CLI.start().arg('group').arg('create').arg('--location='+region_name).arg('--name='+rg_name).execAsync()
+
+            let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)
+
+            let rgExists = false
+            try {
+                let chkResult = await client.resourceGroups.checkExistence(rg_name)
+                rgExists = chkResult.body                
+            }
+            catch{}
+
+            if (!rgExists){
+
+                ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
+                await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
+                    location: region_name
+                })
+            }
 
             let recipe = ctx.Config.recipe
             ctx.Logger.log('Baking recipe ' + cyan(ctx.Config.name))
@@ -92,28 +109,23 @@ export class BakeRunner {
         }
     }
 
-    public login(): boolean {
+    public async login(): Promise<boolean> {
 
         this._logger.log("logging into azure...")
-        var result = this._package.Authenticate( (auth) =>{
+        var result = await this._package.Authenticate( async (auth) =>{
+
+            //TODO, new login does not support certificate SP login.
             try {
-                if (auth.certPath)
-                    this._azcli.loginWithCert(auth.tenantId, auth.serviceId, auth.certPath)
-                else
-                    this._azcli.login(auth.tenantId, auth.serviceId, auth.secretKey)
-
-                //set the correct subscription
-
-                this._logger.log('Setting subscription Id ' + auth.subscriptionId)
-                this._azcli.setSubscription(auth.subscriptionId)
-
-                return true
-            } catch(e) {
-                var error = <AzError>e
-                this._logger.error(red("login failed: " + error.message))
+                this._AuthCreds =  await msRestNodeAuth
+                .loginWithServicePrincipalSecret(auth.serviceId, auth.secretKey, auth.tenantId)
+                return true;
+            }
+            catch(err){
+                this._logger.error(red("login failed: " + err.message))
                 return false
-            }            
+            }
         })
+
         return result
     }
 
@@ -123,7 +135,7 @@ export class BakeRunner {
             let tasks: Array<Promise<boolean>> = []
 
             regions.forEach(region=>{
-                let ctx = new DeploymentContext(this._package, region, this._azcli, 
+                let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
                     new Logger(this._logger.getPre().concat(region.name)))
                 let task = this._bakeRegion(ctx)
                 tasks.push(task)    
@@ -139,7 +151,7 @@ export class BakeRunner {
             let count = regions.length
             for(let i=0; i < count;++i){
                 let region = regions[i]
-                let ctx = new DeploymentContext(this._package, region, this._azcli, 
+                let ctx = new DeploymentContext(this._AuthCreds, this._package, region, 
                     new Logger(this._logger.getPre().concat(region.name)))
                 await this._bakeRegion(ctx)
             } 
