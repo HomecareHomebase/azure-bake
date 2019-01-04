@@ -3,7 +3,7 @@
   "description": "Azure cloud deployment platform for both infrasturcture as code and software",
   "author": "HCHB",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HomecareHomebase/azure-bake.git"
@@ -47,6 +47,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "@azbake/core": "^0.1.5",
     "@azure/arm-resources": "^1.0.0",
     "@azure/arm-subscriptions": "^0.1.0",
     "@azure/ms-rest-nodeauth": "^0.8.3",

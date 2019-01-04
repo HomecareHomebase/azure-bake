@@ -1,7 +1,7 @@
 import {BaseIngredient} from './base-ingredient'
 import {CustomArmIngredient} from './custom-arm'
-import { IIngredient, IBakeRegion } from '../bake-loader'
-import { DeploymentContext } from '../deployment-context';
+import { IIngredient, IBakeRegion } from '@azbake/core'
+import { DeploymentContext } from '@azbake/core'
 
 export {BaseIngredient}
 

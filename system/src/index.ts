@@ -2,7 +2,8 @@
 
 
 import { ShellRunner } from 'azcli-npm'
-import {BakePackage, IBakeRegion} from './bake-loader'
+import {IBakeRegion, Logger} from '@azbake/core'
+import {BakePackage} from './bake-loader'
 import {BakeRunner} from './bake-runner'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -11,7 +12,6 @@ import * as os from 'os'
 import {Buffer} from 'buffer'
 
 import * as minimist from 'minimist'
-import { Logger } from './logger';
 
 let argv = minimist(process.argv.slice(2))
 let cmd: string = ""

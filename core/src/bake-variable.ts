@@ -1,5 +1,5 @@
 import {BakeEval} from './eval'
-import { DeploymentContext } from '../deployment-context';
+import { DeploymentContext } from './deployment-context';
 
 export class BakeVariable {
     constructor(value?: string){

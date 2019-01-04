@@ -1,52 +1,7 @@
 import * as YAML from 'js-yaml'
 import * as fs from 'fs'
-import {BakeVariable} from './bake-library'
-import { Logger } from './logger';
-
-export interface IBakeAuthentication {
-    subscriptionId: string
-    tenantId: string,
-    serviceId: string,
-    secretKey: string,
-    certPath: string
-}
-
-export interface IBakeEnvironment {
-    toolVersion: string,
-    environmentName: string,
-    environmentCode: string,
-    authentication: IBakeAuthentication
-    variabes: Map<string, BakeVariable>
-}
-
-export interface IIngredientProperties {
-    type: string,
-    template: string,
-    parameters: Map<string,BakeVariable>
-}
-
-export interface IIngredient {
-    properties: IIngredientProperties,
-    dependsOn: Array<string>
-}
-
-export interface IBakeConfig {
-    name: string,
-    shortName: string,
-    version: string,
-    resourceGroup: boolean,
-    rgOverride?: BakeVariable,
-    parallelRegions?: boolean
-
-    variables?: Map<string,BakeVariable>
-    recipe: Map<string, IIngredient>
-}
-
-export interface IBakeRegion {
-    name: string
-    shortName: string
-    code: string
-}
+import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
+    IIngredientProperties, IIngredient, Logger} from '@azbake/core'
 
 export class BakePackage {
     constructor(source: string) {

@@ -1,7 +1,6 @@
 import { BaseIngredient } from "./base-ingredient";
-import { IIngredient, IBakeConfig, IBakeRegion } from "../bake-loader";
+import { IIngredient, IBakeConfig, IBakeRegion, DeploymentContext } from "@azbake/core";
 import * as fs from 'fs'
-import { DeploymentContext } from "../deployment-context";
 import { ResourceManagementClient } from "@azure/arm-resources";
 import { Deployment, DeploymentProperties } from "@azure/arm-resources/esm/models";
 
