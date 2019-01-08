@@ -245,7 +245,9 @@ async function run(): Promise<number> {
             return 0
         }    
     }
-    catch{}
+    catch(err){
+        console.log(err)
+    }
     return 1
 }
 

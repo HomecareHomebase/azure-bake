@@ -1,7 +1,8 @@
 import * as YAML from 'js-yaml'
 import * as fs from 'fs'
 import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
-    IIngredientProperties, IIngredient, Logger} from '@azbake/core'
+    IIngredientProperties, IIngredient, Logger, IngredientManager} from '@azbake/core'
+import { ShellRunner } from 'azcli-npm';
 
 export class BakePackage {
     constructor(source: string) {
@@ -15,16 +16,7 @@ export class BakePackage {
 
     private _env: IBakeEnvironment
     public get  Environment():IBakeEnvironment {
-
-        //strip auth from the public accessor, except for sub id.
-
-        //simple JSON wrap to clone config
-        let env = JSON.parse(JSON.stringify(this._env))
-        env.authentication = null
-        env.authentication = <IBakeAuthentication>{
-            subscriptionId : this._env.authentication.subscriptionId
-        }
-        return env
+        return this._env
     }
 
     private _config: IBakeConfig
@@ -105,6 +97,38 @@ export class BakePackage {
             throw e
         }
 
+        //bind all ingredients
+        let logger = new Logger()
+        logger.log('Downloading ingredients...')
+        let ingredients = config.ingredients || new Array<string>()
+        ingredients.forEach(ingredientsType=>{
+
+            let cmd = "npm"
+            if (process.platform === "win32")
+                cmd = "npm.cmd"
+
+            logger.log('- ' + ingredientsType)
+            var npm = new ShellRunner(cmd).start()
+            npm.arg("install").arg(ingredientsType)
+            let er = npm.exec()
+            if (er.code != 0){
+                console.log(er)
+                logger.error("failed to download ingredient: " + ingredientsType)
+                throw new Error()
+            }
+        })
+
+        ingredients.forEach(ingredientType=> {
+            let firstIdx = ingredientType.indexOf("@")
+            let lastIdx = ingredientType.lastIndexOf("@")
+            if (lastIdx != firstIdx) {
+                //strip off @<ver> 
+                ingredientType = ingredientType.substr(0, lastIdx)
+            }
+            IngredientManager.Register(ingredientType)
+        })
+        logger.log('Ingredients loaded')
+        
         //start with config vars based on env based vars
         let vars = this.objToVariableMap(config.variables)
 
@@ -130,7 +154,21 @@ export class BakePackage {
     }
 
     public async Authenticate( callback: (auth:IBakeAuthentication)=>Promise<boolean> ) : Promise<boolean> {
-        return await callback(this._env.authentication)
+        
+        try{
+            return await callback(this._env.authentication)
+        }
+        finally{
+            //strip auth from the public accessor, except for sub id.
+
+            //simple JSON wrap to clone config
+            let env = JSON.parse(JSON.stringify(this._env))
+            env.authentication = null
+            env.authentication = <IBakeAuthentication>{
+                subscriptionId : this._env.authentication.subscriptionId
+            }
+            this._env = env
+        }
     }
 
 }
