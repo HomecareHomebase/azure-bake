@@ -1,7 +1,7 @@
-import { BaseIngredient } from "./base-ingredient";
-import { IIngredient, IBakeConfig, IBakeRegion, DeploymentContext } from "@azbake/core";
+import { BaseIngredient, IngredientManager } from "@azbake/core"
+import { IIngredient,  DeploymentContext } from "@azbake/core";
 import * as fs from 'fs'
-import { ResourceManagementClient } from "@azure/arm-resources";
+import { ResourceManagementClient } from "@azure/arm-resources"
 import { Deployment, DeploymentProperties } from "@azure/arm-resources/esm/models";
 
 export class CustomArmIngredient extends BaseIngredient {
@@ -17,8 +17,7 @@ export class CustomArmIngredient extends BaseIngredient {
             return this._name
         }
 
-        let util = require('../bake-library/functions')
-        util.setContext(this._ctx)
+        let util = IngredientManager.GetIngredientFunctionWrapper("coreutils", this._ctx)
 
         try {
 

@@ -1,5 +1,6 @@
-import { IBakeConfig, IIngredient, IBakeRegion, Logger, DeploymentContext } from "@azbake/core";
-import cli from 'azcli-npm'
+import { IBakeConfig, IIngredient, IBakeRegion} from "./bake-interfaces";
+import {Logger} from './logger'
+import {DeploymentContext} from './deployment-context'
 import * as colors from 'colors'
 
 export class BaseIngredient {

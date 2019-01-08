@@ -1,10 +1,13 @@
 import {BakeEval} from './eval'
 import {BakeVariable} from './bake-variable'
-import * as functions from './functions'
 import {Logger} from './logger'
 import {DeploymentContext} from './deployment-context'
 import {IBakeAuthentication, IBakeConfig, IBakeEnvironment, IBakePackage, IBakeRegion, IIngredient, IIngredientProperties} from './bake-interfaces'
+import {IngredientManager} from './ingredient-manager'
+import {BaseIngredient} from './base-ingredient'
+import {BaseUtility} from './base-utility'
 
-export {BakeEval, BakeVariable, functions, DeploymentContext,Logger,
-    IBakeAuthentication, IBakeConfig, IBakeEnvironment, IBakePackage, IBakeRegion, IIngredient, IIngredientProperties
+export {BakeEval, BakeVariable, BaseUtility, DeploymentContext,Logger,
+    IBakeAuthentication, IBakeConfig, IBakeEnvironment, IBakePackage, IBakeRegion, IIngredient, IIngredientProperties,
+    IngredientManager, BaseIngredient
 }

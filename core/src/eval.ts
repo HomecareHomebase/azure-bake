@@ -1,4 +1,5 @@
 import { DeploymentContext } from "./deployment-context";
+import { IngredientManager } from ".";
 
 export class BakeEval {
 
@@ -19,8 +20,8 @@ export class BakeEval {
 
         private static compile(data: string, ctx: DeploymentContext) : string {
 
-            var util = require('./functions')
-            util.setContext(ctx)
-            return eval(data)
+            let funcWrapper = IngredientManager.GetIngredientFunctionWrapper
+            let utilStr = IngredientManager.BuildUtilWrapperEval("ctx","funcWrapper")   
+            return eval(utilStr + "\n" + data)
         }
 }
