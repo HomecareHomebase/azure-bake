@@ -26,5 +26,8 @@
   },
   "dependencies": {
     "typescript": "^3.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
