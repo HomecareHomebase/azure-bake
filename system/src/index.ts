@@ -13,6 +13,8 @@ import {Buffer} from 'buffer'
 
 import * as minimist from 'minimist'
 
+let bake_version = require('../package.json').version
+
 let argv = minimist(process.argv.slice(2))
 let cmd: string = ""
 let target: string = ""
@@ -288,9 +290,10 @@ function deleteEnvFile() {
     fs.unlinkSync(tmpFile)
 }
 
+console.log("Bake CLI v" + bake_version)
+
 let canExecute:boolean = true
 validateParams()
-
 if (canExecute) {
 
     if (cmd == "mix") build()
