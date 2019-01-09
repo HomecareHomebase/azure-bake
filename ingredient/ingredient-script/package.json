@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-script",
   "description": "Bake ingredient for custom javascript execution",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "author": "HCHB",
   "license": "MIT",
