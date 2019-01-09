@@ -79,7 +79,7 @@ export class BakeRunner {
     private async _bakeRegion(ctx: DeploymentContext): Promise<boolean> {
 
         try {
-            var util = IngredientManager.GetIngredientFunctionWrapper("coreutils", ctx)
+            var util = IngredientManager.getIngredientFunction("coreutils", ctx)
 
             let rg_name = util.resource_group()
             let region_name = ctx.Region.shortName
