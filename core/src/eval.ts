@@ -1,27 +1,26 @@
 import { DeploymentContext } from "./deployment-context";
-import { IngredientManager } from ".";
+import { IngredientManager, BakeVariable } from ".";
 
 export class BakeEval {
 
-        public static Eval(data: string , ctx: DeploymentContext): string {
+        public static Eval(variable: BakeVariable , ctx: DeploymentContext): Function | null {
 
-            let check = data.trim()
+            let check = variable.Code.trim()
             //check if data is surrounded with [] to denote an eval
             if (!check.startsWith('[') || !check.endsWith(']')){
-                return data
+                return null
             }
 
-            data = check.substr(1, check.length-2)
-
+            let data = check.substr(1, check.length-2)
             let evaled = this.compile(data, ctx)
             return evaled
 
         }
 
-        private static compile(data: string, ctx: DeploymentContext) : string {
+        private static compile(data: string, ctx: DeploymentContext) : Function {
+            let utilStr = IngredientManager.buildUtilWrapperEval("ctx","funcWrapper")   
+            let func = new Function('ctx', 'funcWrapper', utilStr + "\n return(" + data +")")
+            return func
 
-            let funcWrapper = IngredientManager.GetIngredientFunctionWrapper
-            let utilStr = IngredientManager.BuildUtilWrapperEval("ctx","funcWrapper")   
-            return eval(utilStr + "\n" + data)
         }
 }

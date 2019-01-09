@@ -17,7 +17,7 @@ export class CustomArmIngredient extends BaseIngredient {
             return this._name
         }
 
-        let util = IngredientManager.GetIngredientFunctionWrapper("coreutils", this._ctx)
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
 
         try {
 

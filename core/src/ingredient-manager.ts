@@ -36,7 +36,7 @@ export class IngredientManager {
         }
     }
 
-    public static BuildUtilWrapperEval(ctx: string, wrapper: string): string {
+    public static buildUtilWrapperEval(ctx: string, wrapper: string): string {
 
         let evalStr = ""
         IngredientManager.ingredientUtilTypes.forEach( (utilType, name)=>
@@ -46,7 +46,7 @@ export class IngredientManager {
         return evalStr
     }
 
-    public static GetIngredientFunctionWrapper(typeName: string, ctx: DeploymentContext) : any {
+    public static getIngredientFunction(typeName: string, ctx: DeploymentContext) : any {
        
         let type = IngredientManager.ingredientUtilTypes.get(typeName)
         if (type){
