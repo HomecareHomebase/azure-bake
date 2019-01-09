@@ -5,3 +5,4 @@
 ### NPM
 node_modules
 dist
+system/lerna-debug\.log
