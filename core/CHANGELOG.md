@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.14](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.12...@azbake/core@0.1.14) (2019-01-11)
+
+**Note:** Version bump only for package @azbake/core
+
+
+
+
+
+
 ## [0.1.12](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.11...@azbake/core@0.1.12) (2019-01-09)
 
 **Note:** Version bump only for package @azbake/core
