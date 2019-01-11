@@ -19,7 +19,7 @@
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "^0.1.9",
+    "@azbake/core": "^0.1.12",
     "@azure/ms-rest-nodeauth": ">= 0.8.3"
   },
   "devDependencies": {
