@@ -19,10 +19,7 @@ export class BaseIngredient {
     _ingredient: IIngredient
     _name: string
 
-    public async Execute(): Promise<string> {
-
-        return this._name
-
+    public async Execute(): Promise<void> {
     }
 
 }

@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-script",
   "description": "Bake ingredient for custom javascript execution",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/index.js",
   "author": "HCHB",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "^0.1.8"
+    "@azbake/core": "^0.1.12"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"

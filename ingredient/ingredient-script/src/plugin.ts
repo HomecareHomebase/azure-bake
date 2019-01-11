@@ -8,12 +8,12 @@ export class CustomScriptIngredient extends BaseIngredient {
         super(name, ingredient, ctx)  
     }
 
-    public async Execute(): Promise<string> {
+    public async Execute(): Promise<void> {
 
         let chk = fs.existsSync(this._ingredient.properties.template)
         if (!chk) {
             this._logger.error('could not locate custom script: ' + this._ingredient.properties.template)
-            return this._name
+            return
         }
 
         let buffer = fs.readFileSync(this._ingredient.properties.template)
@@ -41,9 +41,6 @@ export class CustomScriptIngredient extends BaseIngredient {
         catch(err){
             this._logger.error('script execution failed: ' + err)
             throw err
-        }
-        finally{
-            return this._name
         }
     }
 }

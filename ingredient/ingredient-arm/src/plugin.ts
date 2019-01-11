@@ -9,12 +9,12 @@ export class CustomArmIngredient extends BaseIngredient {
         super(name, ingredient, ctx)        
     }
 
-    public async Execute(): Promise<string> {
+    public async Execute(): Promise<void> {
 
         let chk = fs.existsSync(this._ingredient.properties.template)
         if (!chk) {
             this._logger.error('could not locate arm template: ' + this._ingredient.properties.template)
-            return this._name
+            return
         }
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
@@ -77,7 +77,6 @@ export class CustomArmIngredient extends BaseIngredient {
             }
 
             this._logger.log('deployment finished')
-            return this._name
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error
