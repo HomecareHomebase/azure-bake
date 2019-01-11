@@ -8,7 +8,7 @@ export class CustomScriptIngredient extends BaseIngredient {
         super(name, ingredient, ctx)  
     }
 
-    public async Execute(): Promise<string> {
+    public async Execute(): Promise<void> {
 
         let chk = fs.existsSync(this._ingredient.properties.template)
         if (!chk) {
