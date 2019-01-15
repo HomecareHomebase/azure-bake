@@ -62,6 +62,9 @@ Note: There are several environment variables for azure authentication and envir
 
 *note: read the section on Environment for a deeper explanation of environment/regions/variables*
 
+## Bake YAML schema
+At the core of a recipe is the bake.yaml file which drives the deployment of all included recipes. The schema documentation can be found [here](./Schema.md)
+
 ## Bake Environment Structure/Terms
 
 Bake uses the concept of an "**environment**" as a virtual grouping of deployment resources. An environment has to deploy into an Azure subscription, but you can deploy multiple environments into the same subscription.
