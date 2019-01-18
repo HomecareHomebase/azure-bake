@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.0.7...@azbake/ingredient-script@0.0.8) (2019-01-18)
+
+
+### Bug Fixes
+
+* refactored template to source/BakeVariable ([9d9b405](https://github.com/HomecareHomebase/azure-bake/commit/9d9b405))
+
+
+
+
+
+
 ## [0.0.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.0.6...@azbake/ingredient-script@0.0.7) (2019-01-11)
 
 **Note:** Version bump only for package @azbake/ingredient-script

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.14](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-arm@0.0.13...@azbake/ingredient-arm@0.0.14) (2019-01-18)
+
+
+### Bug Fixes
+
+* refactored template to source/BakeVariable ([9d9b405](https://github.com/HomecareHomebase/azure-bake/commit/9d9b405))
+
+
+
+
+
+
 ## [0.0.13](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-arm@0.0.12...@azbake/ingredient-arm@0.0.13) (2019-01-11)
 
 **Note:** Version bump only for package @azbake/ingredient-arm
