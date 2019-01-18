@@ -10,17 +10,19 @@ export class CustomScriptIngredient extends BaseIngredient {
 
     public async Execute(): Promise<void> {
 
-        let chk = fs.existsSync(this._ingredient.properties.template)
+        let source: string = this._ingredient.properties.source.value(this._ctx)
+
+        let chk = fs.existsSync(source)
         if (!chk) {
-            this._logger.error('could not locate custom script: ' + this._ingredient.properties.template)
+            this._logger.error('could not locate custom script: ' + source)
             return
         }
 
-        let buffer = fs.readFileSync(this._ingredient.properties.template)
+        let buffer = fs.readFileSync(source)
         let contents = buffer.toString()
 
         try {
-            this._logger.log("Executing custom script: " + this._ingredient.properties.template)
+            this._logger.log("Executing custom script: " + source)
 
             contents = ts.transpile(contents)
            

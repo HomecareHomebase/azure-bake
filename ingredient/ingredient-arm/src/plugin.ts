@@ -11,9 +11,10 @@ export class CustomArmIngredient extends BaseIngredient {
 
     public async Execute(): Promise<void> {
 
-        let chk = fs.existsSync(this._ingredient.properties.template)
+        let source: string = this._ingredient.properties.source.value(this._ctx)
+        let chk = fs.existsSync(source)
         if (!chk) {
-            this._logger.error('could not locate arm template: ' + this._ingredient.properties.template)
+            this._logger.error('could not locate arm template: ' + source)
             return
         }
 
@@ -21,7 +22,7 @@ export class CustomArmIngredient extends BaseIngredient {
 
         try {
 
-            this._logger.log('starting custom arm deployment for template: ' + this._ingredient.properties.template)
+            this._logger.log('starting custom arm deployment for template: ' + source)
 
             //build the properties as a standard object.
             let props : any = {
@@ -36,7 +37,7 @@ export class CustomArmIngredient extends BaseIngredient {
                 this._logger.log('param: ' + p) 
             })
 
-            let buffer = fs.readFileSync(this._ingredient.properties.template)
+            let buffer = fs.readFileSync(source)
             let contents = buffer.toString()
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{
