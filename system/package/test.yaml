@@ -14,7 +14,7 @@ recipe:
   webapp:
     properties:
       type: software
-      template: webapp
+      source: webapp
       parameters:
     dependsOn:
       - storage1
@@ -22,7 +22,7 @@ recipe:
   custom:
     properties:
       type: "@azbake/ingredient-script"
-      template: ./script.ts
+      source: ./script.ts
       parameters:
         name: "[coreutils.create_storage_name('wpoctest1')]"
         name 2: this is a long string
@@ -32,7 +32,7 @@ recipe:
   storage1:
     properties:
       type: "@azbake/ingredient-arm"
-      template: ./arm.json
+      source: ./arm.json
       parameters:
         name: "[coreutils.create_storage_name('wpoctest1')]"
         name 2: this is a long string
@@ -40,7 +40,7 @@ recipe:
   storage2:
     properties:
       type: "@azbake/ingredient-arm"
-      template: ./arm2.json
+      source: ./arm2.json
       parameters:
         name: "[coreutils.create_storage_name('wpoctest2')]"
     dependsOn:    
