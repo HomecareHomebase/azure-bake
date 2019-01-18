@@ -19,7 +19,7 @@
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "^0.1.12"
+    "@azbake/core": "~0"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
