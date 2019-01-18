@@ -2,8 +2,8 @@ name: test-package
 shortName: tstpkg
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-arm@^0.0.12"
-  - "@azbake/ingredient-script@^0.0.6"
+  - "@azbake/ingredient-arm@~0"
+  - "@azbake/ingredient-script@~0"
 resourceGroup: true
 rgOverride: "[coreutils.variable('test2','default')]"
 parallelRegions: true
