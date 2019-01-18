@@ -50,5 +50,9 @@ export class CoreUtils extends BaseUtility {
     public create_storage_name(name: string | null = null, suffix: string = "") {
         return this.create_resource_name("st", name, true, suffix)
     }
+
+    public get_ingredient_source(): string {
+        return this.context.Ingredient.properties.source.value(this.context)
+    }
 }
 
