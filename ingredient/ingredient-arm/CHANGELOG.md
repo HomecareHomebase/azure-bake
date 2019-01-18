@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.15](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-arm@0.0.14...@azbake/ingredient-arm@0.0.15) (2019-01-18)
+
+
+### Bug Fixes
+
+* fixing peerDep for core module ([a2cea1c](https://github.com/HomecareHomebase/azure-bake/commit/a2cea1c))
+
+
+
+
+
 ## [0.0.14](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-arm@0.0.13...@azbake/ingredient-arm@0.0.14) (2019-01-18)
 
 

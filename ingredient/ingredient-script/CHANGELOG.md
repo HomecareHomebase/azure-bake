@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.0.8...@azbake/ingredient-script@0.0.9) (2019-01-18)
+
+
+### Bug Fixes
+
+* fixing peerDep for core module ([a2cea1c](https://github.com/HomecareHomebase/azure-bake/commit/a2cea1c))
+
+
+
+
+
 ## [0.0.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.0.7...@azbake/ingredient-script@0.0.8) (2019-01-18)
 
 
