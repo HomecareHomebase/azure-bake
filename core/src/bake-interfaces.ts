@@ -21,7 +21,7 @@ export interface IBakeEnvironment {
 
 export interface IIngredientProperties {
     type: string,
-    template: string,
+    source: BakeVariable,
     parameters: Map<string,BakeVariable>
 }
 

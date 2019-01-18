@@ -6,3 +6,4 @@ azdevops/
 .dockerignore
 docker-compose.yml
 Dockerfile
+*.tgz

@@ -144,6 +144,8 @@ export class BakePackage {
         config.rgOverride = new BakeVariable(<any>config.rgOverride);
         config.recipe = this.objToStrMap(config.recipe)
         config.recipe.forEach(ingredient=>{
+            let source: any = ingredient.properties.source
+            ingredient.properties.source = new BakeVariable( source || "" )
             ingredient.dependsOn = ingredient.dependsOn || []
             ingredient.properties = ingredient.properties || <IIngredientProperties>{}
             ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})

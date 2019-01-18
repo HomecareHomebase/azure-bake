@@ -7,11 +7,11 @@ export class BaseIngredient {
 
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
 
-        this._ctx = ctx
+        this._ctx = new DeploymentContext(ctx.AuthToken, ctx.Package, ctx.Region, ctx.Logger,ingredient)
         this._name = name
         this._ingredient = ingredient
         this._logger = new Logger(ctx.Logger.getPre().concat(name))
-        this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] template[' + colors.cyan(ingredient.properties.template) + ']')
+        this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] source[' + colors.cyan(ingredient.properties.source.value(ctx)) + ']')
     }
 
     _ctx: DeploymentContext
