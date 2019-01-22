@@ -77,7 +77,7 @@ An ingredient block describes an instance of an ingredient to deploy. It has a l
 ```yaml
 properties:
     type: string
-    template: string
+    source: string
     parameters {string: variable}
 dependsOn: [string]
 ```
@@ -85,7 +85,7 @@ dependsOn: [string]
 | property | required | description|
 |----------|----------|------------|
 |type|yes|name of ingredient to deploy (check ingredient docs for name)|
-|template|depends on ingredient|template file/option for some ingredients|
+|source|depends on ingredient|source file/option for some ingredients|
 |parameters|depends on ingredient|check ingredient docs for parameter options|
 |dependsOn|no|list of ingredient blocks that must be deployed before this block|
 
@@ -109,7 +109,7 @@ recipe:
   custom-script:
     properties:
       type: "@azbake/ingredient-script"
-      template: ./script.ts
+      source: ./script.ts
       parameters:
         name: "[coreutils.create_storage_name('wpoctest1')]"
     dependsOn:
@@ -118,13 +118,13 @@ recipe:
   storage1:
     properties:
       type: "@azbake/ingredient-arm"
-      template: ./arm.json
+      source: ./arm.json
       parameters:
         resource_name: "[coreutils.create_storage_name('wpoctest1')]"
   storage2:
     properties:
       type: "@azbake/ingredient-arm"
-      template: ./arm2.json
+      source: ./arm2.json
       parameters:
         resource_name: "[coreutils.create_storage_name('wpoctest2')]"
 ```
