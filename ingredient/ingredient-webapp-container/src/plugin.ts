@@ -29,9 +29,12 @@ export class WebAppContainer extends BaseIngredient {
                 let p = `${n}=${v.value(this._ctx)}`;
                 this._logger.log(`param: ${p}`);
             });
-            
-            props["app_service_name"] = util.create_resource_name("appsvc", null, true);
-            props["webapp_name"] = util.create_resource_name("webapp", null, true);
+
+            const source = this._ctx.Ingredient.properties.source.value(this._ctx);
+            props["app_service_rg"] = {"value": source[0]};
+            props["app_service_name"] = {"value": source[1]};
+
+            props["webapp_name"] = {"value": util.create_resource_name("webapp", null, true)};
 
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{

@@ -2,3 +2,4 @@ src/
 .vscode/
 package/
 test/
+*.tgz
