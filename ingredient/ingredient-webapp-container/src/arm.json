@@ -12,7 +12,6 @@
             "type": "string"
         },
         "location": {
-            "defaultValue": "Central US",
             "type": "string"
         },
         "container_image_name": {

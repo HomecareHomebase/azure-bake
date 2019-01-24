@@ -30,6 +30,7 @@ export class WebAppContainer extends BaseIngredient {
                 this._logger.log(`param: ${p}`);
             });
 
+            //get the app service to be used for this web app.
             const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
             this._logger.log(`App service resourceGroup: ${source[0]}`);
             this._logger.log(`App service name: ${source[1]}`);
@@ -37,6 +38,11 @@ export class WebAppContainer extends BaseIngredient {
             props["app_service_name"] = {"value": source[1]};
 
             props["webapp_name"] = {"value": util.create_resource_name("webapp", null, true)};
+
+            this._logger.log(`Region for web app: ${this._ctx.Region.name}`);
+            props["location"] = {"value": this._ctx.Region.name};
+
+            
 
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{
