@@ -31,7 +31,7 @@
     "variables": {},
     "resources": [
         {
-            "comments": "Generalized from resource: '/subscriptions/9c1dbd64-75a9-457b-bd3f-6649fe9c82d8/resourceGroups/jptest/providers/Microsoft.Web/sites/uifapp-webapp-cus'.",
+            "comments": "",
             "type": "Microsoft.Web/sites",
             "kind": "app,linux,container",
             "name": "[parameters('webapp_name')]",
@@ -86,7 +86,7 @@
                 "containerSize": 0,
                 "dailyMemoryTimeQuota": 0,
                 "cloningInfo": null,
-                "httpsOnly": false
+                "httpsOnly": true
             }
         }
     ]
