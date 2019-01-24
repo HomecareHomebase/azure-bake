@@ -30,7 +30,9 @@ export class WebAppContainer extends BaseIngredient {
                 this._logger.log(`param: ${p}`);
             });
 
-            const source = this._ctx.Ingredient.properties.source.value(this._ctx);
+            const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
+            this._logger.log(`App service resourceGroup: ${source[0]}`);
+            this._logger.log(`App service name: ${source[1]}`);
             props["app_service_rg"] = {"value": source[0]};
             props["app_service_name"] = {"value": source[1]};
 
