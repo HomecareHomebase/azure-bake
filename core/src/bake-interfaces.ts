@@ -15,6 +15,7 @@ export interface IBakeEnvironment {
     toolVersion: string,
     environmentName: string,
     environmentCode: string,
+    regions: Array<IBakeRegion>,
     authentication: IBakeAuthentication
     variabes: Map<string, BakeVariable>
 }

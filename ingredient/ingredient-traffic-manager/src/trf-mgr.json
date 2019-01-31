@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "",
+            "type": "Microsoft.Network/trafficManagerProfiles",
+            "name": "[parameters('name')]",
+            "apiVersion": "2018-04-01",
+            "location": "global",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Performance",
+                "dnsConfig": {
+                    "relativeName": "[parameters('name')]",
+                    "ttl": 10
+                },
+                "monitorConfig": {
+                    "profileMonitorStatus": null,
+                    "protocol": "HTTP",
+                    "port": 80,
+                    "path": "/",
+                    "intervalInSeconds": 10,
+                    "toleratedNumberOfFailures": 3,
+                    "timeoutInSeconds": 5,
+                    "customHeaders": [],
+                    "expectedStatusCodeRanges": []
+                },
+                "endpoints": [ ],
+                "trafficViewEnrollmentStatus": "Disabled"
+            },
+            "dependsOn": []
+        }
+    ]
+}
