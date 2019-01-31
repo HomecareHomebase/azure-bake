@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.18](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.1.17...azure-bake@0.1.18) (2019-01-31)
+
+
+### Bug Fixes
+
+* **system:** Fixed [#12](https://github.com/HomecareHomebase/azure-bake/issues/12) - bake.yaml with no variables defined was failing ([500b5a7](https://github.com/HomecareHomebase/azure-bake/commit/500b5a7))
+
+
+
+
+
 ## [0.1.17](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.1.16...azure-bake@0.1.17) (2019-01-18)
 
 **Note:** Version bump only for package azure-bake
