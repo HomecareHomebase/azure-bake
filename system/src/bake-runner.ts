@@ -61,6 +61,8 @@ export class BakeRunner {
 
                     executing.push(promise)
                 } else {
+                    this._logger.error("Could not find ingredient type " + ingredient.properties.type + " for " + ingredientName)
+                    foundErrors = true
                     finished.push(ingredientName)
                 }
             }
