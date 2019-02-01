@@ -4,6 +4,41 @@
     "parameters": {
         "name": {
             "type": "string"
+        },
+        "routing-method": {
+            "defaultValue": "Performance",
+            "type": "string"
+        },
+        "interval": {
+            "defaultValue": "10",
+            "type": "string"
+        },
+        "protocol": {
+            "defaultValue": "HTTPS",
+            "type": "string"
+        },
+        "port": {
+            "defaultValue": "80",
+            "type": "string"
+        },
+        "ttl": {
+            "defaultValue": "10",
+            "type": "string"
+        },
+        "path": {
+            "defaultValue": "/",
+            "type": "string"
+        },
+        "number-of-failures": {
+            "defaultValue": "3",
+            "type": "string"
+        },
+        "timeout": {
+            "defaultValue": "5",
+            "type": "string"
+        },
+        "source-type": {
+            "type": "string"
         }
     },
     "variables": {},
@@ -18,19 +53,19 @@
             "scale": null,
             "properties": {
                 "profileStatus": "Enabled",
-                "trafficRoutingMethod": "Performance",
+                "trafficRoutingMethod": "[parameters('routing-method')]",
                 "dnsConfig": {
                     "relativeName": "[parameters('name')]",
-                    "ttl": 10
+                    "ttl": "[parameters('ttl')]"
                 },
                 "monitorConfig": {
                     "profileMonitorStatus": null,
-                    "protocol": "HTTP",
-                    "port": 80,
-                    "path": "/",
-                    "intervalInSeconds": 10,
-                    "toleratedNumberOfFailures": 3,
-                    "timeoutInSeconds": 5,
+                    "protocol": "[parameters('protocol')]",
+                    "port": "[parameters('port')]",
+                    "path": "[parameters('path')]",
+                    "intervalInSeconds": "[parameters('interval')]",
+                    "toleratedNumberOfFailures": "[parameters('number-of-failures')]",
+                    "timeoutInSeconds": "[parameters('timeout')]",
                     "customHeaders": [],
                     "expectedStatusCodeRanges": []
                 },
