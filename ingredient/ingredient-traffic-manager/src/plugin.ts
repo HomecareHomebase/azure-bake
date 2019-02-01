@@ -73,6 +73,13 @@ export class TrafficManager extends BaseIngredient {
             this._logger.log('starting arm deployment for traffic manager endpoint');
 
             let props: any = {};
+            this._ingredient.properties.parameters.forEach( (v,n)=>
+            {
+                props[n] = {
+                    "value": v.value(this._ctx)
+                };
+            });
+
             const profileName = trfutil.get_profile();
             const epName = util.create_resource_name("ep", null, true);
 
@@ -81,8 +88,10 @@ export class TrafficManager extends BaseIngredient {
             props["ep-name"] = { "value": epName };
 
             const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
-            props["web-app-rg"] = { "value": source[0] };
-            props["web-app-name"] = {"value": source[1] }
+            const sourceType = props["source-type"].value;
+            this._logger.log(`resource type: ${sourceType}, resource rg: ${source[0]}, resource name: ${source[1]}`);
+            props["source-rg"] = { "value": source[0] };
+            props["source-name"] = { "value": source[1] };
             
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{

@@ -8,10 +8,13 @@
       "ep-name": {
         "type": "string"
       },
-      "web-app-name": {
+      "source-name": {
           "type": "string"
       },
-      "web-app-rg": {
+      "source-rg": {
+          "type": "string"
+      },
+      "source-type": {
           "type": "string"
       }
     },
@@ -23,7 +26,7 @@
             "location": "global",
             "name": "[concat(parameters('profile-name'),'/Endpoint', parameters('ep-name'))]",
             "properties": {
-                "targetResourceId": "[resourceId(parameters('web-app-rg'), 'Microsoft.Web/sites/', parameters('web-app-name'))]",
+                "targetResourceId": "[resourceId(parameters('source-rg'), parameters('source-type'), parameters('source-name'))]",
                 "endpointStatus": "Enabled"
             }
         }

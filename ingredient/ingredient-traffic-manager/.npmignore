@@ -3,3 +3,4 @@ src/
 package/
 test/
 *.tgz
+tsconfig.json
