@@ -1,7 +1,6 @@
 import {BakeVariable} from '@azbake/core'
 import { DeploymentContext } from '@azbake/core';
 import { BaseUtility} from '@azbake/core'
-import { IBakeRegion } from '../../../core/src/bake-interfaces';
 
 
 export class CoreUtils extends BaseUtility {

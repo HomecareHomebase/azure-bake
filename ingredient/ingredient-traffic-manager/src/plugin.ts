@@ -5,6 +5,7 @@ import { IIngredient,  DeploymentContext } from "@azbake/core";
 
 import profile from './trf-mgr.json';
 import endpoint from './endpoint.json';
+import { TrafficUtils } from './functions';
 
 export class TrafficManager extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -17,6 +18,7 @@ export class TrafficManager extends BaseIngredient {
 
         try {
             const region = this._ctx.Region.code;
+            let trfutil = new TrafficUtils(this._ctx);
 
             // deploy the traffic manager profile to the primary region only
             // todo replace this with updated primary region check.
@@ -26,7 +28,7 @@ export class TrafficManager extends BaseIngredient {
 
                 //build the properties as a standard object.
                 let props : any = {};
-                props["name"] = {"value": util.create_resource_name("trfmgr", null, false)};
+                props["name"] = {"value": trfutil.get_profile() };
                 
                 let deployment = <Deployment>{
                     properties : <DeploymentProperties>{
@@ -74,9 +76,16 @@ export class TrafficManager extends BaseIngredient {
             this._logger.log('starting arm deployment for traffic manager endpoint');
 
             let props: any = {};
-            props["ep-name"] = { "value": util.create_resource_name("ep", null, true) };
-            props["web-app-name"] = {"value": util.create_resource_name("webapp", null, true) }
-            props["web-app-rg"] = { "value": util.resource_group() };
+            const profileName = trfutil.get_profile();
+            const epName = util.create_resource_name("ep", null, true);
+
+            this._logger.log(`profile name: ${profileName}, endpoint name: ${epName}`);
+            props["profile-name"] = { "value": profileName };
+            props["ep-name"] = { "value": epName };
+
+            const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
+            props["web-app-rg"] = { "value": source[0] };
+            props["web-app-name"] = {"value": source[1] }
             
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{

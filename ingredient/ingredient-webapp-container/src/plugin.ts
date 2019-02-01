@@ -4,6 +4,7 @@ import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { IIngredient,  DeploymentContext } from "@azbake/core";
 
 import arm from './arm.json';
+import { WebAppUtils } from './functions';
 
 export class WebAppContainer extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -13,6 +14,7 @@ export class WebAppContainer extends BaseIngredient {
     public async Execute(): Promise<void> {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+        let webapp = new WebAppUtils(this._ctx);
 
         try {
 
@@ -37,7 +39,7 @@ export class WebAppContainer extends BaseIngredient {
             props["app_service_rg"] = {"value": source[0]};
             props["app_service_name"] = {"value": source[1]};
 
-            props["webapp_name"] = {"value": util.create_resource_name("webapp", null, true)};
+            props["webapp_name"] = { "value": webapp.create_profile() };
 
             this._logger.log(`Region for web app: ${this._ctx.Region.name}`);
             props["location"] = {"value": this._ctx.Region.name};

@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
+      "profile-name": {
+          "type": "string"
+      },
       "ep-name": {
         "type": "string"
       },
@@ -18,7 +21,7 @@
             "apiVersion": "2015-11-01",
             "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
             "location": "global",
-            "name": "[concat('jdevtrfmgruifapp/Endpoint', parameters('ep-name'))]",
+            "name": "[concat(parameters('profile-name'),'/Endpoint', parameters('ep-name'))]",
             "properties": {
                 "targetResourceId": "[resourceId(parameters('web-app-rg'), 'Microsoft.Web/sites/', parameters('web-app-name'))]",
                 "endpointStatus": "Enabled"
