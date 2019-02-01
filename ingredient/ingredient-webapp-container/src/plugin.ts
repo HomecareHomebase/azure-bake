@@ -38,11 +38,14 @@ export class WebAppContainer extends BaseIngredient {
             this._logger.log(`App service name: ${source[1]}`);
             props["app_service_rg"] = {"value": source[0]};
             props["app_service_name"] = {"value": source[1]};
+            
+            const webAppName = webapp.create_profile();
+            this._logger.log(`Web application name: ${webAppName}`);
+            props["webapp_name"] = { "value": webAppName };
 
-            props["webapp_name"] = { "value": webapp.create_profile() };
-
-            this._logger.log(`Region for web app: ${this._ctx.Region.name}`);
-            props["location"] = {"value": this._ctx.Region.name};
+            const webAppRegion = this._ctx.Region.name;
+            this._logger.log(`Region for web app: ${webAppRegion}`);
+            props["location"] = {"value": webAppRegion};
 
             
 

@@ -21,9 +21,7 @@ export class TrafficManager extends BaseIngredient {
             let trfutil = new TrafficUtils(this._ctx);
 
             // deploy the traffic manager profile to the primary region only
-            // todo replace this with updated primary region check.
-            if (region == "eus") {
-                
+            if (util.current_region_primary()) {
                 this._logger.log('starting arm deployment for traffic manager');
 
                 //build the properties as a standard object.
@@ -69,7 +67,6 @@ export class TrafficManager extends BaseIngredient {
                 }
 
                 this._logger.log('deployment finished');
-
             }
 
             // deploy endpoints to the profile just deployed
