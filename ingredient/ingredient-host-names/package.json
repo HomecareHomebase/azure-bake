@@ -1,0 +1,35 @@
+{
+  "name": "@azbake/ingredient-host-names",
+  "description": "Ingredient for deploying custom host names and ssl certs to an Azure WebApp",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "HCHB",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HomecareHomebase/azure-bake.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HomecareHomebase/azure-bake/issues"
+  },
+  "homepage": "https://github.com/HomecareHomebase/azure-bake",
+  "scripts": {
+    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc",
+    "watch": "tsc -w -p ./src"
+  },
+  "peerDependencies": {
+    "@azbake/core": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*",
+    "@azbake/ingredient-utils": "0.*"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  },
+  "dependencies": {
+    "@azure/arm-resources": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
