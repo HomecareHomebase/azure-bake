@@ -125,11 +125,11 @@ export class TrafficManager extends BaseIngredient {
             props["profile-name"] = { "value": profileName };
             props["ep-name"] = { "value": epName };
 
-            const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
+            const resource = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
             const sourceType = temp["source-type"].value;
-            this._logger.log(`resource type: ${sourceType}, resource rg: ${source[0]}, resource name: ${source[1]}`);
-            props["source-rg"] = { "value": source[0] };
-            props["source-name"] = { "value": source[1] };
+            this._logger.log(`resource type: ${sourceType}, resource rg: ${resource.resourceGroup}, resource name: ${resource.resource}`);
+            props["source-rg"] = { "value": resource.resourceGroup };
+            props["source-name"] = { "value": resource.resource };
             props["source-type"] = temp["source-type"];
             
             let deployment = <Deployment>{

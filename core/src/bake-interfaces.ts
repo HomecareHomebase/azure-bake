@@ -2,6 +2,7 @@ import {BakeVariable} from './bake-variable'
 import { BaseIngredient } from './base-ingredient';
 import { DeploymentContext } from './deployment-context';
 import { BaseUtility } from './base-utility';
+import { create } from 'domain';
 
 export interface IBakeAuthentication {
     subscriptionId: string
@@ -62,4 +63,9 @@ export interface IBakePackage {
     Config: IBakeConfig,
     Environment: IBakeEnvironment,
     Authenticate( callback: (auth:IBakeAuthentication)=>Promise<boolean> ) : Promise<boolean>
+}
+
+export interface IBakeResource {
+    resourceGroup: string,
+    resource: string
 }

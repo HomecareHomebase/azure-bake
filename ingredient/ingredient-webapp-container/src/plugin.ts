@@ -33,11 +33,12 @@ export class WebAppContainer extends BaseIngredient {
             });
 
             //get the app service to be used for this web app.
-            const source = this._ctx.Ingredient.properties.source.value(this._ctx).split('/');
-            this._logger.log(`App service resourceGroup: ${source[0]}`);
-            this._logger.log(`App service name: ${source[1]}`);
-            props["app_service_rg"] = {"value": source[0]};
-            props["app_service_name"] = {"value": source[1]};
+            const resource = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
+            
+            this._logger.log(`App service resourceGroup: ${resource.resourceGroup}`);
+            this._logger.log(`App service name: ${resource.resource}`);
+            props["app_service_rg"] = {"value": resource.resourceGroup};
+            props["app_service_name"] = {"value": resource.resource};
             
             const webAppName = webapp.create_profile();
             this._logger.log(`Web application name: ${webAppName}`);
