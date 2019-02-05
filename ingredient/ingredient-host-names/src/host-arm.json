@@ -20,6 +20,9 @@
         "keyvault_name": {
             "type": "string"
         },
+        "vault_secret_name": {
+            "type": "string"
+        },
         "cert_name": {
             "type": "string"
         }
@@ -28,12 +31,12 @@
     "resources": [
         {
             "type":"Microsoft.Web/certificates",
-            "name":"[parameters('webapp_name')]",
+            "name":"[parameters('cert_name')]",
             "apiVersion":"2016-03-01",
             "location":"[resourceGroup().location]",
             "properties":{
                 "keyVaultId":"[resourceId(parameters('keyvault_rg'),'Microsoft.KeyVault/vaults',parameters('keyvault_name'))]",
-                "keyVaultSecretName":"[parameters('cert_name')]",
+                "keyVaultSecretName":"[parameters('vault_secret_name')]",
                 "serverFarmId": "[resourceId(parameters('app_service_rg'), 'Microsoft.Web/serverfarms', parameters('app_service_name'))]"
             }
         },
