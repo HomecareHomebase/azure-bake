@@ -51,7 +51,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.15",
+    "@azbake/core": "^0.*",
     "@azbake/ingredient-utils": "0.*",
     "@azure/arm-resources": "^1.0.0",
     "@azure/ms-rest-nodeauth": "^0.8.3",
