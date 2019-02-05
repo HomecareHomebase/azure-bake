@@ -5,6 +5,8 @@
 
 The Web App ingredient is a plugin for Bake.  When included in a recipe, this plugin will install a instance of an azure Web App for Containers.  An instance of the web app will be included with each region specified in your environment.  This ingredient only supports deployment of a web site inside of a linux based docker container.
 
+This ingredient does not deploy an instance of an app service plan, and expects that a linux based app service plan has already been created for the app.
+
 ## Usage
 
 ### Recipe
