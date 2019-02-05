@@ -30,8 +30,8 @@ recipe:
 
 | property|required|description|
 |---------|--------|-----------|
-|source|yes||the source of the endpoint being created|
-|source-type|yes||the type of the azure resource used for the endpoint|
+|source|yes|the source of the endpoint being created in format ``<resourceGroup>/<resource>``|
+|source-type|yes|the type of the azure resource used for the endpoint|
 |routing-method|no (default Performance)|routing method of the traffic manager profile|
 |interval|no (default 10)|number of seconds to ping the endpoint for availability|
 |protocol|no (default HTTPS)|protocol used for health checks|
@@ -41,8 +41,7 @@ recipe:
 |number-of-failures|no (default 3)|number of times to retry before marking an endpoint down|
 |timeout|no (default 5)|number of seconds to wait for a response from the endpoint|
 
-- source : source of the endpoint being added to the traffic manager profile.  When referencing azure resources in a different resource group, you can specifiy the value as ``<resourceGroup>/<resource>``  If you do not specify the resource group, the name is assumed to be the name of the resource and in the same resource group as the current deployment.
-- source-type: the type of the azure resource being deployed.
+***  Please note that you can supply just the name of the azure resource for the source if the resource exists within the same resource group that is currently being deployed for traffic manager.
 
 *** Please note that all values should be in the parameters section of the recipe except for source
 
