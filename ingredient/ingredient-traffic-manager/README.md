@@ -1,131 +1,60 @@
 ## Changelogs
 * [@azbake/ingredient-traffic-manager](./CHANGELOG.md)
 
-## Install
-```
-npm i @azbake/ingredient-traffic-manager
-```
-
 ## Overview
 
-Bake is an Azure deployment tool & system designed to treat both infrastructure as code and also package built software artifacts alongside that infrastructure. This bundling allows for rapid and agile usage of infrastructure as needed by software changes.
-
-This system is not intended as a replacement for popular/standard pipeline systems for deployment, but instead to work within them as a task runner.
-
-For the moment we have native support for Azure DevOps pipelines (build and deploy) to both generate bake recipes at build time (create pipeline build artifacts) and then deploy those recipes via release pipelines.
-
-We also support bake at the command line via the provided CLI. With that, you can integrate with most popular pipeline products
-
-### Recipe & Ingredients
-
-A bake recipe is a YAML document that describes what should be deployed. This is described as a list of bake ingredients.
-
-Bake ingredients are external plugins that provide deployment functionality for a recipe. This includes ingredients that deploy azure ARM templates, or execute custom javascript/typescript, or more managed ingredients that automate the deployment of common resources like storage, cosmosDB, etc. Bake provides a set of ingredients for usage, and 3rd party ingredients can be included as well.
-
-Once you mix a bake recipe a docker image is generated that includes everything needed to deploy your recipe. This docker recipe package is then uploaded into a docker repositry for later deployment. Bake recipe packages are tagged so that different versions can be deployed as needed.
-
+The Traffic Manager ingredient is a plugin for Bake.  When included in a recipe, this plugin will install a global instance of traffic manager in the primary region (first region in the list) for your environment.  It will then create an endpoint for each region deployed and add it to the global profile.
 
 ## Usage
 
-### Mix / Create a deploment recipe 
-```bash
-bake mix --name "my_deployment:latest" --runtime "latest" ./package/bake.yaml
+Because endpoints are created dynamically during each region, you should not use the parallel regions feature of bake.  Set this to false in your receipe's bake.yaml to ensure the global profile and other dependencies are created before adding an endpoint.
+
+### Recipe
+```yaml
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-traffic-manager@~0"
+parallelRegions: false
+resourceGroup: true
+recipe:
+  mypkg-traffic-mgr:
+    properties:
+      type: "@azbake/ingredient-traffic-manager"
+      source: "[webapp.get_resource_profile()]"
+      parameters:
+        source-type: "Microsoft.Web/sites/"
 ```
 
-- name : name of the local docker image:tag that will get generated
-- runtime: which version of the bake runtime to build a package against.
-  - "latest" will be against the latest runtime version at mix time, once built the version will not change.
-  - Check the docker hub for all runtime versions: [bake tags](https://hub.docker.com/r/homecarehomebase/bake/tags) 
 
-### Serve / Deploy a recipe
-```bash
-bake serve "mydocker/myrecipe:0.0.1"
-```
-Serve takes in a docker image tag to deploy. This should map to a docker image (local or remote) that was mixed with bake.
+| property|required|description|
+|---------|--------|-----------|
+|source|yes||the source of the endpoint being created|
+|source-type|yes||the type of the azure resource used for the endpoint|
+|routing-method|no (default Performance)|routing method of the traffic manager profile|
+|interval|no (default 10)|number of seconds to ping the endpoint for availability|
+|protocol|no (default HTTPS)|protocol used for health checks|
+|port|no (default 443)|port used for health checks|
+|ttl|no (default 10)|number of seconds the DNS entries are kept|
+|path|no (default /)|path on the endpoint to check|
+|number-of-failures|no (default 3)|number of times to retry before marking an endpoint down|
+|timeout|no (default 5)|number of seconds to wait for a response from the endpoint|
 
-Note: There are several environment variables for azure authentication and environment selection that need to be set before you can serve a recipe:
+- source : source of the endpoint being added to the traffic manager profile.  When referencing azure resources in a different resource group, you can specifiy the value as ``<resourceGroup>/<resource>``  If you do not specify the resource group, the name is assumed to be the name of the resource and in the same resource group as the current deployment.
+- source-type: the type of the azure resource being deployed.
 
-| Environment name | Description |
-| ----------------- | ----------- |
-| BAKE_AUTH_SUBSCRIPTION_ID | Azure subscription ID to deploy recipes into|
-| BAKE_AUTH_SERVICE_ID | Azure Service Principle user ID with correct ACLs for your deployment needs |
-| BAKE_AUTH_SERVICE_KEY | Secret key for the service principle |
-| BAKE_AUTH_TENANT_ID | Azure Active Directory tenant id/name for your deployment service princple|
-| BAKE_ENV_NAME | Full name of the environment this deployment is for |
-| BAKE_ENV_CODE | 4 letter environment code, used for naming of resources/resource groups|
-| BAKE_ENV_REGIONS | JSON array of region objects that the recipe should deploy to |
-| BAKE_VARIABLES | JSON of bake variables that the recipe can access |
+*** Please note that all values should be in the parameters section of the recipe except for source
 
-*note: read the section on Environment for a deeper explanation of environment/regions/variables*
+### Functions
 
-## Bake YAML schema
-At the core of a recipe is the bake.yaml file which drives the deployment of all included recipes. The schema documentation can be found [here](./Schema.md)
+The Traffic Manager ingredient providiles the a utilities class called ``traffic`` which can be used inside of your bake.yaml.
 
-## Bake Environment Structure/Terms
+``traffic.get_profile()`` - Returns the name created for the traffic manager profile when deployed.  This name appended to ``.trafficmanager.net`` will give you the url to access your site.
 
-Bake uses the concept of an "**environment**" as a virtual grouping of deployment resources. An environment has to deploy into an Azure subscription, but you can deploy multiple environments into the same subscription.
-
-To setup an environment you must define a few items:
-
-* **BAKE_ENV_NAME**:  This is the descriptive name of your environment. This is used in logging, tagging, and other areas where allowed.
-* **BAKE_ENV_CODE**: This is a 4 letter code, and must be unique across all your environments (even subscriptions). Some azure resource names are global, and this code helps generate a unique key for your resource
-* **BAKE_ENV_REGIONS**: This is a JSON array object of regions structures. Bake requires at least one azure region to deploy, and will deploy into all regions supplied. *note: bake deploys resources to regions in parallel by default, but can be turned off per recipe if seqential is required*
-
-**region structure**
-```json
-{
-    "name":"East US",
-    "code":"eus",
-    "shortName":"eastus"
-}
-```
-* Name from: [Azure published regions]
-(https://azure.microsoft.com/en-us/global-infrastructure/locations)
-* code: 3/4 letter code to describe the region (used for naming resources)
-* shortName: the azure region location identifier for the Azure management API. 
-    * You can get this from the powershell: Get-AzureRMLocation | Format-Table
-
-```bash
-# setting regions to both east and west US
-set BAKE_ENV_REGIONS='[{"name":"East US","code":"eus","shortName":"eastus"},{"name":"West US","code":"wus","shortName":"westus"}]'
-```
-* BAKE_VARIABLES: JSON of name/value pair variables that the recipe can access. These are typically used as environment wide/specific settings to configure recipes per environment (i.e. enviroment specific secret keys, etc.)
-
-**JSON structure**
-```json
-'storage_key': 'secret'
-'env_type': 'prod'
+```yaml
+parameters:
+    trafficmanagername: "[traffic.get_profile()]"
 ```
 
-```bash
-set BAKE_VARIABLEs='{ ''storage_key'': ''secret'', ''env_type'':''prod'' }'
-```
-
-### Azure resource groups
-Within a bake environment each deployed recipe will generate a resource group for the resources within the recipe to deploy. A recipe can turn off resource group deployment, if for instance the recipe contains only deployed software and not infrastructure. 
-
-A recipe can also override the resource group it should deploy into, instead of generating a group name based on the env-region-recipe_name. This is a very advanced feature however, and will probably require an expression to build up the name at least based on environment name and possibly region.
-
-
-### Azure infrastructure resources
-When bake deploys an azure resource, the name of the resource should be stable so that redeploying the recipe will generate the same resource name. This is true for all bake created ingredients (@azbake/ingredient-*). For resource names to be stable a resource id is generated based on the env_code, region_code, and recipe short name.
-
-
-## Bake supplied Ingredients
-
-### @azbake/ingredient-arm
-Simple ingredient that allows deploying Azure ARM json templates. Parameters are supplied via native bake ingredient parameters
-
-[read more](./ingredient/ingredient-arm/README.md)
-
-### @azbake/ingredient-script
-Simple ingredient that allows executing javascript/typescript functions. Parameters are avalible inside the function, as well as the full bake deployment context. Useful for implementing edge case deployment needs, or stop gap before an external ingredient supports.
-
-[read more](./ingredient/ingredient-arm/README.md)
-
-### @azbake/ingredient-utils
-Ingredient provides all core expression methods, and helpers for current bake context, azure resources. For example:
-   * Get current region object - useful inside an ingredient param to know current location
-   * Create resource name: Generate a proper resource name for the current context (region, subscription, env, etc.)
-   * [read more](./ingredient/ingredient-arm/README.md)
 
