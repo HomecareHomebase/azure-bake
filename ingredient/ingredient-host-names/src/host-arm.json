@@ -7,10 +7,36 @@
         },
         "host_name": {
             "type": "string"
+        },
+        "app_service_rg": {
+            "type": "string"
+        },
+        "app_service_name": {
+            "type": "string"
+        },
+        "keyvault_rg": {
+            "type": "string"
+        },
+        "keyvault_name": {
+            "type": "string"
+        },
+        "cert_name": {
+            "type": "string"
         }
     },
     "variables": {},
     "resources": [
+        {
+            "type":"Microsoft.Web/certificates",
+            "name":"[parameters('webapp_name')]",
+            "apiVersion":"2016-03-01",
+            "location":"[resourceGroup().location]",
+            "properties":{
+                "keyVaultId":"[resourceId(parameters('keyvault_rg'),'Microsoft.KeyVault/vaults',parameters('keyvault_name'))]",
+                "keyVaultSecretName":"[parameters('cert_name')]",
+                "serverFarmId": "[resourceId(parameters('app_service_rg'), 'Microsoft.Web/serverfarms', parameters('app_service_name'))]"
+            }
+        },
         {
             "type": "Microsoft.Web/sites/hostnameBindings",
             "name": "[concat(parameters('webapp_name'), '/', parameters('host_name'))]",
@@ -21,7 +47,7 @@
                 "azureResourceType": "Website",
                 "azureResourceName": "[parameters('webapp_name')]",
                 "sslState": "SniEnabled",
-                "thumbprint": "F0BAC0AE218B38B15976D221E6F9656DD2E44182"
+                "thumbprint": "[reference(resourceId('Microsoft.Web/certificates', parameters('cert_name'))).Thumbprint]"
             }
         }
     ]

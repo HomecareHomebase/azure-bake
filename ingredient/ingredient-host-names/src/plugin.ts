@@ -19,6 +19,22 @@ export class HostNames extends BaseIngredient {
             //build the properties as a standard object.
             let props : any = {};
 
+            const serverFarm = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
+
+            let params: any = {};
+            this._ingredient.properties.parameters.forEach( (v,n)=>
+            {
+                params[n] = {
+                    "value": v.value(this._ctx)
+                };
+            });
+
+            const keyVault = util.parseResource(params["keyvault"].value);
+            const certName = params["certificate"].value;
+
+            this._logger.log(`Keyvault resource group: ${keyVault.resourceGroup}, name: ${keyVault.resource}`);
+            this._logger.log(`Certifacte name: ${certName}`)
+
             //todo fix how we get the webapp.
             const appName = util.create_resource_name("webapp", null, true);
             const hostName = `${ util.create_resource_name("trfmgr", null, false)}.trafficmanager.net`; // util.create_resource_name("hostname", null, true);
@@ -26,6 +42,11 @@ export class HostNames extends BaseIngredient {
 
             props["webapp_name"] = { "value": appName };
             props["host_name"] = { "value": hostName };
+            props["app_service_rg"] = { "value": serverFarm.resourceGroup };
+            props["app_service_name"] = { "value": serverFarm.resource };
+            props["keyvault_rg"] = { "value": keyVault.resourceGroup };
+            props["keyvault_name"] = { "value": keyVault.resource };
+            props["cert_name"] = { "value": certName };
 
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{
