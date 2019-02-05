@@ -1,16 +1,9 @@
 ## Changelogs
-* [@azbake/core](./core/CHANGELOG.md)
-* [@azbake/system](./system/CHANGELOG.md)
-* [@azbake/ingredient-arm](./ingredient/ingredient-arm/CHANGELOG.md)
-* [@azbake/ingredient-script](./ingredient/ingredient-script/CHANGELOG.md)
-* [@azbake/ingredient-utils](./ingredient/ingredient-utils/CHANGELOG.md)
-* [@azbake/ingredient-webapp-container](./ingredient/ingredient-webapp-container/CHANGELOG.md)
-* [@azbake/ingredient-traffic-manager](./ingredient/ingredient-traffic-manager/CHANGELOG.md)
-* [@azbake/ingredient-host-names](./ingredient/ingredient-host-names/CHANGELOG.md)
+* [@azbake/ingredient-traffic-manager](./CHANGELOG.md)
 
 ## Install
 ```
-npm i -g azure-bake
+npm i @azbake/ingredient-traffic-manager
 ```
 
 ## Overview
