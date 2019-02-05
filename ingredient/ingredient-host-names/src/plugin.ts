@@ -48,6 +48,7 @@ export class HostNames extends BaseIngredient {
             props["keyvault_name"] = { "value": keyVault.resource };
             props["vault_secret_name"] = { "value": certName };
             props["cert_name"] = { "value": util.create_resource_name("cert", null, true) };
+            props["location"] = { "value": util.current_region().location };
 
             let deployment = <Deployment>{
                 properties : <DeploymentProperties>{

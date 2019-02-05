@@ -25,6 +25,10 @@
         },
         "cert_name": {
             "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resource().location]"
         }
     },
     "variables": {},
@@ -33,7 +37,7 @@
             "type":"Microsoft.Web/certificates",
             "name":"[parameters('cert_name')]",
             "apiVersion":"2016-03-01",
-            "location":"[resourceGroup().location]",
+            "location":"[parameters('location')]",
             "properties":{
                 "keyVaultId":"[resourceId(parameters('keyvault_rg'),'Microsoft.KeyVault/vaults',parameters('keyvault_name'))]",
                 "keyVaultSecretName":"[parameters('vault_secret_name')]",
@@ -44,7 +48,7 @@
             "type": "Microsoft.Web/sites/hostnameBindings",
             "name": "[concat(parameters('webapp_name'), '/', parameters('host_name'))]",
             "apiVersion": "2016-08-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "properties": {
                 "siteName": "[parameters('webapp_name')]",
                 "azureResourceType": "Website",
