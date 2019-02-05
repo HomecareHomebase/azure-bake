@@ -136,3 +136,17 @@ Ingredient provides all core expression methods, and helpers for current bake co
    * Create resource name: Generate a proper resource name for the current context (region, subscription, env, etc.)
    * [read more](./ingredient/ingredient-arm/README.md)
 
+### @azbake/ingredient-webapp-container
+Ingredient that allows deploying Azure Web Apps for Containers.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-webapp-container/README.md)
+
+### @azbake/ingredient-traffic-manager
+Ingredient that allows deploying Azure Traffic Manager profile and endpoints for each region.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-traffic-manager/README.md)
+
+### @azbake/ingredient-host-names
+Ingredient that allows deploying custom host names and ssl certificates to Azure Web Sites.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-host-names/README.md)
