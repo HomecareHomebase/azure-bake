@@ -30,7 +30,7 @@ recipe:
 
 | property|required|description|
 |---------|--------|-----------|
-|source|yes|the source of the endpoint being created in format ``<resourceGroup>/<resource>``|
+|source|yes|the source of the endpoint being created in format ``<resourceGroup>/<resource>`` ***|
 |source-type|yes|the type of the azure resource used for the endpoint|
 |routing-method|no (default Performance)|routing method of the traffic manager profile|
 |interval|no (default 10)|number of seconds to ping the endpoint for availability|
@@ -45,15 +45,29 @@ recipe:
 
 *** Please note that all values should be in the parameters section of the recipe except for source
 
-### Functions
+## Utilities
 
-The Traffic Manager ingredient providiles the a utilities class called ``traffic`` which can be used inside of your bake.yaml.
+Utility classes can be used inside of the bake.yaml file for parameter and source values.
 
-``traffic.get_profile()`` - Returns the name created for the traffic manager profile when deployed.  This name appended to ``.trafficmanager.net`` will give you the url to access your site.
+### ``traffic`` class
+
+|function|description|
+|--------|-----------|
+|get_profile()| Returns the name created for the traffic manager profile when deployed.|
+
+### Function Details
+
+#### get_profile()
+Gets the name create for the traffic manager profile deployed.  This value when appended to ``.trafficmanager.net`` will give you the url to access the resouce.
 
 ```yaml
+...
 parameters:
     trafficmanagername: "[traffic.get_profile()]"
+...
 ```
+
+#### Returns
+string
 
 
