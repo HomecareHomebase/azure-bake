@@ -1,8 +1,8 @@
 {
-  "name": "@azbake/ingredient-webapp-container",
-  "description": "Ingredient for deploying an instance of an Azure WebApp for Container",
+  "name": "@azbake/arm-helper",
+  "description": "Helper class for installing ARM templates through Bake.",
   "version": "0.0.1",
-  "main": "dist/index.js",
+  "main": "dist/arm-helper.js",
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -20,14 +20,13 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azure/ms-rest-nodeauth": "0.*",
-    "@azbake/ingredient-utils": "0.*"
+    "@azure/arm-resources": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "0.*"
+    "@azure/arm-resources": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

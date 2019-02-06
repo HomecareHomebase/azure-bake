@@ -27,7 +27,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azure/arm-resources": "^1.0.0"
+    "@azbake/arm-helper": "0.*"
   },
   "publishConfig": {
     "access": "public"
