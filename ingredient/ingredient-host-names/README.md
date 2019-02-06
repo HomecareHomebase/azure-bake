@@ -7,6 +7,8 @@ The host names ingredient is a plugin for bake.  When included in a recipe, this
 
 Before deploying a custom host name with ssl binding, be sure that your custom domain has been configured to route traffic to the azure website.
 
+This ingredient assumes that you already have a key vault configured with your ssl cert uploaded and the service principal used for deployment has Get permissions for the certificate.
+
 ## Usage
 
 ### Recipe
