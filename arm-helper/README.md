@@ -1,73 +1,108 @@
 ## Changelogs
-* [@azbake/ingredient-traffic-manager](./CHANGELOG.md)
+* [@azbake/arm-helper](./CHANGELOG.md)
 
 ## Overview
 
-The Traffic Manager ingredient is a plugin for Bake.  When included in a recipe, this plugin will install a global instance of traffic manager in the primary region (first region in the list) for your environment.  It will then create an endpoint for each region deployed and add it to the global profile.
+ARM Helper is utility plugin for Bake that can be used by ingredients to easily deploy ARM templates.
 
 ## Usage
 
-Because endpoints are created dynamically during each region, you should not use the parallel regions feature of bake.  Set this to false in your receipe's bake.yaml to ensure the global profile and other dependencies are created before adding an endpoint.
+To use this, install the utility as a dependency for your ingredient.
 
-### Recipe
-```yaml
-name: My package
-shortName: mypkg
-version: 0.0.1
-ingredients:
-  - "@azbake/ingredient-traffic-manager@~0"
-parallelRegions: false
-resourceGroup: true
-recipe:
-  mypkg-traffic-mgr:
-    properties:
-      type: "@azbake/ingredient-traffic-manager"
-      source: "[webapp.get_resource_profile()]"
-      parameters:
-        source-type: "Microsoft.Web/sites/"
+```bash
+  npm i @azbake/arm-helper
 ```
 
+## ARMHelper class
 
-| property|required|description|
-|---------|--------|-----------|
-|source|yes|the source of the endpoint being created in format ``<resourceGroup>/<resource>`` ***|
-|source-type|yes|the type of the azure resource used for the endpoint|
-|routing-method|no (default Performance)|routing method of the traffic manager profile|
-|interval|no (default 10)|number of seconds to ping the endpoint for availability|
-|protocol|no (default HTTPS)|protocol used for health checks|
-|port|no (default 443)|port used for health checks|
-|ttl|no (default 10)|number of seconds the DNS entries are kept|
-|path|no (default /)|path on the endpoint to check|
-|number-of-failures|no (default 3)|number of times to retry before marking an endpoint down|
-|timeout|no (default 5)|number of seconds to wait for a response from the endpoint|
+Class for deploying ARM templates and transforming bake parameters into ARM template parameters.
 
-***  Please note that you can supply just the name of the azure resource for the source if the resource exists within the same resource group that is currently being deployed for traffic manager.
+### Constructors
 
-*** Please note that all values should be in the parameters section of the recipe except for source
+ARMHelper(context)
 
-## Utilities
-
-Utility classes can be used inside of the bake.yaml file for parameter and source values.
-
-### ``traffic`` class
+### Functions
 
 |function|description|
 |--------|-----------|
-|get_profile()| Returns the name created for the traffic manager profile when deployed.|
+|DeployTemplate(deploymentName, template, params, resourceGroup)| Deploys the specified ARM template with the specified parameters.|
+|BakeParamsToARMParams(deploymentName, params)| Converts bake parameters to the format expected by ARM for ARM parameters.|
+
+### Constructor Details
+
+#### ARMHelper(context)
+
+```typescript
+new ARMHelper(context)
+```
+
+#### Parameters
+``context`` Bake DeploymentContext from your ingredient.
 
 ### Function Details
 
-#### get_profile()
-Gets the name create for the traffic manager profile deployed.  This value when appended to ``.trafficmanager.net`` will give you the url to access the resouce.
+#### DeployTemplate(deploymentName, template, params, resourceGroup)
 
-```yaml
-...
-parameters:
-    trafficmanagername: "[traffic.get_profile()]"
-...
+Deploys the specified ARM template with the specified parameters to the specified resourceGroup.  This is a long running function and should be used with the ``await`` operator.
+
+```typescript
+public async DeployTemplate(deploymentName, template, params, resourceGroup)
 ```
 
-#### Returns
-string
+##### Parameters
+|parameter|type|required|description|
+|---------|----|--------|-----------|
+|``deploymentName``|string|yes|Name of the deployment for Azure.|
+|``template``|any|yes|JSON object representing the arm template|
+|``params``|any|yes|JSON object representing parameters used in the ARM template|
+|``resourceGroup``|string|yes|Name of the resource group the ARM template will deploy into|
+
+##### Returns
+``Promise<void>``
+
+#### BakeParamsToARMParams(deploymentName, params)
+
+Reads the Bake parameters and converts them into values acceptable for parameters of ARM templates.
+
+```typescript
+public BakeParamsToARMParams(deploymentName, params)
+```
+
+##### Parameters
+|parameter|type|required|description|
+|---------|----|--------|-----------|
+|``deploymentName``|string|yes|Name of the azure deployment|
+|``params``|``Map<string, BakeVariable>``|yes|The parameters passed into the ingredient|
+
+##### Returns
+``any``
+
+JSON object of parameters to load into the ARM template during deployment.
 
 
+
+
+
+
+
+## Example
+
+```typescript
+import { BaseIngredient, IngredientManager } from "@azbake/core"
+import { ARMHelper } from "@azbake/arm-helper"
+import arm from "./arm.json"
+
+export class MyIngredient extends BaseIngredient {
+
+  public async Execute(): Promise<void> {
+
+    const util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+    const helper = new ARMHelper(this._ctx);
+
+    const parameters = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
+
+    await helper.DeployTemplate(this._name, arm, parameters, util.resource_group())
+  }
+}
+
+```
