@@ -3,11 +3,11 @@
 
 ## Overview
 
-ARM Helper is utility plugin for Bake that can be used by ingredients to easily deploy ARM templates.
+ARM Helper is a utility plugin for Bake that can be used by ingredients to easily deploy ARM templates.
 
 ## Usage
 
-To use this, install the utility as a dependency for your ingredient.
+To use, install the utility as a dependency for your ingredient.
 
 ```bash
   npm i @azbake/arm-helper
@@ -36,8 +36,10 @@ ARMHelper(context)
 new ARMHelper(context)
 ```
 
-#### Parameters
-``context`` Bake DeploymentContext from your ingredient.
+##### Parameters
+|parameter|type|required|description|
+|---------|----|--------|-----------|
+|``context``|DeploymentContext|yes|The current bake deployment context|
 
 ### Function Details
 
@@ -97,7 +99,7 @@ export class MyIngredient extends BaseIngredient {
   public async Execute(): Promise<void> {
 
     const util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
-    const helper = new ARMHelper(this._ctx);
+    const helper = new ARMHelper(this._ctx)
 
     const parameters = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
 
