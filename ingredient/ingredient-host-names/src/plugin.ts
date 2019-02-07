@@ -27,7 +27,7 @@ export class HostNames extends BaseIngredient {
 
             //todo fix how we get the webapp and hostname.
             const appName = util.create_resource_name("webapp", null, true);
-            const hostName = `${ util.create_resource_name("trfmgr", null, false)}.trafficmanager.net`; // util.create_resource_name("hostname", null, true);
+            const hostName = params["hostname"].value;
             this._logger.log(`Deploying host name: ${hostName}, Web App: ${appName}`)
 
             props["webapp_name"] = { "value": appName };
