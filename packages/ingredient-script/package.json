@@ -3,6 +3,7 @@
   "description": "Bake ingredient for custom javascript execution",
   "version": "0.0.9",
   "main": "dist/index.js",
+  "typings": "src/index.ts",
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -31,8 +32,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.15",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "@azbake/core": "~0"
   },
   "publishConfig": {
     "access": "public"

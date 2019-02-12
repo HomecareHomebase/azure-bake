@@ -1,8 +1,9 @@
 {
   "name": "@azbake/ingredient-arm",
   "description": "Bake ingredient for Azure ARM template deployments",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "dist/index.js",
+  "typings": "src/index.ts",
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -32,9 +33,9 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.15",
-    "@azure/arm-resources": "^1.0.0",
-    "@azure/ms-rest-nodeauth": "^0.9.1"
+    "@azbake/arm-helper": "0.*",
+    "@azbake/core": "~0",
+    "@azure/ms-rest-nodeauth": ">= 0.8.3"
   },
   "publishConfig": {
     "access": "public"
