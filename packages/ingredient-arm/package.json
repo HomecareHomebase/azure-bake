@@ -1,5 +1,5 @@
 {
-  "name": "ingredient-arm",
+  "name": "@azbake/ingredient-arm",
   "description": "Bake ingredient for Azure ARM template deployments",
   "version": "0.0.15",
   "main": "dist/index.js",

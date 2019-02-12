@@ -34,6 +34,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.15"
+    "@azbake/core": "~0"
   }
 }
