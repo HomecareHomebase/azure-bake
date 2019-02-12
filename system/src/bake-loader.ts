@@ -32,6 +32,8 @@ export class BakePackage {
 
         this._env.environmentName = process.env.BAKE_ENV_NAME || ""
         this._env.environmentCode = process.env.BAKE_ENV_CODE || ""
+
+        this._env.regions = JSON.parse(process.env.BAKE_ENV_REGIONS || "");
         
         this._env.authentication = <IBakeAuthentication>{}
         this._env.authentication.subscriptionId = process.env.BAKE_AUTH_SUBSCRIPTION_ID || ""

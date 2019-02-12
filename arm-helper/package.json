@@ -1,8 +1,8 @@
 {
-  "name": "@azbake/ingredient-arm",
-  "description": "Bake ingredient for Azure ARM template deployments",
-  "version": "0.0.15",
-  "main": "dist/index.js",
+  "name": "@azbake/arm-helper",
+  "description": "Helper class for installing ARM templates through Bake.",
+  "version": "0.0.1",
+  "main": "dist/arm-helper.js",
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -15,18 +15,18 @@
   "homepage": "https://github.com/HomecareHomebase/azure-bake",
   "scripts": {
     "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
-    "compile": "tsc -p ./src",
+    "compile": "tsc",
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "~0",
-    "@azure/ms-rest-nodeauth": ">= 0.8.3"
+    "@azbake/core": "0.*",
+    "@azure/arm-resources": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "0.*"
+    "@azure/arm-resources": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"
