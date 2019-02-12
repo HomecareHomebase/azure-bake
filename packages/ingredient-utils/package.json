@@ -1,0 +1,33 @@
+{
+  "name": "@azbake/ingredient-utils",
+  "description": "Bake ingredient for core utility functions",
+  "version": "0.0.13",
+  "main": "dist/index.js",
+  "author": "HCHB",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HomecareHomebase/azure-bake.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HomecareHomebase/azure-bake/issues"
+  },
+  "homepage": "https://github.com/HomecareHomebase/azure-bake",
+  "scripts": {
+    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p ./src",
+    "watch": "tsc -w -p ./src"
+  },
+  "peerDependencies": {
+    "@azbake/core": "~0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@azbake/core": "^0.1.15"
+  }
+}

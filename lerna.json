@@ -1,0 +1,19 @@
+{
+  "version": "independent",
+  "npmClient": "npm",
+  "command": {
+    "publish": {
+      "conventionalCommits": "true",
+      "ignoreChanges": [
+        "ignored-file",
+        "*.md",
+        "*,yaml"
+      ],
+      "message": "chore(release): publish"
+    }
+  },
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.0.0"
+}

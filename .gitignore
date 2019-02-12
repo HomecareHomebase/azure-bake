@@ -7,3 +7,10 @@ node_modules
 dist
 system/lerna-debug\.log
 *.tgz
+
+
+node_modules/
+lerna-debug.log
+npm-debug.log
+lib
+.idea
