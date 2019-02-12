@@ -1,5 +1,5 @@
 {
-  "name": "@azbake/ingredient-arm",
+  "name": "ingredient-arm",
   "description": "Bake ingredient for Azure ARM template deployments",
   "version": "0.0.15",
   "main": "dist/index.js",
@@ -18,6 +18,12 @@
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
   },
+  "directories": {
+    "lib": "dist"
+  },
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "@azbake/core": "~0",
     "@azure/ms-rest-nodeauth": ">= 0.8.3"
