@@ -12,7 +12,19 @@
       "message": "chore(release): publish"
     },
     "bootstrap": {
-      "ignore": "*arm*"
+      "scope": [
+        "@azbake/core",
+        "@azbake/ingredient-script",
+        "@azbake/ingredient-template",
+        "@azbake/ingredient-utils",
+        "packages/system"
+      ],
+      "ignore": [
+        "@azbake/ingredient-traffic-manager",
+        "@azbake/ingredient-webapp-container",
+        "@azbake/arm-helper",
+        "@azbake/ingredient-arm"
+      ]
     }
   },
   "packages": [
