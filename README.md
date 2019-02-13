@@ -115,12 +115,17 @@ A recipe can also override the resource group it should deploy into, instead of 
 
 
 ### Azure infrastructure resources
+
 When bake deploys an azure resource, the name of the resource should be stable so that redeploying the recipe will generate the same resource name. This is true for all bake created ingredients (@azbake/ingredient-*). For resource names to be stable a resource id is generated based on the env_code, region_code, and recipe short name.
 
+## How to develop custom ingredients
+
+Custom ingredients can be developed by following this [guide](./ingredient-template/README.md), and then publishing them to either an internal or external npm package repository.
 
 ## Bake supplied Ingredients
 
 ### @azbake/ingredient-arm
+
 Simple ingredient that allows deploying Azure ARM json templates. Parameters are supplied via native bake ingredient parameters
 
 [read more](./ingredient/ingredient-arm/README.md)
