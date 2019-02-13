@@ -258,15 +258,15 @@ function deploy(){
     let cli = new ShellRunner("docker")
 
     fs.writeFileSync(tmpFile, 
-        "BAKE_ENV_NAME="+args.envName+"\r\n" +
-        "BAKE_ENV_CODE="+args.envCode+"\r\n" +
-        "BAKE_ENV_REGIONS="+args.envRegions+"\r\n" +
-        "BAKE_AUTH_SUBSCRIPTION_ID="+args.subId+"\r\n" +
-        "BAKE_AUTH_TENANT_ID="+args.tenantId+"\r\n" +
-        "BAKE_AUTH_SERVICE_ID="+args.serviceId+"\r\n" +
-        "BAKE_AUTH_SERVICE_KEY="+args.serviceKey||""+"\r\n" +
-        "BAKE_AUTH_SERVICE_CERT="+args.serviceCert||""+"\r\n" +
-        "BAKE_VARIABLES="+args.variables||""+"\r\n"         
+        `BAKE_ENV_NAME=${ args.envName }\r\n` +
+        `BAKE_ENV_CODE=${ args.envCode }\r\n` +
+        `BAKE_ENV_REGIONS=${ args.envRegions }\r\n` +
+        `BAKE_AUTH_SUBSCRIPTION_ID=${ args.subId }\r\n` +
+        `BAKE_AUTH_TENANT_ID=${ args.tenantId }\r\n` +
+        `BAKE_AUTH_SERVICE_ID=${ args.serviceId }\r\n` +
+        `BAKE_AUTH_SERVICE_KEY=${( args.serviceKey || "" )}\r\n` +
+        `BAKE_AUTH_SERVICE_CERT=${( args.serviceCert || "" )}\r\n` +
+        `BAKE_VARIABLES=${( args.variables || "" )}\r\n`
         )
         
     try {
