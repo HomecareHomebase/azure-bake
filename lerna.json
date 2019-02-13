@@ -12,31 +12,16 @@
       "message": "chore(release): publish"
     },
     "bootstrap": {
-      "scope": [
-        "@azbake/core",
-        "@azbake/ingredient-script",
-        "@azbake/ingredient-template",
-        "@azbake/ingredient-utils",
-        "packages/system"
-      ],
       "ignore": [
-        "@azbake/ingredient-traffic-manager",
-        "@azbake/ingredient-webapp-container",
         "@azbake/arm-helper",
-        "@azbake/ingredient-arm"
+        "@azbake/ingredient-arm",
+        "@azbake/ingredient-traffic-manager",
+        "@azbake/ingredient-webapp-container"
       ]
     }
   },
   "packages": [
-    "packages/core",
-    "packages/ingredient-script",
-    "packages/ingredient-template",
-    "packages/ingredient-utils",
-    "packages/system",
-    "packages/ingredient-traffic-manager",
-    "packages/ingredient-webapp-container",
-    "packages/arm-helper",
-    "packages/ingredient-arm"
+    "packages/*"    
   ],
   "version": "0.1.15"
 }
