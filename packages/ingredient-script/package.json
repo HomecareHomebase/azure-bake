@@ -26,14 +26,14 @@
     "dist"
   ],
   "peerDependencies": {
-    "@azbake/core": "~0"
+    "@azbake/core": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "typescript": "^3.2.2"
   },
   "dependencies": {
-    "typescript": "^3.2.2",
-    "@azbake/core": "~0"
+    "@azbake/core": "^0.1.0"
   },
   "publishConfig": {
     "access": "public"

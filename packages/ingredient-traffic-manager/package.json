@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "0.*",
-    "@azbake/core": "0.*",
+    "@azbake/core": "^0.1.0",
     "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "0.*"
+    "@azure/ms-rest-nodeauth": ">= 0.8.3"
   },
   "publishConfig": {
     "access": "public"

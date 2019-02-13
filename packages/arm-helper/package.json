@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@azure/arm-resources": "^1.0.1",
-    "@azbake/core": "0.*"
+    "@azbake/core": "^0.1.0"
   },
   "publishConfig": {
     "access": "public"

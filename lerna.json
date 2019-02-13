@@ -10,15 +10,21 @@
         "*,yaml"
       ],
       "message": "chore(release): publish"
+    },
+    "bootstrap": {
+      "ignore": "*arm*"
     }
   },
   "packages": [
     "packages/core",
     "packages/ingredient-script",
     "packages/ingredient-template",
-    "packages/ingredient-arm",
     "packages/ingredient-utils",
-    "packages/ingredient-traffic-manager"
+    "packages/system",
+    "packages/ingredient-traffic-manager",
+    "packages/ingredient-webapp-container",
+    "packages/arm-helper",
+    "packages/ingredient-arm"
   ],
   "version": "0.1.15"
 }
