@@ -13,7 +13,12 @@
     }
   },
   "packages": [
-    "packages/*"
+    "packages/core",
+    "packages/ingredient-script",
+    "packages/ingredient-template",
+    "packages/ingredient-arm",
+    "packages/ingredient-utils",
+    "packages/ingredient-traffic-manager"
   ],
   "version": "0.1.15"
 }
