@@ -1,0 +1,46 @@
+{
+    "manifestVersion": 1,
+    "id": "azure-bake",
+    "name": "Azure Bake Tools",
+    "version": "0.4.0",
+    "publisher": "HCHB-Tools",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "files": [
+        {
+            "path": "deploy-task"
+        },
+        {
+            "path": "build-task"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "azure-bake-deployment-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "deploy-task"
+            }
+        },
+        {
+            "id": "azure-bake-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "build-task"
+            }
+        }
+    ]
+}

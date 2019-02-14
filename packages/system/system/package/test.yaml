@@ -1,0 +1,46 @@
+name: test-package
+shortName: tstpkg
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-arm@~0"
+  - "@azbake/ingredient-script@~0"
+resourceGroup: true
+rgOverride: "[coreutils.variable('test2','default')]"
+parallelRegions: true
+variables:
+  test1: "[coreutils.variable('test2','default')]"
+  test2: whilke-poc
+recipe:
+  webapp:
+    properties:
+      type: software
+      source: webapp
+      parameters:
+    dependsOn:
+      - storage1
+      - storage2
+  custom:
+    properties:
+      type: "@azbake/ingredient-script"
+      source: ./script.ts
+      parameters:
+        name: "[coreutils.create_storage_name('wpoctest1')]"
+        name 2: this is a long string
+    dependsOn:
+      - storage1
+      - storage2
+  storage1:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./arm.json
+      parameters:
+        name: "[coreutils.create_storage_name('wpoctest1')]"
+        name 2: this is a long string
+    dependsOn:    
+  storage2:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./arm2.json
+      parameters:
+        name: "[coreutils.create_storage_name('wpoctest2')]"
+    dependsOn:    

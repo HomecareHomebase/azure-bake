@@ -1,0 +1,12 @@
+{
+    "version": "independent",
+    "npmClient": "npm",
+    "command": {
+      "publish": {
+        "conventionalCommits": "true",
+        "ignoreChanges": ["ignored-file", "*.md","*,yaml"],
+        "message": "chore(release): publish"
+      }
+    },
+    "packages": ["../ingredient/*","../core", "./"]
+  }

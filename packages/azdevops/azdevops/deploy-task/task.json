@@ -1,0 +1,83 @@
+{
+    "id": "75f3f5a8-ea14-41fd-9685-4d9396a807de",
+    "name": "azure-bake-deployment-task",
+    "friendlyName": "Azure Bake Deployment Task",
+    "description": "Azure Bake Deployment Task",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "HCHB",
+    "version": {
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Azure Bake Deployment",
+    "showEnvironmentVariables": true,
+    "groups": [
+        {
+            "name": "env",
+            "displayName": "Environment",
+            "isExpanded": true
+        },
+        {
+            "name": "general",
+            "displayName": "General",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "azureConnection",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Connection",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription for the deployment",
+            "groupName":"env"
+        },
+        {
+            "name": "envName",
+            "type":"string",
+            "label":"Environment Name",
+            "required":false,
+            "helpMarkDown":"If this is not assigned, will look for the pipeline variable: BAKE_ENV_NAME",
+            "groupName":"env"
+        },
+        {
+            "name": "envCode",
+            "type":"string",
+            "label":"Environment Code",
+            "required":false,
+            "helpMarkDown":"If this is not assigned, will look for the pipeline variable: BAKE_ENV_CODE",
+            "groupName":"env"
+        },
+        {
+            "name": "envRegions",
+            "type":"string",
+            "label":"Deployment Regions",
+            "required":false,
+            "helpMarkDown":"If this is not assigned, will look for the pipeline variable: BAKE_ENV_REGIONS",
+            "groupName":"env"
+        },
+        {
+            "name": "recipe",
+            "type": "string",
+            "label": "Bake Recipe Docker Tag",
+            "required": false,
+            "helpMarkDown": "Either define a recipe docker tag, or use the field below to define the Devops artifact bake.artifact file",
+            "groupName":"general"
+        },
+        {
+            "name": "recipeArtifact",
+            "type": "filePath",
+            "label": "Bake Recipe Artifact File",
+            "helpMarkDown": "Path to an attached Devops bake.artifact file from an attached Artifact drop. If not defined, Recipe field above is used",
+            "required": false,
+            "groupName":"general"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

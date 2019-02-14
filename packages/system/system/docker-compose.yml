@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  bake:
+    image: bake:debug
+    build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - "9229:9229"
+    command: npm run debug -- -f /app/bake/package/bake.yaml
+    volumes:
+      - ./dist:/app/bake/dist
+      - ./package:/app/bake/package
