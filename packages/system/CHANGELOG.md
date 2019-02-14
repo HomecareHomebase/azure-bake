@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<<<<<<< HEAD:packages/system/CHANGELOG.md
+=======
+## [0.1.20](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.1.19...azure-bake@0.1.20) (2019-02-13)
+
+
+### Bug Fixes
+
+* fixes truncation of environment file ([#17](https://github.com/HomecareHomebase/azure-bake/issues/17)) ([fea40e6](https://github.com/HomecareHomebase/azure-bake/commit/fea40e6))
+
+
+
+
+
+>>>>>>> master:system/CHANGELOG.md
 ## [0.1.19](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.1.18...azure-bake@0.1.19) (2019-02-12)
 
 
