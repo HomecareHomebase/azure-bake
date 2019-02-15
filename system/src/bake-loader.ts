@@ -51,7 +51,7 @@ export class BakePackage {
         try {
             let vars : string = process.env.BAKE_VARIABLES || ""
             let obj  =YAML.safeLoad(vars)
-            this._env.variabes = this.objToVariableMap( obj || [] )
+            this._env.variables = this.objToVariableMap( obj || [] )
         } catch (e) {
             let logger = new Logger()
             logger.error("Failed to load global environment variables")
@@ -142,7 +142,7 @@ export class BakePackage {
         let vars = this.objToVariableMap(config.variables)
 
         //merge config vars into the env vars (overwriting as needed)
-        config.variables = this._env.variabes || new Map<string,BakeVariable>()
+        config.variables = this._env.variables || new Map<string,BakeVariable>()
         vars.forEach((v,n)=> {
             if (config.variables)
                 config.variables.set(n, v)

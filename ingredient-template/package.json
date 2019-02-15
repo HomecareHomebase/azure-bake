@@ -1,8 +1,9 @@
 {
   "name": "",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.1.21",
   "main": "dist/index.js",
+  "typings": "src/index.ts",
   "author": "",
   "license": "",
   "scripts": {
@@ -10,13 +11,18 @@
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
   },
+  "directories": {
+    "lib": "dist"
+  },
   "peerDependencies": {
-    "@azbake/core": "^0.1.12",
-    "@azure/ms-rest-nodeauth": "^0.8.4"
+    "@azbake/core": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
+    "@azbake/core": "^0.1.21",
+    "@azure/ms-rest-nodeauth": "^0.9.1"
   }
 }

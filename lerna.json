@@ -1,0 +1,23 @@
+{
+  "version": "0.1.21",
+  "npmClient": "npm",
+  "command": {
+    "publish": {
+      "conventionalCommits": "true",
+      "ignoreChanges": [
+        "ignored-file",
+        "*.md",
+        "*.yaml",
+        "*.yml"
+      ],
+      "message": "chore(release): publish"
+    }
+  },
+  "packages": [
+    "arm-helper",
+    "core",
+    "ingredient-template",
+    "ingredient/*",
+    "system"
+  ]
+}
