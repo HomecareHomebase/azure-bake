@@ -24,8 +24,8 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "0.*.*",
-    "@azure/ms-rest-nodeauth": "^0.9.1"
+    "@azbake/ingredient-utils": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"

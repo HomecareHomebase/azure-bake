@@ -24,7 +24,7 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azure/arm-resources": "^1.0.1"
+    "@azure/arm-resources": "0.*"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
