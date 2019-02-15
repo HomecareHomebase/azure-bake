@@ -13,15 +13,12 @@
     },
     "bootstrap": {
       "ignore": [
-        "@azbake/arm-helper",
-        "@azbake/ingredient-arm",
-        "@azbake/ingredient-traffic-manager",
-        "@azbake/ingredient-webapp-container"
+        
       ]
     }
   },
   "packages": [
-    "core","arm-helper","ingredient-template","ingredient/ingredient-host-names","system"
+    "core","arm-helper","ingredient-template","ingredient/*","system"
   ],
   "version": "0.1.15"
 }

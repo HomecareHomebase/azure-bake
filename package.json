@@ -2,12 +2,11 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "@types/node": "^11.9.0",
-    "lerna": "^3.11.1",
-    "typescript": "^3.3.3"
+    "@types/node": "^10.12.18",
+    "lerna": "^3.10.1",
+    "typescript": "^3.2.2"
   },
   "scripts": {
-    "bootstrap": "lerna clean --yes && lerna bootstrap && lerna run compile",
-    "install": "npm --prefix ./arm-helper install ./arm-helper && npm --prefix ./ingredient/ingredient-arm install ./ingredient/ingredient-arm && npm --prefix ./ingredient/ingredient-traffic-manager install ./ingredient/ingredient-traffic-manager && npm --prefix ./ingredient/ingredient-webapp-container install ./ingredient/ingredient-webapp-container"
+    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile"
   }
 }

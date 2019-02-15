@@ -1,6 +1,9 @@
 ## Changelogs
 * [@azbake/arm-helper](./CHANGELOG.md)
 
+##Tools
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+
 ## Overview
 
 ARM Helper is a utility plugin for Bake that can be used by ingredients to easily deploy ARM templates.

@@ -30,11 +30,11 @@
   ],
   "peerDependencies": {
     "@azure/ms-rest-nodeauth": ">= 0.9.1",
-    "colors": ">= 1.3.2"
+    "colors": "^1.3.3"
   },
   "dependencies": {
     "@azure/ms-rest-nodeauth": ">= 0.9.1",
-    "colors": ">= 1.3.2"
+    "colors": "^1.3.3"
   },
   "devDependencies": {
     "@types/node": "^10.12.18",
