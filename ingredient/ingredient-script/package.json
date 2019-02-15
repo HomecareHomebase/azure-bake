@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-script",
   "description": "Bake ingredient for custom javascript execution",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -29,7 +29,7 @@
     "@azbake/core": "0.*",
     "@types/node": "^10.12.18"
   },
-  "dependencies": {    
+  "dependencies": {
     "typescript": "^3.3.3"
   },
   "publishConfig": {

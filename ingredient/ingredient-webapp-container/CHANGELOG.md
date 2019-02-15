@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.24](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.23...v0.1.24) (2019-02-15)
+
+
+### Bug Fixes
+
+* Ingredient-Script had typescript removed from packages ([274d965](https://github.com/HomecareHomebase/azure-bake/commit/274d965))
+
+
+
+
+
 ## [0.1.23](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.22...v0.1.23) (2019-02-15)
 
 **Note:** Version bump only for package @azbake/ingredient-webapp-container
