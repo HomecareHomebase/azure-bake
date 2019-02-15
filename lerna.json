@@ -16,7 +16,6 @@
   "packages": [
     "arm-helper",
     "core",
-    "ingredient-template",
     "ingredient/*",
     "system"
   ]
