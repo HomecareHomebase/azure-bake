@@ -1,0 +1,24 @@
+{
+  "name": "@azbake/ingredient-app-insights",
+  "description": "Ingredient for deploying an instance of an Application Insights resource",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "HCHB",
+  "license": "",
+  "scripts": {
+    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p ./src",
+    "watch": "tsc -w -p ./src"
+  },
+  "peerDependencies": {
+    "@azbake/core": "^0.1.12",
+    "@azure/ms-rest-nodeauth": "^0.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  },
+  "dependencies": {
+    "@azbake/arm-helper": "0.0.2",
+    "@azbake/core": "^0.1.17"
+  }
+}

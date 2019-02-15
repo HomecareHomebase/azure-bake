@@ -1,0 +1,216 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "appInsightsName": {
+        "type": "String"
+      },
+      "appInsightsLocation": {
+        "type": "String"
+      }
+    },
+    "resources": [
+      {
+        "type": "microsoft.insights/components",
+        "kind": "web",
+        "name": "[parameters('appInsightsName')]",
+        "apiVersion": "2018-05-01-preview",
+        "location": "[parameters('appInsightsLocation')]",
+        "properties": {
+          "ApplicationId": "[parameters('appInsightsName')]",
+          "Application_Type": "web",
+          "Flow_Type": "Redfield",
+          "Request_Source": "Azure Bake",
+          "SamplingPercentage": null
+        },
+        "dependsOn": [],
+        "resources": [
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "longdependencyduration",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "longdependencyduration",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "slowpageloadtime",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "slowpageloadtime",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "slowserverresponsetime",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "slowserverresponsetime",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "degradationinserverresponsetime",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "degradationinserverresponsetime",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "degradationindependencyduration",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "degradationindependencyduration",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "extension_traceseveritydetector",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "extension_traceseveritydetector",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "extension_exceptionchangeextension",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "extension_exceptionchangeextension",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "extension_memoryleakextension",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "extension_memoryleakextension",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "extension_securityextensionspackage",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "extension_securityextensionspackage",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          },
+          {
+            "apiVersion": "2018-05-01-preview",
+            "name": "extension_resourceutilizationextensionspackage",
+            "type": "ProactiveDetectionConfigs",
+            "location": "[parameters('appInsightsLocation')]",
+            "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+            ],
+            "properties": {
+              "name": "extension_resourceutilizationextensionspackage",
+              "sendEmailsToSubscriptionOwners": false,
+              "customEmails": [],
+              "enabled": true
+            }
+          }
+        ]
+      },
+      {
+          "type": "microsoft.insights/alertrules",
+          "name": "[concat('Failure Anomalies - ', parameters('appInsightsName'))]",
+          "apiVersion": "2014-04-01",
+          "location": "East US",                
+          "tags": {
+              "[concat('hidden-link:', resourceGroup().id, '/providers/microsoft.insights/components/', parameters('appInsightsName'))]": "Resource"
+          },        
+          "scale": null,
+          "properties": {
+              "name": "[concat('Failure Anomalies - ', parameters('appInsightsName'))]",
+              "description": "",
+              "isEnabled": true,
+              "condition": {
+                  "odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+                  "dataSource": {
+                      "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+                      "resourceUri": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]",
+                      "metricNamespace": null,
+                      "metricName": "advanced::A3108E3D-5E26-44CF-B232-783F5E20EF10::ewAiAEgAeQBwAGUAcgBpAG8AbgBBAHAAcABsAGkAYwBhAHQAaQBvAG4AUwBpAGQAIgA6AG4AdQBsAGwALAAiAEgAeQBwAGUAcgBpAG8AbgBTAHUAYgBqAGUAYwB0AFMAaQBkACIAOgBuAHUAbABsACwAIgBIAHkAcABlAHIAaQBvAG4ATwBiAHMAZQByAHYAZQByAFMAaQBkACIAOgBuAHUAbABsACwAIgBDAHUAcwB0AG8AbQBlAHIAQQBjAGMAbwB1AG4AdABJAGQAIgA6ACIAMAAwADAAMAAwADAAMAAwAC0AMAAwADAAMAAtADAAMAAwADAALQAwADAAMAAwAC0AMAAwADAAMAAwADAAMAAwADAAMAAwADAAIgAsACIAQQBwAHAAbABpAGMAYQB0AGkAbwBuAE4AYQBtAGUAIgA6AG4AdQBsAGwALAAiAEEAcABwAGwAaQBjAGEAdABpAG8AbgBJAGQAIgA6AG4AdQBsAGwALAAiAFAAcgBvAGYAaQBsAGUASQBkACIAOgAwACwAIgBXAGkAbgBkAG8AdwBTAGkAegBlAEkAbgBNAGkAbgB1AHQAZQBzACIAOgA2ADAALAAiAE0AZQB0AHIAaQBjAE4AYQBtAGUAIgA6ACIAIgAsACIAVABoAHIAZQBzAGgAbwBsAGQAIgA6ADIALgAwACwAIgBBAGwAZQByAHQAVABlAG0AcABsAGEAdABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAEkAZAAiADoAIgAiACwAIgBSAHUAbABlAE4AYQBtAGUAIgA6ACIAIgAsACIAUgB1AGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AIgA6ACIAIgAsACIAUgBlAHMAbwB1AHIAYwBlAEkAZAAiADoAbgB1AGwAbAAsACIAUwB1AGIAcwBjAHIAaQBwAHQAaQBvAG4ASQBkACIAOgBuAHUAbABsACwAIgBBAGcAZwByAGUAZwBhAHQAZQBGAHUAbgBjAHQAaQBvAG4AIgA6ACIAIgAsACIAQwBvAG0AcABhAHIAaQBzAG8AbgBPAHAAZQByAGEAdABvAHIAIgA6ACIAewBcACIAQgBhAHMAZQBsAGkAbgBlAFQAaQBtAGUAcwBwAGEAbgBcACIAOgBcACIAMAAwADoANAAwADoAMAAwAFwAIgAsAFwAIgBJAG4AcwBpAGcAaAB0AHMAUwBlAHIAdgBpAGMAZQBMAGEAZwBcACIAOgBcACIAMAAwADoAMAAwADoAMAAwAFwAIgAsAFwAIgBCAHUAZgBmAGUAcgBUAGkAbQBlAFwAIgA6AFwAIgAwADAAOgAwADEAOgAwADAAXAAiACwAXAAiAEIAbABvAGIAUwB0AG8AcgBhAGcAZQBMAG8AZwBnAGkAbgBnAEUAbgBhAGIAbABlAGQAXAAiADoAZgBhAGwAcwBlACwAXAAiAFUAcwBlAHIAUwB1AHAAcAByAGUAcwBzAGkAbwBuAHMAXAAiADoAbgB1AGwAbAAsAFwAIgBQAHIAbwBmAGkAbABlAEkAZABcACIAOgAwACwAXAAiAEUAbQBhAGkAbABUAHkAcABlAFwAIgA6ADAALABcACIAUgBkAGQARgBhAGkAbAB1AHIAZQBzAFMAcABpAGsAZQBUAGgAcgBlAHMAaABvAGwAZABcACIAOgAzAC4AMAAsAFwAIgBSAGEAdwBQAHIAbwBhAGMAdABpAHYAZQBSAHUAbABlAEMAbwBuAGYAaQBnAFwAIgA6AG4AdQBsAGwAfQAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8AQwB1AHMAdABvAG0AIgA6AGYAYQBsAHMAZQAsACIAQwB1AHMAdABvAG0ARQBtAGEAaQBsAHMARQBuAGMAbwBkAGUAZAAiADoAIgAiACwAIgBFAG4AYQBiAGwAZQBTAGUAbgBkAEUAbQBhAGkAbABUAG8ATwB3AG4AZQByAHMAIgA6AGYAYQBsAHMAZQB9AA=="
+                  },
+                  "operator": "GreaterThan",
+                  "threshold": 2,
+                  "windowSize": "PT1H"
+              },
+              "action": {
+                  "odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+                  "sendToServiceOwners": false,
+                  "customEmails": []
+              }
+          },
+          "dependsOn": [
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
+          ]
+      }
+    ]
+  }
