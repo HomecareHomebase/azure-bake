@@ -22,6 +22,10 @@ For Clean Build with Local and External Dependency Loading: `npm run clean:build
 For Build with Local and External Dependency Loading:       `npm run load:build`   
 For Build Only:                                             `npm run build`  
 
+## Development Testing
+
+After a _Lerna_ `clean:build` navigate to `system/dist` and run `node index.js` and append your bake commands including `mix --name "my_deployment:latest" --runtime "latest" ./package/test.yaml`. All dependencies should be linked through _Lerna_ as long as they have been properly setup and run through the build process.
+
 ## Install
 ```
 npm i -g azure-bake
