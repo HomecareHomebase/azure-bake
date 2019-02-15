@@ -8,6 +8,20 @@
 * [@azbake/ingredient-traffic-manager](./ingredient/ingredient-traffic-manager/CHANGELOG.md)
 * [@azbake/ingredient-host-names](./ingredient/ingredient-host-names/CHANGELOG.md)
 
+## Tools
+
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+
+[![Generic badge](https://img.shields.io/badge/Azure-Cloud-Blue.svg)](https://shields.io/)
+
+## Build
+
+**_Build Commands_ to be executed from the project root**
+
+For Clean Build with Local and External Dependency Loading: `npm run clean:build`  
+For Build with Local and External Dependency Loading:       `npm run load:build`   
+For Build Only:                                             `npm run build`  
+
 ## Install
 ```
 npm i -g azure-bake

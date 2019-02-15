@@ -23,10 +23,10 @@
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
   },
   "directories": {
-    "lib": "dist"
+    "lib": "src/dist"
   },
   "files": [
-    "dist"
+    "src/dist/*"
   ],
   "peerDependencies": {
     "@azure/ms-rest-nodeauth": ">= 0.9.1",

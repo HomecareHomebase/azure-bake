@@ -24,10 +24,10 @@
     "bake": "dist/index.js"
   },
   "directories": {
-    "lib": "dist"
+    "lib": "src/dist"
   },
   "files": [
-    "dist"
+    "src/dist/*"
   ],
   "scripts": {
     "release": "tsc -p ../core/src && tsc -p ../ingredient/ingredient-arm/src && tsc -p ../ingredient/ingredient-script/src && tsc -p ../ingredient/ingredient-utils/src && tsc -p ./src && npx lerna publish --conventional-commits --yes",

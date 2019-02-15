@@ -20,10 +20,10 @@
     "watch": "tsc -w -p ./src"
   },
   "directories": {
-    "lib": "dist"
+    "lib": "src/dist"
   },
   "files": [
-    "dist"
+    "src/dist/*"
   ],
   "peerDependencies": {
     "@azbake/core": "^0.1.17"
