@@ -28,13 +28,13 @@
     "@azure/ms-rest-nodeauth": "0.*"
   },
   "devDependencies": {
+    "@azbake/core": "0.*",
+    "@azbake/ingredient-utils": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.22",
-    "@azbake/core": "^0.1.22",
-    "@azbake/ingredient-utils": "^0.1.22",
-    "@azure/ms-rest-nodeauth": "^0.9.1"
+    "@azbake/arm-helper": "^0.1.22"
   },
   "publishConfig": {
     "access": "public"

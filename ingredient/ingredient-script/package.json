@@ -26,11 +26,11 @@
     "@azbake/core": "0.*"
   },
   "devDependencies": {
+    "@azbake/core": "0.*",
     "@types/node": "^10.12.18",
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.22"
   },
   "publishConfig": {
     "access": "public"

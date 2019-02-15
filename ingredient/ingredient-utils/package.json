@@ -23,13 +23,12 @@
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "0.*"
   },
   "devDependencies": {
+    "@azbake/core": "0.*",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.22"
   },
   "publishConfig": {
     "access": "public"
