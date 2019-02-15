@@ -12,20 +12,18 @@
     "watch": "tsc -w -p ./src"
   },
   "directories": {
-    "lib": "src/dist"
+    "lib": "dist"
   },
-  "files": [
-    "src/dist/*"
-  ],
+  
   "peerDependencies": {
     "@azbake/core": "^0.1.17",
-    "@azure/ms-rest-nodeauth": ">= 0.9.1"
+    "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
     "@azbake/core": "^0.1.17",
-    "@azure/ms-rest-nodeauth": ">= 0.9.1"
+    "@azure/ms-rest-nodeauth": "^0.9.1"
   }
 }

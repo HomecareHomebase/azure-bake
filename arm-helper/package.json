@@ -4,6 +4,9 @@
   "version": "0.0.2",
   "main": "src/dist/arm-helper.js",
   "typings": "src/arm-helper.ts",
+  "directories": {
+    "lib": "dist"
+  },
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -19,12 +22,6 @@
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
   },
-  "directories": {
-    "lib": "src/dist"
-  },
-  "files": [
-    "src/dist/*"
-  ],
   "peerDependencies": {
     "@azbake/core": "^0.1.17",
     "@azure/arm-resources": "^1.0.1"

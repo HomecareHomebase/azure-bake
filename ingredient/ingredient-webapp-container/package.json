@@ -4,6 +4,9 @@
   "version": "0.0.2",
   "main": "dist/index.js",
   "typings": "src/index.ts",
+  "directories": {
+    "lib": "dist"
+  },
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -21,17 +24,17 @@
   },
   "peerDependencies": {
     "@azbake/core": "^0.1.17",
-    "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": ">= 0.9.1"
+    "@azbake/ingredient-utils": "0.*.*",
+    "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "0.*",
+    "@azbake/arm-helper": "0.*.*",
     "@azbake/core": "^0.1.17",
-    "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": ">= 0.9.1"
+    "@azbake/ingredient-utils": "0.*.*",
+    "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "publishConfig": {
     "access": "public"
