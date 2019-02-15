@@ -1,5 +1,5 @@
 {
-  "version": "independent",
+  "version": "0.1.21",
   "npmClient": "npm",
   "command": {
     "publish": {
@@ -13,7 +13,10 @@
     }
   },
   "packages": [
-    "core","arm-helper","ingredient-template","ingredient/*","system"
-  ],
-  "version": "0.1.15"
+    "arm-helper",
+    "core",
+    "ingredient-template",
+    "ingredient/*",
+    "system"
+  ]
 }

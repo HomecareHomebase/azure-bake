@@ -1,7 +1,7 @@
 {
   "name": "",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.1.21",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "",
@@ -14,7 +14,6 @@
   "directories": {
     "lib": "dist"
   },
-  
   "peerDependencies": {
     "@azbake/core": "^0.1.17",
     "@azure/ms-rest-nodeauth": "^0.9.1"
@@ -23,7 +22,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.17",
+    "@azbake/core": "^0.1.21",
     "@azure/ms-rest-nodeauth": "^0.9.1"
   }
 }

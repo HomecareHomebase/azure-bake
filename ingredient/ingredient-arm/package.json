@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-arm",
   "description": "Bake ingredient for Azure ARM template deployments",
-  "version": "0.0.16",
+  "version": "0.1.21",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -21,7 +21,7 @@
     "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
-  }, 
+  },
   "peerDependencies": {
     "@azbake/core": "^0.1.17",
     "@azure/ms-rest-nodeauth": "^0.9.1"
@@ -30,8 +30,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "0.*.*",
-    "@azbake/core": "^0.1.17",
+    "@azbake/arm-helper": "^0.1.21",
+    "@azbake/core": "^0.1.21",
     "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "publishConfig": {
