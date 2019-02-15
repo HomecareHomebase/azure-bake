@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- bash: npm install --global
+  workingDirectory: ./
+  displayName: NPM Install of Lerna & TypeScript
+
+- bash: lerna run clean:build
+  workingDirectory: ./
+  displayName: Lerna Build of All Packages
+
+- bash: echo "Input Lerna Publish Script Here...."
+  workingDirectory: ./
+  displayName: Lerna Publish of all updated packages to NPM
+
+
