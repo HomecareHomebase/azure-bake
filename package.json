@@ -3,8 +3,8 @@
   "private": true,
   "devDependencies": {
     "@types/node": "^10.12.18",
-    "lerna": "^3.10.1",
-    "typescript": "^3.2.2"
+    "lerna": "^3.13.0",
+    "typescript": "^3.3.3"
   },
   "scripts": {
     "clean:build": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile",
