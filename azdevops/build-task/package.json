@@ -13,7 +13,7 @@
     "docker-common": "file:../imports/docker-common-1.0.0.tgz"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18",
+    "@types/node": "^10.12.12",
     "@types/q": "^1.5.1"
   }
 }

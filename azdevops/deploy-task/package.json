@@ -12,7 +12,7 @@
     "azure-pipelines-task-lib": "^2.7.7"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18",
+    "@types/node": "^10.12.12",
     "@types/q": "^1.5.1"
   }
 }
