@@ -19,12 +19,6 @@
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
   },
-  "directories": {
-    "lib": "dist"
-  },
-  "files": [
-    "dist"
-  ],
   "peerDependencies": {
     "@azbake/core": "0.*",
     "@azbake/ingredient-utils": "0.*",

@@ -5,5 +5,8 @@
     "@types/node": "^11.9.0",
     "lerna": "^3.11.1",
     "typescript": "^3.3.3"
+  },
+  "scripts": {
+    "bootstrap": "lerna clean --yes && npm --prefix ./arm-helper install ./arm-helper && npm --prefix ./ingredient/ingredient-arm install ./ingredient/ingredient-arm && npm --prefix ./ingredient/ingredient-traffic-manager install ./ingredient/ingredient-traffic-manager && npm --prefix ./ingredient/ingredient-webapp-container install ./ingredient/ingredient-webapp-container && lerna bootstrap && lerna run compile"
   }
 }
