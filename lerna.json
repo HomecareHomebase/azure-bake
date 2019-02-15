@@ -21,7 +21,7 @@
     }
   },
   "packages": [
-    "core","arm-helper","ingredient/*","ingredient-template","system"
+    "core","arm-helper","ingredient-template","ingredient/ingredient-host-names","system"
   ],
   "version": "0.1.15"
 }
