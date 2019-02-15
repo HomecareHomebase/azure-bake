@@ -10,6 +10,6 @@
     "clean:build": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile",
     "load:build": "lerna bootstrap --hoist && lerna run compile",
     "build": "lerna bootstrap --hoist && lerna run compile",
-    "publish":"npm run clean:build && lerna publish --conventional-commits --yes"
+    "publish": "npm run clean:build && lerna publish --conventional-commits --yes"
   }
 }
