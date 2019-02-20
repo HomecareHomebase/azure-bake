@@ -4,7 +4,32 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+  - master
+  - release/*
+  - refs/tags/*
+  paths:
+    include:
+    - arm-helper/*
+    - core/*
+    - ingredient/*
+    - system/*    
+    - lerna.json
+    - package.json
+
+pr:
+  branches:
+  - master
+  - release/*
+  - refs/tags/*
+  paths:
+    include:
+    - arm-helper/*
+    - core/*
+    - ingredient/*
+    - system/*    
+    - lerna.json
+    - package.json
 
 pool:
   vmImage: 'Ubuntu-16.04'
