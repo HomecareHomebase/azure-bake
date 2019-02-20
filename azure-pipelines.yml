@@ -10,9 +10,13 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- bash: npm install lerna@3.13.0 typescript@3.3.3
+- bash: npm install lerna@3.13.0 -D && npm install typescript@3.3.3
   workingDirectory: ./
   displayName: NPM Install of Lerna & TypeScript
+
+- bash: ls -l && npm ls -d=0
+  workingDirectory: ./
+  displayName: List of Directories and NPM packages
 
 - bash: npm install
   workingDirectory: ./
