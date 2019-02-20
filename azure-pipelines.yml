@@ -14,10 +14,6 @@ steps:
   workingDirectory: ./
   displayName: NPM Install of Lerna & TypeScript
 
-- bash: npm install
-  workingDirectory: ./
-  displayName: NPM Install of Lerna & TypeScript
-
 - bash: lerna run clean:build
   workingDirectory: ./
   displayName: Lerna Build of All Packages
