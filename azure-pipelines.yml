@@ -10,9 +10,13 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- bash: npm install lerna@3.13.0 typescript@3.3.3 --only=dev && lerna run clean:build
+- bash: sudop npm install lerna@3.13.0 typescript@3.3.3 --global
   workingDirectory: ./
   displayName: NPM Install of Lerna & TypeScript
+
+- bash: sudo lerna run clean:build
+  workingDirectory: ./
+  displayName: Lerna Run Clean Build
 
 - bash: echo "Input Lerna Publish Script Here...."
   workingDirectory: ./
