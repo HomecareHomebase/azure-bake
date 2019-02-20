@@ -5,9 +5,10 @@
 
 trigger:
   branches:
-  - master
-  - release/*
-  - refs/tags/*
+    include:
+    - master
+    - release/*
+    - refs/tags/*
   paths:
     include:
     - arm-helper/*
@@ -19,9 +20,10 @@ trigger:
 
 pr:
   branches:
-  - master
-  - release/*
-  - refs/tags/*
+    include:
+    - master
+    - release/*
+    - refs/tags/*
   paths:
     include:
     - arm-helper/*
