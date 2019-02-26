@@ -3,19 +3,25 @@
   "description": "Ingredient for deploying an instance of an Application Insights resource",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "typings": "src/index.ts",
   "author": "HCHB",
-  "license": "",
+  "license": "MIT",
   "scripts": {
     "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src"
   },
+  "directories": {
+    "lib": "dist"
+  },
   "peerDependencies": {
-    "@azbake/core": "0.*",    
-    "@azure/ms-rest-nodeauth": "0.*",
+    "@azbake/core": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18"
+    "@azbake/core": "0.*",
+    "@azure/ms-rest-nodeauth": "0.*",
+    "@types/node": "^10.12.18"    
   },
   "dependencies": {
     "@azbake/arm-helper": "0.*"
