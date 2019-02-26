@@ -16,7 +16,7 @@ ingredients:
   - "@azbake/ingredient-app-insights@~0"
 resourceGroup: true
 recipe:
-  mypkg-web-site:
+  mypkg-app-insights:
     properties:
       type: "@azbake/ingredient-app-insights"
       source: ""
