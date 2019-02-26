@@ -11,14 +11,13 @@
     "watch": "tsc -w -p ./src"
   },
   "peerDependencies": {
-    "@azbake/core": "^0.1.12",
-    "@azure/ms-rest-nodeauth": "^0.8.4"
+    "@azbake/core": "0.*",    
+    "@azure/ms-rest-nodeauth": "0.*",
   },
   "devDependencies": {
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "0.0.2",
-    "@azbake/core": "^0.1.17"
+    "@azbake/arm-helper": "0.*"
   }
 }
