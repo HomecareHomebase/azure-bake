@@ -1,0 +1,20 @@
+name: azure-container-registry
+shortName: azcontainerreg
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-arm@~0"
+  - "@azbake/arm-helper@~0"
+resourceGroup: true
+rgOverride: "[coreutils.variable('acrtest','default')]"
+parallelRegions: true
+recipe:
+  acr:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./acr-arm.json
+      parameters:
+        registryName: "testacr"
+        adminUserEnabled: false
+        registryLocation: "eastus"
+        registrySku: "basic"
+        
