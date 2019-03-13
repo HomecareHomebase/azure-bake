@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "registryName": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 50,
+        "metadata": {
+          "description": "Name of your Azure Container Registry"
+        }
+      },
+      "adminUserEnabled": {
+        "type": "bool",
+        "defaultValue": false,
+        "metadata": {
+          "description": "Enable admin user that has push / pull permission to the registry."
+        }
+      },
+      "registryLocation": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for all resources."
+        }
+      },
+      "registrySku": {
+        "type": "string",
+        "metadata": {
+          "description": "Tier of your Azure Container Registry."
+        },
+        "defaultValue": "Basic",
+        "allowedValues": [
+          "Basic",
+          "Standard",
+          "Premium"
+        ]
+      }
+    },
+    "resources": [
+      {
+        "name": "[parameters('registryName')]",
+        "type": "Microsoft.ContainerRegistry/registries",
+        "apiVersion": "2017-10-01",
+        "location": "[parameters('registryLocation')]",
+        "comments": "Container registry for storing docker images",
+        "tags": {
+          "displayName": "Container Registry",
+          "container.registry": "[parameters('registryName')]"
+        },
+        "sku": {
+          "name": "[parameters('registrySku')]",
+          "tier": "[parameters('registrySku')]"
+        },
+        "properties": {
+          "adminUserEnabled": "[parameters('adminUserEnabled')]"
+        }
+      }
+    ],
+    "outputs": {
+      "acrLoginServer": {
+        "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries',parameters('registryName')),'2017-10-01').loginServer]",
+        "type": "string"
+      }
+    }
+  }
