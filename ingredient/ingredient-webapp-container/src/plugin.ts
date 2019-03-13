@@ -10,7 +10,7 @@ export class WebAppContainer extends BaseIngredient {
         super(name, ingredient, ctx);
     }
 
-    public async Execute(): Promise<void> {
+    public async Execute(): Promise<any> {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
         let webapp = new WebAppUtils(this._ctx);
@@ -18,6 +18,7 @@ export class WebAppContainer extends BaseIngredient {
         try {
 
             var helper = new ARMHelper(this._ctx);
+            let result: any[] = [];
 
             //build the properties as a standard object.
             let props = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters);
@@ -39,7 +40,8 @@ export class WebAppContainer extends BaseIngredient {
             props["location"] = {"value": webAppRegion};
 
             
-            await helper.DeployTemplate(this._name, arm, props, util.resource_group());
+            result.push( await helper.DeployTemplate(this._name, arm, props, util.resource_group()) );
+            return result
 
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);

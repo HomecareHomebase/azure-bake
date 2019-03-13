@@ -9,12 +9,13 @@ export class HostNames extends BaseIngredient {
         super(name, ingredient, ctx);
     }
 
-    public async Execute(): Promise<void> {
+    public async Execute(): Promise<any> {
         
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
 
         try {
             const helper = new ARMHelper(this._ctx);
+            let result: any[] = [];
 
             //build the properties as a standard object.
             let props : any = {};
@@ -40,7 +41,8 @@ export class HostNames extends BaseIngredient {
             props["cert_name"] = { "value": util.create_resource_name("cert", null, true) };
             props["location"] = { "value": util.current_region().name };
 
-            await helper.DeployTemplate(this._name, hostarm, props, util.resource_group());
+            result.push( await helper.DeployTemplate(this._name, hostarm, props, util.resource_group()) );
+            return result
         }
         catch (error) {
             this._logger.error(`deployment failed: ${error}`);

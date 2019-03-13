@@ -13,17 +13,17 @@ export class TrafficManager extends BaseIngredient {
     }
     _helper: ARMHelper;
 
-    public async Execute(): Promise<void> {
+    public async Execute(): Promise<any> {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
-
+        let result: any[] = [];
         try {
             // deploy the traffic manager profile to the primary region only
             if (util.current_region_primary()) {
-                await this.DeployProfile();
+                result.push(await this.DeployProfile());
             }
 
-            await this.DeployEndpoint();
+            result.push(result = await this.DeployEndpoint());
 
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
@@ -31,17 +31,18 @@ export class TrafficManager extends BaseIngredient {
         }
     }
 
-    public async DeployProfile(): Promise<void> {
+    public async DeployProfile(): Promise<any> {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
-    
+            let result: any[] = [];
             const region = this._ctx.Region.code;
             let trfutil = new TrafficUtils(this._ctx);
     
             let props = this._helper.BakeParamsToARMParams(this._name, this._ctx.Ingredient.properties.parameters);
             props["name"] = {"value": trfutil.get_profile() };
 
-            await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, util.resource_group());
+            result.push( await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, util.resource_group()) );
+            return result
 
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
@@ -49,12 +50,13 @@ export class TrafficManager extends BaseIngredient {
         }
     }
 
-    public async DeployEndpoint(): Promise<void> {
+    public async DeployEndpoint(): Promise<any> {
         
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
             const region = this._ctx.Region.code;
             let trfutil = new TrafficUtils(this._ctx);
+            let result: any[] = [];
 
             // read parameters to get the source-type.
             let temp: any = {};
@@ -80,8 +82,9 @@ export class TrafficManager extends BaseIngredient {
             props["source-rg"] = { "value": resource.resourceGroup };
             props["source-name"] = { "value": resource.resource };
             props["source-type"] = temp["source-type"];
+            result.push( await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, util.resource_group()) );
+            return result
 
-            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, util.resource_group());
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;

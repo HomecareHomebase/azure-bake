@@ -10,7 +10,7 @@ export class CustomArmIngredient extends BaseIngredient {
         super(name, ingredient, ctx)        
     }
 
-    public async Execute(): Promise<void> {
+    public async Execute(): Promise<any> {
 
         let source: string = this._ingredient.properties.source.value(this._ctx)
         let chk = fs.existsSync(source)
@@ -24,6 +24,7 @@ export class CustomArmIngredient extends BaseIngredient {
         try {
 
             this._logger.log('deployment for custom arm template: ' + source)
+            let result: any[] = [];
 
             const helper = new ARMHelper(this._ctx)
 
@@ -32,7 +33,8 @@ export class CustomArmIngredient extends BaseIngredient {
 
             let buffer = fs.readFileSync(source)
             let contents = buffer.toString()
-            await helper.DeployTemplate(this._name, JSON.parse(contents), props, util.resource_group());
+            result.push( await helper.DeployTemplate(this._name, JSON.parse(contents), props, util.resource_group()) );
+            return result
 
         } catch(error){
             this._logger.error('deployment failed: ' + error)

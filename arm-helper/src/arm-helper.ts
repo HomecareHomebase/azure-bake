@@ -13,7 +13,7 @@ export class ARMHelper {
     _ctx: DeploymentContext;
     _ingredient: IIngredient;
 
-    public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<DeploymentPropertiesExtended> {
+    public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<any> {
         
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
 
@@ -59,7 +59,7 @@ export class ARMHelper {
             }
 
             logger.log('deployment finished...');
-            return ( result.properties || <DeploymentPropertiesExtended>{} )
+            return result.properties
 
         } catch(error) {
             logger.error('deployment failed: ' + error);
