@@ -1,6 +1,7 @@
 import { IIngredient, Logger, DeploymentContext, BakeVariable } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
-import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
+import { Deployment, DeploymentProperties, DeploymentPropertiesExtended } from '@azure/arm-resources/esm/models';
+import { DeploymentPropertiesExtended } from '@azure/arm-resources/esm/models/mappers';
 
 export class ARMHelper {
 
@@ -12,7 +13,7 @@ export class ARMHelper {
     _ctx: DeploymentContext;
     _ingredient: IIngredient;
 
-    public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<void> {
+    public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<DeploymentPropertiesExtended> {
         
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
 
@@ -52,12 +53,13 @@ export class ARMHelper {
                 throw new Error('validate failed');
             }
             logger.log('starting deployment...');
-            let result = await client.deployments.createOrUpdate(resourceGroup, deploymentName, deployment);
+            let result = await client.deployments.createOrUpdate(resourceGroup, deploymentName, deployment) 
             if (result._response.status > 299) {
                 throw new Error(`ARM Error ${result._response.bodyAsText}`);
             }
 
             logger.log('deployment finished...');
+            return ( result.properties || <DeploymentPropertiesExtended>{} )
 
         } catch(error) {
             logger.error('deployment failed: ' + error);
