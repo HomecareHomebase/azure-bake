@@ -96,14 +96,15 @@ import arm from "./arm.json"
 
 export class MyIngredient extends BaseIngredient {
 
-  public async Execute(): Promise<void> {
+  public async Execute(): Promise<Any> {
 
     const util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+    let result: any[] = [];
     const helper = new ARMHelper(this._ctx)
 
     const parameters = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
-
-    await helper.DeployTemplate(this._name, arm, parameters, util.resource_group())
+    result.push( await helper.DeployTemplate(this._name, arm, parameters, util.resource_group()) )
+    return result
   }
 }
 
