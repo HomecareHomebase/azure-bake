@@ -48,7 +48,7 @@ let source: string = this._ingredient.properties.source.value(this._ctx)
 A plugin ingredient must extend `BaseIngredient` from "@azbake/core". It must also implement: 
 
 ```javascript
-public async Execute(): Promise<void>{}
+public async Execute(): Promise<any>{}
 ```
 
 Within your execute method you have access to the current deployment context, which implements `DeploymentContext` from "@azbake/core"

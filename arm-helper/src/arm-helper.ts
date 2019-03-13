@@ -1,6 +1,6 @@
 import { IIngredient, Logger, DeploymentContext, BakeVariable } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
-import { Deployment, DeploymentProperties, DeploymentPropertiesExtended } from '@azure/arm-resources/esm/models';
+import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { DeploymentPropertiesExtended } from '@azure/arm-resources/esm/models/mappers';
 
 export class ARMHelper {
