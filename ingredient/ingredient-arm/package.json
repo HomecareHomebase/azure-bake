@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-arm",
   "description": "Bake ingredient for Azure ARM template deployments",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -32,7 +32,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.26",
+    "@azbake/arm-helper": "^0.1.27",
     "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "publishConfig": {
