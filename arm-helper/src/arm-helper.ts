@@ -33,7 +33,7 @@ export class ARMHelper {
             //now iterate through all resources in the template and inject our tags.
             let resources: any[] = template.resources;
             resources.forEach( resource => {
-                resource.tags = "[parameters['baketags']"
+                resource.tags = "[parameters('baketags')]"
             })
             template.resources = resources
 
