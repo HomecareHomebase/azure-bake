@@ -1,7 +1,7 @@
 {
   "name": "@azbake/arm-helper",
   "description": "Helper class for installing ARM templates through Bake.",
-  "version": "0.1.22",
+  "version": "0.1.26",
   "main": "src/dist/arm-helper.js",
   "typings": "src/arm-helper.ts",
   "directories": {
