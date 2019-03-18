@@ -29,8 +29,7 @@
   },
   "devDependencies": {
     "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "^0.1.23",
-    "@types/node": "^10.12.18"
+    "@azbake/ingredient-utils": "^0.1.23"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.22",
