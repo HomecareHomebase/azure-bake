@@ -31,9 +31,11 @@ export class ARMHelper {
             }
 
             //now iterate through all resources in the template and inject our tags.
-            //template.resources.forEach( resource => {
-            //    resource.tags = "[parameters['baketags']"
-            //});
+            let resources: any[] = template.resources;
+            resources.forEach( resource => {
+                resource.tags = "[parameters['baketags']"
+            })
+            template.resources = resources
 
             logger.log('starting arm deployment for template');
 
