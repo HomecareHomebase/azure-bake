@@ -22,8 +22,8 @@ export class HostNames extends BaseIngredient {
             const serverFarm = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
 
             let params = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters);
-            const keyVault = util.parseResource(params["keyvault"].value);
-            const certName = params["certificate"].value;
+            // const keyVault = util.parseResource(params["keyvault"].value);
+            // const certName = params["certificate"].value;
 
             //todo fix how we get the webapp and hostname.
             const appName = util.create_resource_name("webapp", null, true);
@@ -32,12 +32,13 @@ export class HostNames extends BaseIngredient {
 
             props["webapp_name"] = { "value": appName };
             props["host_name"] = { "value": hostName };
-            props["app_service_rg"] = { "value": serverFarm.resourceGroup };
-            props["app_service_name"] = { "value": serverFarm.resource };
-            props["keyvault_rg"] = { "value": keyVault.resourceGroup };
-            props["keyvault_name"] = { "value": keyVault.resource };
-            props["vault_secret_name"] = { "value": certName };
-            props["cert_name"] = { "value": util.create_resource_name("cert", null, true) };
+            props["cert_rg"] = { "value": serverFarm.resourceGroup };
+            // props["app_service_rg"] = { "value": serverFarm.resourceGroup };
+            // props["app_service_name"] = { "value": serverFarm.resource };
+            // props["keyvault_rg"] = { "value": keyVault.resourceGroup };
+            // props["keyvault_name"] = { "value": keyVault.resource };
+            // props["vault_secret_name"] = { "value": certName };
+            props["cert_name"] = { "value": util.create_cert_name() };
             props["location"] = { "value": util.current_region().name };
 
             await helper.DeployTemplate(this._name, hostarm, props, util.resource_group());
