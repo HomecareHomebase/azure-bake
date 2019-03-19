@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-host-names",
   "description": "Ingredient for deploying custom host names and ssl certs to an Azure WebApp",
-  "version": "0.1.27",
+  "version": "0.1.28",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -28,11 +28,11 @@
     "@azure/ms-rest-nodeauth": "0.*"
   },
   "devDependencies": {
-    "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "^0.1.23"
+    "@azbake/core": "^0.1.28",
+    "@azbake/ingredient-utils": "^0.1.28"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.27",
+    "@azbake/arm-helper": "^0.1.28",
     "@azure/ms-rest-nodeauth": "^0.9.1"
   },
   "publishConfig": {

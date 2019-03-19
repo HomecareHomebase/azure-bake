@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.28](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.27...v0.1.28) (2019-03-19)
+
+
+### Bug Fixes
+
+* Moved Tag generator into core so it can be used everywhere in the ecosystem ([#31](https://github.com/HomecareHomebase/azure-bake/issues/31)) ([1dcef96](https://github.com/HomecareHomebase/azure-bake/commit/1dcef96))
+
+
+
+
+
+
 ## [0.1.22](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.5...v0.1.22) (2019-02-15)
 
 
