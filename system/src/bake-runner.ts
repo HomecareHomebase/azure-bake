@@ -1,4 +1,4 @@
-import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager} from "@azbake/core";
+import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager, TagGenerator} from "@azbake/core";
 import {IngredientFactory} from './ingredients'
 import {red, cyan} from 'colors'
 import { DeploymentContext, Logger } from "@azbake/core"
@@ -97,8 +97,11 @@ export class BakeRunner {
 
             if (!rgExists){
 
+                let tagGenerator = new TagGenerator(ctx)
+
                 ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
                 await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
+                    tags:  tagGenerator.GenerateTags(),
                     location: region_name
                 })
             }
