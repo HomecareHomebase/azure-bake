@@ -1,4 +1,4 @@
-import { IIngredient, Logger, DeploymentContext, BakeVariable } from '@azbake/core';
+import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { stringify } from 'querystring';
@@ -102,20 +102,7 @@ export class ARMHelper {
 
     public GenerateTags(extraTags: Map<string,string> | null = null) : any
     {
-        let tags: any = {}
-        if (extraTags){
-            extraTags.forEach((v,n)=>{
-                tags[n] = v
-            })
-        }
-
-        tags.envcode = this._ctx.Environment.environmentCode
-        tags.environment = this._ctx.Environment.environmentName
-        tags.region = this._ctx.Region.name
-        tags.recipe = this._ctx.Config.name
-        tags.version = this._ctx.Config.version
-        tags.ingredient = this._ctx.Ingredient.properties.type || ""
-
-        return tags
+       var tagGen = new TagGenerator(this._ctx)
+       return tagGen.GenerateTags(extraTags)
     }
 }

@@ -38,6 +38,7 @@ export interface IBaseUtilityType {
 export interface IIngredient {
     properties: IIngredientProperties,
     dependsOn: Array<string>
+    pluginVersion: string
 }
 
 export interface IBakeConfig {
