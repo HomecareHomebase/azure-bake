@@ -14,6 +14,7 @@ import {Buffer} from 'buffer'
 import * as minimist from 'minimist'
 
 let bake_version = require('../package.json').version
+process.env['npm_package_version'] = bake_version;
 
 let argv = minimist(process.argv.slice(2))
 let cmd: string = ""
