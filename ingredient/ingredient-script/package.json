@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/HomecareHomebase/azure-bake",
   "scripts": {
-    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
-    "compile": "tsc -p ./src",
-    "watch": "tsc -w -p ./src"
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
   },
   "peerDependencies": {
     "@azbake/core": "0.*"
