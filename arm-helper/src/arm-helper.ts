@@ -1,6 +1,8 @@
-import { IIngredient, Logger, DeploymentContext, BakeVariable } from '@azbake/core';
+import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
+import { stringify } from 'querystring';
+import { AnyCnameRecord } from 'dns';
 
 export class ARMHelper {
 
@@ -17,6 +19,23 @@ export class ARMHelper {
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
 
         try {
+
+            //set the baketags param (overwrite if it was already set)
+            params["baketags"] = {
+                "value": this.GenerateTags()
+            }
+
+            //now inject the param into the template as a param so it's linked.
+            template.parameters.bakeTags = {
+                "type":"object"
+            }
+
+            //now iterate through all resources in the template and inject our tags.
+            let resources: any[] = template.resources;
+            resources.forEach( resource => {
+                resource.tags = "[parameters('baketags')]"
+            })
+            template.resources = resources
 
             logger.log('starting arm deployment for template');
 
@@ -79,5 +98,11 @@ export class ARMHelper {
         });
 
         return props;
+    }
+
+    public GenerateTags(extraTags: Map<string,string> | null = null) : any
+    {
+       var tagGen = new TagGenerator(this._ctx)
+       return tagGen.GenerateTags(extraTags)
     }
 }

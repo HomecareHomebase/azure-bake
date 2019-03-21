@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.30](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.29...v0.1.30) (2019-03-20)
+
+
+### Bug Fixes
+
+* Ingredient build fix ([#33](https://github.com/HomecareHomebase/azure-bake/issues/33)) ([28cde6f](https://github.com/HomecareHomebase/azure-bake/commit/28cde6f))
+
+
+
+
+
+## [0.1.29](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.28...v0.1.29) (2019-03-19)
+
+
+### Bug Fixes
+
+* fixing the global tool version for the env ([#32](https://github.com/HomecareHomebase/azure-bake/issues/32)) ([15dab51](https://github.com/HomecareHomebase/azure-bake/commit/15dab51))
+
+
+
+
+
+## [0.1.28](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.27...v0.1.28) (2019-03-19)
+
+
+### Bug Fixes
+
+* Moved Tag generator into core so it can be used everywhere in the ecosystem ([#31](https://github.com/HomecareHomebase/azure-bake/issues/31)) ([1dcef96](https://github.com/HomecareHomebase/azure-bake/commit/1dcef96))
+
+
+
+
+
+
 ## [0.1.23](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.22...v0.1.23) (2019-02-15)
 
 **Note:** Version bump only for package azure-bake

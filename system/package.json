@@ -3,7 +3,7 @@
   "description": "Azure cloud deployment platform for both infrasturcture as code and software",
   "author": "HCHB",
   "license": "MIT",
-  "version": "0.1.23",
+  "version": "0.1.30",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HomecareHomebase/azure-bake.git"
@@ -29,11 +29,11 @@
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "scripts": {
-    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
-    "debug-build": "npm install && docker-compose build && tsc -w -p ./src",
-    "release-build": "docker build . -t bake:release && npm run dockertag",
-    "compile": "tsc -p ./src",
-    "watch": "tsc -w -p ./src",
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "debug-build": "npm install && docker-compose build && tsc -w -p .",
+    "release-build": "docker build . --no-cache -t bake:release && npm run dockertag",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p .",
     "debug": "node --inspect-brk=0.0.0.0:9229 dist/index.js",
     "start": "node dist/index.js",
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts",
@@ -55,8 +55,8 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "@azbake/core": "^0.1.22",
-    "@azbake/ingredient-utils": "^0.1.23",
+    "@azbake/core": "^0.1.30",
+    "@azbake/ingredient-utils": "^0.1.30",
     "@azure/arm-resources": "^1.0.1",
     "@azure/ms-rest-nodeauth": "^0.9.1",
     "azcli-npm": "^1.1.3",

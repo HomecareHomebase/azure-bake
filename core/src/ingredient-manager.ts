@@ -10,12 +10,18 @@ export class IngredientManager {
         = new Map<string, IIngredientType>()
     private static ingredientUtilTypes : Map<string,IBaseUtilityType>
         = new Map<string, IBaseUtilityType>() 
+    private static ingredientTypesVersions : Map<string, string>
+        = new Map<string, string>()
 
     public static Register(moduleName: string):void {
 
         var module = require(moduleName)
+
         if (module.plugin){
+            let module_version = require(moduleName + '/package.json').version
+
             IngredientManager.ingredientTypes.set(module.pluginNS, module.plugin)
+            IngredientManager.ingredientTypesVersions.set(module.pluginNS, module_version)
         }
 
         if (module.functions){
@@ -27,9 +33,12 @@ export class IngredientManager {
     public static CreateIngredient(ingredientType: string, name: string, ingredient: IIngredient, ctx: DeploymentContext ): BaseIngredient | null {
 
         let type = IngredientManager.ingredientTypes.get(ingredientType)
-
         if (type){
-            return new type(name,ingredient,ctx)
+            let plugin = new type(name,ingredient,ctx)
+            
+            //this is a bit smelly, but allows us to inject package version into the ingredient instance
+            plugin._ingredient.pluginVersion = IngredientManager.ingredientTypesVersions.get(ingredientType) || "0.0.0"
+            return plugin
         }
         else {
             return null

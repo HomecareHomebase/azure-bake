@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-utils",
   "description": "Bake ingredient for core utility functions",
-  "version": "0.1.23",
+  "version": "0.1.30",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -18,12 +18,12 @@
   },
   "homepage": "https://github.com/HomecareHomebase/azure-bake",
   "scripts": {
-    "upload": "tsc -p ./src && npm --no-git-tag-version version patch && npm publish --access public",
-    "compile": "tsc -p ./src",
-    "watch": "tsc -w -p ./src"
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
   },
   "devDependencies": {
-    "@azbake/core": "0.*",
+    "@azbake/core": "^0.1.30",
     "@types/node": "^10.12.18"
   },
   "publishConfig": {
