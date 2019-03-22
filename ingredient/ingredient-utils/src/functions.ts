@@ -67,6 +67,12 @@ export class CoreUtils extends BaseUtility {
         return this.create_resource_name("appsvc", null, true);
     }
 
+    public get_cert_name(pkgName: string, resourceGroup: string | null = null): string {
+        const rg = resourceGroup || this.get_resource_group(pkgName);
+        const cert = this.create_resource_name("cert", pkgName, true)
+
+        return `${rg}/${cert}`;
+    }
     public create_cert_name(): string {
         return this.create_resource_name("cert", null, true)
     }
