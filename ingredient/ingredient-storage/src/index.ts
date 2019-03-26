@@ -1,4 +1,8 @@
 import {StoragePlugIn} from './plugin'
+import { StorageUtils } from './functions'
 
 exports.plugin = StoragePlugIn
-exports.pluginNS = "@azbake/ingredient-storage" //name of the ingredient to reference in a bake.yaml recipe
+exports.pluginNS = "@azbake/ingredient-storage"
+
+exports.functions = StorageUtils
+exports.functionsNS = "storage"
