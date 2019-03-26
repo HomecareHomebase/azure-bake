@@ -20,6 +20,3 @@ export class StorageUtils extends BaseUtility {
         return st_primary_region
     }
 }
-
-    
-}
