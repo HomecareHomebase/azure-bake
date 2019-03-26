@@ -41,7 +41,7 @@ steps:
   workingDirectory: ./
   displayName: NPM Install of Lerna & TypeScript
 
-- bash: sudo lerna run clean:build
+- bash: sudo npm run clean:build
   workingDirectory: ./
   displayName: Lerna Run Clean Build
 
