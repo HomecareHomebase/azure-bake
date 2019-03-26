@@ -1,6 +1,6 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 
-export class TrafficUtils extends BaseUtility {
+export class ContainerRegUtils extends BaseUtility {
 
     public get_profile(): string {
 
