@@ -16,6 +16,9 @@
         "name": "[parameters('appInsightsName')]",
         "apiVersion": "2018-05-01-preview",
         "location": "[parameters('appInsightsLocation')]",
+        "tags": {
+          "Metrics": "requests/count"
+        },
         "properties": {
           "ApplicationId": "[parameters('appInsightsName')]",
           "Application_Type": "web",
