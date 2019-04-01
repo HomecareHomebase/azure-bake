@@ -5,10 +5,10 @@
     "description": "Azure Bake Build Task",
     "helpMarkDown": "",
     "category": "Azure Pipelines",
-    "author": "HCHB",
+    "author": "HomecareHomebase",
     "version": {
         "Major": 0,
-        "Minor": 4,
+        "Minor": 5,
         "Patch": 0
     },
     "groups":[
@@ -27,10 +27,10 @@
             "displayName":"Artifact Creation",
             "isExpanded": false,
             "visibleRule":"useArtifact == true"
-        }      
+        }
     ],
     "instanceNameFormat": "Azure Bake Build",
-    "inputs": [        
+    "inputs": [
         {
             "name": "containerregistrytype",
             "type": "pickList",
@@ -97,7 +97,7 @@
             "label":"Bake File",
             "required": true,
             "helpMarkDown":"bake.yaml file to generate a recipe for"
-        },    
+        },
         {
             "name": "tags",
             "type": "multiLine",
@@ -124,7 +124,7 @@
             "defaultValue": "false",
             "groupName": "general",
             "helpMarkDown": "Include Git tags when building and pushing the bake recipe"
-        },    
+        },
         {
             "name": "useArtifact",
             "type": "boolean",
@@ -139,7 +139,7 @@
             "label":"Output folder for bake artifact",
             "defaultValue":"$(Build.ArtifactStagingDirectory)",
             "helpMarkDown":"The output artifact folder where the bake artifact file will be generated.  Empty is the root of the repo.  Use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) if files are not in the repo. Example: $(Build.ArtifactStagingDirectory)"
-        }, 
+        },
         {
             "name": "useLatestTag",
             "type": "boolean",
@@ -154,6 +154,14 @@
             "label":"Which tag to use during Release Pipeline artifact deployment",
             "defaultValue":"$(Build.BuildId)",
             "visibleRule":"useLatestTag != true"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "azureContainerRegistry",
+            "endpointId": "$(azureSubscriptionEndpoint)",
+            "dataSourceName": "AzureRMContainerRegistries",
+            "resultTemplate": "{\"Value\":\"{{{properties.loginServer}}}\",\"DisplayValue\":\"{{{name}}}\"}"
         }
     ],
     "execution": {
