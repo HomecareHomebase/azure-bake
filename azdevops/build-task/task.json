@@ -156,6 +156,14 @@
             "visibleRule":"useLatestTag != true"
         }
     ],
+    "dataSourceBindings": [
+        {
+            "target": "azureContainerRegistry",
+            "endpointId": "$(azureSubscriptionEndpoint)",
+            "dataSourceName": "AzureRMContainerRegistries",
+            "resultTemplate": "{\"Value\":\"{{{properties.loginServer}}}\",\"DisplayValue\":\"{{{name}}}\"}"
+        }
+    ],
     "execution": {
         "Node": {
             "target": "index.js"
