@@ -25,5 +25,6 @@
   "dependencies": {
     "@azbake/arm-helper": "^0.1.32",
     "@azbake/core": "0.*"
-  }
+  },
+  "gitHead": "6a2315cfe31f9bc9a139f99e863c5b35686fd5e7"
 }
