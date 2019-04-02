@@ -17,7 +17,7 @@
         "apiVersion": "2018-05-01-preview",
         "location": "[parameters('appInsightsLocation')]",
         "tags": {
-          "Metrics": "requests/count"
+          "Metrics": "*"
         },
         "properties": {
           "ApplicationId": "[parameters('appInsightsName')]",
