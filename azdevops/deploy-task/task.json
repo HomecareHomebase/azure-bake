@@ -5,10 +5,10 @@
     "description": "Azure Bake Deployment Task",
     "helpMarkDown": "",
     "category": "Azure Pipelines",
-    "author": "HCHB",
+    "author": "HomecareHomebase",
     "version": {
         "Major": 0,
-        "Minor": 4,
+        "Minor": 5,
         "Patch": 0
     },
     "instanceNameFormat": "Azure Bake Deployment",
