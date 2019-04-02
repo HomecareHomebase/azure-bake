@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.32](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.31...v0.1.32) (2019-04-02)
+
+
+### Bug Fixes
+
+* tag for splunk metrics ingestion ([#38](https://github.com/HomecareHomebase/azure-bake/issues/38)) ([5d2a8a9](https://github.com/HomecareHomebase/azure-bake/commit/5d2a8a9))
+
+
+
+
+
 ## [0.1.31](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.30...v0.1.31) (2019-03-26)
 
 **Note:** Version bump only for package @azbake/ingredient-webapp-container
