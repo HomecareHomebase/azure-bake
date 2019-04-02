@@ -36,6 +36,9 @@
             "name": "[parameters('webapp_name')]",
             "apiVersion": "2016-08-01",
             "location": "[parameters('location')]",
+            "tags": {
+                "Metrics": "*"
+            },
             "scale": null,
             "properties": {
                 "enabled": true,

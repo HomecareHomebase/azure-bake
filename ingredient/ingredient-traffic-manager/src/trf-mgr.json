@@ -49,7 +49,9 @@
             "name": "[parameters('name')]",
             "apiVersion": "2018-04-01",
             "location": "global",
-            "tags": {},
+            "tags": {
+                "Metrics": "*"
+            },
             "scale": null,
             "properties": {
                 "profileStatus": "Enabled",
