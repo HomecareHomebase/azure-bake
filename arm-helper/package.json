@@ -24,14 +24,12 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azure/arm-resources": "0.*"
+    "@azure/arm-resources": "1.*"
   },
   "devDependencies": {
+    "@azbake/core": "0.*",
+    "@azure/arm-resources": "1.*",
     "@types/node": "^10.12.18"
-  },
-  "dependencies": {
-    "@azbake/core": "^0.1.30",
-    "@azure/arm-resources": "^1.0.1"
   },
   "publishConfig": {
     "access": "public"

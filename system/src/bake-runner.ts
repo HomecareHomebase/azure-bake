@@ -11,12 +11,12 @@ export class BakeRunner {
 
         this._package = bPackage
         this._logger = logger || new Logger()
-        this._AuthCreds = <msRestNodeAuth.TokenCredentialsBase>{}
+        this._AuthCreds = <msRestNodeAuth.ApplicationTokenCredentials>{}
     }
 
     _package: IBakePackage
     _logger: Logger
-    _AuthCreds: msRestNodeAuth.TokenCredentialsBase
+    _AuthCreds: msRestNodeAuth.ApplicationTokenCredentials
 
     private _loadBuiltIns(){
 

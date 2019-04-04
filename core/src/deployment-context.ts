@@ -1,10 +1,10 @@
 import { IBakePackage, IBakeRegion, IBakeConfig, IBakeEnvironment } from "./bake-interfaces";
 import { Logger } from "./logger";
-import { TokenCredentialsBase } from "@azure/ms-rest-nodeauth";
+import { ApplicationTokenCredentials } from "@azure/ms-rest-nodeauth";
 import { IIngredient } from ".";
 
 export class DeploymentContext {
-    constructor(auth: TokenCredentialsBase, bake : IBakePackage, 
+    constructor(auth: ApplicationTokenCredentials, bake : IBakePackage, 
         region: IBakeRegion, logger: Logger, ingredient: IIngredient = <IIngredient>{}) {
 
         this._package = bake
@@ -18,7 +18,7 @@ export class DeploymentContext {
     _ingredient: IIngredient
     _region: IBakeRegion
     _logger: Logger
-    _auth: TokenCredentialsBase
+    _auth: ApplicationTokenCredentials
 
     public get Config() : IBakeConfig {
         return this._package.Config
@@ -39,7 +39,7 @@ export class DeploymentContext {
         return this._logger
     }
 
-    public get AuthToken(): TokenCredentialsBase {
+    public get AuthToken(): ApplicationTokenCredentials {
         return this._auth
     }
     

@@ -22,6 +22,9 @@
     "compile": "tsc -p .",
     "watch": "tsc -w -p ."
   },
+  "peerDependencies": {
+    "@azbake/core": "0.*"
+  },
   "devDependencies": {
     "@azbake/core": "^0.1.30",
     "@types/node": "^10.12.18"
