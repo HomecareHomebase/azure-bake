@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.33](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.32...v0.1.33) (2019-04-04)
+
+
+### Bug Fixes
+
+* resolving mismatched peerDeps ([eca4e13](https://github.com/HomecareHomebase/azure-bake/commit/eca4e13))
+
+
+
+
+
 ## [0.1.31](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.30...v0.1.31) (2019-03-26)
 
 **Note:** Version bump only for package azure-bake

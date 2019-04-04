@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-storage",
   "description": "Ingredient for deploying a storage account",
-  "version": "0.1.32",
+  "version": "0.1.33",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,12 +19,12 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
-    "@azbake/core": "0.*",
+    "@azbake/core": "^0.1.33",
     "@azure/ms-rest-nodeauth": "0.9.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.32"
+    "@azbake/arm-helper": "^0.1.33"
   },
   "gitHead": "6a2315cfe31f9bc9a139f99e863c5b35686fd5e7"
 }
