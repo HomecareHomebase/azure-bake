@@ -25,6 +25,9 @@ export class WebAppContainer extends BaseIngredient {
             //get the app service to be used for this web app.
             const resource = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
             
+            // update ARM template for appSettings if tokens exist.
+            var armTemplate = this.setConfigurationTokens(arm);
+            
             this._logger.log(`App service resourceGroup: ${resource.resourceGroup}`);
             this._logger.log(`App service name: ${resource.resource}`);
             props["app_service_rg"] = {"value": resource.resourceGroup};
@@ -38,8 +41,6 @@ export class WebAppContainer extends BaseIngredient {
             this._logger.log(`Region for web app: ${webAppRegion}`);
             props["location"] = {"value": webAppRegion};
 
-            var armTemplate = this.setConfigurationTokens(arm);
-
             await helper.DeployTemplate(this._name, armTemplate, props, util.resource_group());
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
@@ -50,37 +51,31 @@ export class WebAppContainer extends BaseIngredient {
     private setConfigurationTokens(template: any): any {
         if (this._ingredient.properties.tokens) {
             let tokens: Map<string, BakeVariable> = this._ingredient.properties.tokens;
-            tokens.forEach( (v,k) => {
-                let value = v.value(this._ctx);
-                let log = `${k}=${value}`;
-                this._logger.log(`token: ${log}`);
+            let resources: any[] = template.resources;
+            resources.forEach( (resource) => {
+                // only update the arm template for the web app.
+                if (resource.type == 'Microsoft.Web/sites') {
+                    let settings: any[] = resource.properties.siteConfig.appSettings || [];
+                    // cycle through each token and add it to the web sites appSettings
+                    tokens.forEach( (token, key) => {
+                        // log the token found.
+                        let value = token.value(this._ctx);
+                        let log = `${key}=${value}`;
+                        this._logger.log(`adding token: ${log}`);
 
-                this.addTokenToTemplate(template, k, value);
-            });
-        }   
-        
-        return template;
-    }
-    private addTokenToTemplate(template: any, tokenName: string, tokenValue: string): void
-    {
-        let resources: any[] = template.resources;
-        resources.forEach( resource => {
-            if (resource.type == 'Microsoft.Web/sites') {
-                let settings: any[] = resource.properties.siteConfig.appSettings || [];
-                let newSettings: any[] = [];
-                let alreadyExisting = false;
-                settings.forEach(setting => {
-                    if (setting.name == tokenName) {
-                        setting.value = tokenValue;
-                        alreadyExisting = true;
-                    }
-                    newSettings.push(setting);
-                });
-                if (!alreadyExisting) {
-                    newSettings.push({ name: tokenName, value: tokenValue });
+                        // the setting may exist already if this is not the first region
+                        var setting = settings.find( (setting) => setting.name == key);
+                        if (setting) {
+                            // the setting exists, update its value in case different for the region.
+                            setting.value = value;
+                        } else {
+                            // setting does not exist yet, add it.
+                            settings.push({name: key, value: value});
+                        }
+                    });
                 }
-                resource.properties.siteConfig.appSettings = newSettings;
-            }
-        });
+            });
+        }
+        return template;
     }
 }
