@@ -1,4 +1,4 @@
-import { BaseIngredient, IngredientManager } from "@azbake/core"
+import { BaseIngredient, IngredientManager, BakeVariable, Logger } from "@azbake/core"
 import { IIngredient,  DeploymentContext } from "@azbake/core";
 import { ARMHelper } from "@azbake/arm-helper";
 
@@ -38,12 +38,49 @@ export class WebAppContainer extends BaseIngredient {
             this._logger.log(`Region for web app: ${webAppRegion}`);
             props["location"] = {"value": webAppRegion};
 
-            
-            await helper.DeployTemplate(this._name, arm, props, util.resource_group());
+            var armTemplate = this.setConfigurationTokens(arm);
 
+            await helper.DeployTemplate(this._name, armTemplate, props, util.resource_group());
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;
         }
+    }
+
+    private setConfigurationTokens(template: any): any {
+        if (this._ingredient.properties.tokens) {
+            let tokens: Map<string, BakeVariable> = this._ingredient.properties.tokens;
+            tokens.forEach( (v,k) => {
+                let value = v.value(this._ctx);
+                let log = `${k}=${value}`;
+                this._logger.log(`token: ${log}`);
+
+                this.addTokenToTemplate(template, k, value);
+            });
+        }   
+        
+        return template;
+    }
+    private addTokenToTemplate(template: any, tokenName: string, tokenValue: string): void
+    {
+        let resources: any[] = template.resources;
+        resources.forEach( resource => {
+            if (resource.type == 'Microsoft.Web/sites') {
+                let settings: any[] = resource.properties.siteConfig.appSettings || [];
+                let newSettings: any[] = [];
+                let alreadyExisting = false;
+                settings.forEach(setting => {
+                    if (setting.name == tokenName) {
+                        setting.value = tokenValue;
+                        alreadyExisting = true;
+                    }
+                    newSettings.push(setting);
+                });
+                if (!alreadyExisting) {
+                    newSettings.push({ name: tokenName, value: tokenValue });
+                }
+                resource.properties.siteConfig.appSettings = newSettings;
+            }
+        });
     }
 }
