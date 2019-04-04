@@ -22,6 +22,9 @@ recipe:
     properties:
       type: "@azbake/ingredient-webapp-container"
       source: "[coreutils.get_app_svc_name('ngapp')]"
+      tokens:
+        BASE_URL: "[coreutils.variable('svc_base_url')]"
+        PROPERTY: "some value"
       parameters:
         container_image_name: "myregistry.azurecr.io/mypkg:latest"
         container_registry_url: "[coreutils.variable('container_registry_url')]"
@@ -41,6 +44,9 @@ recipe:
 ***  Please note that you can supply just the name of the azure resource for the source if the resource exists within the same resource group that is currently being deployed for traffic manager.
 
 *** Please note that all values should be in the parameters section of the recipe except for source
+
+### Tokens
+The token section of the ingredient can be used to specify any values you wished to be pushed into the environment variables of the container running your web application.  Very useful for updating configuration files.  Tokens are optional and can be omitted if not needed.
 
 ### Best Practices
 Since there is some secure information required to deploy your web site in a container, it si recommended that this information should be stored inside of the environment and referenced through ``coreutils.variable()``.  Do not set these values in the recipe itself as it could risk exposing this information publicly. Sample above uses this method to keep secure user credentials and password for the container registry.
