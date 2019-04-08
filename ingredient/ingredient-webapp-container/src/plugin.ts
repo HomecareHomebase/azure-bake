@@ -23,7 +23,7 @@ export class WebAppContainer extends BaseIngredient {
             let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);
 
             //get the app service to be used for this web app.
-            const resource = await util.parseResource(this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
+            const resource = util.parseResource(await this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
             
             // update ARM template for appSettings if tokens exist.
             var armTemplate = await this.setConfigurationTokens(arm);

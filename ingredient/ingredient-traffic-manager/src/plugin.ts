@@ -73,7 +73,7 @@ export class TrafficManager extends BaseIngredient {
             props["profile-name"] = { "value": profileName };
             props["ep-name"] = { "value": epName };
 
-            const resource = await util.parseResource(this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
+            const resource = util.parseResource(await this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
             const sourceType = temp["source-type"].value;
             this._logger.log(`resource type: ${sourceType}, resource rg: ${resource.resourceGroup}, resource name: ${resource.resource}`);
             props["source-rg"] = { "value": resource.resourceGroup };
