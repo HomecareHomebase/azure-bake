@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.39](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.38...v0.1.39) (2019-04-08)
+
+
+### Bug Fixes
+
+* storage-util primary/secondary keys now work ([703a346](https://github.com/HomecareHomebase/azure-bake/commit/703a346))
+
+
+
+
+
 ## [0.1.38](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.37...v0.1.38) (2019-04-08)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
