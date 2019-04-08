@@ -9,7 +9,7 @@ export class StorageUtils extends BaseUtility {
         return st_profile;
     }
 
-    public async get_keys(name: string, rg: string | null = null) : Promise<Keys> {
+    public async get_primary_key(name: string, rg: string | null = null) : Promise<string> {
      
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
@@ -18,19 +18,28 @@ export class StorageUtils extends BaseUtility {
 
         let response = await client.storageAccounts.listKeys(resource_group, name)
 
-        let keys = new Keys()
+        let key: string = ""
         if (response.keys)
         {
-            keys.primary = response.keys[0].value || ""
-            keys.secondary = response.keys[1].value || ""
-
+            key = response.keys[0].value || ""
         }
-        return keys
+        return key
+    }
+
+    public async get_secondary_key(name: string, rg: string | null = null) : Promise<string> {
+     
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
+        let resource_group = rg || await util.resource_group()
+
+        const client = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+        let response = await client.storageAccounts.listKeys(resource_group, name)
+
+        let key: string = ""
+        if (response.keys)
+        {
+            key = response.keys[1].value || ""
+        }
+        return key
     }
 }
-
-export class Keys {
-    public primary: string = ""
-    public secondary: string = ""
-}
-    
