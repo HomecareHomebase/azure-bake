@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.38](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.37...v0.1.38) (2019-04-08)
+
+
+### Bug Fixes
+
+* fixing arm-helper dist path ([e3435b4](https://github.com/HomecareHomebase/azure-bake/commit/e3435b4))
+
+
+
+
+
 ## [0.1.37](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.36...v0.1.37) (2019-04-08)
 
 **Note:** Version bump only for package @azbake/arm-helper
