@@ -10,9 +10,9 @@ export class ContainerRegPlugin extends BaseIngredient {
             this._logger.log('Custom Plugin Logging: ' + this._ingredient.properties.source)
             const helper = new ARMHelper(this._ctx);
 
-            let props = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters);
+            let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);
 
-            await helper.DeployTemplate(this._name, ARMTemplate, props, util.resource_group())
+            await helper.DeployTemplate(this._name, ARMTemplate, props, await util.resource_group())
 
         } catch(error){
             this._logger.error('deployment failed: ' + error)

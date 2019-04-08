@@ -18,9 +18,9 @@ export class HostNames extends BaseIngredient {
 
             //build the properties as a standard object.
             let props : any = {};
-            const hostName = this._ctx.Ingredient.properties.source.value(this._ctx);
+            const hostName = await this._ctx.Ingredient.properties.source.valueAsync(this._ctx);
 
-            let params = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters);
+            let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);
             
 
             const appName = util.create_resource_name("webapp", null, true);
@@ -35,7 +35,7 @@ export class HostNames extends BaseIngredient {
 
             props["location"] = { "value": util.current_region().name };
 
-            await helper.DeployTemplate(this._name, hostarm, props, util.resource_group());
+            await helper.DeployTemplate(this._name, hostarm, props, await util.resource_group());
         }
         catch (error) {
             this._logger.error(`deployment failed: ${error}`);

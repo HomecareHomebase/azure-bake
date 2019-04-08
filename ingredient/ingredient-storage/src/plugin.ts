@@ -11,9 +11,9 @@ export class StoragePlugIn extends BaseIngredient {
             
             const helper = new ARMHelper(this._ctx);
             
-            let params = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
+            let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             
-            await helper.DeployTemplate(this._name, ARMTemplate, params, util.resource_group())
+            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             
         } catch(error){
             this._logger.error('deployment failed: ' + error)

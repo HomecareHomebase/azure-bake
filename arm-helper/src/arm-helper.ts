@@ -82,19 +82,19 @@ export class ARMHelper {
         }
     }
 
-    public BakeParamsToARMParams(deploymentName: string, params: Map<string, BakeVariable>): any {
+    public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
 
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
 
         let props: any = {};
-        params.forEach((v,n) => {
-            props[n] = {
-                "value": v.value(this._ctx)
-            };
-            let log = `${n}=${v.value(this._ctx)}`;
-            logger.log(`param: ${log}`);
-        });
 
+        for (const [n,v] of params){
+            props[n] = {
+                "value": await v.valueAsync(this._ctx)
+            };
+            let log = `${n}=${await v.valueAsync(this._ctx)}`;
+            logger.log(`param: ${log}`);
+        }
         return props;
     }
 

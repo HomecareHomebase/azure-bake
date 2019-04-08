@@ -38,10 +38,10 @@ export class TrafficManager extends BaseIngredient {
             const region = this._ctx.Region.code;
             let trfutil = new TrafficUtils(this._ctx);
     
-            let props = this._helper.BakeParamsToARMParams(this._name, this._ctx.Ingredient.properties.parameters);
+            let props = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters);
             props["name"] = {"value": trfutil.get_profile() };
 
-            await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, util.resource_group());
+            await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, await util.resource_group());
 
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
@@ -58,12 +58,11 @@ export class TrafficManager extends BaseIngredient {
 
             // read parameters to get the source-type.
             let temp: any = {};
-            this._ingredient.properties.parameters.forEach( (v,n)=>
-            {
+            for ( const[n,v] of this._ingredient.properties.parameters){
                 temp[n] = {
-                    "value": v.value(this._ctx)
+                    "value": await v.valueAsync(this._ctx)
                 };
-            });
+            }
 
             let props: any = {};
 
@@ -74,14 +73,14 @@ export class TrafficManager extends BaseIngredient {
             props["profile-name"] = { "value": profileName };
             props["ep-name"] = { "value": epName };
 
-            const resource = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
+            const resource = await util.parseResource(this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
             const sourceType = temp["source-type"].value;
             this._logger.log(`resource type: ${sourceType}, resource rg: ${resource.resourceGroup}, resource name: ${resource.resource}`);
             props["source-rg"] = { "value": resource.resourceGroup };
             props["source-name"] = { "value": resource.resource };
             props["source-type"] = temp["source-type"];
 
-            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, util.resource_group());
+            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, await util.resource_group());
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;

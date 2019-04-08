@@ -21,18 +21,18 @@ export class CoreUtils extends BaseUtility {
         return regions[0].code == this.current_region().code;
     }
     
-    public resource_group() {
+    public async resource_group(): Promise<string> {
         let override = this.context.Config.rgOverride
         if (override) {
-            return override.value(this.context)
+            return await override.valueAsync(this.context)
         } else {
             return this.create_resource_name("", null, true)
         }
     }
-    public variable(key: string, def?: string): string {
+    public async variable(key: string, def?: string): Promise<any> {
         if (this.context.Config.variables) {
             let v: BakeVariable = this.context.Config.variables.get(key) || new BakeVariable(def || "")
-            return v.value(this.context)    
+            return await v.valueAsync(this.context)    
         } else {
             return ""
         }
@@ -88,8 +88,8 @@ export class CoreUtils extends BaseUtility {
         return this.create_resource_name("", pkgName, true);
     }
 
-    public get_ingredient_source(): string {
-        return this.context.Ingredient.properties.source.value(this.context)
+    public async get_ingredient_source(): Promise<string> {
+        return await this.context.Ingredient.properties.source.valueAsync(this.context)
     }
 }
 
