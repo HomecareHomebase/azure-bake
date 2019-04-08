@@ -24,7 +24,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.36"
+    "@azbake/arm-helper": "^0.1.36",
+    "@azure/arm-storage": "^8.0.0"
   },
   "gitHead": "510cc03e5de201df0959b9b88a4e19c384e3eb5f"
 }

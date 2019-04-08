@@ -10,7 +10,7 @@ export class CustomScriptIngredient extends BaseIngredient {
 
     public async Execute(): Promise<void> {
 
-        let source: string = this._ingredient.properties.source.value(this._ctx)
+        let source: any = await this._ingredient.properties.source.valueAsync(this._ctx)
 
         let chk = fs.existsSync(source)
         if (!chk) {
@@ -31,10 +31,11 @@ export class CustomScriptIngredient extends BaseIngredient {
             var params: any = {}
             this._ingredient.properties.parameters.forEach( (v, k)=>
             {
-                let val = v.value(this._ctx)
-                let n = k +"=" + val
-                this._logger.log('param: ' + n) 
-                params[k] = val
+                v.valueAsync(this._ctx).then(val=>{
+                    let n = k +"=" + val
+                    this._logger.log('param: ' + n) 
+                    params[k] = val    
+                })
             })
 
             let script = contents + "\n onExecute(this._ctx, this._logger, params)"

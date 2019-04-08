@@ -83,7 +83,7 @@ export class BakeRunner {
         try {
             var util = IngredientManager.getIngredientFunction("coreutils", ctx)
 
-            let rg_name = util.resource_group()
+            let rg_name = await util.resource_group()
             let region_name = ctx.Region.shortName
 
             let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)

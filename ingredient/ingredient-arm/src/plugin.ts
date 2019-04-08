@@ -12,7 +12,7 @@ export class CustomArmIngredient extends BaseIngredient {
 
     public async Execute(): Promise<void> {
 
-        let source: string = this._ingredient.properties.source.value(this._ctx)
+        let source: any = await this._ingredient.properties.source.valueAsync(this._ctx)
         let chk = fs.existsSync(source)
         if (!chk) {
             this._logger.error('could not locate arm template: ' + source)
@@ -28,11 +28,11 @@ export class CustomArmIngredient extends BaseIngredient {
             const helper = new ARMHelper(this._ctx)
 
             //build the properties as a standard object.
-            let props = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
+            let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
 
             let buffer = fs.readFileSync(source)
             let contents = buffer.toString()
-            await helper.DeployTemplate(this._name, JSON.parse(contents), props, util.resource_group());
+            await helper.DeployTemplate(this._name, JSON.parse(contents), props, await util.resource_group());
 
         } catch(error){
             this._logger.error('deployment failed: ' + error)

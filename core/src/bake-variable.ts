@@ -8,25 +8,27 @@ export class BakeVariable {
         this._compiled = undefined
     }
 
-    _value?: string
+    _value?: any
     _compiled: Function | undefined | null
 
-    public get Code(): string {
+    public get Code(): any {
         return this._value || ""
     }
 
-    public value(ctx: DeploymentContext): string {
+    public async valueAsync(ctx: DeploymentContext): Promise<any> {
 
         if (this._compiled == undefined) {
             this._compiled = BakeEval.Eval(this, ctx)
         }
 
         if (this._compiled == null){
-            return this.Code.trim()
+            return this.Code
         }
         else {
             let funcWrapper = IngredientManager.getIngredientFunction
-            return this._compiled(ctx, funcWrapper)
+            let result = this._compiled(ctx, funcWrapper)
+            let unwrap = await Promise.resolve(result)
+            return unwrap
         }
     }
 }

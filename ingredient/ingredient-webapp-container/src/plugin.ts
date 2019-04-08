@@ -20,13 +20,13 @@ export class WebAppContainer extends BaseIngredient {
             var helper = new ARMHelper(this._ctx);
 
             //build the properties as a standard object.
-            let props = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters);
+            let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);
 
             //get the app service to be used for this web app.
-            const resource = util.parseResource(this._ctx.Ingredient.properties.source.value(this._ctx));
+            const resource = await util.parseResource(this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
             
             // update ARM template for appSettings if tokens exist.
-            var armTemplate = this.setConfigurationTokens(arm);
+            var armTemplate = await this.setConfigurationTokens(arm);
             
             this._logger.log(`App service resourceGroup: ${resource.resourceGroup}`);
             this._logger.log(`App service name: ${resource.resource}`);
@@ -41,25 +41,27 @@ export class WebAppContainer extends BaseIngredient {
             this._logger.log(`Region for web app: ${webAppRegion}`);
             props["location"] = {"value": webAppRegion};
 
-            await helper.DeployTemplate(this._name, armTemplate, props, util.resource_group());
+            await helper.DeployTemplate(this._name, armTemplate, props, await util.resource_group());
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;
         }
     }
 
-    private setConfigurationTokens(template: any): any {
+    private async setConfigurationTokens(template: any): Promise<any> {
         if (this._ingredient.properties.tokens) {
             let tokens: Map<string, BakeVariable> = this._ingredient.properties.tokens;
             let resources: any[] = template.resources;
-            resources.forEach( (resource) => {
+
+            for (const resource of resources){
                 // only update the arm template for the web app.
                 if (resource.type == 'Microsoft.Web/sites') {
                     let settings: any[] = resource.properties.siteConfig.appSettings || [];
                     // cycle through each token and add it to the web sites appSettings
-                    tokens.forEach( (token, key) => {
+
+                    for (const [key,token] of tokens){
                         // log the token found.
-                        let value = token.value(this._ctx);
+                        let value = await token.valueAsync(this._ctx);
                         let log = `${key}=${value}`;
                         this._logger.log(`adding token: ${log}`);
 
@@ -72,9 +74,9 @@ export class WebAppContainer extends BaseIngredient {
                             // setting does not exist yet, add it.
                             settings.push({name: key, value: value});
                         }
-                    });
+                    }
                 }
-            });
+            }
         }
         return template;
     }
