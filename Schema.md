@@ -78,7 +78,8 @@ An ingredient block describes an instance of an ingredient to deploy. It has a l
 properties:
     type: string
     source: string
-    parameters {string: variable}
+    tokens: {string: variable}
+    parameters: {string: variable}
 dependsOn: [string]
 ```
 
@@ -86,6 +87,7 @@ dependsOn: [string]
 |----------|----------|------------|
 |type|yes|name of ingredient to deploy (check ingredient docs for name)|
 |source|depends on ingredient|source file/option for some ingredients|
+|tokens|depends on ingredient|Token values typically used to update configuration files when deployed.  Check ingredient docs for token options|
 |parameters|depends on ingredient|check ingredient docs for parameter options|
 |dependsOn|no|list of ingredient blocks that must be deployed before this block|
 

@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
     IIngredientProperties, IIngredient, Logger, IngredientManager} from '@azbake/core'
 import { ShellRunner } from 'azcli-npm';
+import { stringify } from 'querystring';
 
 export class BakePackage {
     constructor(source: string) {
@@ -158,6 +159,7 @@ export class BakePackage {
             ingredient.dependsOn = ingredient.dependsOn || []
             ingredient.properties = ingredient.properties || <IIngredientProperties>{}
             ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})
+            ingredient.properties.tokens = this.objToVariableMap(ingredient.properties.tokens || new Map<string, BakeVariable>())
         })
 
         this._validatePackage(config)

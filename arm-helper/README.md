@@ -101,9 +101,9 @@ export class MyIngredient extends BaseIngredient {
     const util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
     const helper = new ARMHelper(this._ctx)
 
-    const parameters = helper.BakeParamsToARMParams(this._name, this._ingredient.properties.parameters)
+    const parameters = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
 
-    await helper.DeployTemplate(this._name, arm, parameters, util.resource_group())
+    await helper.DeployTemplate(this._name, arm, parameters, await util.resource_group())
   }
 }
 

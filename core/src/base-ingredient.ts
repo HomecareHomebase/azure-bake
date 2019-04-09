@@ -11,7 +11,10 @@ export class BaseIngredient {
         this._name = name
         this._ingredient = ingredient
         this._logger = new Logger(ctx.Logger.getPre().concat(name))
-        this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] source[' + colors.cyan(ingredient.properties.source.value(ctx)) + ']')
+
+        ingredient.properties.source.valueAsync(ctx).then(source=>{
+            this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] source[' + colors.cyan(source) + ']')
+        })
     }
 
     _ctx: DeploymentContext

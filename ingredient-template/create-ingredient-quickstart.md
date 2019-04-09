@@ -25,7 +25,7 @@ export class MyCustomPlugin extends BaseIngredient {
             let params:any={}
             params["parameterName1"]="parameterValue1"
             params["parameterName2"]="parameterValue2"
-            await helper.DeployTemplate(this._name, ARMTemplate, params, util.resource_group())
+            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             
         } catch(error){
             this._logger.error('deployment failed: ' + error)

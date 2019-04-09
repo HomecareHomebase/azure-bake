@@ -11,12 +11,12 @@ export class BakeRunner {
 
         this._package = bPackage
         this._logger = logger || new Logger()
-        this._AuthCreds = <msRestNodeAuth.TokenCredentialsBase>{}
+        this._AuthCreds = <msRestNodeAuth.ApplicationTokenCredentials>{}
     }
 
     _package: IBakePackage
     _logger: Logger
-    _AuthCreds: msRestNodeAuth.TokenCredentialsBase
+    _AuthCreds: msRestNodeAuth.ApplicationTokenCredentials
 
     private _loadBuiltIns(){
 
@@ -83,7 +83,7 @@ export class BakeRunner {
         try {
             var util = IngredientManager.getIngredientFunction("coreutils", ctx)
 
-            let rg_name = util.resource_group()
+            let rg_name = await util.resource_group()
             let region_name = ctx.Region.shortName
 
             let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)

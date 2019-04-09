@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.40](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.39...v0.1.40) (2019-04-08)
+
+
+### Bug Fixes
+
+* fixing await in wrong place for  ingredients ([b3736e4](https://github.com/HomecareHomebase/azure-bake/commit/b3736e4))
+
+
+
+
+
+## [0.1.38](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.37...v0.1.38) (2019-04-08)
+
+**Note:** Version bump only for package @azbake/ingredient-webapp-container
+
+
+
+
+
+## [0.1.37](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.36...v0.1.37) (2019-04-08)
+
+**Note:** Version bump only for package @azbake/ingredient-webapp-container
+
+
+
+
+
+## [0.1.36](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.34...v0.1.36) (2019-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-webapp-container
+
+
+
+
+
+## [0.1.34](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.33...v0.1.34) (2019-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-webapp-container
+
+
+
+
+
+## [0.1.33](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.32...v0.1.33) (2019-04-04)
+
+
+### Bug Fixes
+
+* resolving mismatched peerDeps ([eca4e13](https://github.com/HomecareHomebase/azure-bake/commit/eca4e13))
+
+
+
+
+
+## [0.1.32](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.31...v0.1.32) (2019-04-02)
+
+
+### Bug Fixes
+
+* tag for splunk metrics ingestion ([#38](https://github.com/HomecareHomebase/azure-bake/issues/38)) ([5d2a8a9](https://github.com/HomecareHomebase/azure-bake/commit/5d2a8a9))
+
+
+
+
+
 ## [0.1.31](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.30...v0.1.31) (2019-03-26)
 
 **Note:** Version bump only for package @azbake/ingredient-webapp-container
