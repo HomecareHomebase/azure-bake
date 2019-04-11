@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.41](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.40...v0.1.41) (2019-04-11)
+
+
+### Bug Fixes
+
+* ([#14](https://github.com/HomecareHomebase/azure-bake/issues/14)) - default resource groups work again ([c96a46b](https://github.com/HomecareHomebase/azure-bake/commit/c96a46b))
+
+
+
+
+
 ## [0.1.40](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.39...v0.1.40) (2019-04-08)
 
 
