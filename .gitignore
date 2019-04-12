@@ -18,3 +18,4 @@ lib
 
 azdevops/**/*.js
 !azdevops/imports/**/*.js
+/.vs
