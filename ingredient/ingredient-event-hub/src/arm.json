@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "eventHubName": {
+      "type": "string"
+    },
+    "eventHubNamespaceName": {
+      "type": "string"
+    },
+    "messageRetentionInDays": {
+      "type": "integer",
+      "defaultValue": 7
+    },
+    "partitionCount": {
+      "type": "integer"
+    },
+    "location": {
+      "type": "string"
+    },
+    "policyName": {
+      "type": "string",
+      "defaultValue": "ListenSend"
+    },
+    "policyRights": {
+      "type": "array",
+      "defaultValue": [
+        "Listen",
+        "Send"
+      ]
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('eventHubNamespaceName'), parameters('eventHubName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+        "partitionCount": "[parameters('partitionCount')]",
+        "status": "Active"
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('eventHubNamespaceName'), '/', parameters('eventHubName'), '/', parameters('policyName'))]",
+      "location": "[parameters('partitionCount')]",
+      "properties": {
+        "rights": "[parameters('policyRights')]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
