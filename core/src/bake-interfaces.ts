@@ -18,7 +18,8 @@ export interface IBakeEnvironment {
     environmentCode: string,
     regions: Array<IBakeRegion>,
     authentication: IBakeAuthentication
-    variables: Map<string, BakeVariable>
+    variables: Map<string, BakeVariable>,
+    logLevel: string
 }
 
 export interface IIngredientProperties {
