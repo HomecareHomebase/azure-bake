@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.42](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.41...v0.1.42) (2019-04-17)
+
+
+### Bug Fixes
+
+* Resolve [#47](https://github.com/HomecareHomebase/azure-bake/issues/47) by wrapping eval in try/catch ([c9af4ab](https://github.com/HomecareHomebase/azure-bake/commit/c9af4ab))
+
+
+
+
+
 ## [0.1.41](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.40...v0.1.41) (2019-04-11)
 
 

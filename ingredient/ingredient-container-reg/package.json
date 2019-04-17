@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-container-reg",
   "description": "Ingredient for deploying an Azure Container Registry instance",
-  "version": "0.1.38",
+  "version": "0.1.42",
   "main": "dist/index.js",
   "author": "HCHB",
   "license": "MIT",
@@ -15,12 +15,12 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.37",
+    "@azbake/core": "^0.1.42",
     "@azure/ms-rest-nodeauth": "0.9.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.38"
+    "@azbake/arm-helper": "^0.1.42"
   },
   "gitHead": "510cc03e5de201df0959b9b88a4e19c384e3eb5f"
 }
