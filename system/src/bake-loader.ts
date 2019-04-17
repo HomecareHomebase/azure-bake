@@ -43,6 +43,8 @@ export class BakePackage {
         this._env.authentication.secretKey = process.env.BAKE_AUTH_SERVICE_KEY || ""
         this._env.authentication.certPath = process.env.BAKE_AUTH_SERVICE_CERT || ""
 
+        this._env.logLevel = process.env.BAKE_LOG_LEVEL || "info"
+
         //clear out the auth info
         process.env.BAKE_AUTH_SUBSCRIPTION_ID = process.env.BAKE_AUTH_SERVICE_ID = 
             process.env.BAKE_AUTH_SERVICE_KEY = process.env.BAKE_AUTH_SERVICE_CERT = 

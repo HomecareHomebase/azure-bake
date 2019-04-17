@@ -10,7 +10,7 @@ export class BaseIngredient {
         this._ctx = new DeploymentContext(ctx.AuthToken, ctx.Package, ctx.Region, ctx.Logger,ingredient)
         this._name = name
         this._ingredient = ingredient
-        this._logger = new Logger(ctx.Logger.getPre().concat(name))
+        this._logger = new Logger(ctx.Logger.getPre().concat(name), ctx.Environment.logLevel)
 
         ingredient.properties.source.valueAsync(ctx).then(source=>{
             this._logger.log('adding ingredient type[' + colors.cyan(ingredient.properties.type) +'] source[' + colors.cyan(source) + ']')

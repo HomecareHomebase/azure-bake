@@ -34,6 +34,7 @@ interface bakeArgs {
     serviceKey?: string
     serviceCert?: string
     variables?: string
+    logLevel?: string
 }
 
 
@@ -65,6 +66,7 @@ function displayHelp() {
     console.log('key\t\t\t: Azure Service Principal secret key')
     console.log('cert\t\t\t: Azure Service Principal PEM cert file (overrides secret key)')
     console.log('variables\t\t: YAML data of global bake variables')
+    console.log('loglevel\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
 
     console.log('')
     console.log('optional environment variables (instead of above parameters):')
@@ -78,6 +80,7 @@ function displayHelp() {
     console.log('BAKE_AUTH_SERVICE_KEY\t\t: Azure Service Principal secret key')
     console.log('BAKE_AUTH_SERVICE_CERT\t\t: Azure Service Principal PEM cert file (overrides secret key)')
     console.log('BAKE_VARIABLES\t\t\t: YAML data of global bake variables')
+    console.log('BAKE_LOG_LEVEL\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
     console.log('')
     canExecute = false
 }
@@ -120,6 +123,7 @@ function validateParams() {
         args.serviceKey = argv['key'] || process.env.BAKE_AUTH_SERVICE_KEY
         args.serviceCert = argv['cert'] || process.env.BAKE_AUTH_SERVICE_CERT
         args.variables = argv['variables64'] || process.env.BAKE_VARIABLES64
+        args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL
 
         if (args.variables)
         {
@@ -151,7 +155,8 @@ function validateParams() {
         process.env.BAKE_AUTH_SERVICE_ID = args.serviceId
         process.env.BAKE_AUTH_SERVICE_KEY = args.serviceKey || ""
         process.env.BAKE_AUTH_SERVICE_CERT = args.serviceCert || ""
-        process.env.BAKE_VARIABLES = args.variables ||""
+        process.env.BAKE_VARIABLES = args.variables || ""
+        process.env.BAKE_LOG_LEVEL = args.logLevel || ""
 
         if (fs.existsSync(target)) {
             cmd = "run" //will serve a local yaml config file
@@ -267,7 +272,8 @@ function deploy(){
         `BAKE_AUTH_SERVICE_ID=${ args.serviceId }\r\n` +
         `BAKE_AUTH_SERVICE_KEY=${( args.serviceKey || "" )}\r\n` +
         `BAKE_AUTH_SERVICE_CERT=${( args.serviceCert || "" )}\r\n` +
-        `BAKE_VARIABLES=${( args.variables || "" )}\r\n`
+        `BAKE_VARIABLES=${(args.variables || "")}\r\n` +
+        `BAKE_LOG_LEVEL=${(args.logLevel || "")}\r\n`
         )
         
     try {

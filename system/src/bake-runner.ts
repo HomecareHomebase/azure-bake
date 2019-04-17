@@ -10,7 +10,7 @@ export class BakeRunner {
     constructor(bPackage: IBakePackage, logger? : Logger){
 
         this._package = bPackage
-        this._logger = logger || new Logger()
+        this._logger = logger || new Logger([], bPackage.Environment.logLevel)
         this._AuthCreds = <msRestNodeAuth.ApplicationTokenCredentials>{}
     }
 
@@ -164,7 +164,7 @@ export class BakeRunner {
 
             regions.forEach(region=>{
                 let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
-                    new Logger(this._logger.getPre().concat(region.name)))
+                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel))
                 let task = this._bakeRegion(ctx)
                 tasks.push(task)    
             })
@@ -186,7 +186,7 @@ export class BakeRunner {
             for(let i=0; i < count;++i){
                 let region = regions[i]
                 let ctx = new DeploymentContext(this._AuthCreds, this._package, region, 
-                    new Logger(this._logger.getPre().concat(region.name)))
+                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel))
 
                 try{
                     await this._bakeRegion(ctx)                    

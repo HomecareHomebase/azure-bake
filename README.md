@@ -80,6 +80,7 @@ Note: There are several environment variables for azure authentication and envir
 | BAKE_ENV_CODE | 4 letter environment code, used for naming of resources/resource groups|
 | BAKE_ENV_REGIONS | JSON array of region objects that the recipe should deploy to |
 | BAKE_VARIABLES | JSON of bake variables that the recipe can access |
+| BAKE_LOG_LEVEL | Log levels include debug, info (default if unspecified), warn, and error |
 
 *note: read the section on Environment for a deeper explanation of environment/regions/variables*
 
