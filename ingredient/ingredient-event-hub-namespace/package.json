@@ -25,5 +25,9 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.43"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "dfddb0fc587d47c1d9aad2ff6ef877ef73260ef4"
 }
