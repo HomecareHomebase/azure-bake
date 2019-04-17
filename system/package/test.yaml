@@ -6,7 +6,6 @@ ingredients:
   - "@azbake/ingredient-script@~0"
   - "@azbake/ingredient-storage@~0"
 resourceGroup: true
-rgOverride: "[coreutils.variable('test2','default')]"
 parallelRegions: true
 variables:
   test1: "[coreutils.variable('test2','default')]"
