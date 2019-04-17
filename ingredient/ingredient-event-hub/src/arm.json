@@ -9,14 +9,19 @@
       "type": "string"
     },
     "messageRetentionInDays": {
-      "type": "integer",
+      "type": "string",
       "defaultValue": 7
     },
     "partitionCount": {
-      "type": "integer"
+      "type": "string",
+      "defaultValue": "2"
     },
     "location": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
     },
     "policyName": {
       "type": "string",
@@ -36,7 +41,7 @@
     {
       "type": "Microsoft.EventHub/namespaces/eventhubs",
       "apiVersion": "2017-04-01",
-      "name": "[concat(parameters('eventHubNamespaceName'), parameters('eventHubName'))]",
+      "name": "[concat(parameters('eventHubNamespaceName'), '/', parameters('eventHubName'))]",
       "location": "[parameters('location')]",
       "properties": {
         "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
@@ -48,7 +53,10 @@
       "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
       "apiVersion": "2017-04-01",
       "name": "[concat(parameters('eventHubNamespaceName'), '/', parameters('eventHubName'), '/', parameters('policyName'))]",
-      "location": "[parameters('partitionCount')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventHubNamespaceName'), parameters('eventHubName'))]"
+      ],
       "properties": {
         "rights": "[parameters('policyRights')]"
       }

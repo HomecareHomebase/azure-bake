@@ -16,7 +16,7 @@ export class ARMHelper {
 
     public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<void> {
         
-        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
+        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
 
         try {
             //now iterate through all resources in the template and append our standard tags to any existing tags in the ARM template.
@@ -41,9 +41,15 @@ export class ARMHelper {
                 properties: <DeploymentProperties>{
                     template: template,
                     parameters: params,
-                    mode: "Incremental"
+                    mode: "Incremental",
+                    debugSetting: {
+                        detailLevel: "requestContent, responseContent"
+                    }
                 }
             }
+
+            logger.debug('template:\n' + JSON.stringify(template, null, 3));
+            logger.debug('input params:\n' + JSON.stringify(params, null, 3));
 
             let client = new ResourceManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
 
