@@ -92,10 +92,16 @@ export class CoreUtils extends BaseUtility {
         return await this.context.Ingredient.properties.source.valueAsync(this.context)
     }
 
-    public get_event_hub_namespace_name(pkgName: string, resourceGroup: string | null = null): string {        
+    public get_event_hub_namespace_name(pkgName: string): string {        
         const evenhHubNamespace = this.create_resource_name("ehn", pkgName, true);
        
         return `${evenhHubNamespace}`;
+    }
+
+    public get_app_insights_name(pkgName: string): string {
+        const appInsightsName = this.create_resource_name("ai", pkgName, true);
+
+        return `${appInsightsName}`;
     }
 }
 

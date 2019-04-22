@@ -24,7 +24,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.44"
+    "@azbake/arm-helper": "^0.1.44",
+    "@azure/arm-appinsights": "2.1.0"
   },
   "publishConfig": {
     "access": "public"
