@@ -98,10 +98,14 @@ export class CoreUtils extends BaseUtility {
         return `${evenhHubNamespace}`;
     }
 
-    public get_app_insights_name(pkgName: string): string {
-        const appInsightsName = this.create_resource_name("ai", pkgName, true);
+    public get_app_insights_name(name: string): string {
+        const appInsightsName = this.create_resource_name("ai", name, false);
 
         return `${appInsightsName}`;
+    }
+
+    public get_app_insights_resource_group(name: string): string {
+        return this.create_resource_name("", name, false);
     }
 }
 

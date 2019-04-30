@@ -3,18 +3,22 @@ import { ApplicationInsightsManagementClient } from '@azure/arm-appinsights'
 
 export class AppInsightsUtils extends BaseUtility {
 
-    public create_resource_name(): string {
+    public create_resource_name(name: string): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
 
-        const name = util.create_resource_name("ai", null, true);
-        return name;
+        const appInsightsName = util.create_resource_name("ai", name, false);
+        return appInsightsName;
     }
 
-    public async get_instrumentation_key(appInsightsName: string, rg: string): Promise<string> {
+    public async get_instrumentation_key(name: string, rg: string | null = null): Promise<string> {
+
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
+        let appInsightsName = await util.get_app_insights_name(name)
+        let resource_group = rg || await util.get_app_insights_resource_group(name)
 
         const client = new ApplicationInsightsManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
-        let response = await client.components.get(rg, appInsightsName);
+        let response = await client.components.get(resource_group, appInsightsName);
 
         let key: string = ""
         if (response.instrumentationKey) {
