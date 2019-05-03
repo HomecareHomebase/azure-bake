@@ -1,76 +1,86 @@
-## Follow these basic steps to setup a new ingredient project:
+## Changelogs
+* [@azbake/ingredient-metric-alert](./CHANGELOG.md)
 
-1. Copy the ingredient-template folder into a new location
+## Overview
+The Metric Alert ingredient is a plugin for Bake.  When included in a recipe, this plugin will create an Alert Rule for an Azure resource. 
 
-    a. If creating an HCHB offical ingredient, that should be copied into the ingredient root folder, and renamed approriately.
+## Usage
 
-2. Modify the package.json file and fill out at least the name, which should be a unique npm package.
- 
-    a. If an offical HCHB ingredient, should be under the @azbake/ moniker
-
-3. Run npm install, and then for each peerDependecy run: npm i "package" --no-save. The --no-save is important as you don't want the peerDependecy to get added as a normal dependency.
-
-    a. The following peerDeps are used:
-
-```js
-    npm i "@azbake/core@0.1.*" --no-save
-    npm i "@azure/ms-rest-nodeauth@0.8.*" --no-save
+### Recipe
+```yaml
+#Provide name 
+#Provide name 
+name: Alert for Event Hub Namespace
+shortName: ehnAlert
+version: 0.0.1
+#Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
+#Specify the local path to the module during development.
+ingredients:
+  - "@azbake/ingredient-metric-alert@file:D:/Repos/scratch/bdschaap-azure-bake/ingredient/ingredient-metric-alert/azbake-ingredient-metric-alert-0.0.1.tgz"
+  - "@azbake/ingredient-arm"
+  - "@azbake/ingredient-event-hub-namespace@file:D:/Repos/scratch/bdschaap-azure-bake/ingredient/ingredient-event-hub-namespace/azbake-ingredient-event-hub-namespace-0.1.44.tgz"
+#Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
+parallelRegions: true
+#
+rgOverride: WHILKE-POC
+resourceGroup: true
+variables:
+recipe:
+  ehndiag-deploy: 
+    properties:
+    #Specify the Bake ingredient above
+      type: "@azbake/ingredient-event-hub-namespace"
+      source: ""
+      parameters:    
+        eventHubName: "[eventhubnamespace.create_resource_name()]"            
+        location: "East US"
+        skuName: Basic
+        skuTier: Basic
+        skuCapacity: "1"
+        isAutoInflateEnabled: "false"
+        maximumThroughputUnits: "0"  
+  #Name the deployment.  This shows up in the log window and is the name of the deployment within Azure.
+  alert-deploy: 
+    properties:
+    #Specify the Bake ingredient above
+      type: "@azbake/ingredient-metric-alert"
+      source: "[eventhubnamespace.get_resource_profile()]"
+      parameters:
+        alertName: "Event Hub Namespace Alert"
+        alertDescription: "New alert created via Bake"
+        alertSeverity: 3
+        isEnabled: true
+        source-type: "Microsoft.EventHub/namespaces"
+        metricName: "ThrottledRequests"
+        operator: "GreaterThan"
+        threshold: "0"
+        timeAggregation: "Maximum"
+        windowSize: "PT5M"
+        evaluationFrequency: "PT1M"
+        actionGroupId: "TODO: Not currently supported"
+    dependsOn:
+      - ehndiag-deploy
 ```
 
-4. Modify src/index.ts and set the NS properties for the types you are developing.
+| property|required|description|
+|---------|--------|-----------|
+| source | yes | Name of the target resource for the metric that the alert is monitoring |
+| alertName | yes | Name of the Alert resource |
+| alertSeverity | no | The severity level of the alert.  Defaults to 3. |
+| isEnabled | no | Specifies whether the alert is enabled.  Defaults to true. |
+| source-type | yes | The [metric namespace](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/metrics-supported) of the alert.  An example is Microsoft.KeyVault/vaults.  |
+| metricName | yes | The name of the metric that the alert is monitoring |
+| operator | no | The comparison operator for the alert.  Defaults to "GreaterThan". |
+| threshold | yes | The threshold value to trigger the alert. |
+| timeAggregation | yes | The aggregation function used for comparing against the threshold.  Defaults to "Average".|
+| windowSize | no | Period of time used to monitor alert activity based on the threshold.  Defaults to PT5M. Must be between five minutes and one day. ISO 8601 duration format. |
+| evaluationFrequency| no | How often the metric alert is evaluated represented in ISO 8601 duration format.  Defaults to PT1M. |
+| actionGroupId | no | The action group to trigger when the alert is fired.  TODO - Not yet supported. |
 
-    a. Functions should set a functiosNS property to the namespace you want to use, as well as set functions to your functions objet.
+See [Event Hub SDK documentation for additional details](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.eventhub.models.eventhub?view=azure-dotnet#properties)
 
-    b. A Plugin should set pluginNS to your unique plugin namespace, along with the plugin object.
+## Utilities
+Utility classes can be used inside of the bake.yaml file for parameter and source values.
 
-    c. You can define one, or both.
-
-5. Define either your plugin or function code and then run: npm run compile, to make sure everything compiles.
-
-6. When you are ready to publish to an NPM repository, you can run: npm run upload. This will compile, package, version, and publish. You must be logged into the npm repo before executing this for the publish to work.
-
-    a. If developing for our mono-repo offical ingredients. You can not self publish. Instead submit a Pull Request with just your ingredient changes. If accepted it will get auto versioned and published.
-
-## Understanding BakeVariables
-
-Bake.yaml recipe files support a concept of expressions. These are specially formatted string values which describe sandboxed javascript to execute and resolve a value. BakeVariables are used for all variable, and parameter based fields in the recipe; as well as other properties when noted.
-
-Within a plugin, or a function object, you must resolve a property directly if it's a `BakeVariable`, otherwise you will not access the correct value. Resolving a BakeVariable requires the current deployment execution context so that the right resolution can happen:
-
-```js
-//ingredient property source is a BakeVairbale. We call BakeVariable.value(ctx) to return
-//the correct resolved value so we can use it.
-let source: string = this._ingredient.properties.source.value(this._ctx)
-```
-
-## Developing a plugin ingredient
-
-A plugin ingredient must extend `BaseIngredient` from "@azbake/core". It must also implement: 
-
-```javascript
-public async Execute(): Promise<void>{}
-```
-
-Within your execute method you have access to the current deployment context, which implements `DeploymentContext` from "@azbake/core"
-
-```js
-this._ctx
-```
-This will give you access to things like the logger (which is context aware of current region/ingredient/etc.), the bake package config, environment variables (minus login credentials), The current region for the execution (if needed around primary/secondary ingredient logic), The current azure `AuthToken` that can be passed to Azure APIs, as well as the current `Ingredient` object which contains the parameters:
-
-```js
-this._ingredient.properties.parameters
-this._ingredient.properties.source
-```
-
-*note: source and parameter values are BakeVariables and must be resolved with the current context* 
-
-Your plugin will execute with an isolated context for each region that should be deployed ast the environment level, and once for every entry in the bake.yaml file for the recipe.
-
-You can also access function objects of any referenced ingredients from the recipe. `CoreUtils` is always avalible to a recipe, even if not directly included.
-
-```js
-let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
-
-```
-
+### ``metricalert`` class
+No functions at this time.
