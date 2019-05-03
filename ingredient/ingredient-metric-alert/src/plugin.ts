@@ -13,11 +13,8 @@ export class MetricAlertPlugin extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
 
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+           
             const resource = util.parseResource(await this._ctx.Ingredient.properties.source.valueAsync(this._ctx));
-
-            if (!resource.resource || !params["source-type"] || !params["timeAggregation"] || !params["metricName"])
-                this._logger.error("The source, source-type, timeAggregation, and metricName parameters are required for metric alert ingredients."); 
-                       
             const sourceType = params["source-type"].value;
             this._logger.log(`resource type: ${sourceType}, resource rg: ${resource.resourceGroup}, resource name: ${resource.resource}`);
 
@@ -26,7 +23,7 @@ export class MetricAlertPlugin extends BaseIngredient {
 
             //Generate alertName param as env + region + "alert" + source resource + metric name + time aggregation. 
             //Alert names can be up to 128 characaters long in Azure.
-            //Ex) deveusalert-sbwounds-maximum-throttledrequests
+            //Ex) deveusalert-sbwounds-maxiumum-throttledrequests
             const timeAggregation = params["timeAggregation"].value;
             const metricName = params["metricName"].value;
             const sourceName = resource.resource;
