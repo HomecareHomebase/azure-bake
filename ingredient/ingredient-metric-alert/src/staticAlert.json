@@ -37,12 +37,14 @@
         "description": "Specifies whether the alert is enabled"
       }
     },
-    "resourceId": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Full Resource ID of the resource emitting the metric that will be used for the comparison. For example /subscriptions/00000000-0000-0000-0000-0000-00000000/resourceGroups/ResourceGroupName/providers/Microsoft.compute/virtualMachines/VM_xyz"
-      }
+    "source-name": {
+      "type": "string"
+    },
+    "source-rg": {
+      "type": "string"
+    },
+    "source-type": {
+      "type": "string"
     },
     "metricName": {
       "type": "string",
@@ -97,14 +99,14 @@
       "type": "string",
       "defaultValue": "PT1M",
       "metadata": {
-        "description": "how often the metric alert is evaluated represented in ISO 8601 duration format"
+        "description": "How often the metric alert is evaluated represented in ISO 8601 duration format"
       }
     },
     "actionGroupId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The ID of the action group that is triggered when the alert is activated or deactivated"
+        "description": "TODO: RESERVED FOR LATER USE.  The ID of the action group that is triggered when the alert is activated or deactivated"
       }
     }
   },
@@ -120,7 +122,7 @@
         "description": "[parameters('alertDescription')]",
         "severity": "[parameters('alertSeverity')]",
         "enabled": "[parameters('isEnabled')]",
-        "scopes": [ "[parameters('resourceId')]" ],
+        "scopes": [ "[resourceId(parameters('source-rg'), parameters('source-type'), parameters('source-name'))]" ],
         "evaluationFrequency": "[parameters('evaluationFrequency')]",
         "windowSize": "[parameters('windowSize')]",
         "criteria": {
@@ -137,9 +139,7 @@
           ]
         },
         "actions": [
-          {
-            "actionGroupId": "[parameters('actionGroupId')]"
-          }
+          
         ]
       }
     }
