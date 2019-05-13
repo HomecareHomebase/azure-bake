@@ -1,0 +1,30 @@
+---
+name: dof
+shortName: dof
+version: 0.0.1
+ingredients:
+- "@azbake/ingredient-kubernetes@~0"
+#variables:
+recipe:
+  myphatingredz:
+    properties:
+        type: "@azbake/ingredient-kubernetes"
+        source: deployment.yaml
+        parameters:
+          config: encoded kubectl config, base64 encoded or embedded yaml or something
+          namespace: K8s ns to apply to. (stretch)
+          token replacement: this isn't a parameter, it's just something we have to do.
+
+# name: My package
+# shortName: mypkg
+# version: 0.0.1
+# ingredients:
+#   - "@azbake/ingredient-host-names@~0"
+# resourceGroup: true
+# recipe:
+#   mypkg-ssl:
+#     properties:
+#       type: "@azbake/ingredient-host-names"
+#       source: "mysite.mydomain.com"
+#       parameters:
+#         certificate: "certificate_resourceGroup/certificate_name"
