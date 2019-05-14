@@ -7,17 +7,16 @@ export class KubernetesPlugin extends BaseIngredient {
 
     public async Execute(): Promise<void> {
         try {
-            let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
             let k8sYamlPath = await this._ingredient.properties.source.valueAsync(this._ctx);
-            let testDeployment = await this._ingredient.properties.parameters.get("testDeployment");
-            let k8sConfigPath = await this._ingredient.properties.parameters.get("config");
+            let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
+            let k8sConfigPath = this._ingredient.properties.parameters.get("config");
             let configParam = "";
             if (k8sConfigPath){
-                configParam = `--kubeconfig=${k8sConfigPath.Code}`;
+                configParam = `--kubeconfig=${await k8sConfigPath.valueAsync(this._ctx)}`;
             }
             let { stdout } = await exec(`kubectl apply ${configParam} -f ${k8sYamlPath}`);
             this._logger.log(`stdout: ${stdout}`);
-            if (testDeployment && testDeployment.Code){
+            if (testDeployment && await testDeployment.valueAsync(this._ctx)){
                 ({ stdout } = await exec(`kubectl get ${configParam} services`));
                 this._logger.log(`stdout: ${stdout}`);
                 ({ stdout } = await exec(`kubectl.exe delete ${configParam} -f ${k8sYamlPath}`));
