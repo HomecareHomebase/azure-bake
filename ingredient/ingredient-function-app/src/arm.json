@@ -14,41 +14,10 @@
           "description": "The name of the hosting plan you wish to associate the function app with."
         }
       },
-      "sku": {
+      "storageAccountName": {
         "type": "string",
-        "allowedValues": [
-          "Free",
-          "Shared",
-          "Basic",
-          "Standard"
-        ],
-        "defaultValue": "Standard",
         "metadata": {
-          "description": "The pricing tier for the hosting plan."
-        }
-      },
-      "workerSize": {
-        "type": "string",
-        "allowedValues": [
-          "0",
-          "1",
-          "2"
-        ],
-        "defaultValue": "0",
-        "metadata": {
-          "description": "The instance size of the hosting plan (small, medium, or large)."
-        }
-      },
-      "storageAccountType": {
-        "type": "string",
-        "defaultValue": "Standard_LRS",
-        "allowedValues": [
-          "Standard_LRS",
-          "Standard_GRS",
-          "Standard_RAGRS"
-        ],
-        "metadata": {
-          "description": "Storage Account type"
+          "description": "The name of the storage account you wish to associate the function app with."
         }
       },
       "location": {
@@ -59,44 +28,17 @@
         }
       }
     },
-    "variables": {
-      "functionAppName": "[parameters('appName')]",
-      "hostingPlanName": "[parameters('planName')]",
-      "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'functions')]"
-    },
+    "variables": {},
     "resources": [
-      {
-        "type": "Microsoft.Storage/storageAccounts",
-        "name": "[variables('storageAccountName')]",
-        "apiVersion": "2018-02-01",
-        "location": "[parameters('location')]",
-        "kind": "Storage",
-        "sku": {
-          "name": "[parameters('storageAccountType')]"
-        }
-      },
-      {
-        "type": "Microsoft.Web/serverfarms",
-        "apiVersion": "2016-09-01",
-        "name": "[variables('hostingPlanName')]",
-        "location": "[parameters('location')]",
-        "properties": {
-          "name": "[variables('hostingPlanName')]",
-          "sku": "[parameters('sku')]",
-          "workerSize": "[parameters('workerSize')]",
-          "hostingEnvironment": "",
-          "numberOfWorkers": 1
-        }
-      },
       {
         "apiVersion": "2016-08-01",
         "type": "Microsoft.Web/sites",
-        "name": "[variables('functionAppName')]",
+        "name": "[parameters('appName')]",
         "location": "[parameters('location')]",
         "kind": "functionapp",
         "properties": {
-          "name": "[variables('functionAppName')]",
-          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+          "name": "[parameters('appName')]",
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]",
           "hostingEnvironment": "",
           "clientAffinityEnabled": false,
           "siteConfig": {
@@ -109,12 +51,12 @@
             "name": "appsettings",
             "type": "config",
             "dependsOn": [
-              "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]",
-              "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+              "[resourceId('Microsoft.Web/sites', parameters('appName'))]",
+              "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "properties": {
-              "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]",
-              "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]",
+              "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
+              "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
               "FUNCTIONS_EXTENSION_VERSION": "~1"
             }
           }
