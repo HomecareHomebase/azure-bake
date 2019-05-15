@@ -35,7 +35,7 @@ export class KubernetesPlugin extends BaseIngredient {
     }
     private async replaceTokens(path: any): Promise<void>{
         // TODO: If replacement goes global, instead of just k8s ingredient, then this next line seems bad
-        const fileTypesFilter = ["yaml","yml","json"] // from https://kubernetes.io/docs/concepts/configuration/overview/
+        // const fileTypesFilter = ["yaml","yml","json"] // from https://kubernetes.io/docs/concepts/configuration/overview/
         const openingDelimiter = "{{"
         const closingDelimiter = "}}"
         console.log(path);        
@@ -52,16 +52,14 @@ export class KubernetesPlugin extends BaseIngredient {
                 envVals.push(value || "")
             }
         }
-        // TODO: map dir path to globs (i.e., if isDirectory(...))
         const options = {
             files: path,
             from: envKeys,
             to: envVals,
+            // allowEmptyPaths: true,
         };
         try {
-            const results = await Replace(options)
-            // TODO Remove
-            this._logger.log('Replacement results:', results)
+            await Replace(options)
         }
         catch (error) {
             this._logger.error('Error occurred:', error)
