@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.44",
-    "@azure/arm-storage": "^8.0.0"
+    "@azure/arm-storage": "^8.0.0",
+    "@azure/storage-blob": "^10.3.0"
   },
   "gitHead": "dfddb0fc587d47c1d9aad2ff6ef877ef73260ef4"
 }
