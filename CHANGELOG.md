@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.45](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.44...v0.1.45) (2019-05-15)
+
+
+### Bug Fixes
+
+* Added initial App Service Plan ingredient. ([#54](https://github.com/HomecareHomebase/azure-bake/issues/54)) ([5ec0aea](https://github.com/HomecareHomebase/azure-bake/commit/5ec0aea))
+* bake can now be installed globally, and ingredients developed/debugged when serving a local file/folder ([99590e0](https://github.com/HomecareHomebase/azure-bake/commit/99590e0))
+* tagged ARM templates for metrics ingestion ([#50](https://github.com/HomecareHomebase/azure-bake/issues/50)) ([6160517](https://github.com/HomecareHomebase/azure-bake/commit/6160517))
+
+
+
+
+
 ## [0.1.44](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.43...v0.1.44) (2019-04-17)
 
 **Note:** Version bump only for package root
