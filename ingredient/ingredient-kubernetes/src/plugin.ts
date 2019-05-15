@@ -1,4 +1,5 @@
-import { BaseIngredient, IngredientManager } from "@azbake/core"
+import fs from 'fs'
+import { BaseIngredient } from "@azbake/core"
 import { promisify } from 'util';
 import { exec as exec_from_child_process } from 'child_process';
 import Replace from 'replace-in-file';
@@ -9,6 +10,9 @@ export class KubernetesPlugin extends BaseIngredient {
     public async Execute(): Promise<void> {
         try {
             let k8sYamlPath = await this._ingredient.properties.source.valueAsync(this._ctx);            
+            if (!await promisify(fs.exists)(k8sYamlPath)){
+                throw "file/path not found: " + k8sYamlPath
+            }
             await this.replaceTokens(k8sYamlPath);
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
             let k8sConfigPath = this._ingredient.properties.parameters.get("config");
@@ -30,8 +34,14 @@ export class KubernetesPlugin extends BaseIngredient {
         }
     }
     private async replaceTokens(path: any): Promise<void>{
+        // TODO: If replacement goes global, instead of just k8s ingredient, then this next line seems bad
+        const fileTypesFilter = ["yaml","yml","json"] // from https://kubernetes.io/docs/concepts/configuration/overview/
         const openingDelimiter = "{{"
         const closingDelimiter = "}}"
+        console.log(path);        
+        if(await this.isDirectory(path)){
+            path = path + "/*"
+        }
         console.log(path);
         const envKeys : RegExp[] = []
         const envVals : string[] = []
@@ -51,10 +61,13 @@ export class KubernetesPlugin extends BaseIngredient {
         try {
             const results = await Replace(options)
             // TODO Remove
-            this._logger.log('Replacement results:', results);
+            this._logger.log('Replacement results:', results)
         }
         catch (error) {
-            this._logger.error('Error occurred:', error);
+            this._logger.error('Error occurred:', error)
         }
+    }
+    private async isDirectory(path: any): Promise<boolean>{
+        return (await promisify(fs.lstat)(path)).isDirectory()
     }
 }
