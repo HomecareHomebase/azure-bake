@@ -37,7 +37,8 @@
     "debug": "node --inspect-brk=0.0.0.0:9229 dist/index.js",
     "start": "node dist/index.js",
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts",
-    "dockertag": "node ./dist/dockertag.js"
+    "dockertag": "node ./dist/dockertag.js",
+    "link:ingredients": "node ./dist/setup-ingredients.js"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

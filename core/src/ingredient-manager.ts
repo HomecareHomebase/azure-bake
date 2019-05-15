@@ -19,11 +19,16 @@ export class IngredientManager {
 
         if (module.plugin){
 
-            let packagePath =  process.env['npm_ingredient_root'] + '/' + moduleName + '/package.json';
+            let module_version = null
+            try{
+                module_version = require(moduleName + '/package.json').version
+            }catch(e){
+                let packagePath =  process.env['npm_ingredient_root'] + '/' + moduleName + '/package.json';
+                let content = fs.readFileSync(packagePath).toString('utf-8')
+                let json = JSON.parse(content)
+                module_version = json.version
+            }
 
-            let content = fs.readFileSync(packagePath).toString('utf-8')
-            let json = JSON.parse(content)
-            let module_version = json.version
 
             IngredientManager.ingredientTypes.set(module.pluginNS, module.plugin)
             IngredientManager.ingredientTypesVersions.set(module.pluginNS, module_version)

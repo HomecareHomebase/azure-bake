@@ -1,6 +1,5 @@
 import * as YAML from 'js-yaml'
 import * as fs from 'fs'
-import * as ps from 'process'
 import * as path from 'path'
 import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
     IIngredientProperties, IIngredient, Logger, IngredientManager} from '@azbake/core'
@@ -128,16 +127,20 @@ export class BakePackage {
                 cmd = "npm.cmd"
             
             //first check if any version of this package is already installed
-            let skipNpm = false
+            let skipNpm = false;
+            let npmPackageName = "";
             try{
                 let split = ingredientsType.split("@")
 
                 let ingPackage = ''
                 if (split.length > 2 && !ingPackage[0]) {
                     ingPackage = "@" + split[split.length-2]
+                    npmPackageName = split[split.length - 2];
+                    npmPackageName = npmPackageName.replace("azbake/", "");
                 }
                 else {
                     ingPackage = split[0]
+                    npmPackageName = ingPackage;
                 }
 
                 let packageVersion = require(path.join(ingPackage, 'package.json')).version
@@ -163,7 +166,7 @@ export class BakePackage {
                     console.log(er)
                     logger.error("failed to download ingredient: " + ingredientsType)
                     throw new Error()
-                }    
+                }  
             }
         })
 

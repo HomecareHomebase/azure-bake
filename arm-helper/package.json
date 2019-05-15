@@ -27,7 +27,7 @@
     "@azure/arm-resources": "1.*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.46",
+    "@azbake/core": "0.*",
     "@azure/arm-resources": "1.*",
     "@types/node": "^10.12.18"
   },
