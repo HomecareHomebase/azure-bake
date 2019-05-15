@@ -1,9 +1,10 @@
 import * as YAML from 'js-yaml'
 import * as fs from 'fs'
+import * as ps from 'process'
+import * as path from 'path'
 import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
     IIngredientProperties, IIngredient, Logger, IngredientManager} from '@azbake/core'
 import { ShellRunner } from 'azcli-npm';
-import { stringify } from 'querystring';
 
 export class BakePackage {
     constructor(source: string) {
@@ -112,21 +113,58 @@ export class BakePackage {
         //bind all ingredients
         let logger = new Logger()
         logger.log('Downloading ingredients...')
+
+        //make sure the cwd path has a node_modules folder, so that we install ingredients localy
+        let node_path = process.env['npm_ingredient_root'] || ""
+        if (!fs.existsSync(node_path)){
+            fs.mkdirSync(node_path);
+        }
+
         let ingredients = config.ingredients || new Array<string>()
         ingredients.forEach(ingredientsType=>{
 
             let cmd = "npm"
             if (process.platform === "win32")
                 cmd = "npm.cmd"
+            
+            //first check if any version of this package is already installed
+            let skipNpm = false
+            try{
+                let split = ingredientsType.split("@")
 
-            logger.log('- ' + ingredientsType)
-            var npm = new ShellRunner(cmd).start()
-            npm.arg("install").arg(ingredientsType)
-            let er = npm.exec()
-            if (er.code != 0){
-                console.log(er)
-                logger.error("failed to download ingredient: " + ingredientsType)
-                throw new Error()
+                let ingPackage = ''
+                if (split.length > 2 && !ingPackage[0]) {
+                    ingPackage = "@" + split[split.length-2]
+                }
+                else {
+                    ingPackage = split[0]
+                }
+
+                let packageVersion = require(path.join(ingPackage, 'package.json')).version
+
+                //making it this var means we could load the ingredient as a module.
+                //so skip install! 
+
+                //NOTE: this could mean an older ingredient is installed then what is requested
+                //this is only a problem for non-container deployments, which is mostly testing usage
+
+                logger.log('- ' + ingredientsType + " [SKIPPED]")
+                skipNpm = true
+            }
+            catch(e){
+                logger.log(e)
+            }
+
+            if (!skipNpm){
+                logger.log('- ' + ingredientsType)
+                var npm = new ShellRunner(cmd).start()
+                npm.arg("install").arg(ingredientsType)
+                let er = npm.exec()
+                if (er.code != 0){
+                    console.log(er)
+                    logger.error("failed to download ingredient: " + ingredientsType)
+                    throw new Error()
+                }    
             }
         })
 
