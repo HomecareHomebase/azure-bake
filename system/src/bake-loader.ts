@@ -152,7 +152,6 @@ export class BakePackage {
                 skipNpm = true
             }
             catch(e){
-                logger.log(e)
             }
 
             if (!skipNpm){
