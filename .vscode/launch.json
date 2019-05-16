@@ -5,33 +5,12 @@
         "type": "node",
         "request": "launch",
         "name": "Debug Locally",
-        "program": "${workspaceFolder}/src/index.ts",
-        "outFiles": [
-          "${workspaceFolder}/dist/**/*.js"
-        ],
+        "program": "${workspaceFolder}/system/dist/index.js",
+        "args": ["serve","c:/git/bake/system/package/test.yaml"],
+        "envFile": "${workspaceFolder}/.env",
         "env": {
           "NODE_ENV": "development"
         }
-      },
-      {
-        "type": "node",
-        "request": "attach",
-        "name": "Debug Container",
-        "preLaunchTask": "start-compose",
-        "postDebugTask": "stop-compose",
-        "showAsyncStacks": true,
-        "protocol": "inspector",
-        "port": 9229,
-        "restart": false,
-        "timeout": 10000,
-        "localRoot": "${workspaceFolder}",
-        "remoteRoot": "/app/bake",
-        "outFiles": [
-          "${workspaceFolder}/dist/**/*.js"
-        ],
-        "skipFiles": [
-          "<node_internals>/**/*.js",
-        ]
       }
     ]
   }
