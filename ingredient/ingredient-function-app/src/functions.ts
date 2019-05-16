@@ -2,11 +2,11 @@ import {BaseUtility, IngredientManager} from '@azbake/core'
 
 export class FunctionAppUtils extends BaseUtility {
 
-    public my_function() {
-
+    public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        let region = util.current_region()
-        this.context.Logger.log("Executing my_function for " + region)
+
+        const name = util.create_resource_name("fa", null, true);
+        return name;
     }   
 }
 
