@@ -1,0 +1,16 @@
+name: func-app-test
+shortName: funcapptest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-function-app@0.0.1"
+resourceGroup: true
+rgOverride: "funcapprg"
+parallelRegions: false
+recipe:
+  funcapp:
+    properties:
+      type: "@azbake/ingredient-function-app"
+      parameters:
+        appName: "testFunctionApp-HCHBtest4"
+        planName: "testappserviceplans1"
+        storageAccountName: "funcappstoragekevintest2"
