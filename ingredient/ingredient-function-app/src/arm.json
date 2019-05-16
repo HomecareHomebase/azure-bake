@@ -26,6 +26,12 @@
         "metadata": {
           "description": "Location for all resources."
         }
+      },
+      "appInsightsName": {
+        "type": "string",
+        "metadata": {
+          "description": "Application Insights resource for monitoring."
+        }
       }
     },
     "variables": {},
@@ -51,13 +57,13 @@
             "name": "appsettings",
             "type": "config",
             "dependsOn": [
-              "[resourceId('Microsoft.Web/sites', parameters('appName'))]",
-              "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              "[resourceId('Microsoft.Web/sites', parameters('appName'))]"
             ],
             "properties": {
               "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
               "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
-              "FUNCTIONS_EXTENSION_VERSION": "~1"
+              "FUNCTIONS_EXTENSION_VERSION": "~1",
+              "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
             }
           }
         ]
