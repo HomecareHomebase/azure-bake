@@ -16,7 +16,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.1.46](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.45...v0.1.46) (2019-05-15)
 
-**Note:** Version bump only for package @azbake/ingredient-event-hub
+**Note:** Version bump only for package @azbake/ingredient-app-service-plan
 
 
 
@@ -24,26 +24,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.1.45](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.44...v0.1.45) (2019-05-15)
 
-**Note:** Version bump only for package @azbake/ingredient-event-hub
-
-
-
-
-
-## [0.1.44](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.43...v0.1.44) (2019-04-17)
-
-**Note:** Version bump only for package @azbake/ingredient-event-hub
-
-
-
-
-
-## [0.1.43](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.42...v0.1.43) (2019-04-17)
-
 
 ### Bug Fixes
 
-* eventhubingredients ([#49](https://github.com/HomecareHomebase/azure-bake/issues/49)) ([d00e291](https://github.com/HomecareHomebase/azure-bake/commit/d00e291))
+* Added initial App Service Plan ingredient. ([#54](https://github.com/HomecareHomebase/azure-bake/issues/54)) ([5ec0aea](https://github.com/HomecareHomebase/azure-bake/commit/5ec0aea))
 
 
 

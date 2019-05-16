@@ -7,6 +7,7 @@ ingredients:
   - "@azbake/ingredient-storage@~0"
 resourceGroup: true
 parallelRegions: true
+rgOverride: whilke-poc
 variables:
   test1: "[coreutils.variable('test2','default')]"
   test2: whilke-poc

@@ -14,7 +14,11 @@ import {Buffer} from 'buffer'
 import * as minimist from 'minimist'
 
 let bake_version = require('../package.json').version
-process.env['npm_package_version'] = bake_version;
+process.env['npm_package_version'] = bake_version
+
+//store the root path to bake so we can use it later with ingredient loading
+let rootPath = path.join(__dirname, '../')
+process.env['npm_root_path'] = rootPath
 
 let argv = minimist(process.argv.slice(2))
 let cmd: string = ""
@@ -197,15 +201,15 @@ function build(){
         target = target.substr(1)    
     }
 
+    let dockerIgnore = "node_modules"
+    fs.writeFileSync(".dockerignore", dockerIgnore)
+
     let dockerImage = "FROM homecarehomebase/bake:" + runtimeVersion + "\r\n" +
     "WORKDIR /app/bake/package\r\n" +
     "COPY . .\r\n"
 
-    if (!target.toLowerCase().endsWith('bake.yaml')){
-        //we'll want to copy the yaml file into the image with our hard coded bake.yaml name (will be dup)
-        dockerImage = dockerImage +
-        "COPY " + target + " ./bake.yaml\r\n"
-    }
+    //rename target in container as "bake.yaml" for fixed file execution
+    dockerImage = dockerImage + "COPY " + target + " ./bake.yaml\r\n"
 
     let dockerFile = "Dockerfile"
     fs.writeFileSync(dockerFile, dockerImage)
@@ -214,10 +218,12 @@ function build(){
     cli.start().arg('build').arg("-t=" + recipeName).arg(".").execStream()
     .then(()=>{
         fs.unlinkSync(dockerFile)
+        fs.unlinkSync(".dockerignore")
         console.log('Mix Completed.')
     })
     .catch((e)=>{
         fs.unlinkSync(dockerFile)
+        fs.unlinkSync(".dockerignore")
         console.error('Failed to mix')
         console.error(e)
     })
@@ -240,6 +246,18 @@ async function run(): Promise<number> {
         if (bakeFile[0] == "/")
             bakeFile = bakeFile.substr(1)    
     }
+
+    //setup node require to support our ingredient location
+    let ingredientPath = path.join(basePath, 'node_modules')
+    process.env['npm_ingredient_root'] = ingredientPath
+
+    let sep = ':'
+    if (process.platform === "win32") {
+        sep = ';'
+    }
+
+    process.env.NODE_PATH = path.join(rootPath,'node_modules') + sep + ingredientPath
+    require("module").Module._initPaths();
 
     let regions: Array<IBakeRegion> = JSON.parse(process.env.BAKE_ENV_REGIONS || "")
 
