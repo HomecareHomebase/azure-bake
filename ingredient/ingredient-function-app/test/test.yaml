@@ -2,7 +2,7 @@ name: func-app-test
 shortName: funcapptest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-function-app@0.0.1"
+  - "@azbake/ingredient-function-app@0.0.2"
 resourceGroup: true
 rgOverride: "funcapprg"
 parallelRegions: false
