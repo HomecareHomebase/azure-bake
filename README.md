@@ -18,9 +18,9 @@
 
 **_Build Commands_ to be executed from the project root**
 
-For Clean Build with Local and External Dependency Loading: `npm run clean:build`  
-For Build with Local and External Dependency Loading:       `npm run load:build`   
-For Build Only:                                             `npm run build`  
+For Clean Build with Local and External Dependency Loading: `npm run clean:build`
+For Build with Local and External Dependency Loading:       `npm run load:build`
+For Build Only:                                             `npm run build`
 
 ## Development Testing
 
@@ -52,7 +52,7 @@ Once you mix a bake recipe a docker image is generated that includes everything 
 
 ## Usage
 
-### Mix / Create a deploment recipe 
+### Mix / Create a deploment recipe
 ```bash
 bake mix --name "my_deployment:latest" --runtime "latest" ./package/bake.yaml
 ```
@@ -60,7 +60,7 @@ bake mix --name "my_deployment:latest" --runtime "latest" ./package/bake.yaml
 - name : name of the local docker image:tag that will get generated
 - runtime: which version of the bake runtime to build a package against.
   - "latest" will be against the latest runtime version at mix time, once built the version will not change.
-  - Check the docker hub for all runtime versions: [bake tags](https://hub.docker.com/r/homecarehomebase/bake/tags) 
+  - Check the docker hub for all runtime versions: [bake tags](https://hub.docker.com/r/homecarehomebase/bake/tags)
 
 ### Serve / Deploy a recipe
 ```bash
@@ -108,7 +108,7 @@ To setup an environment you must define a few items:
 * Name from: [Azure published regions]
 (https://azure.microsoft.com/en-us/global-infrastructure/locations)
 * code: 3/4 letter code to describe the region (used for naming resources)
-* shortName: the azure region location identifier for the Azure management API. 
+* shortName: the azure region location identifier for the Azure management API.
     * You can get this from the powershell: Get-AzureRMLocation | Format-Table
 
 ```bash
@@ -128,7 +128,7 @@ set BAKE_VARIABLEs='{ ''storage_key'': ''secret'', ''env_type'':''prod'' }'
 ```
 
 ### Azure resource groups
-Within a bake environment each deployed recipe will generate a resource group for the resources within the recipe to deploy. A recipe can turn off resource group deployment, if for instance the recipe contains only deployed software and not infrastructure. 
+Within a bake environment each deployed recipe will generate a resource group for the resources within the recipe to deploy. A recipe can turn off resource group deployment, if for instance the recipe contains only deployed software and not infrastructure.
 
 A recipe can also override the resource group it should deploy into, instead of generating a group name based on the env-region-recipe_name. This is a very advanced feature however, and will probably require an expression to build up the name at least based on environment name and possibly region.
 
@@ -174,3 +174,8 @@ Ingredient that allows deploying Azure Traffic Manager profile and endpoints for
 Ingredient that allows deploying custom host names and ssl certificates to Azure Web Sites.  Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-host-names/README.md)
+
+### @azbake/ingredient-app-service-plan
+Ingredient that allows deploying App Service Plan. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-app-service-plan/README.md)
