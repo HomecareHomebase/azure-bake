@@ -48,7 +48,7 @@ export class KubernetesPlugin extends BaseIngredient {
 
         for (const key of this._ctx.Environment.variables.keys()) {
             const value = await (<BakeVariable>this._ctx.Environment.variables.get(key)).valueAsync(this._ctx)
-            envKeys.push(new RegExp(openingDelimiter+key+closingDelimiter,"g"))
+            envKeys.push(new RegExp(openingDelimiter+key.toUpperCase()+closingDelimiter,"g"))
             envVals.push(value || "")
         }
         const options = {
