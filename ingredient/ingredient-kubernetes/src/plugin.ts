@@ -46,9 +46,17 @@ export class KubernetesPlugin extends BaseIngredient {
         const envKeys : RegExp[] = []
         const envVals : string[] = []
 
-        for (const key of this._ctx.Environment.variables.keys()) {
-            const value = await (<BakeVariable>this._ctx.Environment.variables.get(key)).valueAsync(this._ctx)
-            envKeys.push(new RegExp(openingDelimiter+key.toUpperCase()+closingDelimiter,"g"))
+        let upperedVars : Map<string, BakeVariable> = new Map<string, BakeVariable>()
+        for (const [k,v] of this._ctx.Environment.variables) {
+            upperedVars.set(k.toUpperCase(),v)
+        }
+        // Merge tokens. Tokens win in cases of clashing keys
+        for (const [k,v] of this._ctx.Ingredient.properties.tokens) {
+            upperedVars.set(k.toUpperCase(),v)
+        }
+        for (const [k,v] of upperedVars) {
+            const value = await v.valueAsync(this._ctx)
+            envKeys.push(new RegExp(openingDelimiter+k+closingDelimiter,"g"))
             envVals.push(value || "")
         }
         const options = {
