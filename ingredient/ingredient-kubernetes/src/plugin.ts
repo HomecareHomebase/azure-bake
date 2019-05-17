@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BaseIngredient } from "@azbake/core"
+import { BaseIngredient, BakeVariable } from "@azbake/core"
 import { promisify } from 'util';
 import { exec as exec_from_child_process } from 'child_process';
 import Replace from 'replace-in-file';
@@ -45,12 +45,11 @@ export class KubernetesPlugin extends BaseIngredient {
         console.log(path);
         const envKeys : RegExp[] = []
         const envVals : string[] = []
-        for (const key in process.env) {
-            if (process.env.hasOwnProperty(key)) {
-                const value = process.env[key];
-                envKeys.push(new RegExp(openingDelimiter+key+closingDelimiter,"g"))
-                envVals.push(value || "")
-            }
+
+        for (const key of this._ctx.Environment.variables.keys()) {
+            const value = await (<BakeVariable>this._ctx.Environment.variables.get(key)).valueAsync(this._ctx)
+            envKeys.push(new RegExp(openingDelimiter+key+closingDelimiter,"g"))
+            envVals.push(value || "")
         }
         const options = {
             files: path,

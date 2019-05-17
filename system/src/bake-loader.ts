@@ -220,14 +220,9 @@ export class BakePackage {
         }
         finally{
             //strip auth from the public accessor, except for sub id.
-
-            //simple JSON wrap to clone config
-            let env = JSON.parse(JSON.stringify(this._env))
-            env.authentication = null
-            env.authentication = <IBakeAuthentication>{
+            this._env.authentication = <IBakeAuthentication>{
                 subscriptionId : this._env.authentication.subscriptionId
             }
-            this._env = env
         }
     }
 
