@@ -29,13 +29,16 @@
       ]
     },
     "skuCapacity": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "1"
     },
     "isAutoInflateEnabled": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "true"
     },
     "maximumThroughputUnits": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "10"
     }
   },
   "resources": [
@@ -55,7 +58,58 @@
       },
       "tags": {
         "Metrics": "*"
-      }
+      },
+      "resources": [
+        {
+            "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+          "type": "providers/diagnosticSettings",
+          "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+          "dependsOn": [
+            "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubName'))]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "name": "[parameters('diagnosticsSettingName')]",
+            "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+            "logs": [
+              {
+                "category": "ArchiveLogs",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "OperationalLogs",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              },
+              {
+                "category": "AutoScaleLogs",
+                "enabled": true,
+                "retentionPolicy": {
+                  "days": 0,
+                  "enabled": false
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "timeGrain": "PT1M",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]
+          }
+        }        
+    ]
     }
   ]
 }
