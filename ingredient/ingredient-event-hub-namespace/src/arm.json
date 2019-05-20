@@ -39,6 +39,23 @@
     "maximumThroughputUnits": {
       "type": "String",
       "defaultValue": "10"
+    },
+    "diagnosticsEnabled": {
+      "type": "string"
+    },
+    "diagnosticsSettingName": {
+      "type": "string",
+      "defaultValue": "setting1"
+    },
+    "diagnosticsEventHubNamespace": {
+      "type": "string"
+    },
+    "diagnosticsEventHubResourceGroup": {
+      "type": "string"
+    },
+    "diagnosticsEventHubAuthorizationRule": {
+      "type": "string",
+      "defaultValue": "RootManageSharedAccessKey"
     }
   },
   "resources": [
@@ -61,7 +78,7 @@
       },
       "resources": [
         {
-            "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+          "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
           "type": "providers/diagnosticSettings",
           "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
           "dependsOn": [
