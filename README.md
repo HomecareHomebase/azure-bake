@@ -7,6 +7,7 @@
 * [@azbake/ingredient-webapp-container](./ingredient/ingredient-webapp-container/CHANGELOG.md)
 * [@azbake/ingredient-traffic-manager](./ingredient/ingredient-traffic-manager/CHANGELOG.md)
 * [@azbake/ingredient-host-names](./ingredient/ingredient-host-names/CHANGELOG.md)
+* [@azbake/ingredient-service-bus-namespace](./ingredient/ingredient-service-bus-namespace/CHANGELOG.md)
 
 ## Tools
 
@@ -179,3 +180,8 @@ Ingredient that allows deploying custom host names and ssl certificates to Azure
 Ingredient that allows deploying App Service Plan. Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-app-service-plan/README.md)
+
+### @azbake/ingredient-service-bus-namespace
+Ingredient that allows deploying Service Bus Namespace. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-service-bus-namespace/README.md)
