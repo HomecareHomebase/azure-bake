@@ -9,16 +9,15 @@ The Metric Alert ingredient is a plugin for Bake.  When included in a recipe, th
 ### Recipe
 ```yaml
 #Provide name 
-#Provide name 
 name: Alert for Event Hub Namespace
 shortName: ehnAlert
 version: 0.0.1
 #Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
 #Specify the local path to the module during development.
 ingredients:
-  - "@azbake/ingredient-metric-alert@file:D:/Repos/scratch/bdschaap-azure-bake/ingredient/ingredient-metric-alert/azbake-ingredient-metric-alert-0.0.1.tgz"
-  - "@azbake/ingredient-arm"
-  - "@azbake/ingredient-event-hub-namespace@file:D:/Repos/scratch/bdschaap-azure-bake/ingredient/ingredient-event-hub-namespace/azbake-ingredient-event-hub-namespace-0.1.44.tgz"
+  - "@azbake/ingredient-metric-alert@~0"
+  - "@azbake/ingredient-arm@~0"
+  - "@azbake/ingredient-event-hub-namespace@~0"
 #Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
 parallelRegions: true
 #
@@ -32,7 +31,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:    
-        eventHubName: "[eventhubnamespace.create_resource_name()]"            
+        eventHubNamespaceName: "[eventhubnamespace.create_resource_name()]"            
         location: "East US"
         skuName: Basic
         skuTier: Basic

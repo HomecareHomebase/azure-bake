@@ -32,7 +32,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubName: "[eventhubnamespace.create_resource_name()]"        
+        eventHubNamespaceName: "[eventhubnamespace.create_resource_name('diagnostics')]"        
         skuName: Basic
         skuTier: Basic
         skuCapacity: "1"
@@ -43,7 +43,7 @@ recipe:
 
 | property|required|description|
 |---------|--------|-----------|
-|eventHubName | yes | 
+|eventHubNamespaceName | yes | 
 |location | no | The location for this resource. Default is the parent resource group geographic location. |
 |skuName | no | The SKU name.  Allowed values are Basic and Standard (default). |
 |skuTier | no | The SKU billing tier.  Allowed values are Basic and Standard (default). |
@@ -68,7 +68,7 @@ Returns the name of the Event Hub
 ```yaml
 ...
 parameters:
-    eventHubName: "[eventhubnamespace.create_resource_name()]"
+    eventHubNamespaceName: "[eventhubnamespace.create_resource_name()]"
 ...
 ```
 ### Returns

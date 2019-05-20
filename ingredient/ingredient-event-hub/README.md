@@ -19,6 +19,7 @@ version: 0.0.1
 #Specify the local path to the module during development.
 ingredients:
   - "@azbake/ingredient-event-hub"
+  - "@azbake/ingredient-event-hub-namespace"
 #Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
 parallelRegions: true
 resourceGroup: true
@@ -32,7 +33,7 @@ recipe:
       source: ""
       parameters:        
         eventHubName: "[eventhub.create_resource_name()]"        
-        eventHubNamespaceName: "[coreutils.get_event_hub_namespace_name('ehnShortName')]"
+        eventHubNamespaceName: "[eventhubnamespace.create_resource_name('diagnostics')]"
         messageRetentionInDays: "1"
         partitionCount: "2"
         policyName: "defaultPolicy"
@@ -80,7 +81,7 @@ Returns the primary access key
 ```yaml
 ...
 parameters:
-    primary: "[eventhub.get_primary_key(coreutils.get_event_hub_namespace_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    primary: "[eventhub.get_primary_key(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -91,7 +92,7 @@ Returns the secondary access key
 ```yaml
 ...
 parameters:
-    secondary: "[eventhub.get_secondary_key(coreutils.get_event_hub_namespace_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    secondary: "[eventhub.get_secondary_key(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -103,7 +104,7 @@ Returns the primary connection string
 ```yaml
 ...
 parameters:
-    primary: "[eventhub.get_primary_connectionstring(coreutils.get_event_hub_namespace_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    primary: "[eventhub.get_primary_connectionstring(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -115,7 +116,7 @@ Returns the secondary connection string
 ```yaml
 ...
 parameters:
-    secondary: "[eventhub.get_secondary_connectionstring(coreutils.get_event_hub_namespace_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    secondary: "[eventhub.get_secondary_connectionstring(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
