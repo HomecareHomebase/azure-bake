@@ -8,7 +8,7 @@ const exec = promisify(exec_from_child_process);
 export class KubernetesPlugin extends BaseIngredient {
 
     public async Execute(): Promise<void> {
-        const kubeconfigFilename = 'kubeconfig.yaml'
+        const kubeconfigFilename = Math.random().toString(36).substring(7) + '.yaml'
         try {
             let k8sYamlPath = await this._ingredient.properties.source.valueAsync(this._ctx);
             if (!await promisify(fs.exists)(k8sYamlPath)) {
@@ -19,12 +19,10 @@ export class KubernetesPlugin extends BaseIngredient {
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
             try {
                 let { stdout } = await exec(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
-                this._logger.log(`stdout: ${stdout}`);
+                this._logger.log(`${stdout}`);
                 if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
-                    ({ stdout } = await exec(`kubectl get ${kubeConfigParam} services`));
-                    this._logger.log(`stdout: ${stdout}`);
                     ({ stdout } = await exec(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`));
-                    this._logger.log(`stdout: ${stdout}`);
+                    this._logger.log(`${stdout}`);
                 }
             } finally {
                 if (kubeConfigParam) {
@@ -42,10 +40,9 @@ export class KubernetesPlugin extends BaseIngredient {
     }
     private async getKubeConfigParameter(kubeconfigFilename: string) {
         let configParam = "";
-        let b64KubeConfigContent = this._ctx.Environment.variables.get("b64KubeConfigContent");
+        let b64KubeConfigContent = this._ingredient.properties.parameters.get("kubeconfig");
         if (b64KubeConfigContent) {
             let kubeConfigContent = Buffer.from(await b64KubeConfigContent.valueAsync(this._ctx), 'base64').toString('ascii');
-            this._ctx.Environment.variables.delete("b64KubeConfigContent");
             try {
                 await promisify(fs.writeFile)(kubeconfigFilename, kubeConfigContent);
             }
