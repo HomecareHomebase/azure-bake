@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.49](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.48...v0.1.49) (2019-05-21)
+
+**Note:** Version bump only for package @azbake/ingredient-kubernetes
+
+
+
+
+
 ## [0.1.48](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.47...v0.1.48) (2019-05-21)
 
 
