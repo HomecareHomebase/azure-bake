@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.48](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.47...v0.1.48) (2019-05-21)
+
+
+### Bug Fixes
+
+* Added ingredient for Service Bus Namespace ([#58](https://github.com/HomecareHomebase/azure-bake/issues/58)) ([3e5b360](https://github.com/HomecareHomebase/azure-bake/commit/3e5b360))
+* Allow RA GRS accounts (Property service) ([#60](https://github.com/HomecareHomebase/azure-bake/issues/60)) ([fb1564f](https://github.com/HomecareHomebase/azure-bake/commit/fb1564f))
+* Feature/storage diagnostic settings ([#55](https://github.com/HomecareHomebase/azure-bake/issues/55)) ([09d2083](https://github.com/HomecareHomebase/azure-bake/commit/09d2083))
+* K8s ingredient ([#53](https://github.com/HomecareHomebase/azure-bake/issues/53)) ([8367461](https://github.com/HomecareHomebase/azure-bake/commit/8367461))
+
+
+
+
+
 ## [0.1.47](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.46...v0.1.47) (2019-05-15)
 
 
