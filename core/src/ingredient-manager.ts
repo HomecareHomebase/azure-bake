@@ -1,8 +1,8 @@
 import { IIngredient, IIngredientType, IBaseUtilityType } from "./bake-interfaces"
-import { stringify } from "querystring"
 import { BaseIngredient } from "./base-ingredient"
 import {DeploymentContext} from "./deployment-context"
-import { BaseUtility } from "./base-utility"
+import * as process from "process"
+import * as fs from 'fs'
 
 export class IngredientManager {
     
@@ -18,7 +18,17 @@ export class IngredientManager {
         var module = require(moduleName)
 
         if (module.plugin){
-            let module_version = require(moduleName + '/package.json').version
+
+            let module_version = null
+            try{
+                module_version = require(moduleName + '/package.json').version
+            }catch(e){
+                let packagePath =  process.env['npm_ingredient_root'] + '/' + moduleName + '/package.json';
+                let content = fs.readFileSync(packagePath).toString('utf-8')
+                let json = JSON.parse(content)
+                module_version = json.version
+            }
+
 
             IngredientManager.ingredientTypes.set(module.pluginNS, module.plugin)
             IngredientManager.ingredientTypesVersions.set(module.pluginNS, module_version)

@@ -56,9 +56,12 @@
                 "tier": "[parameters('storageTier')]"                
             },
             "kind": "[parameters('storageKind')]",
-            "properties": {
-                "accessTier": "[parameters('storageAccessTier')]"
-            }
+          "properties": {
+            "accessTier": "[parameters('storageAccessTier')]"
+          },
+          "tags": {
+            "Metrics": "*"
+          }
         }
     ]
 }
