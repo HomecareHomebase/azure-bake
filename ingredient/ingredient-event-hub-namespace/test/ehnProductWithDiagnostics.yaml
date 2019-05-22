@@ -1,0 +1,44 @@
+#This recipe deploys two event hub namespaces.  
+#The GlobalProduct event hub namespace sends it's diagnostic logs and metrics to the Diagnostics event hub namespace.
+#Provide name 
+name:  Global Product Event Hubs Namespace
+shortName: globalProduct
+version: 0.0.1
+#Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
+#Specify the local path to the module during development.
+ingredients:
+  - "@azbake/ingredient-event-hub-namespace"
+#Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
+parallelRegions: true
+rgOverride: WHILKE-POC
+resourceGroup: true
+variables:
+recipe:
+  #Name the deployment.  This shows up in the log window and is the name of the deployment within Azure.
+  globalProduct-deploy: 
+    properties:
+      #Specify the Bake ingredient above
+      type: "@azbake/ingredient-event-hub-namespace"
+      source: ""
+      parameters:
+        eventHubNamespace: "[eventhubnamespace.get_resource_name('globalproduct')]"      
+        skuName: Standard
+        skuTier: Standard
+        skuCapacity: "1"
+        #Enabling diagnostics.  Default values are being used for other diagnostics parameters.
+        diagnosticsEnabled: "yes"
+      dependsOn:
+        - diagnostics-deploy
+  #Name the deployment.  This shows up in the log window and is the name of the deployment within Azure.
+  diagnostics-deploy: 
+    properties:
+      #Specify the Bake ingredient above
+      type: "@azbake/ingredient-event-hub-namespace"
+      source: ""
+      parameters:
+        eventHubNamespace: "[eventhubnamespace.get_resource_name('diagnostics')]"      
+        skuName: Standard
+        skuTier: Standard
+        skuCapacity: "1"
+        #Disabling diagnostics
+        diagnosticsEnabled: "no"
