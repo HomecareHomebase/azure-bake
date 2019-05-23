@@ -97,7 +97,7 @@ Returns the resource group name as ``<environment><region>ehn``
 ```yaml
 ...
 parameters:
-    eventHubNamespace: "[eventhubnamespace.get_resource_group()]"
+    resourceGroup: "[eventhubnamespace.get_resource_group()]"
 ...
 ```
 ### Returns
