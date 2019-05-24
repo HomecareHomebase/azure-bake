@@ -52,6 +52,9 @@
       "properties": {
         "isAutoInflateEnabled": "[parameters('isAutoInflateEnabled')]",
         "maximumThroughputUnits": "[parameters('maximumThroughputUnits')]"
+      },
+      "tags": {
+        "Metrics": "*"
       }
     }
   ]

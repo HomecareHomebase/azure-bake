@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.47](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.46...v0.1.47) (2019-05-15)
+
+
+### Bug Fixes
+
+* Allowing bake to be debugged from mono repo ([4dd7239](https://github.com/HomecareHomebase/azure-bake/commit/4dd7239))
+
+
+
+
+
+## [0.1.46](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.45...v0.1.46) (2019-05-15)
+
+
+### Bug Fixes
+
+* Resolving ingredient version loading for just downloaded ingredients ([39f841c](https://github.com/HomecareHomebase/azure-bake/commit/39f841c))
+
+
+
+
+
+## [0.1.45](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.44...v0.1.45) (2019-05-15)
+
+
+### Bug Fixes
+
+* bake can now be installed globally, and ingredients developed/debugged when serving a local file/folder ([99590e0](https://github.com/HomecareHomebase/azure-bake/commit/99590e0))
+
+
+
+
+
 ## [0.1.44](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.43...v0.1.44) (2019-04-17)
 
 **Note:** Version bump only for package @azbake/core
