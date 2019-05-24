@@ -33,7 +33,7 @@ recipe:
       source: ""
       parameters:        
         eventHubName: "[eventhub.create_resource_name()]"        
-        eventHubNamespaceName: "[eventhubnamespace.create_resource_name('diagnostics')]"
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('diagnostics')]"
         messageRetentionInDays: "1"
         partitionCount: "2"
         policyName: "defaultPolicy"
@@ -81,7 +81,7 @@ Returns the primary access key
 ```yaml
 ...
 parameters:
-    primary: "[eventhub.get_primary_key(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    primary: "[eventhub.get_primary_key(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -92,7 +92,7 @@ Returns the secondary access key
 ```yaml
 ...
 parameters:
-    secondary: "[eventhub.get_secondary_key(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    secondary: "[eventhub.get_secondary_key(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -104,7 +104,7 @@ Returns the primary connection string
 ```yaml
 ...
 parameters:
-    primary: "[eventhub.get_primary_connectionstring(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    primary: "[eventhub.get_primary_connectionstring(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
@@ -116,7 +116,7 @@ Returns the secondary connection string
 ```yaml
 ...
 parameters:
-    secondary: "[eventhub.get_secondary_connectionstring(eventhubnamespace.create_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
+    secondary: "[eventhub.get_secondary_connectionstring(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
 ...
 ```
 ### Returns
