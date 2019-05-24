@@ -13,7 +13,7 @@ This ingredient is typically used in conjunction with the Event Hub ingredient. 
 ```yaml
 #Provide name 
 name: Event Hubs Namespace Diagnostic Logs
-shortName: ehndiag
+shortName: diagnostics1
 version: 0.0.1
 #Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
 #Specify the local path to the module during development.
@@ -32,7 +32,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('diagnostics')]"        
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name()]"        
         skuName: Basic
         skuTier: Basic
         skuCapacity: "1"
@@ -63,8 +63,8 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 |get_resource_group | Returns a resource group 
 
 ### Function Details
-#### create_resource_name()
-Returns the name of the Event Hub Namespace as ``<environment><region>ehn<name>``
+#### get_resource_name()
+Returns the name of the Event Hub Namespace as ``<environment><region>ehn<name>``.  A parameter for resource short name is available.  If unspecified, the resource name is based on the package short name.
 ```yaml
 ...
 parameters:
@@ -75,11 +75,22 @@ parameters:
 string
 
 #### get_resource_group()
-Returns the resource group name as ``<environment><region><name>``
+Returns the resource group name as ``<environment><region><name>``.  A parameter for resource group short name is available.  If unspecified, the resource name is based on the package short name.
 ```yaml
 ...
 parameters:
     resourceGroup: "[eventhubnamespace.get_resource_group('diagnostics')]"
+...
+```
+### Returns
+string
+
+#### get_resource_profile()
+Returns the resource profile as ``<resource group>/<resource name>``.  Parameters for resource short name and resouce group short name are available.  If unspecified, the resource name and/or resource group name are based on the package short name.
+```yaml
+...
+properties:
+    source: "[eventhubnamespace.get_resource_profile()]"
 ...
 ```
 ### Returns

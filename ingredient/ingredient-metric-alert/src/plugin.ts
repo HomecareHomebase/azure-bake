@@ -24,7 +24,7 @@ export class MetricAlertPlugin extends BaseIngredient {
             params["source-rg"] = { "value": resource.resourceGroup };
             params["source-name"] = { "value": resource.resource };
 
-            //Generate alertName param as env + region + "alert" + source resource + metric name + time aggregation. 
+            //Generate alertName param as env + region + "alert" + source resource + time aggregation (max, min, etc.) + metric name. 
             //Alert names can be up to 128 characaters long in Azure.
             //Ex) deveusalert-sbwounds-maximum-throttledrequests
             const timeAggregation = params["timeAggregation"].value;

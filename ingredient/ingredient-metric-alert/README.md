@@ -2,15 +2,15 @@
 * [@azbake/ingredient-metric-alert](./CHANGELOG.md)
 
 ## Overview
-The Metric Alert ingredient is a plugin for Bake.  When included in a recipe, this plugin will create an Alert Rule for an Azure resource. 
+The Metric Alert ingredient is a plugin for Bake.  When included in a recipe, this plugin will create a custom Alert Rule for an Azure resource. 
 
 ## Usage
 
 ### Recipe
 ```yaml
 #Provide name 
-name: Alert for Event Hub Namespace
-shortName: ehnAlert
+name: Event Hub Namespace for diagnostics with a custom metric alert
+shortName: diagnostics
 version: 0.0.1
 #Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
 #Specify the local path to the module during development.
@@ -21,7 +21,7 @@ ingredients:
 #Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
 parallelRegions: true
 #
-rgOverride: WHILKE-POC
+#rgOverride: 
 resourceGroup: true
 variables:
 recipe:
@@ -31,13 +31,12 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:    
-        eventHubNamespaceName: "[eventhubnamespace.create_resource_name()]"            
-        location: "East US"
-        skuName: Basic
-        skuTier: Basic
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name()]"            
+        skuName: Standard
+        skuTier: Standard
         skuCapacity: "1"
-        isAutoInflateEnabled: "false"
-        maximumThroughputUnits: "0"  
+        isAutoInflateEnabled: "true"
+        maximumThroughputUnits: "10"  
   #Name the deployment.  This shows up in the log window and is the name of the deployment within Azure.
   alert-deploy: 
     properties:

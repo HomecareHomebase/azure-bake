@@ -48,6 +48,7 @@ export class ARMHelper {
                 }
             }
 
+            logger.log(`resource group: ${resourceGroup}`);
             logger.debug('template:\n' + JSON.stringify(template, null, 3));
             logger.debug('input params:\n' + JSON.stringify(params, null, 3));
 
