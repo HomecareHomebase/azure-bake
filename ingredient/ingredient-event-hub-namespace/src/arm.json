@@ -32,10 +32,12 @@
       "type": "String"
     },
     "isAutoInflateEnabled": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "true"
     },
     "maximumThroughputUnits": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "10"
     }
   },
   "resources": [

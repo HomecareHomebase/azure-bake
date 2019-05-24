@@ -1,12 +1,13 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./arm.json"
+import { EventHubNamespaceUtils } from "./functions.js";
 
 export class EventHubNamespacePlugin extends BaseIngredient {
     public async Execute(): Promise<void> {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
-            this._logger.log('Event Hub Namespace Plugin Logging: ' + await this._ingredient.properties.source.valueAsync(this._ctx))
+            this._logger.log('Event Hub Namespace Plugin Logging: ')
 
             const helper = new ARMHelper(this._ctx);
 

@@ -21,7 +21,7 @@ ingredients:
   - "@azbake/ingredient-event-hub-namespace"
 #Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
 parallelRegions: true
-#
+#rgOverride: 
 resourceGroup: true
 variables:
 recipe:
@@ -32,7 +32,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubNamespaceName: "[eventhubnamespace.create_resource_name('diagnostics')]"        
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('diagnostics')]"        
         skuName: Basic
         skuTier: Basic
         skuCapacity: "1"
@@ -41,16 +41,15 @@ recipe:
 
 ```
 
-| property|required|description|
-|---------|--------|-----------|
-|eventHubNamespaceName | yes | 
-|location | no | The location for this resource. Default is the parent resource group geographic location. |
-|skuName | no | The SKU name.  Allowed values are Basic and Standard (default). |
-|skuTier | no | The SKU billing tier.  Allowed values are Basic and Standard (default). |
-|skuCapacity | yes | The throughput capacity of the Event Hub. |
-|isAutoInflateEnabled | yes | Indicates whether AutoInflate is enabled. |
-|maximumThroughputUnits | yes | The upper limit of throughput units when AutoInflate is enabled. |
-
+| property|required|default|description|
+|---------|--------|--------|-----------|
+|eventHubNamespaceName | yes | | The name of the Event Hub Namespace |
+|location | no | Parent resource group geographic location. | The location for this resource. |
+|skuName | no | Standard | The SKU name.  Allowed values are Basic and Standard. |
+|skuTier | no | Standard | The SKU billing tier.  Allowed values are Basic and Standard. |
+|skuCapacity | yes | The throughput capacity of the Event Hub.  Allowed values are 1 to 20. |
+|isAutoInflateEnabled | yes | true | Indicates whether AutoInflate is enabled. |
+|maximumThroughputUnits | yes | 10 | The upper limit of throughput units when AutoInflate is enabled. |
 See [Event Hub Namespace SDK documentation for additional details](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.eventhub.models.ehnamespace?view=azure-dotnet)
 
 ## Utilities
@@ -58,17 +57,29 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 
 ### ``eventhubnamespace`` class
 
-|function|description|
+|function | description |
 |--------|-----------|
-|create_resource_name| Returns the name of the Event Hub Namespace |
+|get_resource_name| Returns a resource name for an Event Hub Namespace |
+|get_resource_group | Returns a resource group 
 
 ### Function Details
 #### create_resource_name()
-Returns the name of the Event Hub
+Returns the name of the Event Hub Namespace as ``<environment><region>ehn<name>``
 ```yaml
 ...
 parameters:
-    eventHubNamespaceName: "[eventhubnamespace.create_resource_name()]"
+    eventHubNamespace: "[eventhubnamespace.get_resource_name('diagnostics')]"
+...
+```
+### Returns
+string
+
+#### get_resource_group()
+Returns the resource group name as ``<environment><region><name>``
+```yaml
+...
+parameters:
+    resourceGroup: "[eventhubnamespace.get_resource_group('diagnostics')]"
 ...
 ```
 ### Returns
