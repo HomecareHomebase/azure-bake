@@ -55,7 +55,10 @@ recipe:
         timeAggregation: "Maximum"
         windowSize: "PT5M"
         evaluationFrequency: "PT1M"
-        actionGroupId: "TODO: Not currently supported"
+        actionGroupName: "[coreutils.create_resource_name('act','emailops', false)]"
+        actionGroupResourceGroup: "[coreutils.create_resource_name('','actiongroups', false)]"
+        #Uncomment below and comment above if using rgOverride 
+        #actionGroupResourceGroup: "[coreutils.resource_group()]"
     dependsOn:
       - ehndiag-deploy
 ```
@@ -73,7 +76,9 @@ recipe:
 | timeAggregation | yes | The aggregation function used for comparing against the threshold.  Defaults to "Average".|
 | windowSize | no | Period of time used to monitor alert activity based on the threshold.  Defaults to PT5M. Must be between five minutes and one day. ISO 8601 duration format. |
 | evaluationFrequency| no | How often the metric alert is evaluated represented in ISO 8601 duration format.  Defaults to PT1M. |
-| actionGroupId | no | The action group to trigger when the alert is fired.  TODO - Not yet supported. |
+| actionGroupName | yes | The name of the action group to trigger when the alert is fired.|
+| actionGroupResourceGroup | yes | The action group's resource group.|
+
 
 See [Event Hub SDK documentation for additional details](https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.eventhub.models.eventhub?view=azure-dotnet#properties)
 
