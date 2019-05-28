@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.51](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.50...v0.1.51) (2019-05-28)
+
+
+### Bug Fixes
+
+* Resolving k8s token replace ([f4e617f](https://github.com/HomecareHomebase/azure-bake/commit/f4e617f))
+
+
+
+
+
 ## [0.1.49](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.48...v0.1.49) (2019-05-21)
 
 **Note:** Version bump only for package @azbake/ingredient-kubernetes
