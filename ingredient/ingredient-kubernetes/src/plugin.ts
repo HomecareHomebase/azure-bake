@@ -2,7 +2,8 @@ import fs from 'fs'
 import { BaseIngredient, BakeVariable } from "@azbake/core"
 import { promisify } from 'util';
 import { exec as exec_from_child_process } from 'child_process';
-import Replace from 'replace-in-file';
+const replace = require('replace-in-file');
+
 const exec = promisify(exec_from_child_process);
 
 export class KubernetesPlugin extends BaseIngredient {
@@ -83,7 +84,7 @@ export class KubernetesPlugin extends BaseIngredient {
             allowEmptyPaths: true
         }
         try {
-            await Replace(options)
+            const results = replace.sync(options);
         }
         catch (error) {
             this._logger.error('Error occurred:', error)
