@@ -14,10 +14,22 @@
           "description": "The name of the hosting plan you wish to associate the function app with."
         }
       },
+      "planRG": {
+        "type": "string",
+        "metadata": {
+          "description": "resource group of the hosting plan resource."
+        }
+      },
       "storageAccountName": {
         "type": "string",
         "metadata": {
           "description": "The name of the storage account you wish to associate the function app with."
+        }
+      },
+      "storageAccountRG": {
+        "type": "string",
+        "metadata": {
+          "description": "resource group of the storage account resource."
         }
       },
       "location": {
@@ -32,6 +44,12 @@
         "metadata": {
           "description": "Application Insights resource for monitoring."
         }
+      },
+      "appInsightsRG": {
+        "type": "string",
+        "metadata": {
+          "description": "resource group of the Application Insights resource."
+        }
       }
     },
     "variables": {},
@@ -44,7 +62,7 @@
         "kind": "functionapp",
         "properties": {
           "name": "[parameters('appName')]",
-          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]",
+          "serverFarmId": "[resourceId(parameters('planRG'), 'Microsoft.Web/serverfarms', parameters('planName'))]",
           "hostingEnvironment": "",
           "clientAffinityEnabled": false,
           "siteConfig": {
@@ -60,10 +78,10 @@
               "[resourceId('Microsoft.Web/sites', parameters('appName'))]"
             ],
             "properties": {
-              "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
-              "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
+              "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId(parameters('storageAccountRG'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
+              "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listkeys(resourceId(parameters('storageAccountRG'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1,';')]",
               "FUNCTIONS_EXTENSION_VERSION": "~1",
-              "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
+              "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId(parameters('appInsightsRG'),'microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
             }
           }
         ]

@@ -4,7 +4,7 @@ version: 1.0.0
 ingredients:
   - "@azbake/ingredient-function-app@0.0.3"
 resourceGroup: true
-rgOverride: "funcapprg"
+rgOverride: "randomrg"
 parallelRegions: false
 recipe:
   funcapp:
@@ -12,6 +12,6 @@ recipe:
       type: "@azbake/ingredient-function-app"
       parameters:
         appName: "[functionapputils.create_resource_name()]"
-        planName: "testappserviceplans1"
-        storageAccountName: "funcappstoragekevintest2"
-        appInsightsName: "funcappAI"
+        planName: "funcapprg/testappserviceplans1"
+        storageAccountName: "funcapprg/funcappstoragekevintest2"
+        appInsightsName: "funcapprg/funcappAI"
