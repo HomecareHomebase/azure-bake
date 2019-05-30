@@ -192,8 +192,9 @@ export class BakePackage {
         })
 
         //fix up json objects to act as hashmaps.
-        config.parallelRegions = config.parallelRegions==undefined? true : config.parallelRegions
-        
+        config.parallelRegions = config.parallelRegions==undefined? true : config.parallelRegions        
+        config.resourceGroup = config.resourceGroup==undefined? true : config.resourceGroup
+
         //only set rgOverride as a BV if the field is already set
         if (config.rgOverride) {
             config.rgOverride = new BakeVariable(<any>config.rgOverride);
@@ -220,14 +221,9 @@ export class BakePackage {
         }
         finally{
             //strip auth from the public accessor, except for sub id.
-
-            //simple JSON wrap to clone config
-            let env = JSON.parse(JSON.stringify(this._env))
-            env.authentication = null
-            env.authentication = <IBakeAuthentication>{
+            this._env.authentication = <IBakeAuthentication>{
                 subscriptionId : this._env.authentication.subscriptionId
             }
-            this._env = env
         }
     }
 

@@ -88,22 +88,24 @@ export class BakeRunner {
 
             let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)
 
-            let rgExists = false
-            try {
-                let chkResult = await client.resourceGroups.checkExistence(rg_name)
-                rgExists = chkResult.body                
-            }
-            catch{}
-
-            if (!rgExists){
-
-                let tagGenerator = new TagGenerator(ctx)
-
-                ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
-                await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
-                    tags:  tagGenerator.GenerateTags(),
-                    location: region_name
-                })
+            if (ctx.Config.resourceGroup) {
+                let rgExists = false
+                try {
+                    let chkResult = await client.resourceGroups.checkExistence(rg_name)
+                    rgExists = chkResult.body                
+                }
+                catch{}
+    
+                if (!rgExists){
+    
+                    let tagGenerator = new TagGenerator(ctx)
+    
+                    ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
+                    await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
+                        tags:  tagGenerator.GenerateTags(),
+                        location: region_name
+                    })
+                }
             }
 
             let recipe = ctx.Config.recipe
