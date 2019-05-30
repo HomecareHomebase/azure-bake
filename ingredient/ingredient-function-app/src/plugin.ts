@@ -19,11 +19,11 @@ export class FunctionAppPlugin extends BaseIngredient {
             const aiResource =  util.parseResource(params["appInsightsName"].value);
 
             params["planName"] = {"value": hostResource.resource};
-            params["planRG"] = {"value": (hostResource.resourceGroup || util.resource_group())};
+            params["planRG"] = {"value": (hostResource.resourceGroup || await util.resource_group())};
             params["storageAccountName"] = {"value": storageResource.resource};
-            params["storageAccountRG"] = {"value": (storageResource.resourceGroup || util.resource_group())};
+            params["storageAccountRG"] = {"value": (storageResource.resourceGroup || await util.resource_group())};
             params["appInsightsName"] = {"value": aiResource.resource};
-            params["appInsightsRG"] = {"value": (aiResource.resourceGroup || util.resource_group())};
+            params["appInsightsRG"] = {"value": (aiResource.resourceGroup || await util.resource_group())};
 
 
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group());
