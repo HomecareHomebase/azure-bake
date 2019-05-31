@@ -31,10 +31,13 @@ recipe:
 | property|required|description|
 |---------|--------|-----------|
 | appName | yes | Name for the function app resource |
-| planName | yes | Specifies the hosting plan to use for this function app |
+| planName | yes | Specifies the hosting plan to use for this function app. |
 | storageAccountName | yes | The Storage account to use. It should be able to support the Always On feature for function apps |
 | appInsightsName | yes | The Application Insights resource that this function app will report to |
 | location | no |The location for this resource. Default is the parent resource group geographic location |
+
+For hosting plan, storage account, or application insights, indicate the the resource groups they belong to if the function app will be in a different group. Use the following format to specify resource groups. If a resource group is not indicated, it will look for the resources in the same group that the function app is targeting.  
+``<resource_group>/<resource_name>``
 
 ## Utilities
 
