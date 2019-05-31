@@ -18,10 +18,18 @@ export class FunctionAppPlugin extends BaseIngredient {
             const storageResource =  util.parseResource(params["storageAccountName"].value);
             const aiResource =  util.parseResource(params["appInsightsName"].value);
 
+            this._logger.log(`Hosting plan rg: ${hostResource.resourceGroup}`);
+            this._logger.log(`Hosting plan name: ${hostResource.resource}`);
             params["planName"] = {"value": hostResource.resource};
             params["planRG"] = {"value": (hostResource.resourceGroup || await util.resource_group())};
+
+            this._logger.log(`Storage account rg: ${storageResource.resourceGroup}`);
+            this._logger.log(`Storage account name: ${storageResource.resource}`);
             params["storageAccountName"] = {"value": storageResource.resource};
             params["storageAccountRG"] = {"value": (storageResource.resourceGroup || await util.resource_group())};
+
+            this._logger.log(`App Insights rg: ${aiResource.resourceGroup}`);
+            this._logger.log(`App Insights name: ${aiResource.resource}`);
             params["appInsightsName"] = {"value": aiResource.resource};
             params["appInsightsRG"] = {"value": (aiResource.resourceGroup || await util.resource_group())};
 
