@@ -25,5 +25,8 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.44"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
