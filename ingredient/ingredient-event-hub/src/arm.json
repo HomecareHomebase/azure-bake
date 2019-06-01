@@ -10,7 +10,7 @@
     },
     "messageRetentionInDays": {
       "type": "string",
-      "defaultValue": 7
+      "defaultValue": 10
     },
     "partitionCount": {
       "type": "string",
