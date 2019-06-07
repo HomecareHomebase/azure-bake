@@ -45,4 +45,28 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
 
         return response.secondaryKey || "";
     }
+
+    public async get_primary_connection_string(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
+        
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        let resource_group = rg || await util.resource_group();
+
+        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+        let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
+
+        return response.primaryConnectionString || "";
+    }
+
+    public async get_secondary_connection_string(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
+        
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        let resource_group = rg || await util.resource_group();
+
+        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+        let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
+
+        return response.secondaryConnectionString || "";
+    }
 }
