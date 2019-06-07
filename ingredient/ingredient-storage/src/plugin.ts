@@ -105,18 +105,10 @@ export class StoragePlugIn extends BaseIngredient {
             version: "2.0",
             write: boolBlobDiagnosticLoggingEnabled
         };
-
-        //The Azure SDK will error with "storageServiceProperties.Cors must be of type Array." if no CORS value is specified.  Set to a restrictive setting.
-        //See: https://github.com/Azure/azure-sdk-for-js/issues/2909
-        const requiredCORS = {
-            allowedHeaders: "*",
-            allowedMethods: "GET",
-            allowedOrigins: "localhost",
-            exposedHeaders: "*",
-            maxAgeInSeconds: 8888
-        };
+        
+        //Workaround for bug in Azure Javascript SDK.  https://github.com/Azure/azure-sdk-for-js/issues/2909
         if (!serviceProperties.cors) {
-            serviceProperties.cors = [requiredCORS];
+            serviceProperties.cors = undefined;
         }
 
         //Post blob service properties back to Azure
