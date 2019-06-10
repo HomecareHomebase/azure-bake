@@ -16,19 +16,28 @@ ingredients:
   - "@azbake/ingredient-service-bus-namespace@~0"
 resourceGroup: true
 recipe:
-  mypkg-service-bus-namespace:
+  service-bus-namespace:
     properties:
       type: "@azbake/ingredient-service-bus-namespace"
-      source: ""
       parameters:
-        serviceBusNamespaceName: "ServiceBusNamespaceName"
+        name: "myservicebusprimary"
+        secondaryName: "myservicebussecondary"
+        skuName: "Premium"
+        location: "US Central"
+        secondaryLocation: "East US 2"
+        aliasName: "myservicebus"
+        capacity: "1"
 ```
 
 | property | required | description |
 | -------- | -------- | ----------- |
-| serviceBusNamespaceName | yes | The name for the Service Bus Namespace |
-| skuName | no (default `Standard`) | Sets messaging tier. |
-| location | no | Sets the location. Defaults to the parent resource group location. |
+| name | yes | The name for the singular/primary Service Bus Namespace |
+| secondaryName | no | The name of the secondary Service Bus namespace |
+| skuName | no (default `Basic`) | The messaging messaging tier. |
+| location | no | The location of the singular/primary namespace. Defaults to the parent resource group location. |
+| secondaryLocation | no | The location of the secondary namespace. |
+| aliasName | no | The name of the Geo-Recovery configuration alias  |
+| capacity | no | The specified messaging units for the tier. |
 
 ## Utilities
 
