@@ -12,27 +12,11 @@ export class EventHubNamespaceUtils extends BaseUtility {
 
         return fullName;
     } 
-
-    public async get_resource_group(rgShortName: string | null = null): Promise<string> {        
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-
-        var rg: string;
-
-        let override = this.context.Config.rgOverride
-        if (override)
-            rg = await override.valueAsync(this.context);
-        //resource type, name, region enabled
-        else rg = util.create_resource_name("", rgShortName, true);
-
-        this.context._logger.debug(`EventHubNamespaceUtils.get_resource_group() returned ${rg}`);
-
-        return rg;
-    }
     
     public async get_resource_profile(shortName: string | null = null, rgShortName: string | null = null): Promise<string> {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         const name = this.get_resource_name(shortName);
-        const rg = await this.get_resource_group(rgShortName);
+        const rg = await util.resource_group(rgShortName);
         const profile = `${rg}/${name}`;
 
         this.context._logger.debug(`EventHubNamespaceUtils.get_resource_profile() returned ${profile}`);
