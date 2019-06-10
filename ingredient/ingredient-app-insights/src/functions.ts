@@ -16,17 +16,11 @@ export class AppInsightsUtils extends BaseUtility {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         
-        //App Insights telemetry will be centralized.  Therefore don't appenda  region code.
+        //App Insights telemetry will be centralized.  Therefore don't append a region code.  
+        //Also, pass in shortname rather than using default.  The default is the package name being deployed but we want the App Insights resource name/group.
         const aiName = util.create_resource_name("ai", shortName, false);
         
-        let rgName: string;
-
-        let override = this.context.Config.rgOverride
-        if (override) {
-            rgName = await override.valueAsync(this.context)
-        } else {
-            rgName = util.create_resource_name("", rgShortName, false)
-        }    
+        const rgName: string = await util.resource_group(shortName, false);
 
         const client = new ApplicationInsightsManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
