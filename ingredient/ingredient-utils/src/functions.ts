@@ -2,6 +2,10 @@ import {BakeVariable} from '@azbake/core'
 import { DeploymentContext } from '@azbake/core';
 import { BaseUtility} from '@azbake/core'
 
+function stringCompareInsensitive(a: string, b: string) : boolean {
+    return a.localeCompare(b,undefined, {sensitivity: 'accent'}) === 0;
+}
+
 
 export class CoreUtils extends BaseUtility {
 
@@ -31,8 +35,20 @@ export class CoreUtils extends BaseUtility {
     }
     public async variable(key: string, def?: string): Promise<any> {
         if (this.context.Config.variables) {
-            let v: BakeVariable = this.context.Config.variables.get(key) || new BakeVariable(def || "")
-            return await v.valueAsync(this.context)    
+
+            //we want keys to be case insensitive, so we iterate all keys and find first case-insensitive match
+            //means there could be collisions, we don't care, and just use first found.
+
+            for(var variableKey in this.context.Config.variables){
+                if (stringCompareInsensitive(variableKey, key)) {
+                
+                    let v: BakeVariable = this.context.Config.variables.get(variableKey) || new BakeVariable(def || "")
+                    return await v.valueAsync(this.context)  
+                }
+            }
+
+            return new BakeVariable(def || "");
+            
         } else {
             return ""
         }
