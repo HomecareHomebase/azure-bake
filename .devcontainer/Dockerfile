@@ -1,8 +1,3 @@
-#-----------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See LICENSE in the project root for license information.
-#-----------------------------------------------------------------------------------------
-
 FROM node:10
 
 # Configure apt
@@ -21,7 +16,6 @@ RUN apt-get install -y curl \
     ca-certificates \    
     gnupg2 \
     software-properties-common
-
 
 #Add Docker Key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
