@@ -9,10 +9,8 @@ FROM docker
 RUN apk update
 
 # Verify git and process tools are installed
-RUN apk add git procps nodejs
-
-# Install eslint
-RUN npm install -g eslint typescript lerna
+RUN apk add git procps nodejs \
+    && npm install -g typescript lerna
 
 # Set the default shell to bash rather than sh
 ENV SHELL /bin/sh
