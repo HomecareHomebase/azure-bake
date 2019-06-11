@@ -22,6 +22,5 @@ export class EventHubNamespaceUtils extends BaseUtility {
         this.context._logger.debug(`EventHubNamespaceUtils.get_resource_profile() returned ${profile}`);
         return profile
     }
-
 }
 
