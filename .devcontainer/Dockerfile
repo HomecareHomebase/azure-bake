@@ -15,7 +15,7 @@ RUN apt-get install -y git procps
 
 # Install eslint
 RUN npm install -g eslint typescript lerna \
-    && npm install docker-ce docker-ce-cli containerd.io
+    && apt-get install docker-ce docker-ce-cli containerd.io
 
 # Clean up
 RUN apt-get autoremove -y \
