@@ -40,11 +40,7 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
-
-- bash: sudo git checkout master
-  workingDirectory: ./
-  dispalyName: Do a real master checkout
-  
+ 
 - bash: sudo npm install lerna@3.13.0 typescript@3.3.3 --global
   workingDirectory: ./
   displayName: NPM Install of Lerna & TypeScript
