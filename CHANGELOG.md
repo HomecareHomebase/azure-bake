@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.52](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.51...v0.1.52) (2019-06-11)
+
+
+### Bug Fixes
+
+* Feature/az mon unified diag settings1 ([#61](https://github.com/HomecareHomebase/azure-bake/issues/61)) ([d8d6daa](https://github.com/HomecareHomebase/azure-bake/commit/d8d6daa))
+* Feature/storage diagnostic settings ([#57](https://github.com/HomecareHomebase/azure-bake/issues/57)) ([1ab1124](https://github.com/HomecareHomebase/azure-bake/commit/1ab1124))
+* Function App ingredient ([#56](https://github.com/HomecareHomebase/azure-bake/issues/56)) ([f954ebb](https://github.com/HomecareHomebase/azure-bake/commit/f954ebb))
+* Helper functions for Service Bus namespace ingredient ([#64](https://github.com/HomecareHomebase/azure-bake/issues/64)) ([fc68cf8](https://github.com/HomecareHomebase/azure-bake/commit/fc68cf8))
+
+
+
+
+
 ## [0.1.51](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.50...v0.1.51) (2019-05-28)
 
 
