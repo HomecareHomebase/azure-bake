@@ -45,8 +45,12 @@ steps:
   workingDirectory: ./
   displayName: Lerna Run Clean Build
 
-- bash: echo "Input Lerna Publish Script Here...."
+- bash: sudo npm run publish
   workingDirectory: ./
   displayName: Lerna Publish of all updated packages to NPM
+  
+- bash: sudo npm run release-build
+  workingDirectory: ./system
+  displayName: Generate new docker bake docker image
 
 
