@@ -21,7 +21,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubNamespace: "[eventhubnamespace.get_resource_name('globalproduct')]"      
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('globalproduct')]"      
         skuName: Standard
         skuTier: Standard
         skuCapacity: "1"
@@ -36,7 +36,7 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubNamespace: "[eventhubnamespace.get_resource_name('diagnostics')]"      
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('diagnostics')]"      
         skuName: Standard
         skuTier: Standard
         skuCapacity: "1"

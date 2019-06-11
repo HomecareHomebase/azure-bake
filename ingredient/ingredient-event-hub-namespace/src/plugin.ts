@@ -22,11 +22,11 @@ export class EventHubNamespacePlugin extends BaseIngredient {
                 var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
                 params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
               
-                var diagnosticsEventHubResourceGroup: string
+                var diagnosticsEventHubNamespaceResourceGroup: string
 
-                diagnosticsEventHubResourceGroup = await ehnUtils.get_resource_group();
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
 
-                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubResourceGroup};                
+                params["diagnosticsEventHubNamespaceResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
 
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())

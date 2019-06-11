@@ -51,7 +51,7 @@
        "type": "string",
        "defaultValue": ""
     },
-    "diagnosticsEventHubResourceGroup": {
+    "diagnosticsEventHubNamespaceResourceGroup": {
        "type": "string",
        "defaultValue": ""
     },
@@ -84,12 +84,12 @@
             "type": "providers/diagnosticSettings",
             "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
             "dependsOn": [
-              "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespace'))]"
+              "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
             ],
             "apiVersion": "2017-05-01-preview",
             "properties": {
               "name": "[parameters('diagnosticsSettingName')]",
-              "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+              "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubNamespaceResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
               "logs": [
                 {
                   "category": "ArchiveLogs",
