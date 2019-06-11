@@ -103,3 +103,7 @@ This is useful inside of a recipe when another ingredient needs to reference an 
 
 #### Returns
 string
+
+
+##Addendum
+The package.json file of this ingredient includes a dependency on "@azure/ms-rest-js": "^1.8.1".  This was added so the Event Hub and Service Bus Namespace will compile.  Those ingredients reference version 3.2 of their respective Azure Javascript SDK packages (@azure/arm-eventhub, @azure/arm-servicebus).  An alternative is to use version 3.1 of those two packages.
