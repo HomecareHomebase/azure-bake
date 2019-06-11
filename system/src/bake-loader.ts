@@ -192,8 +192,9 @@ export class BakePackage {
         })
 
         //fix up json objects to act as hashmaps.
-        config.parallelRegions = config.parallelRegions==undefined? true : config.parallelRegions
-        
+        config.parallelRegions = config.parallelRegions==undefined? true : config.parallelRegions        
+        config.resourceGroup = config.resourceGroup==undefined? true : config.resourceGroup
+
         //only set rgOverride as a BV if the field is already set
         if (config.rgOverride) {
             config.rgOverride = new BakeVariable(<any>config.rgOverride);

@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "eventHubName": {
+    "eventHubNamespace": {
       "type": "String"
     },
     "location": {
@@ -32,20 +32,42 @@
       "type": "String"
     },
     "isAutoInflateEnabled": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "true"
     },
     "maximumThroughputUnits": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "10"
+    },
+    "diagnosticsEnabled": {
+        "type": "string",
+        "defaultValue": "yes"
+    },
+    "diagnosticsSettingName": {
+       "type": "string",
+       "defaultValue": "setting1"
+    },
+    "diagnosticsEventHubNamespace": {
+       "type": "string",
+       "defaultValue": ""
+    },
+    "diagnosticsEventHubResourceGroup": {
+       "type": "string",
+       "defaultValue": ""
+    },
+    "diagnosticsEventHubAuthorizationRule": {
+       "type": "string",
+       "defaultValue": "RootManageSharedAccessKey"
     }
   },
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2018-01-01-preview",
-      "name": "[parameters('eventHubName')]",
+      "name": "[parameters('eventHubNamespace')]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "[parameters('skuTier')]",
+        "name": "[parameters('skuName')]",
         "tier": "[parameters('skuTier')]",
         "capacity": "[parameters('skuCapacity')]"
       },
@@ -55,7 +77,58 @@
       },
       "tags": {
         "Metrics": "*"
-      }
+      },
+      "resources": [
+          {
+              "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+            "type": "providers/diagnosticSettings",
+            "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+            "dependsOn": [
+              "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespace'))]"
+            ],
+            "apiVersion": "2017-05-01-preview",
+            "properties": {
+              "name": "[parameters('diagnosticsSettingName')]",
+              "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+              "logs": [
+                {
+                  "category": "ArchiveLogs",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                  }
+                },
+                {
+                  "category": "OperationalLogs",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                  }
+                },
+                {
+                  "category": "AutoScaleLogs",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "days": 0,
+                    "enabled": false
+                  }
+                }
+              ],
+              "metrics": [
+                {
+                  "timeGrain": "PT1M",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": false,
+                    "days": 0
+                  }
+                }
+              ]
+            }
+          }        
+      ]
     }
   ]
 }

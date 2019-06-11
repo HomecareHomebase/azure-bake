@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.51](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.50...v0.1.51) (2019-05-28)
+
+
+### Bug Fixes
+
+* Adding kubectl to base image ([e16ab1c](https://github.com/HomecareHomebase/azure-bake/commit/e16ab1c))
+* Resolving k8s token replace ([f4e617f](https://github.com/HomecareHomebase/azure-bake/commit/f4e617f))
+* Setting correct kubectl version ([bdf1075](https://github.com/HomecareHomebase/azure-bake/commit/bdf1075))
+
+
+
+
+
+## [0.1.50](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.49...v0.1.50) (2019-05-28)
+
+
+### Bug Fixes
+
+* Fixing optional resource group support ([e654e34](https://github.com/HomecareHomebase/azure-bake/commit/e654e34))
+
+
+
+
+
 ## [0.1.49](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.48...v0.1.49) (2019-05-21)
 
 **Note:** Version bump only for package root
