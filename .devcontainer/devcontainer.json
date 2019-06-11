@@ -1,0 +1,9 @@
+{
+    "name": "Azure Bake Developement",
+    "dockerFile": "Dockerfile",
+    "appPort": 3000,
+    "extensions": [
+        "dbaeumer.vscode-eslint"
+    ],
+    "postCreateCommand": ""
+}
