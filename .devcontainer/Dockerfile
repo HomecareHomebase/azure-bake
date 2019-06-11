@@ -9,8 +9,7 @@ FROM docker
 RUN apk update
 
 # Verify git and process tools are installed
-RUN apk add git procps nodejs \
-    && npm install -g typescript lerna
+RUN apk add git procps nodejs typescript lerna npm
 
 # Set the default shell to bash rather than sh
 ENV SHELL /bin/sh
