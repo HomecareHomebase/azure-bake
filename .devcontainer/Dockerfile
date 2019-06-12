@@ -17,6 +17,13 @@ RUN apt-get install -y curl \
     gnupg2 \
     software-properties-common
 
+#Install KubeCTL
+RUN apt-get update && apt-get install -y apt-transport-https \
+      && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+      && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
+      && apt-get update \
+      && apt-get install -y kubectl
+
 #Add Docker Key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 

@@ -6,5 +6,5 @@
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-tslint-plugin"
     ],
-    "postCreateCommand": ""
+    "postCreateCommand": "cd azure-bake && npm install --global azure-bake && npm run clean:build && npm run load:ingredients"
 }
