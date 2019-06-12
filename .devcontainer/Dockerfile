@@ -2,6 +2,11 @@ FROM node:10
 
 # Configure apt
 ENV DEBIAN_FRONTEND=noninteractive
+
+#Suppress an apt-key warning about standard out not being a terminal. Use in this script is safe.
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
+
+#Update and  install apt utils
 RUN apt-get update \
    && apt-get -y install --no-install-recommends apt-utils 2>&1
 
