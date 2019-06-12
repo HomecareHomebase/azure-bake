@@ -6,6 +6,12 @@
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-tslint-plugin"
     ],
-    "postCreateCommand": "npm install --global azure-bake && npm run clean:build && npm run load:ingredients && git config credential.helper '!f() { sleep 1; echo \"username=${GIT_USER}\"; echo \"password=${GIT_PASSWORD}\"; }; f'",
-    "runArgs": ["--env-file","./.env"]
+    "runArgs": ["--env-file","./.env"],
+    "postCreateCommand": [  "npm install --global azure-bake",
+                            "npm run clean:build",
+                            "npm run load:ingredients",
+                            "git config credential.helper '!f() { sleep 1; echo \"username=${GIT_USER}\"; echo \"password=${GIT_PASSWORD}\"; }; f'",
+                            "echo \"${REGISTRY_PASSWORD}\" | docker login --username \"${REGISTRY_USER}\" --password-stdin"
+                        ]
+    
 }
