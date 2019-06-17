@@ -40,7 +40,22 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
-  
+
+- task: Docker@2
+  displayName: Login to DockerHub
+  inputs:
+    command: Login
+    containerRegistry: HCHBDockerHub
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    publishRegistry: 'useFeed'
+    publishFeed: 'hchb-npm-public-registry'
+    publishPackageMetadata: true
+    verbose: true
+
 - task: gulp@1
   displayName: GULP Build and Release
   inputs:
@@ -48,3 +63,9 @@ steps:
     targets: 'build'    
     workingDirectory: '$(System.DefaultWorkingDirectory)'    
     arguments: --sonarToken '$(SonarQubeToken)'
+
+- task: Docker@2
+  displayName: Logout from DockerHub
+  inputs:
+    command: Logout
+    containerRegistry: HCHBDockerHub
