@@ -17,6 +17,8 @@ trigger:
     - system/*    
     - lerna.json
     - package.json
+    - gulpfile.js
+    - build/parameters.js
 
 pr:
   branches:
@@ -32,6 +34,8 @@ pr:
     - system/*    
     - lerna.json
     - package.json
+    - gulpfile.js
+    - build/parameters.js
 
 pool:
   vmImage: 'Ubuntu-16.04'
