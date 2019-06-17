@@ -42,7 +42,7 @@ function build(done) {
                 !params.build.pullRequestID && 
                 !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)):
             console.log('Running Azure DevOps Release Build');
-            gulp.series( printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish, gitCommit )(done);
+            gulp.series( printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish )(done);
         break;
 
         case ( params.conditions.isRunningOnADO && 
@@ -67,30 +67,10 @@ function cleanCoverage() {
     return del('coverage/**', { force: true });
 }
 
-
-function gitCommit(done) {
-    var branchName = params.build.buildSourceBranch;
-    if (branchName !== 'master') {
-        // all branches have refs/heads/ - we don't need that
-        // we will also remove feature/ if it's there
-        branchName = branchName.replace(/refs\/heads\/(feature\/)?/i, '');
-    }    
-    var gitScript = `sudo git checkout ${branchName} && 
-    sudo git config user.email '${params.build.buildRequestedForEmail}' &&
-    sudo git config user.name '${params.build.buildRequestedFor}' &&
-    sudo git add . && 
-    sudo git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "[skip ci][CHORE] Update & Publish" && 
-    sudo git tag v ${lerna.version} &&
-    sudo git push origin ${branchName} &&
-    sudo git push origin --tags`;
-    console.log('Git Script: ' + gitScript);
-    return shell.task(gitScript)(done());
-}
-
-function toolInstall(done) {
-    var gitScript = `sudo npm install lerna@3.13.0 typescript@3.3.3 --global` ;
-    console.log('Tool Script: ' + gitScript);
-    return runCmd(gitScript, done);    
+function inlineCoverageSource() {
+    return gulp.src('./coverage/*.html')
+        .pipe(inlinesource({ attribute: false }))
+        .pipe(gulp.dest('./coverage/inline-html'));
 }
 
 function lernaBuild(done) {
@@ -103,18 +83,6 @@ function lernaPublish(done) {
     var gitScript = `sudo npm run publish` ;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);    
-}
-
-function systemPublish(done) {
-    var gitScript = `sudo npm publish --prefix ./system &&  npm run release-build --prefix ./system` ;
-    console.log('Build Script: ' + gitScript);
-    return runCmd(gitScript, done);    
-}
-
-function inlineCoverageSource() {
-    return gulp.src('./coverage/*.html')
-        .pipe(inlinesource({ attribute: false }))
-        .pipe(gulp.dest('./coverage/inline-html'));
 }
 
 function printVersion(done) {
@@ -204,8 +172,20 @@ function sonarQube(done) {
 	}
 }
 
+function systemPublish(done) {
+    var gitScript = `sudo npm run release-build --prefix ./system` ;
+    console.log('Build Script: ' + gitScript);
+    return runCmd(gitScript, done);    
+}
+
 function testNycMocha(done) {
     return shell.task(['nyc mocha --opts test/mocha.opts'])(done());
+}
+
+function toolInstall(done) {
+    var gitScript = `sudo npm install lerna@3.13.0 typescript@3.3.3 --global` ;
+    console.log('Tool Script: ' + gitScript);
+    return runCmd(gitScript, done);    
 }
 
 function writeFilenameToFile() {
