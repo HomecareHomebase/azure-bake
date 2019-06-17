@@ -289,7 +289,7 @@ function deploy(){
             .arg('--env-file=' + tmpFile);
 
         if (args.variables) {
-            runner = runner.arg(`-v ${args.variables}:/app/bake/.env`)
+            runner = runner.arg(`-v=${args.variables}:/app/bake/.env`)
         }
 
         runner = runner.arg(target);
