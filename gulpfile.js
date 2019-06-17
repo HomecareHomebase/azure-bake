@@ -27,11 +27,6 @@ function adoPrep(done) {
 
 function build(done) {
     switch(true) {
-        case ( !params.agent.agentId ): 
-            console.log('Running Local Build');
-            gulp.series(lernaBuild)(done);
-        break;
-
         case ( params.agent.agentId && 
                 !params.build.pullRequestID && 
                 params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)):
@@ -52,7 +47,8 @@ function build(done) {
         break;
 
         default:
-            done('Build did not complete!');
+            console.log('Running Default Build');
+            gulp.series(lernaBuild)(done);
         break;        
     }
 }
