@@ -29,6 +29,7 @@ class build {
     get buildRepositoryProvider() { return process.env.BUILD_REPOSITORY_PROVIDER; }
     get buildRepositoryTfvcWorkspace() { return process.env.BUILD_REPOSITORY_TFVC_WORKSPACE; }
     get buildRepositoryUri() { return process.env.BUILD_REPOSITORY_URI; }
+    get buildRequestedFor() { return process.env.BUILD_REQUESTEDFOR; }
     get buildRequestedForEmail() { return process.env.BUILD_REQUESTEDFOREMAIL; }
     get buildRequestedForId() { return process.env.BUILD_REQUESTEDFORID; }
     get buildSourceBranch() { return process.env.BUILD_SOURCEBRANCHNAME; } 

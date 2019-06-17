@@ -32,7 +32,7 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish)(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish, gitCommit )(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
@@ -70,6 +70,20 @@ function conditions(done) {
     console.log(`Is Pullrequest? ${!!params.build.buildReason.match(/PullRequest/ig)}`);
     console.log(`Is Manual Build? ${!!params.build.buildReason.match(/manual/ig)}`);
     done();
+}
+
+function gitCommit(done) {
+    var branchName = params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '');
+    var gitScript = `sudo git checkout ${branchName} && 
+    sudo git config user.email "${params.build.buildRequestedForEmail}" &&
+    sudo git config user.name "${params.build.buildRequestedFor}" &&
+    sudo git add . && 
+    sudo git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "chore[skip ci]: Update & Commit Locks" && 
+    sudo git tag v${lerna.version} &&
+    sudo git push origin ${branchName} &&
+    sudo git push origin --tags`;
+    console.log('Git Script: ' + gitScript);
+    return shell.task(gitScript)(done());
 }
 
 function inlineCoverageSource() {
@@ -237,6 +251,7 @@ function writeFilenameToFile() {
 //Tasks
 exports.build = build;
 exports.conditions = conditions;
+exports.commit = gitCommit;
 exports.prep = adoPrep;
 exports.analysis = gulp.series(sonarQube);
 exports.cleancoverage = cleanCoverage;
