@@ -40,25 +40,32 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
-  
-- bash: sudo git checkout "${BUILD_SOURCEBRANCHNAME}"
-  workingDirectory: ./
-  displayName: Checkout Build Target Branch
-  
-- bash: sudo npm install lerna@3.13.0 typescript@3.3.3 --global
-  workingDirectory: ./
-  displayName: NPM Install of Lerna & TypeScript
 
-- bash: sudo npm run clean:build
-  workingDirectory: ./
-  displayName: Lerna Run Clean Build
+- task: Docker@2
+  displayName: Login to DockerHub
+  inputs:
+    command: Login
+    containerRegistry: HCHBDockerHub
 
-- bash: sudo npm run publish
-  workingDirectory: ./
-  displayName: Lerna Publish of all updated packages to NPM
-  
-- bash: sudo npm run release-build
-  workingDirectory: ./system
-  displayName: Generate new docker bake docker image
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    publishRegistry: 'useFeed'
+    publishFeed: 'hchb-npm-public-registry'
+    publishPackageMetadata: true
+    verbose: true
 
+- task: gulp@1
+  displayName: GULP Build and Release
+  inputs:
+    gulpFile: 'gulpfile.js' 
+    targets: 'build'    
+    workingDirectory: '$(System.DefaultWorkingDirectory)'    
+    arguments: --sonarToken '$(SonarQubeToken)'
 
+- task: Docker@2
+  displayName: Logout from DockerHub
+  inputs:
+    command: Logout
+    containerRegistry: HCHBDockerHub
