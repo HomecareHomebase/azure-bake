@@ -57,6 +57,20 @@ steps:
     verbose: true
 
 - task: gulp@1
+  displayName: GULP List Environment
+  inputs:
+    gulpFile: 'gulpfile.js' 
+    targets: 'listenvironment'    
+    workingDirectory: '$(System.DefaultWorkingDirectory)'        
+
+- task: gulp@1
+  displayName: GULP Conditional Evaluation
+  inputs:
+    gulpfile: 'gulpfile.js'
+    targets: 'conditions'
+    workingDirectory: '$(System.DefaultWorkingDirectory)' 
+
+- task: gulp@1
   displayName: GULP Build and Release
   inputs:
     gulpFile: 'gulpfile.js' 
