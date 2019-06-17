@@ -27,25 +27,25 @@ function adoPrep(done) {
 
 function build(done) {
     switch(true) {
-        case ( !params.conditions.isRunningOnADO ): 
+        case ( !params.agent.agentId ): 
             console.log('Running Local Build');
             gulp.series(lernaBuild)(done);
         break;
 
-        case ( params.conditions.isRunningOnADO && 
+        case ( params.agent.agentId && 
                 !params.build.pullRequestID && 
-                !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)):
+                params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)):
             console.log('Running Azure DevOps Release Build');
             gulp.series( printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish )(done);
         break;
 
-        case ( params.conditions.isRunningOnADO && 
-                !!params.build.pullRequestID ):
+        case ( params.agent.agentId && 
+                params.build.pullRequestID ):
             console.log('Running Azure DevOps Pull Request Build');
             gulp.series( printVersion, adoPrep, toolInstall, lernaBuild )(done);
         break;
         
-        case ( params.conditions.isRunningOnADO && 
+        case ( params.agent.agentId && 
             params.build.buildReason.match(/manual/ig) ):
             console.log('Running Azure DevOps Manual Build');
             gulp.series( printVersion, adoPrep, toolInstall, lernaBuild )(done);
@@ -128,7 +128,7 @@ function setupCoveragePool() {
 }
 
 function sonarQube(done) {
-	if (!params.conditions.isRunningOnADO) {
+	if (!params.agent.agentId) {
 		console.log('Skipping SonarQube analysis for local build...');
 		done();
 	}
