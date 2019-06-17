@@ -27,40 +27,49 @@ function adoPrep(done) {
 }
 
 function build(done) {
-    if (params.agent.agentId) {
+    if (!!params.agent.agentId) {
 
         if (!params.build.pullRequestID &&
-            params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
+            !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish)(done);
         }
 
-        else if (params.agent.agentId &&
-            params.build.pullRequestID) {
+        else if (!!params.build.pullRequestID) {
             console.log('Running Azure DevOps Pull Request Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done);
         }
 
-        else if (params.agent.agentId &&
-            params.build.buildReason.match(/manual/ig)) {
+        else if (!!params.build.buildReason.match(/manual/ig)) {
             console.log('Running Azure DevOps Manual Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done)
         }
 
         else {
-            console.log('Running Default Build');
+            console.log('Running Inner Default Build');
             gulp.series(lernaBuild)(done);
         }
     }
 
     else {
-        console.log('Running Default Build');
+        console.log('Running Outer Default Build');
         gulp.series(lernaBuild)(done);
     }
 }
 
 function cleanCoverage() {
     return del('coverage/**', { force: true });
+}
+
+function conditions(done) {
+    console.log(`Build Conditions: `);
+    console.log(`Is Agent? ${!!params.agent.agentId}`);
+    var release = (!params.build.pullRequestID &&
+        params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig));
+    console.log(`Is Release Build? ${release}`);    
+    console.log(`Is Pullrequest? ${!!params.build.pullRequestID}`);
+    console.log(`Is Manual Build? ${!!params.build.buildReason.match(/manual/ig)}`);
+    done();
 }
 
 function inlineCoverageSource() {
@@ -227,6 +236,7 @@ function writeFilenameToFile() {
 
 //Tasks
 exports.build = build;
+exports.conditions = conditions;
 exports.prep = adoPrep;
 exports.analysis = gulp.series(sonarQube);
 exports.cleancoverage = cleanCoverage;
