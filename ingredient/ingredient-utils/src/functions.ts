@@ -39,10 +39,10 @@ export class CoreUtils extends BaseUtility {
             //we want keys to be case insensitive, so we iterate all keys and find first case-insensitive match
             //means there could be collisions, we don't care, and just use first found.
 
-            for(var variableKey in this.context.Config.variables){
-                if (stringCompareInsensitive(variableKey, key)) {
+            for(let variableKey of this.context.Config.variables.entries()){
+                if (stringCompareInsensitive(variableKey[0], key)) {
                 
-                    let v: BakeVariable = this.context.Config.variables.get(variableKey) || new BakeVariable(def || "")
+                    let v: BakeVariable = this.context.Config.variables.get(variableKey[0]) || new BakeVariable(def || "")
                     return await v.valueAsync(this.context)  
                 }
             }

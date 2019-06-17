@@ -69,7 +69,7 @@ function displayHelp() {
     console.log('serviceid\t\t: Azure Service Principal Id')
     console.log('key\t\t\t: Azure Service Principal secret key')
     console.log('cert\t\t\t: Azure Service Principal PEM cert file (overrides secret key)')
-    console.log('variables\t\t: YAML data of global bake variables')
+    console.log('variables\t\t: Path to local yaml file of key:value pairs for global variables')
     console.log('loglevel\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
 
     console.log('')
@@ -83,7 +83,7 @@ function displayHelp() {
     console.log('BAKE_AUTH_SERVICE_ID\t\t: Azure Service Principal Id')
     console.log('BAKE_AUTH_SERVICE_KEY\t\t: Azure Service Principal secret key')
     console.log('BAKE_AUTH_SERVICE_CERT\t\t: Azure Service Principal PEM cert file (overrides secret key)')
-    console.log('BAKE_VARIABLES\t\t\t: YAML data of global bake variables')
+    console.log('BAKE_VARIABLES\t\t\t: Path to local yaml file of key:value pairs for global variables')
     console.log('BAKE_LOG_LEVEL\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
     console.log('')
     canExecute = false
@@ -126,19 +126,8 @@ function validateParams() {
         args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID
         args.serviceKey = argv['key'] || process.env.BAKE_AUTH_SERVICE_KEY
         args.serviceCert = argv['cert'] || process.env.BAKE_AUTH_SERVICE_CERT
-        args.variables = argv['variables64'] || process.env.BAKE_VARIABLES64
-        args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL
-
-        if (args.variables)
-        {
-            args.variables = Buffer.from(args.variables, 'base64').toString('ascii')
-            process.env.BAKE_VARIABLES64 = ""
-        }
-        else
-        {
-            args.variables = argv['variables'] || process.env.BAKE_VARIABLES
-        }
-        
+        args.variables = argv['variables'] || process.env.BAKE_VARIABLES
+        args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL        
 
         if (!args.envName ||
             !args.envCode ||
@@ -290,16 +279,22 @@ function deploy(){
         `BAKE_AUTH_SERVICE_ID=${ args.serviceId }\r\n` +
         `BAKE_AUTH_SERVICE_KEY=${( args.serviceKey || "" )}\r\n` +
         `BAKE_AUTH_SERVICE_CERT=${( args.serviceCert || "" )}\r\n` +
-        `BAKE_VARIABLES=${(args.variables || "")}\r\n` +
+        `BAKE_VARIABLES=/app/bake/.env\r\n` +
         `BAKE_LOG_LEVEL=${(args.logLevel || "")}\r\n`
         )
         
     try {
 
-        let p = cli.arg('run').arg('--rm').arg('-t')
-            .arg('--env-file=' + tmpFile)
-            .arg(target)
-            .execStream()
+        let runner = cli.arg('run').arg('--rm').arg('-t')
+            .arg('--env-file=' + tmpFile);
+
+        if (args.variables) {
+            runner = runner.arg(`-v ${args.variables}:/app/bake/.env`)
+        }
+
+        runner = runner.arg(target);
+
+        let p = runner.execStream();
         p.then((r)=> {
             deleteEnvFile()
             process.exit(r);
