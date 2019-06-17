@@ -52,9 +52,13 @@ export class BakePackage {
 
         //yaml parse out the global variables.
         try {
-            let vars : string = process.env.BAKE_VARIABLES || ""
-            let obj  =YAML.safeLoad(vars)
-            this._env.variables = this.objToVariableMap( obj || [] )
+            let file : string = process.env.BAKE_VARIABLES || ""
+            if (file && fs.existsSync(file)) {
+                let content = fs.readFileSync(file, 'utf8')
+                let obj  =YAML.safeLoad(content)
+                this._env.variables = this.objToVariableMap( obj || [] )
+            }
+           
         } catch (e) {
             let logger = new Logger()
             logger.error("Failed to load global environment variables")
