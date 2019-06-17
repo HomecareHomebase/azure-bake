@@ -32,7 +32,7 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish, gitCommit )(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish )(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
