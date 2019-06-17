@@ -25,12 +25,6 @@ function adoPrep(done) {
     return runCmd(gitScript, done);    
 }
 
-function bumpVersion() {
-    return gulp.src(['ingredient/**/package.json','core/package.json','system/package.json','lerna.json'], { base: './' })
-        .pipe(bump({ type: 'patch' }))
-        .pipe(gulp.dest('./'));
-}
-
 function build(done) {
     switch(true) {
         case ( !params.conditions.isRunningOnADO ): 
