@@ -199,10 +199,8 @@ function writeFilenameToFile() {
 
 //Tasks
 exports.build = build;
-exports.commit = gitCommit;
 exports.prep = adoPrep;
 exports.analysis = gulp.series(sonarQube);
-exports.bump = bumpVersion;
 exports.cleancoverage = cleanCoverage;
 exports.coverage = gulp.series(cleanCoverage, setupCoveragePool, testNycMocha);
 exports.coveragesonarqube = gulp.series(cleanCoverage, setupCoveragePool, testNycMocha, sonarQube);
