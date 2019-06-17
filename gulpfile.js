@@ -29,18 +29,18 @@ function adoPrep(done) {
 function build(done) {
     if (!!params.agent.agentId) {
 
-        if (!params.build.pullRequestID &&
+        if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, lernaPublish, systemPublish)(done);
         }
 
-        else if (!!params.build.pullRequestID) {
+        else if (!!params.build.buildReason.match(/PullRequest/ig)) {
             console.log('Running Azure DevOps Pull Request Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done);
         }
 
-        else if (!!params.build.buildReason.match(/manual/ig)) {
+        else if (!!params.build.buildReason.match(/Manual/ig)) {
             console.log('Running Azure DevOps Manual Build');
             gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done)
         }
@@ -64,10 +64,10 @@ function cleanCoverage() {
 function conditions(done) {
     console.log(`Build Conditions: `);
     console.log(`Is Agent? ${!!params.agent.agentId}`);
-    var release = (!params.build.pullRequestID &&
-        params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig));
+    var release = (!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
+    !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig);
     console.log(`Is Release Build? ${release}`);    
-    console.log(`Is Pullrequest? ${!!params.build.pullRequestID}`);
+    console.log(`Is Pullrequest? ${!!params.build.buildReason.match(/PullRequest/ig)}`);
     console.log(`Is Manual Build? ${!!params.build.buildReason.match(/manual/ig)}`);
     done();
 }
