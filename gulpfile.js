@@ -9,6 +9,7 @@ const gulp = require('gulp');
 const debug = require('gulp-debug');
 const inlinesource = require('gulp-inline-source');
 const moment = require('moment');
+const rev = require('git-rev');
 const shell = require('gulp-shell');
 
 //Parameters and Variables
@@ -73,6 +74,32 @@ function lernaPublish(done) {
     var gitScript = `sudo npm run publish` ;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);    
+}
+
+function listEnvironment(done) {
+	let envList = [];
+	console.log(`Local Build Environment: ${params.conditions.isLocalBuild}`);
+	console.log(`AzureDevOps Build Environment: ${params.conditions.isRunningOnADO}`);
+	rev.branch(function (str) {		
+		let envKeys = Object.keys(params)
+		envKeys.forEach(function (a) {			
+			let subKeys = Object.getOwnPropertyNames(Object.getPrototypeOf(params[a]));
+			for (let b = 1; b < subKeys.length; b++) {
+				let c = params[a]
+				if (!!(typeof(c[subKeys[b]])).match(/object/ig)) {
+					let lastKeys = Object.getOwnPropertyNames(c[subKeys[b]]);
+					lastKeys.forEach(function(d) {						
+						envList.push({Object: `${a}.${subKeys[b]}`, Key: d, Value: c[subKeys[b]][d]});
+					})
+				} else if (c[subKeys[b]] != 'constructor') {										
+					envList.push({Object: a, Key: subKeys[b], Value: c[subKeys[b]]}); 
+				}
+			}
+		})
+		console.table(envList);
+	});
+	console.log(`\x1b[37m\x1b[40m`)	
+	done()
 }
 
 function printVersion(done) {
@@ -201,6 +228,7 @@ exports.cleancoverage = cleanCoverage;
 exports.coverage = gulp.series(cleanCoverage, setupCoveragePool, testNycMocha);
 exports.coveragesonarqube = gulp.series(cleanCoverage, setupCoveragePool, testNycMocha, sonarQube);
 exports.inlinecoveragesource = inlineCoverageSource;
+exports.listenvironment = listEnvironment;
 exports.pretest = gulp.series(cleanCoverage, setupCoveragePool);
 exports.printversion = printVersion;
 exports.setupcoveragepool = setupCoveragePool;
