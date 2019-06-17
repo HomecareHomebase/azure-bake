@@ -1,0 +1,26 @@
+name: bus-test
+shortName: bustest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-service-bus-namespace"
+resourceGroup: true
+rgOverride: test
+parallelRegions: false
+variables:
+  skuName: Premium
+  name: bakesbprimary
+  secondaryName: bakesbsecondary
+  secondaryLocation: East US 2
+  aliasName: bakesb
+  capacity: 1
+recipe:
+  namespace:
+    properties:
+      type: "@azbake/ingredient-service-bus-namespace"
+      parameters:
+        name: "[coreutils.variable('name')]"
+        secondaryName: "[coreutils.variable('secondaryName')]"
+        skuName: "[coreutils.variable('skuName')]"
+        secondaryLocation: "[coreutils.variable('secondaryLocation')]"
+        aliasName: "[coreutils.variable('aliasName')]"
+        capacity: "[coreutils.variable('capacity')]"
