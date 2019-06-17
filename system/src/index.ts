@@ -29,6 +29,7 @@ let runtimeVersion: string = "latest"
 let recipeName: string = ""
 
 interface bakeArgs {
+    skipAuth: string
     envName: string
     envCode: string
     envRegions: string
@@ -61,6 +62,7 @@ function displayHelp() {
     console.log('')
     console.log('optional options for [serve]')
     console.log('')
+    console.log('skip-auth\t\t: skip azure login for recipes that dont need it')
     console.log('env-name\t\t: Full environment name for deployment')
     console.log('env-code\t\t: 4 letter environment code (used for resource naming)')
     console.log('regions\t\t\t: [{"name":"East US","code":"eus","shortName":"eastus"}]')
@@ -78,6 +80,7 @@ function displayHelp() {
     console.log('BAKE_ENV_NAME\t\t\t: Full environment name for deployment')
     console.log('BAKE_ENV_CODE\t\t\t: 4 letter environment code (used for resource naming)')
     console.log('BAKE_ENV_REGIONS\t\t: [{"name":"East US","code":"eus","shortName":"eastus"}]')
+    console.log('BAKE_AUTH_SKIP\t: skip azure login for recipes that dont need it')
     console.log('BAKE_AUTH_SUBSCRIPTION_ID\t: Azure Subscription Id')
     console.log('BAKE_AUTH_TENANT_ID\t\t: Azure AAD tenant for Service Principal authentication')
     console.log('BAKE_AUTH_SERVICE_ID\t\t: Azure Service Principal Id')
@@ -118,24 +121,26 @@ function validateParams() {
 
     if (cmd == "serve"){
 
-        args.envName = argv['env-name'] || process.env.BAKE_ENV_NAME
-        args.envCode = argv['env-code'] || process.env.BAKE_ENV_CODE
-        args.envRegions = argv['regions'] || process.env.BAKE_ENV_REGIONS
-        args.subId = argv['sub'] || process.env.BAKE_AUTH_SUBSCRIPTION_ID
-        args.tenantId = argv['tenant'] || process.env.BAKE_AUTH_TENANT_ID
-        args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID
+        args.skipAuth = argv['skip-auth'] || process.env.BAKE_AUTH_SKIP || "false"
+        args.envName = argv['env-name'] || process.env.BAKE_ENV_NAME || "default"
+        args.envCode = argv['env-code'] || process.env.BAKE_ENV_CODE || "de000"
+        args.envRegions = argv['regions'] || process.env.BAKE_ENV_REGIONS || '[{"name":"Global","code":"glob","shortName":"global"}]'
+        args.subId = argv['sub'] || process.env.BAKE_AUTH_SUBSCRIPTION_ID || ""
+        args.tenantId = argv['tenant'] || process.env.BAKE_AUTH_TENANT_ID || ""
+        args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID || ""
         args.serviceKey = argv['key'] || process.env.BAKE_AUTH_SERVICE_KEY
         args.serviceCert = argv['cert'] || process.env.BAKE_AUTH_SERVICE_CERT
         args.variables = argv['variables'] || process.env.BAKE_VARIABLES
-        args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL        
+        args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL
 
-        if (!args.envName ||
+        if (args.skipAuth.toLocaleLowerCase() === 'false' && (
+            !args.envName ||
             !args.envCode ||
             !args.envRegions ||
             !args.subId ||
             !args.tenantId ||
             !args.serviceId ||
-            (!args.serviceKey && !args.serviceCert)) {
+            (!args.serviceKey && !args.serviceCert))) {
                 displayHelp()
                 return
         }
@@ -143,6 +148,7 @@ function validateParams() {
         process.env.BAKE_ENV_NAME = args.envName
         process.env.BAKE_ENV_CODE = args.envCode
         process.env.BAKE_ENV_REGIONS = args.envRegions
+        process.env.BAKE_AUTH_SKIP = args.skipAuth
         process.env.BAKE_AUTH_SUBSCRIPTION_ID = args.subId
         process.env.BAKE_AUTH_TENANT_ID = args.tenantId
         process.env.BAKE_AUTH_SERVICE_ID = args.serviceId
@@ -274,6 +280,7 @@ function deploy(){
         `BAKE_ENV_NAME=${ args.envName }\r\n` +
         `BAKE_ENV_CODE=${ args.envCode }\r\n` +
         `BAKE_ENV_REGIONS=${ args.envRegions }\r\n` +
+        `BAKE_AUTH_SKIP=${args.skipAuth}\r\n` +
         `BAKE_AUTH_SUBSCRIPTION_ID=${ args.subId }\r\n` +
         `BAKE_AUTH_TENANT_ID=${ args.tenantId }\r\n` +
         `BAKE_AUTH_SERVICE_ID=${ args.serviceId }\r\n` +

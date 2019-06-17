@@ -9,7 +9,8 @@ export interface IBakeAuthentication {
     tenantId: string,
     serviceId: string,
     secretKey: string,
-    certPath: string
+    certPath: string,
+    skipAuth:boolean
 }
 
 export interface IBakeEnvironment {

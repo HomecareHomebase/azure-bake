@@ -86,9 +86,10 @@ export class BakeRunner {
             let rg_name = await util.resource_group()
             let region_name = ctx.Region.shortName
 
-            let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)
 
             if (ctx.Config.resourceGroup) {
+                let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)
+                
                 let rgExists = false
                 try {
                     let chkResult = await client.resourceGroups.checkExistence(rg_name)
@@ -141,6 +142,11 @@ export class BakeRunner {
 
         this._logger.log("logging into azure...")
         var result = await this._package.Authenticate( async (auth) =>{
+
+            if (auth.skipAuth) {
+                this._logger.log("Skipping Azure login")
+                return true
+            }
 
             //TODO, new login does not support certificate SP login.
             try {

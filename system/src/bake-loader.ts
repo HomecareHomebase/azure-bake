@@ -42,6 +42,7 @@ export class BakePackage {
         this._env.authentication.serviceId = process.env.BAKE_AUTH_SERVICE_ID || ""
         this._env.authentication.secretKey = process.env.BAKE_AUTH_SERVICE_KEY || ""
         this._env.authentication.certPath = process.env.BAKE_AUTH_SERVICE_CERT || ""
+        this._env.authentication.skipAuth = (process.env.BAKE_AUTH_SKIP || 'false').toLocaleLowerCase() === 'true'
 
         this._env.logLevel = process.env.BAKE_LOG_LEVEL || "info"
 
