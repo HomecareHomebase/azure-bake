@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.53](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.52...v0.1.53) (2019-06-17)
+
+
+### Bug Fixes
+
+* Added BAKE_AUTH_SKIP which will skip azure signon ([#72](https://github.com/HomecareHomebase/azure-bake/issues/72)) ([94f2ffc](https://github.com/HomecareHomebase/azure-bake/commit/94f2ffc))
+
+
+
+
+
 ## [0.1.52](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.51...v0.1.52) (2019-06-11)
 
 
