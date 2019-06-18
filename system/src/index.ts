@@ -210,7 +210,7 @@ function build(){
     fs.writeFileSync(dockerFile, dockerImage)
 
     console.log('Mixing...' + recipeName)
-    cli.start().arg('build').arg("-t=" + recipeName).arg(".").execStream()
+    cli.start().arg('build').arg('--pull').arg("-t=" + recipeName).arg(".").execStream()
     .then(()=>{
         fs.unlinkSync(dockerFile)
         fs.unlinkSync(".dockerignore")
