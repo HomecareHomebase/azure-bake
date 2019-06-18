@@ -9,6 +9,21 @@ function stringCompareInsensitive(a: string, b: string) : boolean {
 
 export class CoreUtils extends BaseUtility {
 
+    public toNumber(v: any): number {
+        
+        let str = v.toString()
+        return parseInt(str)
+    }
+
+    public toString(v: any): string {
+        return v.ToString()
+    }
+
+    public toBoolean(v: any): boolean {
+        let str = v.ToString().toLocaleLowerCase();
+        return (str == "true" || str == "1");
+    }
+
     public current_region() {
         return this.context.Region
     }
