@@ -67,12 +67,9 @@ steps:
     targets: 'listenvironment'    
     workingDirectory: '$(System.DefaultWorkingDirectory)'        
 
-- task: gulp@1
-  displayName: GULP Conditional Evaluation
+- task: npmAuthenticate@0
   inputs:
-    gulpfile: 'gulpfile.js'
-    targets: 'conditions'
-    workingDirectory: '$(System.DefaultWorkingDirectory)' 
+    customEndpoint: 'hchb-npm-public-registry'
 
 - task: gulp@1
   displayName: GULP Build and Release
