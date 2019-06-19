@@ -1,0 +1,62 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "name": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the availability that you wish to create."
+        }
+      },
+      "faultDomains": {
+        "type": "string",
+        "defaultValue": "2",
+        "metadata": {
+          "description": "The number of fault domains for the availability set."
+        }
+      },
+      "updateDomains": {
+        "type": "string",
+        "defaultValue": "5",
+        "metadata": {
+          "description": "The number of update domains for the availability set"
+        }
+      },
+      "sku": {
+        "type": "string",
+        "defaultValue": "Aligned",
+        "allowedValues": [
+          "Aligned",
+          "Classic"
+        ],
+        "metadata": {
+          "description": "The number of update domains for the availability set"
+        }
+      },
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for all resources."
+        }
+      }
+    },
+    "variables": {
+      "apiVersion": "2018-10-01"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[parameters('name')]",
+        "apiVersion": "[variables('apiVersion')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "platformFaultDomainCount": "[parameters('faultDomains')]",
+          "platformUpdateDomainCount": "[parameters('updateDomains')]"
+        },
+        "sku": {
+          "name": "[parameters('sku')]"
+        }
+      }
+    ]
+  }
