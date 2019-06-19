@@ -11,7 +11,7 @@ export class AvailabilitySetUtils extends BaseUtility {
     }
 
     public async get_fault_domain_count(): Promise<number> {
-        //asdf
+        
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let client = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
@@ -21,7 +21,7 @@ export class AvailabilitySetUtils extends BaseUtility {
     }
 
     public async get_update_domain_count(): Promise<number> {
-        //asdf
+        
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let client = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
