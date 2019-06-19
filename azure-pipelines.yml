@@ -53,8 +53,9 @@ steps:
 
 - task: npmAuthenticate@0
   inputs:
+    workingFile: '$(System.DefaultWorkingDirectory)/.npmrc'
     customEndpoint: 'hchb-npm-public-registry'
-    
+
 - task: Npm@1
   inputs:
     command: 'install'
