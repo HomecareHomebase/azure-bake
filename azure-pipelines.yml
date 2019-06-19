@@ -57,6 +57,7 @@ steps:
     workingDir: '$(System.DefaultWorkingDirectory)'
     customRegistry: 'useNpmrc'
     customEndpoint: '$(NPM_SERVICE_CONNECTION)'
+    verbose: true
 
 - task: gulp@1
   displayName: GULP List Environment
