@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
+
+
+### Bug Fixes
+
+* forcing a docker pull when mixing ([#78](https://github.com/HomecareHomebase/azure-bake/issues/78)) ([4cc3658](https://github.com/HomecareHomebase/azure-bake/commit/4cc3658))
+* forcing full update ([2dca56c](https://github.com/HomecareHomebase/azure-bake/commit/2dca56c))
+* gulp commit fixes ([701be4c](https://github.com/HomecareHomebase/azure-bake/commit/701be4c))
+
+
+
+
+
 ## [0.1.54](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.53...v0.1.54) (2019-06-17)
 
 **Note:** Version bump only for package root
