@@ -55,8 +55,30 @@ Creates a name for the availability set in the format ``<environment_name><regio
 ```yaml
 ...
 parameters:
-  appName: "[availutils.create_resource_name()]"
+  name: "[availutils.create_resource_name()]"
 ...
 ```
 #### Returns
 string
+
+#### get_fault_domain_count()
+Gets the number fault domains for the availability set
+
+```typescript
+...
+  let faultCount: number = await availutils.get_fault_domain_count()
+...
+```
+#### Returns
+number
+
+#### get_update_domain_count()
+Gets the number update domains for the availability set
+
+```typescript
+...
+let updateCount: number = await availutils.get_update_domain_count()
+...
+```
+#### Returns
+number
