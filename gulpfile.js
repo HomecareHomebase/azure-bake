@@ -32,7 +32,7 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish )(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish, tagAndPush)(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
@@ -65,8 +65,8 @@ function conditions(done) {
     console.log(`Build Conditions: `);
     console.log(`Is Agent? ${!!params.agent.agentId}`);
     var release = (!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
-    !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig);
-    console.log(`Is Release Build? ${release}`);    
+        !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig);
+    console.log(`Is Release Build? ${release}`);
     console.log(`Is Pullrequest? ${!!params.build.buildReason.match(/PullRequest/ig)}`);
     console.log(`Is Manual Build? ${!!params.build.buildReason.match(/manual/ig)}`);
     done();
@@ -223,6 +223,30 @@ function systemPublish(done) {
     return runCmd(gitScript, done);
 }
 
+function tagAndPush(done) {
+    var imageVersion = JSON.parse(fs.readFileSync('lerna.json')).version;
+    var imageTags = [`${params.docker.baseRepository}/bake:${imageVersion}`, `${params.docker.baseRepository}/bake:latest`];
+    var result = imageTags.forEach( function (tag) {
+        console.log(`Tagging docker image: bake:release with ${tag}`);
+        let dockerScript = `docker image tag bake:release ${tag} && docker push ${tag}`;                
+        var child = exec(dockerScript);
+        child.stdout.on('data', function (data) {
+            console.log(`stdout: ${data}`);
+        });
+        child.stderr.on('data', function (data) {
+            console.log(`stderr: ${data}`);
+        });
+        child.on('error', function (errors) {
+            console.log(`Comand Errors: ${errors}`);                        
+            throw errors;
+        });
+        child.on('close', function (code) {
+            console.log(`Exit Code: ${code}`);            
+        });
+    });
+    done(null, result);
+}
+
 function testNycMocha(done) {
     return shell.task(['nyc mocha --opts test/mocha.opts'])(done());
 }
@@ -262,4 +286,5 @@ exports.listenvironment = listEnvironment;
 exports.pretest = gulp.series(cleanCoverage, setupCoveragePool);
 exports.printversion = printVersion;
 exports.setupcoveragepool = setupCoveragePool;
+exports.tagandpush = tagAndPush;
 exports.testnycmocha = testNycMocha;

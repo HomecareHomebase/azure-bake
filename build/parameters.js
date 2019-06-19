@@ -49,7 +49,8 @@ class conditions {
 }
 
 class docker {
-    get dockerRegistry() { return `${process.env.DOCKER_REGISTRY}/` || ''; }
+    get dockerRegistry() { return process.env.DOCKER_REGISTRY || ''; }
+    get baseRepository() { return process.env.BASE_REPOSITORY || 'homecarehomebase'; }
 }
 
 class options {
