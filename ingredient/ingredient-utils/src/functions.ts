@@ -24,6 +24,8 @@ export class CoreUtils extends BaseUtility {
         return (str == "true" || str == "1");
     }
 
+    
+
     public current_region() {
         return this.context.Region
     }
