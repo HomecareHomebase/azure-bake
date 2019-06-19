@@ -18,7 +18,7 @@ resourceGroup: true
 rgOverride: "resourcegroup1"
 parallelRegions: false
 recipe:
-  funcapp:
+  availset:
     properties:
       type: "@azbake/ingredient-availability-set"
       parameters:
