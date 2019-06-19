@@ -51,19 +51,12 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
-- task: npmAuthenticate@0
-  inputs:
-    workingFile: '$(System.DefaultWorkingDirectory)/.npmrc'
-    customEndpoint: 'hchb-npm-public-registry'
-
 - task: Npm@1
   inputs:
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
-    publishRegistry: 'useFeed'
-    publishFeed: 'hchb-npm-public-registry'
-    publishPackageMetadata: true
-    verbose: true
+    customRegistry: 'useNpmrc'
+    customEndpoint: '$(NPM_SERVICE_CONNECTION)'
 
 - task: gulp@1
   displayName: GULP List Environment
