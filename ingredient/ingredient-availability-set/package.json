@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-availability-set",
   "description": "Ingredient for deploying Availability Sets",
-  "version": "0.0.1",
+  "version": "0.1.57",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
