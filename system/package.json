@@ -31,7 +31,7 @@
   "scripts": {
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "debug-build": "npm install && docker-compose build && tsc -w -p .",
-    "release-build": "docker build . --no-cache -t bake:release && npm run dockertag",
+    "release-build": "docker build . --no-cache -t bake:release",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
     "debug": "node --inspect-brk=0.0.0.0:9229 dist/index.js",
