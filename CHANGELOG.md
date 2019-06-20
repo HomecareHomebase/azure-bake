@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.56](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.55...v0.1.56) (2019-06-20)
+
+**Note:** Version bump only for package root
+
+
+
+
+
 ## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
 
 
