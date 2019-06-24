@@ -42,6 +42,7 @@ export class BakePackage {
         this._env.authentication.serviceId = process.env.BAKE_AUTH_SERVICE_ID || ""
         this._env.authentication.secretKey = process.env.BAKE_AUTH_SERVICE_KEY || ""
         this._env.authentication.certPath = process.env.BAKE_AUTH_SERVICE_CERT || ""
+        this._env.authentication.skipAuth = (process.env.BAKE_AUTH_SKIP || 'false').toLocaleLowerCase() === 'true'
 
         this._env.logLevel = process.env.BAKE_LOG_LEVEL || "info"
 
@@ -52,9 +53,13 @@ export class BakePackage {
 
         //yaml parse out the global variables.
         try {
-            let vars : string = process.env.BAKE_VARIABLES || ""
-            let obj  =YAML.safeLoad(vars)
-            this._env.variables = this.objToVariableMap( obj || [] )
+            let file : string = process.env.BAKE_VARIABLES || ""
+            if (file && fs.existsSync(file)) {
+                let content = fs.readFileSync(file, 'utf8')
+                let obj  =YAML.safeLoad(content)
+                this._env.variables = this.objToVariableMap( obj || [] )
+            }
+           
         } catch (e) {
             let logger = new Logger()
             logger.error("Failed to load global environment variables")
