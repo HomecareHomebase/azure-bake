@@ -22,5 +22,6 @@ RUN npm link
 #setup placeholder paths for config/package
 RUN mkdir config
 RUN mkdir package
+RUN touch /app/bake/.env
 
 CMD [ "bake", "serve", "/app/bake/package/bake.yaml" ]
