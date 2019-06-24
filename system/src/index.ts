@@ -29,6 +29,7 @@ let runtimeVersion: string = "latest"
 let recipeName: string = ""
 
 interface bakeArgs {
+    skipAuth: string
     envName: string
     envCode: string
     envRegions: string
@@ -61,6 +62,7 @@ function displayHelp() {
     console.log('')
     console.log('optional options for [serve]')
     console.log('')
+    console.log('skip-auth\t\t: skip azure login for recipes that dont need it')
     console.log('env-name\t\t: Full environment name for deployment')
     console.log('env-code\t\t: 4 letter environment code (used for resource naming)')
     console.log('regions\t\t\t: [{"name":"East US","code":"eus","shortName":"eastus"}]')
@@ -69,7 +71,7 @@ function displayHelp() {
     console.log('serviceid\t\t: Azure Service Principal Id')
     console.log('key\t\t\t: Azure Service Principal secret key')
     console.log('cert\t\t\t: Azure Service Principal PEM cert file (overrides secret key)')
-    console.log('variables\t\t: YAML data of global bake variables')
+    console.log('variables\t\t: Path to local yaml file of key:value pairs for global variables')
     console.log('loglevel\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
 
     console.log('')
@@ -78,12 +80,13 @@ function displayHelp() {
     console.log('BAKE_ENV_NAME\t\t\t: Full environment name for deployment')
     console.log('BAKE_ENV_CODE\t\t\t: 4 letter environment code (used for resource naming)')
     console.log('BAKE_ENV_REGIONS\t\t: [{"name":"East US","code":"eus","shortName":"eastus"}]')
+    console.log('BAKE_AUTH_SKIP\t: skip azure login for recipes that dont need it')
     console.log('BAKE_AUTH_SUBSCRIPTION_ID\t: Azure Subscription Id')
     console.log('BAKE_AUTH_TENANT_ID\t\t: Azure AAD tenant for Service Principal authentication')
     console.log('BAKE_AUTH_SERVICE_ID\t\t: Azure Service Principal Id')
     console.log('BAKE_AUTH_SERVICE_KEY\t\t: Azure Service Principal secret key')
     console.log('BAKE_AUTH_SERVICE_CERT\t\t: Azure Service Principal PEM cert file (overrides secret key)')
-    console.log('BAKE_VARIABLES\t\t\t: YAML data of global bake variables')
+    console.log('BAKE_VARIABLES\t\t\t: Path to local yaml file of key:value pairs for global variables')
     console.log('BAKE_LOG_LEVEL\t\t\t: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.')
     console.log('')
     canExecute = false
@@ -118,35 +121,26 @@ function validateParams() {
 
     if (cmd == "serve"){
 
-        args.envName = argv['env-name'] || process.env.BAKE_ENV_NAME
-        args.envCode = argv['env-code'] || process.env.BAKE_ENV_CODE
-        args.envRegions = argv['regions'] || process.env.BAKE_ENV_REGIONS
-        args.subId = argv['sub'] || process.env.BAKE_AUTH_SUBSCRIPTION_ID
-        args.tenantId = argv['tenant'] || process.env.BAKE_AUTH_TENANT_ID
-        args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID
+        args.skipAuth = argv['skip-auth'] || process.env.BAKE_AUTH_SKIP || "false"
+        args.envName = argv['env-name'] || process.env.BAKE_ENV_NAME || "default"
+        args.envCode = argv['env-code'] || process.env.BAKE_ENV_CODE || "de000"
+        args.envRegions = argv['regions'] || process.env.BAKE_ENV_REGIONS || '[{"name":"Global","code":"glob","shortName":"global"}]'
+        args.subId = argv['sub'] || process.env.BAKE_AUTH_SUBSCRIPTION_ID || ""
+        args.tenantId = argv['tenant'] || process.env.BAKE_AUTH_TENANT_ID || ""
+        args.serviceId = argv['serviceid'] || process.env.BAKE_AUTH_SERVICE_ID || ""
         args.serviceKey = argv['key'] || process.env.BAKE_AUTH_SERVICE_KEY
         args.serviceCert = argv['cert'] || process.env.BAKE_AUTH_SERVICE_CERT
-        args.variables = argv['variables64'] || process.env.BAKE_VARIABLES64
+        args.variables = argv['variables'] || process.env.BAKE_VARIABLES
         args.logLevel = argv['loglevel'] || process.env.BAKE_LOG_LEVEL
 
-        if (args.variables)
-        {
-            args.variables = Buffer.from(args.variables, 'base64').toString('ascii')
-            process.env.BAKE_VARIABLES64 = ""
-        }
-        else
-        {
-            args.variables = argv['variables'] || process.env.BAKE_VARIABLES
-        }
-        
-
-        if (!args.envName ||
+        if (args.skipAuth.toLocaleLowerCase() === 'false' && (
+            !args.envName ||
             !args.envCode ||
             !args.envRegions ||
             !args.subId ||
             !args.tenantId ||
             !args.serviceId ||
-            (!args.serviceKey && !args.serviceCert)) {
+            (!args.serviceKey && !args.serviceCert))) {
                 displayHelp()
                 return
         }
@@ -154,6 +148,7 @@ function validateParams() {
         process.env.BAKE_ENV_NAME = args.envName
         process.env.BAKE_ENV_CODE = args.envCode
         process.env.BAKE_ENV_REGIONS = args.envRegions
+        process.env.BAKE_AUTH_SKIP = args.skipAuth
         process.env.BAKE_AUTH_SUBSCRIPTION_ID = args.subId
         process.env.BAKE_AUTH_TENANT_ID = args.tenantId
         process.env.BAKE_AUTH_SERVICE_ID = args.serviceId
@@ -215,7 +210,7 @@ function build(){
     fs.writeFileSync(dockerFile, dockerImage)
 
     console.log('Mixing...' + recipeName)
-    cli.start().arg('build').arg("-t=" + recipeName).arg(".").execStream()
+    cli.start().arg('build').arg('--pull').arg("-t=" + recipeName).arg(".").execStream()
     .then(()=>{
         fs.unlinkSync(dockerFile)
         fs.unlinkSync(".dockerignore")
@@ -285,21 +280,28 @@ function deploy(){
         `BAKE_ENV_NAME=${ args.envName }\r\n` +
         `BAKE_ENV_CODE=${ args.envCode }\r\n` +
         `BAKE_ENV_REGIONS=${ args.envRegions }\r\n` +
+        `BAKE_AUTH_SKIP=${args.skipAuth}\r\n` +
         `BAKE_AUTH_SUBSCRIPTION_ID=${ args.subId }\r\n` +
         `BAKE_AUTH_TENANT_ID=${ args.tenantId }\r\n` +
         `BAKE_AUTH_SERVICE_ID=${ args.serviceId }\r\n` +
         `BAKE_AUTH_SERVICE_KEY=${( args.serviceKey || "" )}\r\n` +
         `BAKE_AUTH_SERVICE_CERT=${( args.serviceCert || "" )}\r\n` +
-        `BAKE_VARIABLES=${(args.variables || "")}\r\n` +
+        `BAKE_VARIABLES=/app/bake/.env\r\n` +
         `BAKE_LOG_LEVEL=${(args.logLevel || "")}\r\n`
         )
         
     try {
 
-        let p = cli.arg('run').arg('--rm').arg('-t')
-            .arg('--env-file=' + tmpFile)
-            .arg(target)
-            .execStream()
+        let runner = cli.arg('run').arg('--rm').arg('-t')
+            .arg('--env-file=' + tmpFile);
+
+        if (args.variables) {
+            runner = runner.arg(`-v=${args.variables}:/app/bake/.env`)
+        }
+
+        runner = runner.arg(target);
+
+        let p = runner.execStream();
         p.then((r)=> {
             deleteEnvFile()
             process.exit(r);
