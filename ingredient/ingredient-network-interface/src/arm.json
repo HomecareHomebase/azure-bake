@@ -1,0 +1,58 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkInterfaceName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for all resources."
+            }
+        },
+        "subnetId": {
+            "type": "string"
+        }              
+        ,      
+        "privateIPAllocationMethod": {
+            "type": "string",
+            "defaultValue": "Dynamic"
+
+        } , 
+        "privateIpAddressVersion": {
+            "type": "string",
+            "defaultValue": "IPv4"
+        }                            
+    },
+    "variables": {       
+       "resourceGroupName":"[toLower(resourceGroup().name)]",       
+       "ipConfigName":"[ concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-10-01",         
+            "location": "[parameters('location')]",            
+            "dependsOn": [],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[variables('ipConfigName')]",
+                        "properties": {
+                            "privateIpAddressVersion": "[parameters('privateIpAddressVersion')]",
+                            "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
+                            "subnet": {
+                                "id": "[parameters('subnetId')]"
+                            }
+                        }
+                    }
+                ]
+         
+               
+            }
+        }
+    ]
+}

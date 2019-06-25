@@ -1,0 +1,17 @@
+name: func-app-test
+shortName: funcapptest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-network-interface@0.0.1"
+resourceGroup: true
+rgOverride: "default"
+parallelRegions: false
+recipe:
+  nic:
+    properties:
+      type: "@azbake/ingredient-network-interface"
+      parameters:
+        networkInterfaceName: "sample-nic "
+        location: "centralus"
+        subnetId: "/subscriptions/3d43a96b-5f3e-4f4e-9fa2-d5f200d0f5d6/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default"
+        
