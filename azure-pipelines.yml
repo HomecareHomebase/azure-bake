@@ -63,7 +63,7 @@ steps:
   displayName: GULP List Environment
   inputs:
     gulpFile: 'gulpfile.js' 
-    targets: 'listenvironment'    
+    targets: 'listenvironment'
     workingDirectory: '$(System.DefaultWorkingDirectory)'        
 
 - task: gulp@1
