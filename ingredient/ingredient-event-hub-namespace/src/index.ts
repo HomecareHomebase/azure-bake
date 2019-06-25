@@ -8,3 +8,5 @@ exports.pluginNS = "@azbake/ingredient-event-hub-namespace" //name of the ingred
 /* comment out these entries if you are not including a set of expression functions*/
 exports.functions = EventHubNamespaceUtils
 exports.functionsNS = "eventhubnamespace" //bake.yaml expressions can access your functions via "myutils.my_function()"
+
+export {EventHubNamespaceUtils}
