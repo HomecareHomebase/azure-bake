@@ -73,6 +73,7 @@ steps:
     targets: 'build'    
     workingDirectory: '$(System.DefaultWorkingDirectory)'    
     arguments: --sonarToken '$(SonarQubeToken)'
+  condition: not(contains(variables['Build.SourceVersionMessage'], '[skip ci]'))
 
 - task: Docker@2
   displayName: Logout from DockerHub
