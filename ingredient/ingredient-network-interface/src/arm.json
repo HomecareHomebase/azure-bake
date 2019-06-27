@@ -12,7 +12,10 @@
           "description": "Location for all resources."
             }
         },
-        "subnetId": {
+        "virtualNetworkName": {
+            "type": "string"
+        } ,             
+        "subnetName": {
             "type": "string"
         }              
         ,      
@@ -28,7 +31,8 @@
     },
     "variables": {       
        "resourceGroupName":"[toLower(resourceGroup().name)]",       
-       "ipConfigName":"[ concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]"
+       "ipConfigName":"[ concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]",
+       "subnetId":"[ concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/',parameters('subnetName'))]"
     },
     "resources": [
         {
@@ -45,7 +49,7 @@
                             "privateIpAddressVersion": "[parameters('privateIpAddressVersion')]",
                             "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
                             "subnet": {
-                                "id": "[parameters('subnetId')]"
+                                "id": "[variables('subnetId')]"
                             }
                         }
                     }
