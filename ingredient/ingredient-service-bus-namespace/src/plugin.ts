@@ -1,7 +1,6 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./arm.json"
-import { EventHubNamespaceUtils } from "@azbake/ingredient-event-hub-namespace"
 
 export class ServiceBusNamespace extends BaseIngredient {
 
@@ -18,16 +17,16 @@ export class ServiceBusNamespace extends BaseIngredient {
                 params["diagnosticsEnabled"] = {"value": "yes"}
 
             if (params["diagnosticsEnabled"].value == "yes") {
-                const ehnUtils = new EventHubNamespaceUtils(this._ctx);
+                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
 
                 var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
                 params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
               
-                var diagnosticsEventHubResourceGroup: string
+                var diagnosticsEventHubNamespaceResourceGroup: string
 
-                diagnosticsEventHubResourceGroup = await ehnUtils.get_resource_group();
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
 
-                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubResourceGroup};                
+                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
 
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())

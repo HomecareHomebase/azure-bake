@@ -38,7 +38,7 @@ recipe:
 | secondaryLocation | no | The location of the secondary namespace. |
 | aliasName | no | The name of the Geo-Recovery configuration alias  |
 | capacity | no | The specified messaging units for the tier. |
-| diagnosticsEnabled | no (default `yes`) |  Specifies whether to enable diagnostic settings to make logs available for consumption. |
+| diagnosticsEnabled | no (default `yes`) |  Specifies whether to enable diagnostic settings to make logs available for consumption.  **_Note that you must reference @azbake/ingredient-event-hub-namespace when diagnostics are enabled._** |
 
 ## Utilities
 
