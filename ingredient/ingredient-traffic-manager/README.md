@@ -40,6 +40,7 @@ recipe:
 |path|no (default /)|path on the endpoint to check|
 |number-of-failures|no (default 3)|number of times to retry before marking an endpoint down|
 |timeout|no (default 5)|number of seconds to wait for a response from the endpoint|
+| diagnosticsEnabled | no (default `yes`) |  Specifies whether to enable diagnostic settings to make logs available for consumption.  **_Note that you must reference @azbake/ingredient-event-hub-namespace when diagnostics are enabled._** |
 
 ***  Please note that you can supply just the name of the azure resource for the source if the resource exists within the same resource group that is currently being deployed for traffic manager.
 
