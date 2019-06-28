@@ -44,7 +44,7 @@ export class TrafficManager extends BaseIngredient {
             if (!props["diagnosticsEnabled"])
                 props["diagnosticsEnabled"] = {"value": "yes"}
 
-            if (props["diagnosticsEnabled"].value == "yes") {
+            if (props["diagnosticsEnabled"].value === "yes") {
                 const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
 
                 var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
