@@ -72,7 +72,7 @@
         },
         "diagnosticsSettingName": {
             "type": "string",
-            "defaultValue": "setting1",
+            "defaultValue": "diagToEHN",
             "metadata": {
                 "description": "Diagnostic setting name.  Most by unique for the resource."
             }
