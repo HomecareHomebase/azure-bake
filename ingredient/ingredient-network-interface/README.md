@@ -21,16 +21,18 @@ recipe:
     properties:
       type: "@azbake/ingredient-network-interface"
       parameters:
-        networkInterfaceName: "sample-nic "
+       networkInterfaceName: "sample-nic"        
         location: "centralus"
-        subnetId: ""
+        virtualNetworkName: "test-vnet"
+        subnetName: "default"
 ```
 
 | property | required | description |
 | -------- | -------- | ----------- |
 | networkInterfaceName | yes | The name for the Network Interface |
 | location | no | Sets the location. Defaults to the parent resource group location. |
-| subnetId | yes | Subnet to create Network interface |
+| subnetName | yes | Subnet name to create Network interface |
+| virtualNetworkName | yes | Virtual Network name where subnet is associated |
 
 ## Utilities
 
@@ -50,7 +52,7 @@ Gets the name created for the Network Interface when deployed.
 ```yaml
 ...
 parameters:
-    planName: "[networkinterface.create_resource_name()]"
+    nicName: "[networkinterfaceutility.create_resource_name()]"
 ...
 ```
 

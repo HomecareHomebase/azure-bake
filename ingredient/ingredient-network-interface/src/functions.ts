@@ -15,7 +15,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let resource_group = rg || await util.resource_group();
 
         const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
-        let response = await client.networkInterfaces.get( resource_group, nicName)                      
+        let response = await client.networkInterfaces.get( resource_group, nicName)                              
         return response;
     }
     public async get_id(nicName: string, rg: string | null = null) { 

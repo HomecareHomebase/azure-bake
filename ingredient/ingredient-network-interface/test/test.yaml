@@ -6,12 +6,15 @@ ingredients:
 resourceGroup: false
 rgOverride: "test-rg"
 parallelRegions: false
+variables:
+  test1: "[networkinterfaceutility.get_id('sample-nic3','test-rg')]"  
+  test2: "[networkinterfaceutility.get_mac_address('sample-nic3','test-rg')]"  
 recipe:
   nic:
     properties:
       type: "@azbake/ingredient-network-interface"
       parameters:
-        networkInterfaceName: "sample-nic2"        
+        networkInterfaceName: "sample-nic3"        
         location: "centralus"
         virtualNetworkName: "test-vnet"
         subnetName: "default"
