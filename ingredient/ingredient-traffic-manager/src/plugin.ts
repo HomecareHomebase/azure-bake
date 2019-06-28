@@ -41,6 +41,22 @@ export class TrafficManager extends BaseIngredient {
             let props = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters);
             props["name"] = {"value": trfutil.get_profile() };
 
+            if (!props["diagnosticsEnabled"])
+                props["diagnosticsEnabled"] = {"value": "yes"}
+
+            if (props["diagnosticsEnabled"].value == "yes") {
+                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
+
+                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("thdiagnostics");
+                props["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
+              
+                var diagnosticsEventHubNamespaceResourceGroup: string
+
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("thdiagnostics");
+
+                props["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
+            }
+
             await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, await util.resource_group());
 
         } catch(error){
