@@ -47,12 +47,12 @@ export class TrafficManager extends BaseIngredient {
             if (props["diagnosticsEnabled"].value == "yes") {
                 const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
 
-                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("thdiagnostics");
+                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
                 props["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
               
                 var diagnosticsEventHubNamespaceResourceGroup: string
 
-                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("thdiagnostics");
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
 
                 props["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
