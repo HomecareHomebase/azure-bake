@@ -1,0 +1,42 @@
+{
+  "name": "@azbake/ingredient-network-interface",
+  "description": "Ingredient for deploying an instance of Network Interface.",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "author": "HCHB",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HomecareHomebase/azure-bake.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HomecareHomebase/azure-bake/issues"
+  },
+  "homepage": "https://github.com/HomecareHomebase/azure-bake",
+  "scripts": {
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "@azbake/core": "0.*",
+    "@azbake/ingredient-utils": "0.*",
+    "@azure/ms-rest-nodeauth": "0.9.2"
+  },
+  "devDependencies": {
+    "@azbake/core": "^0.1.54",
+    "@azbake/ingredient-utils": "^0.1.54",
+    "@azure/ms-rest-nodeauth": "0.9.2",
+    "@types/node": "^10.12.18"
+  },
+  "dependencies": {
+    "@azbake/arm-helper": "^0.1.54"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
