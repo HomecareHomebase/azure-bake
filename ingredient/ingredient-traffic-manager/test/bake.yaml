@@ -1,0 +1,17 @@
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-traffic-manager@~0"
+  #Event hub namespace reference is required in order to enable the diagnostics setting (enabled by default) that transmits logs to a diagnostics event hub
+  - "@azbake/ingredient-event-hub-namespace"
+parallelRegions: false
+resourceGroup: true
+recipe:
+  mypkg-traffic-mgr:
+    properties:
+      type: "@azbake/ingredient-traffic-manager"
+      #App Service profile name in the format <resource group>/<app service resource>
+      source: "[webapp.get_resource_profile()]"
+      parameters:
+        source-type: "Microsoft.Web/sites/"
