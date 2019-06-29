@@ -6,8 +6,9 @@ ingredients:
 resourceGroup: false
 rgOverride: "test-rg"
 parallelRegions: false
-variables:
+variables:    
   test1: "[networkinterfaceutility.get('sample-nic3','test-rg')]"    
+  test2: "[networkinterfaceutility.get_mac_address('sample-nic3','test-rg')]"   
 recipe:
   nic:
     properties:
@@ -17,4 +18,4 @@ recipe:
         location: "centralus"
         virtualNetworkName: "test-vnet"
         subnetName: "default"
-        
+          

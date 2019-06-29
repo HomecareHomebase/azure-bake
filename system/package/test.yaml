@@ -6,8 +6,9 @@ ingredients:
 resourceGroup: false
 rgOverride: "test-rg"
 parallelRegions: false
-variables:  
-  test1: "[networkinterfaceutility.get('sample-nic3')]"    
+variables:    
+  test1: "[networkinterfaceutility.get('sample-nic3','test-rg')]"    
+  test2: "[networkinterfaceutility.get_mac_address('sample-nic3','test-rg')]"   
 recipe:
   nic:
     properties:
