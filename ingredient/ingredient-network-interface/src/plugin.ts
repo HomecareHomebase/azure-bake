@@ -10,23 +10,29 @@ export class NetworkInterface extends BaseIngredient {
             this._logger.log('Network Interface Plugin Logging: ' + JSON.stringify(this._ingredient.properties.source))
             
             let nic = IngredientManager.getIngredientFunction("networkinterfaceutility", this._ctx);
-            let value = await nic.get_id('sample-nic3','test-rg');
+            let value = await nic.get_id('test-vm584','test-rg');
             this._logger.log ('Id ' + value)
 
-            value = await nic.get_ip_configurations('sample-nic3','test-rg');
+            value = await nic.get_ip_configurations('test-vm584','test-rg');
             this._logger.log ( 'ip configurations ' + JSON.stringify(value))
 
-            value = await nic.get_virtual_machine('sample-nic3','test-rg');
+            value = await nic.get_virtual_machine('test-vm584','test-rg');
             this._logger.log ('virtual machine ' + JSON.stringify(value))
 
-            value = await nic.get_dns_settings('sample-nic3','test-rg');
+            value = await nic.get_dns_settings('test-vm584','test-rg');
             this._logger.log ( 'dns settings ' + JSON.stringify(value))
 
-            value = await nic.get('sample-nic3','test-rg');
+            value = await nic.get('test-vm584','test-rg');
             this._logger.log ( 'nic details ' + JSON.stringify(value))
             
-            value = await nic.get_mac_address('sample-nic3','test-rg');
+            value = await nic.get_mac_address('test-vm584','test-rg');
             this._logger.log ( 'mac address ' + JSON.stringify(value))
+
+            value = await nic.get_primary('test-vm584','test-rg');
+            this._logger.log ( 'primary ' + JSON.stringify(value))
+
+            value = await nic.get_enable_ip_forwarding('test-vm584','test-rg');
+            this._logger.log ( 'enable ip forwarding' + JSON.stringify(value) )
 
             const helper = new ARMHelper(this._ctx);
 

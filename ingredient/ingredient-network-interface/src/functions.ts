@@ -68,5 +68,24 @@ export class NetworkInterfaceUtils extends BaseUtility {
         return response.dnsSettings;
     }   
     
+    public async get_primary(nicName: string, rg: string | null = null) { 
+        
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        let resource_group = rg || await util.resource_group();
+
+        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        let response = await client.networkInterfaces.get( resource_group, nicName)                      
+        return response.primary;
+    }  
+    
+    public async get_enable_ip_forwarding(nicName: string, rg: string | null = null) { 
+        
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        let resource_group = rg || await util.resource_group();
+
+        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        let response = await client.networkInterfaces.get( resource_group, nicName)                      
+        return response.enableIPForwarding;
+    } 
 }
 
