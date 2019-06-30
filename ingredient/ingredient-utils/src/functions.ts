@@ -42,14 +42,15 @@ export class CoreUtils extends BaseUtility {
         return regions[0].code == this.current_region().code;
     }
     
-    public async resource_group(): Promise<string> {
+    public async resource_group(name: string | null = null, useRegionCode: boolean = true): Promise<string> {
         let override = this.context.Config.rgOverride
         if (override) {
             return await override.valueAsync(this.context)
         } else {
-            return this.create_resource_name("", null, true)
+            return this.create_resource_name("", name, useRegionCode)
         }
     }
+    
     public async variable(key: string, def?: string): Promise<any> {
         if (this.context.Config.variables) {
 
