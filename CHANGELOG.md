@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
+
+
+### Bug Fixes
+
+* Bake Ingredient - Network interface ([#88](https://github.com/HomecareHomebase/azure-bake/issues/88)) ([df98d85](https://github.com/HomecareHomebase/azure-bake/commit/df98d85))
+* Feature/az mon unified diag settings traffic mgr ([#87](https://github.com/HomecareHomebase/azure-bake/issues/87)) ([c9ba1c5](https://github.com/HomecareHomebase/azure-bake/commit/c9ba1c5))
+
+
+
+
+
 ## [0.1.57](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.56...v0.1.57) (2019-06-20)
 
 
