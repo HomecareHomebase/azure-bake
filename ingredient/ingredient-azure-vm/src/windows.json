@@ -8,34 +8,10 @@
                 "description": "User name for the Virtual Machine."
             }
         },
-        "authenticationType": {
-            "type": "string",
-            "defaultValue": "sshPublicKey",
-            "allowedValues": [
-                "sshPublicKey",
-                "password"
-            ],
-            "metadata": {
-                "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
-            }
-        },
-        "adminPasswordOrKey": {
+        "adminPassword": {
             "type": "securestring",
             "metadata": {
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
-            }
-        },
-        "ubuntuOSVersion": {
-            "type": "string",
-            "defaultValue": "16.04.0-LTS",
-            "allowedValues": [
-                "12.04.5-LTS",
-                "14.04.5-LTS",
-                "16.04.0-LTS",
-                "18.04-LTS"
-            ],
-            "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
         "location": {
@@ -47,7 +23,7 @@
         },
         "storageAccountName": {
             "type": "string",
-            "defaultValue": "concat([resourceGroup().location], 'salinuxvm'",
+            "defaultValue": "sawindowsvm",
             "metadata": {
                 "description": "Storage Account for the VM"
             }
@@ -108,34 +84,27 @@
             "metadata": {
                 "description": "System Disk Size in Megabytes"
             }
-        }
-    },
-    "variables": {
-        "linuxConfiguration": {
-            "disablePasswordAuthentication": true,
-            "ssh": {
-                "publicKeys": [
-                    {
-                        "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                        "keyData": "[parameters('adminPasswordOrKey')]"
-                    }
-                ]
-            }
         },
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+        "osType": {
+            "type": "string",
+            "defaultValue": "windows",
+            "metadata": {
+                "description": "OS Type"
+            }
+        }
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-10-01",
-            "name": "[variables('vmName')]",
-            "location": "[parameters('location')]",
+            "name": "[parameters('vmName')]",
+            "location": "[parameters('location')]",            
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "Standard_A2"
                 },
                 "osProfile": {
-                    "computerName": "[variables('vmName')]",
+                    "computerName": "[parameters('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]"
                 },
@@ -151,11 +120,24 @@
                     },
                     "dataDisks": [
                         {
-                            "diskSizeGB": "[parameters('diskSize')]",
+                            "diskSizeGB": 1023,
                             "lun": 0,
                             "createOption": "Empty"
                         }
                     ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('nicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+                    }
                 }
             }
         }

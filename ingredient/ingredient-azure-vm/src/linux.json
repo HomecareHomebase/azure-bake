@@ -19,7 +19,7 @@
                 "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
             }
         },
-        "adminPasswordOrKey": {
+        "adminKey": {
             "type": "securestring",
             "metadata": {
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
@@ -99,6 +99,13 @@
             "metadata": {
                 "description": "Virtual Network NAme"
             }
+        },
+        "osType": {
+            "type": "string",
+            "defaultValue": "linux",
+            "metadata": {
+                "description": "OS Type"
+            }
         }
     },
     "variables": {
@@ -108,7 +115,7 @@
                 "publicKeys": [
                     {
                         "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                        "keyData": "[parameters('adminPasswordOrKey')]"
+                        "keyData": "[parameters('adminKey')]"
                     }
                 ]
             }
@@ -128,8 +135,8 @@
                 "osProfile": {
                     "computerName": "[parameters('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPasswordOrKey')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), parameters('linuxConfiguration'))]"
+                    "adminPassword": "[parameters('adminKey')]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 },
                 "storageProfile": {
                     "imageReference": {

@@ -1,49 +1,104 @@
 ## Changelogs
 
-* [@azbake/ingredient-service-bus-namespace](./CHANGELOG.md)
+* [@azbake/ingredient-azure-vm](./CHANGELOG.md)
 
 ## Overview
 
-The Service Bus Namespace ingredient is a plugin for bake. When included in a recipe, this will create a [Service Bus Namespace](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview).
+The Azure VM ingredient is a plugin for bake. When included in a recipe, this will create a [Windows Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/overview) or a [Linux Azure VM](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/overview).
 
-## Usage
+## Windows Usage
 
 ```yaml
-name: My package
-shortName: mypkg
-version: 0.0.1
+name: windows-test
+shortName: wintest
+version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-service-bus-namespace@~0"
+  - "@azbake/ingredient-azure-vm@0~"
 resourceGroup: true
+rgOverride: test
+parallelRegions: false
 recipe:
-  service-bus-namespace:
+  windows-test:
     properties:
-      type: "@azbake/ingredient-service-bus-namespace"
+      type: "@azbake/ingredient-azure-vm"
       parameters:
-        name: "myservicebusprimary"
-        secondaryName: "myservicebussecondary"
-        skuName: "Premium"
-        location: "US Central"
-        secondaryLocation: "East US 2"
-        aliasName: "myservicebus"
-        capacity: "1"
+        vmName: "testvm"
+        adminUsername: "user1"
+        adminPassword: "password1!"
+        subnetName: "default"
+        storageAccountName: "sawindowsvm"
+        osType: "windows"
 ```
 
+## Linux Usage
+
+```yaml
+name: linux-test
+shortName: lxtest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-azure-vm@0~"
+resourceGroup: true
+rgOverride: test
+parallelRegions: false
+recipe:
+  linux-test:
+    properties:
+      type: "@azbake/ingredient-azure-vm"
+      parameters:
+        vmName: "testvm"
+        adminUsername: "user1"
+        adminKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnbJVCnaUoHap+jK+Wfvno6ahfu4npy5xixAt6uBYFkdpMprTxWHxh8ocdRhsCnx7dR05s5EVZV48kB9z2sCob+J4iEWi9nTvlQ8cqmrWGEOFisCHwgvPSFWY15sz+nOd8ry43xi7K5jrZ/NyIxz9+r4ZREHuMF1wPed5siik8jwL/ingY0kyTqfMDxe588/TnW2PkcUFHgJpBNqe78rBqmB/+7tk+R+UgFJ6RY//Xo+C5T/QfJNylrRdIam0wd0EFG8bg8Qou3S/32PIlW+/HbgauksZcjFE7Ta/yUFa4f8Pt4YJszw0bhyVRCFUPJEz66f1q8L/3en/AMhBLknwh rasquill@MININT-GFPHKM1"
+        subnetName: "default"
+        storageAccountName: "salinuxvm"
+        osType: "linux"
+```
+
+##Windows Properties
+Set: 
+| property | value |
+| osType | windows |
+
+Parameters
 | property | required | description |
 | -------- | -------- | ----------- |
-| name | yes | The name for the singular/primary Service Bus Namespace |
-| secondaryName | no | The name of the secondary Service Bus namespace |
-| skuName | no (default `Basic`) | The messaging messaging tier. |
-| location | no | The location of the singular/primary namespace. Defaults to the parent resource group location. |
-| secondaryLocation | no | The location of the secondary namespace. |
-| aliasName | no | The name of the Geo-Recovery configuration alias  |
-| capacity | no | The specified messaging units for the tier. |
+| adminUsername | yes | User name for the Virtual Machine. |
+| adminPassword | yes | SSH Key for the Virtual Machine |
+| storageAccountName | yes | Storage Account for the VM |
+| nicName | yes | Network Interface Name |
+| subnetName | yes | Subnet name |
+| vmName | yes | Name for the VM |
+| virtualNetworkName | yes | Virtual Network Name |
+| location | no | Location for all resources |
+| windowsOSVersion | no | Windows OS type to deploy |
+| vmSize | no | VM Sizing |
+
+##Linux Properties
+Set: 
+| property | value |
+| osType | windows |
+
+Parameters:
+| property | required | description |
+| -------- | -------- | ----------- |
+| adminUsername | yes | User name for the Virtual Machine. |
+| adminKey | yes | SSH Key for the Virtual Machine |
+| storageAccountName | yes | Storage Account for the VM |
+| nicName | yes | Network Interface Name |
+| subnetName | yes | Subnet name |
+| vmName | yes | Name for the VM |
+| virtualNetworkName | yes | Virtual Network Name |
+| ubuntuOSVersion | no | The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. |
+| location | no | Location for all resources |
+| imagePublisher | no | Publisher for the VM Image |
+| imageOffer | no | Image Offer |
+| vmSize | no | VM Sizing |
 
 ## Utilities
 
 Utility classes can be used inside of the bake.yaml file for parameter and source values.
 
-### ``servicebusnamespace`` class
+### ``vm`` class
 
 | function | description |
 | `create_resource_name()` | Returns the name created for the Service Bus Namespace when deployed |
@@ -57,7 +112,7 @@ Gets the name created for the App Service Plan when deployed.
 ```yaml
 ...
 parameters:
-    planName: "[servicebusnamespace.create_resource_name()]"
+    planName: "[vm.create_resource_name()]"
 ...
 ```
 

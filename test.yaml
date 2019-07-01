@@ -1,21 +1,19 @@
-name: bus-test
-shortName: bustest
+name: windows-test
+shortName: wintest
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-azure-vm@0~"
 resourceGroup: true
 rgOverride: test
 parallelRegions: false
-variables:
-  vmName: testvm
-  adminUsername: csperbeck@hchb.com
 recipe:
-  namespace:
+  windows-test:
     properties:
       type: "@azbake/ingredient-azure-vm"
       parameters:
-        vmName: "testvm"
+        vmName: "testvm1"
         adminUsername: "csperbeck"
-        adminPasswordOrKey: "Hchcb2019!"
-        storageAccountName: "puppetdiag166"
-        nicName: "master826"
+        adminPassword: "Hchb2019!"
+        subnetName: "default"
+        storageAccountName: "salinuxvm"
+        osType: "windows"
