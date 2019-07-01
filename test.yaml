@@ -1,0 +1,21 @@
+name: bus-test
+shortName: bustest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-azure-vm"
+resourceGroup: true
+rgOverride: test
+parallelRegions: false
+variables:
+  vmName: testvm
+  adminUsername: csperbeck@hchb.com
+recipe:
+  namespace:
+    properties:
+      type: "@azbake/ingredient-azure-vm"
+      parameters:
+        vmName: "testvm"
+        adminUsername: "csperbeck"
+        adminPasswordOrKey: "Hchcb2019!"
+        storageAccountName: "puppetdiag166"
+        nicName: "master826"
