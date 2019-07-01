@@ -2,7 +2,7 @@ name: bus-test
 shortName: bustest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-azure-vm"
+  - "@azbake/ingredient-azure-vm@0~"
 resourceGroup: true
 rgOverride: test
 parallelRegions: false

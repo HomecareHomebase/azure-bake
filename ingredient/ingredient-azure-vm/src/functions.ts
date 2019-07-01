@@ -1,7 +1,4 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
-var msRestAzure = require('ms-rest-azure');
-var ComputeManagementClient = require('azure-arm-compute');
-var ResourceManagementClient = require('azure-arm-resource').ResourceManagementClient;
 
 export class AzureVmUtils extends BaseUtility {
 
