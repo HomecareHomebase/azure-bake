@@ -1,0 +1,19 @@
+name: windows-test
+shortName: wintest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-azure-vm@0~"
+resourceGroup: true
+rgOverride: test
+parallelRegions: false
+recipe:
+  windows-test:
+    properties:
+      type: "@azbake/ingredient-azure-vm"
+      parameters:
+        vmName: "testvm1"
+        adminUsername: "csperbeck"
+        adminPassword: "Hchb2019!"
+        subnetName: "default"
+        storageAccountName: "salinuxvm"
+        osType: "windows"
