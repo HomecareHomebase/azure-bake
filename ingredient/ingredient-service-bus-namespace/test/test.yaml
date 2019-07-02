@@ -1,16 +1,13 @@
-name: bus-test
+name: Service Bus Platform
 shortName: bustest
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-service-bus-namespace"
-  #Event hub namespace reference is required in order to enable the diagnostics setting (enabled by default) that transmits logs to a diagnostics event hub
-  - "@azbake/ingredient-event-hub-namespace"
-resourceGroup: true
-rgOverride: test
 parallelRegions: false
 variables:
   skuName: Premium
   name: bakesbprimary
+  location: East US
   secondaryName: bakesbsecondary
   secondaryLocation: East US 2
   aliasName: bakesb
