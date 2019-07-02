@@ -11,9 +11,9 @@ recipe:
     properties:
       type: "@azbake/ingredient-azure-vm"
       parameters:
-        vmName: "testvm1"
+        vmName: "testvm3"
         adminUsername: "csperbeck"
-        adminPassword: "Hchb2019!"
+        adminKey: "Hchb2019!"
         subnetName: "default"
         storageAccountName: "salinuxvm"
-        osType: "windows"
+        osType: "linux"
