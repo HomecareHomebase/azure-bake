@@ -20,7 +20,7 @@ export class AppInsightsUtils extends BaseUtility {
         //Also, pass in shortname rather than using default.  The default is the package name being deployed but we want the App Insights resource name/group.
         const aiName = util.create_resource_name("ai", shortName, false);
         
-        const rgName: string = await util.resource_group(shortName, false);
+        const rgName: string = await util.resource_group(rgShortName, false);
 
         const client = new ApplicationInsightsManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
