@@ -1,0 +1,38 @@
+#Provide name 
+name: Event Hubs Diagnostic Logs
+shortName: ehdiag
+version: 0.0.1
+#Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
+#Specify the local path to the module during development.
+ingredients:
+  - "@azbake/ingredient-event-hub"
+  - "@azbake/ingredient-arm"
+#Deploys to regions in parallel.  Typically true unless the sequence of deploying to regions is important.
+parallelRegions: true
+#
+resourceGroup: true
+#rgOverride:
+variables:
+recipe:
+  #Name the deployment.  This shows up in the log window and is the name of the deployment within Azure.
+  ehdiag-deploy: 
+    properties:
+      #Specify the Bake ingredient above
+      type: "@azbake/ingredient-event-hub"
+      source: ""
+      parameters:        
+        eventHubName: "[eventhub.create_resource_name()]"        
+        eventHubNamespaceName: "[coreutils.get_event_hub_namespace_name('ehndiag')]"
+        messageRetentionInDays: "1"
+        partitionCount: "2"
+        policyName: "defaultPolicy"
+  storage-deploy:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./arm2.json
+      parameters:
+        name: "[coreutils.create_storage_name('wpoctest2')]"
+        primary: "[eventhub.get_primary_connectionstring(coreutils.get_event_hub_namespace_name('ehndiag'), eventhub.create_resource_name(), 'defaultPolicy')]" 
+        secondary: "[eventhub.get_secondary_connectionstring(coreutils.get_event_hub_namespace_name('ehndiag'), eventhub.create_resource_name(), 'defaultPolicy')]"   
+    dependsOn:
+      - ehdiag-deploy
