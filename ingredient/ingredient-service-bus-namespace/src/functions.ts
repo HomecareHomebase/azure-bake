@@ -5,15 +5,15 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const name = util.create_resource_name("sbn", null, false);
+        const name = util.create_resource_name("sbn", null, true);
         return name;
     }
 
     public async get_endpoint(nsName: string, rg: string | null = null): Promise<string> {
-        
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
-        
+
         const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.get(resource_group, nsName);
@@ -23,7 +23,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
     }
 
     public async get_primary_key(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
-        
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
@@ -35,7 +35,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
     }
 
     public async get_secondary_key(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
-        
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
@@ -47,7 +47,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
     }
 
     public async get_primary_connection_string(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
-        
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
@@ -59,7 +59,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
     }
 
     public async get_secondary_connection_string(nsName: string, authRuleName: string, rg: string | null = null) : Promise<string> {
-        
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
