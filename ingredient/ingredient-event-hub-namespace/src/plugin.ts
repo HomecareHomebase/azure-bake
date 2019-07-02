@@ -7,7 +7,7 @@ export class EventHubNamespacePlugin extends BaseIngredient {
     public async Execute(): Promise<void> {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
-            this._logger.log('Event Hub Namespace Plugin Logging: ' + await this._ingredient.properties.source.valueAsync(this._ctx))
+            this._logger.log('Event Hub Namespace Plugin Logging: ')
 
             const helper = new ARMHelper(this._ctx);
 
@@ -22,11 +22,11 @@ export class EventHubNamespacePlugin extends BaseIngredient {
                 var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
                 params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
               
-                var diagnosticsEventHubResourceGroup: string
+                var diagnosticsEventHubNamespaceResourceGroup: string
 
-                diagnosticsEventHubResourceGroup = await ehnUtils.get_resource_group();
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
 
-                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubResourceGroup};                
+                params["diagnosticsEventHubNamespaceResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
 
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())

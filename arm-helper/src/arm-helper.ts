@@ -15,25 +15,13 @@ export class ARMHelper {
     _ingredient: IIngredient;
 
     public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<void> {
-        
+
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
 
         try {
             //now iterate through all resources in the template and append our standard tags to any existing tags in the ARM template.
             logger.log('appending standard tags');
-            let resources: any[] = template.resources;
-            resources.forEach( resource => {
-                let localTags = new Map<string,string>();
-                if (resource.tags)
-                {
-                    
-                    let map = Object.keys(resource.tags).forEach(k=>{
-                        localTags.set(k,resource.tags[k])
-                    })
-                }
-                resource.tags = this.GenerateTags(localTags)
-            })
-            template.resources = resources
+            template = this.AppendStandardTags(template);
 
             logger.log('starting arm deployment for template');
 
@@ -48,6 +36,7 @@ export class ARMHelper {
                 }
             }
 
+            logger.log(`resource group: ${resourceGroup}`);
             logger.debug('template:\n' + JSON.stringify(template, null, 3));
             logger.debug('input params:\n' + JSON.stringify(params, null, 3));
 
@@ -108,5 +97,31 @@ export class ARMHelper {
     {
        var tagGen = new TagGenerator(this._ctx)
        return tagGen.GenerateTags(extraTags)
+    }
+
+    private AppendStandardTags(template: any) : any
+    {
+        let resources: any[] = template.resources;
+        resources.forEach( resource => {
+            let resourceType = resource.type;
+
+            if (resourceType != 'Microsoft.Resources/deployments')
+            {
+                let localTags = new Map<string,string>();
+                if (resource.tags)
+                {
+                    Object.keys(resource.tags).forEach(k=>{
+                        localTags.set(k,resource.tags[k])
+                    })
+                }
+                resource.tags = this.GenerateTags(localTags)
+            } else if (resource.properties.template)
+            {
+                resource.properties.template = this.AppendStandardTags(resource.properties.template);
+            }
+        });
+
+        template.resources = resources;
+        return template;
     }
 }

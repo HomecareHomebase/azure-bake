@@ -1,0 +1,16 @@
+name: func-app-test
+shortName: funcapptest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-availability-set@0.0.1"
+resourceGroup: true
+rgOverride: "default"
+parallelRegions: false
+recipe:
+  availset:
+    properties:
+      type: "@azbake/ingredient-availability-set"
+      parameters:
+        name: "[availutils.create_resource_name()]"
+        faultDomains: "2"
+        updateDomains: "5"

@@ -1,0 +1,33 @@
+name: Creates an action group
+shortName: actiongroups
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-arm@~0"
+resourceGroup: true
+parallelRegions: true
+rgOverride: whilke-poc
+recipe:
+  actiongroup-deploy:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./actionGroup.json
+      parameters:
+        actionGroupName: "[coreutils.create_resource_name('act','emailops', false)]"
+        actionGroupShortName: "emailops"
+        emailReceivers:
+        - name: contosoEmail
+          emailAddress: ops@contoso.com
+        - name: contosoEmail2
+          emailAddress: ops2@contoso.com
+        # smsReceivers:
+        # - name: contosoSMS
+        #   countryCode: '1'
+        #   phoneNumber: '5555551212'
+        # - name: contosoSMS2
+        #   countryCode: '1'
+        #   phoneNumber: '5555552121'
+        # webhookReceivers:
+        # - name: contosoHook
+        #   serviceUri: http://webhookurl1.com
+        # - name: contosoHook2
+        #   serviceUri: http://webhookurl2.com

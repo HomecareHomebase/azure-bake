@@ -1,0 +1,1 @@
+FROM homecarehomebase/vsc-azure-bake

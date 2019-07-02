@@ -20,3 +20,4 @@ azdevops/**/*.js
 !azdevops/imports/**/*.js
 /.vs
 .env
+/.devcontainer

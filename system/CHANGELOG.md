@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
+
+
+### Bug Fixes
+
+* Bake Ingredient - Network interface ([#88](https://github.com/HomecareHomebase/azure-bake/issues/88)) ([df98d85](https://github.com/HomecareHomebase/azure-bake/commit/df98d85))
+
+
+
+
+
+## [0.1.56](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.55...v0.1.56) (2019-06-20)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
+
+
+### Bug Fixes
+
+* forcing a docker pull when mixing ([#78](https://github.com/HomecareHomebase/azure-bake/issues/78)) ([4cc3658](https://github.com/HomecareHomebase/azure-bake/commit/4cc3658))
+
+
+
+
+
+## [0.1.54](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.53...v0.1.54) (2019-06-17)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.1.53](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.52...v0.1.53) (2019-06-17)
+
+
+### Bug Fixes
+
+* Added BAKE_AUTH_SKIP which will skip azure signon ([#72](https://github.com/HomecareHomebase/azure-bake/issues/72)) ([94f2ffc](https://github.com/HomecareHomebase/azure-bake/commit/94f2ffc))
+
+
+
+
+
+## [0.1.52](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.51...v0.1.52) (2019-06-11)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
 ## [0.1.51](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.50...v0.1.51) (2019-05-28)
 
 

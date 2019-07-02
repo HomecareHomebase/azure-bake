@@ -3,6 +3,117 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+
+### Bug Fixes
+
+* Feature/alert ingredient ([#52](https://github.com/HomecareHomebase/azure-bake/issues/52)) ([f03f96a](https://github.com/HomecareHomebase/azure-bake/commit/f03f96a))
+
+
+
+
+
+## [0.1.60](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.59...v0.1.60) (2019-07-02)
+
+
+### Bug Fixes
+
+* Added Network interface helper functions ([#90](https://github.com/HomecareHomebase/azure-bake/issues/90)) ([1e6277a](https://github.com/HomecareHomebase/azure-bake/commit/1e6277a))
+* Fixed issue with redeploying geo-redundant service bus instances ([#92](https://github.com/HomecareHomebase/azure-bake/issues/92)) ([9913027](https://github.com/HomecareHomebase/azure-bake/commit/9913027))
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+
+### Bug Fixes
+
+* quick touch to fix deployment ([90d2fec](https://github.com/HomecareHomebase/azure-bake/commit/90d2fec))
+
+
+
+
+
+## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
+
+
+### Bug Fixes
+
+* Bake Ingredient - Network interface ([#88](https://github.com/HomecareHomebase/azure-bake/issues/88)) ([df98d85](https://github.com/HomecareHomebase/azure-bake/commit/df98d85))
+* Feature/az mon unified diag settings traffic mgr ([#87](https://github.com/HomecareHomebase/azure-bake/issues/87)) ([c9ba1c5](https://github.com/HomecareHomebase/azure-bake/commit/c9ba1c5))
+
+
+
+
+
+## [0.1.57](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.56...v0.1.57) (2019-06-20)
+
+
+### Bug Fixes
+
+* Availability set ingredient ([#79](https://github.com/HomecareHomebase/azure-bake/issues/79)) ([09b576b](https://github.com/HomecareHomebase/azure-bake/commit/09b576b))
+
+
+
+
+
+## [0.1.56](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.55...v0.1.56) (2019-06-20)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
+
+
+### Bug Fixes
+
+* forcing a docker pull when mixing ([#78](https://github.com/HomecareHomebase/azure-bake/issues/78)) ([4cc3658](https://github.com/HomecareHomebase/azure-bake/commit/4cc3658))
+* forcing full update ([2dca56c](https://github.com/HomecareHomebase/azure-bake/commit/2dca56c))
+* gulp commit fixes ([701be4c](https://github.com/HomecareHomebase/azure-bake/commit/701be4c))
+
+
+
+
+
+## [0.1.54](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.53...v0.1.54) (2019-06-17)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.53](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.52...v0.1.53) (2019-06-17)
+
+
+### Bug Fixes
+
+* Added BAKE_AUTH_SKIP which will skip azure signon ([#72](https://github.com/HomecareHomebase/azure-bake/issues/72)) ([94f2ffc](https://github.com/HomecareHomebase/azure-bake/commit/94f2ffc))
+
+
+
+
+
+## [0.1.52](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.51...v0.1.52) (2019-06-11)
+
+
+### Bug Fixes
+
+* Feature/az mon unified diag settings1 ([#61](https://github.com/HomecareHomebase/azure-bake/issues/61)) ([d8d6daa](https://github.com/HomecareHomebase/azure-bake/commit/d8d6daa))
+* Feature/storage diagnostic settings ([#57](https://github.com/HomecareHomebase/azure-bake/issues/57)) ([1ab1124](https://github.com/HomecareHomebase/azure-bake/commit/1ab1124))
+* Function App ingredient ([#56](https://github.com/HomecareHomebase/azure-bake/issues/56)) ([f954ebb](https://github.com/HomecareHomebase/azure-bake/commit/f954ebb))
+* Helper functions for Service Bus namespace ingredient ([#64](https://github.com/HomecareHomebase/azure-bake/issues/64)) ([fc68cf8](https://github.com/HomecareHomebase/azure-bake/commit/fc68cf8))
+
+
+
+
+
 ## [0.1.51](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.50...v0.1.51) (2019-05-28)
 
 
