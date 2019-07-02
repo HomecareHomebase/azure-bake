@@ -76,7 +76,7 @@ Parameters
 ##Linux Properties
 Set: 
 | property | value |
-| osType | windows |
+| osType | linux |
 
 Parameters:
 | property | required | description |
