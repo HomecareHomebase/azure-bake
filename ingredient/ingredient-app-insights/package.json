@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-app-insights",
   "description": "Ingredient for deploying an instance of an Application Insights resource",
-  "version": "0.1.59",
+  "version": "0.1.61",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.59"
+    "@azbake/arm-helper": "^0.1.61"
   },
   "publishConfig": {
     "access": "public"

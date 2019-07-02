@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-storage",
   "description": "Ingredient for deploying a storage account",
-  "version": "0.1.59",
+  "version": "0.1.61",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.59",
+    "@azbake/arm-helper": "^0.1.61",
     "@azure/arm-storage": "^8.0.0",
     "@azure/storage-blob": "^10.3.0"
   },
