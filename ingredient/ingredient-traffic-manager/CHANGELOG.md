@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+**Note:** Version bump only for package @azbake/ingredient-traffic-manager
+
+
+
+
+
+## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
+
+
+### Bug Fixes
+
+* Feature/az mon unified diag settings traffic mgr ([#87](https://github.com/HomecareHomebase/azure-bake/issues/87)) ([c9ba1c5](https://github.com/HomecareHomebase/azure-bake/commit/c9ba1c5))
+
+
+
+
+
 ## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
 
 **Note:** Version bump only for package @azbake/ingredient-traffic-manager
