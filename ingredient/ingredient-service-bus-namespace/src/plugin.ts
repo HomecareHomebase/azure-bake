@@ -2,6 +2,7 @@ import { BaseIngredient, IngredientManager, IIngredient, DeploymentContext } fro
 import { ARMHelper } from "@azbake/arm-helper"
 import { ServiceBusManagementClient } from "@azure/arm-servicebus";
 import ARMTemplate from "./arm.json"
+
 export class ServiceBusNamespace extends BaseIngredient {
 
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -49,6 +50,22 @@ export class ServiceBusNamespace extends BaseIngredient {
                         throw error;
                     }
                 }
+            }
+
+            if (!params["diagnosticsEnabled"])
+                params["diagnosticsEnabled"] = {"value": "yes"}
+
+            if (params["diagnosticsEnabled"].value == "yes") {
+                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
+
+                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
+                params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
+              
+                var diagnosticsEventHubNamespaceResourceGroup: string
+
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
+
+                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
 
             await helper.DeployTemplate(this._name, ARMTemplate, armParameters, resourceGroupName)
