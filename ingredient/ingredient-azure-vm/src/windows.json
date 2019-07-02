@@ -11,7 +11,7 @@
         "adminPassword": {
             "type": "securestring",
             "metadata": {
-                "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+                "description": "Password for the Virtual Machine"
             }
         },
         "location": {
@@ -84,14 +84,7 @@
             "metadata": {
                 "description": "System Disk Size in Megabytes"
             }
-        },
-        "osType": {
-            "type": "string",
-            "defaultValue": "windows",
-            "metadata": {
-                "description": "OS Type"
-            }
-        }
+        }        
     },
     "resources": [
         {

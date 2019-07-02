@@ -99,13 +99,6 @@
             "metadata": {
                 "description": "Virtual Network NAme"
             }
-        },
-        "osType": {
-            "type": "string",
-            "defaultValue": "linux",
-            "metadata": {
-                "description": "OS Type"
-            }
         }
     },
     "variables": {
