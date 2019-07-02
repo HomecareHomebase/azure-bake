@@ -50,6 +50,7 @@ export class CoreUtils extends BaseUtility {
             return this.create_resource_name("", name, useRegionCode)
         }
     }
+    
     public async variable(key: string, def?: string): Promise<any> {
         if (this.context.Config.variables) {
 
@@ -123,12 +124,6 @@ export class CoreUtils extends BaseUtility {
 
     public async get_ingredient_source(): Promise<string> {
         return await this.context.Ingredient.properties.source.valueAsync(this.context)
-    }
-
-    public get_event_hub_namespace_name(pkgName: string, resourceGroup: string | null = null): string {        
-        const evenhHubNamespace = this.create_resource_name("ehn", pkgName, true);
-       
-        return `${evenhHubNamespace}`;
     }
 }
 

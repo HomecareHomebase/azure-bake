@@ -1,16 +1,16 @@
 {
     "version": "0.2.0",
-    "configurations": [      
+    "configurations": [
       {
         "type": "node",
         "request": "launch",
         "name": "Debug Locally",
         "program": "${workspaceFolder}/system/dist/index.js",
-        "args": ["serve","C:/temp/package.tar/package/package/bake.yaml"],
+        "args": ["serve","c:/repos/azure-bake-fork/system/package/test.yaml"],
         "envFile": "${workspaceFolder}/.env",
         "env": {
           "NODE_ENV": "development"
         }
       }
-    ]
-  }
+  ]
+}

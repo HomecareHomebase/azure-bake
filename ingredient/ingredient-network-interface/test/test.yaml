@@ -1,0 +1,20 @@
+name: func-app-test
+shortName: funcapptest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-network-interface@0.0.1"
+resourceGroup: false
+rgOverride: "test-rg"
+parallelRegions: false
+variables:
+  test1: "[networkinterfaceutility.get('sample-nic3','test-rg')]"    
+recipe:
+  nic:
+    properties:
+      type: "@azbake/ingredient-network-interface"
+      parameters:
+        networkInterfaceName: "sample-nic3"        
+        location: "centralus"
+        virtualNetworkName: "test-vnet"
+        subnetName: "default"
+        
