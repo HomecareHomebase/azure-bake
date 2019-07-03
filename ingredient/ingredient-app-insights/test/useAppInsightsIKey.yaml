@@ -1,0 +1,23 @@
+name: Creates a web app container and supplies an instrumentation key
+#shortName will be a component of the resource group name.  ie <env><shortName> --> prodappinsights
+shortName: propertywebappcontainer
+version: 0.0.2
+ingredients:
+  - "@azbake/ingredient-webapp-container@~0"
+  - "@azbake/ingredient-app-insights@~0"
+resourceGroup: true
+#rgOverride: 
+recipe:
+  mypkg-web-site:
+    properties:
+      type: "@azbake/ingredient-webapp-container"
+      source: "WHILKE-POC/jdevwusappsvcngapp"
+      tokens:
+        BASE_URL: "[coreutils.variable('svc_base_url')]"
+        PROPERTY: "some value"
+        APPINSIGHTS_INSTRUMENTATIONKEY: "[appinsights.get_instrumentation_key('property','appinsights')]"
+      parameters:
+        container_image_name: "myregistry.azurecr.io/mypkg:latest"
+        container_registry_url: "[coreutils.variable('container_registry_url')]"
+        container_registry_user: "[coreutils.variable('container_registry_user')]"
+        container_registry_password: "[coreutils.variable('container_registry_password')]"
