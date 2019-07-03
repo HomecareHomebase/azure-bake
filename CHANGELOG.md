@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.63](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.62...v0.1.63) (2019-07-03)
+
+
+### Bug Fixes
+
+* NPM Authentication Fix ([#96](https://github.com/HomecareHomebase/azure-bake/issues/96)) ([55c034f](https://github.com/HomecareHomebase/azure-bake/commit/55c034f))
+
+
+
+
+
 ## [0.1.62](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.61...v0.1.62) (2019-07-03)
 
 
