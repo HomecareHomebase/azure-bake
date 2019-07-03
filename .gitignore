@@ -9,6 +9,7 @@ system/lerna-debug\.log
 *.tgz
 
 node_modules/
+.npmrc
 lerna-debug.log
 npm-debug.log
 lib
