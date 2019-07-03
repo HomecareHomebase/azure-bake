@@ -52,19 +52,24 @@ steps:
     containerRegistry: HCHBDockerHub
 
 - task: Npm@1
-  inputs:
+  displayName: NPM Install
+  inputs:    
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
-    customRegistry: 'useNpmrc'
-    customEndpoint: 'hchb-npm-public-registry'
     verbose: true
+
+- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
+  displayName: "NPM Token Export"
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  env:
+    NPM_AUTH_TOKEN: $(Npm_Auth_Token)
 
 - task: gulp@1
   displayName: GULP List Environment
   inputs:
     gulpFile: 'gulpfile.js' 
     targets: 'listenvironment'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'        
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: gulp@1
   displayName: GULP Build and Release
