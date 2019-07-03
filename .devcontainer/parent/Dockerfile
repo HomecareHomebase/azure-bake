@@ -18,12 +18,13 @@ RUN apt-get install -y curl \
     git \
     procps \
     apt-transport-https \
-    ca-certificates \    
+    ca-certificates \
+    gnupg \    
     gnupg2 \
-    software-properties-common
+    software-properties-common    
 
 #Install KubeCTL
-RUN apt-get update && apt-get install -y apt-transport-https \
+RUN apt-get update \
       && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
       && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
       && apt-get update \
@@ -41,6 +42,13 @@ RUN add-apt-repository \
 #Install Docker
 RUN apt-get update \
    && apt-get install -y docker-ce docker-ce-cli containerd.io
+
+#Install Powershell
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+   && add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" \
+   && apt-get update \
+   && apt-get install -y powershell \
+   && pwsh
 
 # Clean up
 RUN apt-get autoremove -y \
