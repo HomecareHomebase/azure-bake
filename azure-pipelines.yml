@@ -58,8 +58,9 @@ steps:
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 
-- bash: export NPM_TOKEN=$NPM_AUTH_TOKEN && echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN}\ > .npmrc
+- bash: echo //registry.npmjs.org/:_authToken=\${NPM_AUTH_TOKEN}\ > .npmrc
   displayName: "NPM Token Export"
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
   env:
     NPM_AUTH_TOKEN: ${Npm_Auth_Token}
 
