@@ -51,6 +51,12 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    verbose: true
+
 - bash: "echo '//registry.npmjs.org/:_authToken=\"${NPM_TOKEN}\"' > .npmrc"
   displayName: "NPM Token Export"
   env:
