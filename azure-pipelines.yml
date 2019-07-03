@@ -7,8 +7,7 @@ trigger:
   branches:
     include:
     - master
-    - release/*
-    - refs/tags/*
+    - release/*    
   paths:
     include:
     - arm-helper/*
@@ -19,13 +18,13 @@ trigger:
     - package.json
     - gulpfile.js
     - build/parameters.js
+    - azure-pipelines.yml
 
 pr:
   branches:
     include:
     - master
-    - release/*
-    - refs/tags/*
+    - release/*    
   paths:
     include:
     - arm-helper/*
@@ -36,6 +35,7 @@ pr:
     - package.json
     - gulpfile.js
     - build/parameters.js
+    - azure-pipelines.yml
 
 pool:
   vmImage: 'Ubuntu-16.04'
