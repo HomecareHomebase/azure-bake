@@ -37,7 +37,7 @@ function build(done) {
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
             console.log('Running Azure DevOps Pull Request Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done);
+            gulp.series(printVersion, toolInstall, lernaBuild)(done);
         }
 
         else if (!!params.build.buildReason.match(/Manual/ig)) {
