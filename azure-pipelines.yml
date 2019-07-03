@@ -51,13 +51,10 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: '$(System.DefaultWorkingDirectory)'
-    customRegistry: 'useNpmrc'
-    customEndpoint: 'hchb-npm-public-registry'
-    verbose: true
+- bash: "echo \"//registry.npmjs.org/:_authToken=$NPM_TOKEN\" > .npmrc"
+  displayName: "NPM Token Export"
+  env:
+    NPM_TOKEN: ${Npm_Auth_Token}
 
 - task: gulp@1
   displayName: GULP List Environment
