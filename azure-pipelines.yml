@@ -51,11 +51,6 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
-- task: Npm@1
-  inputs:
-    #command: 'install' # Options: install, publish, custom
-    #workingDir: # Optional
-    #verbose: # Optional
 - bash: "echo '//registry.npmjs.org/:_authToken=\"${NPM_TOKEN}\"' > .npmrc"
   displayName: "NPM Token Export"
   env:
@@ -66,7 +61,7 @@ steps:
   inputs:
     gulpFile: 'gulpfile.js' 
     targets: 'listenvironment'
-    workingDirectory: '$(System.DefaultWorkingDirectory)'        
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: gulp@1
   displayName: GULP Build and Release
