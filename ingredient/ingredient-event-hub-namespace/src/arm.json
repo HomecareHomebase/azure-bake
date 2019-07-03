@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "eventHubNamespace": {
+    "eventHubNamespaceName": {
       "type": "String"
     },
     "location": {
@@ -45,13 +45,13 @@
     },
     "diagnosticsSettingName": {
        "type": "string",
-       "defaultValue": "setting1"
+       "defaultValue": "diagToEHN"
     },
     "diagnosticsEventHubNamespace": {
        "type": "string",
        "defaultValue": ""
     },
-    "diagnosticsEventHubResourceGroup": {
+    "diagnosticsEventHubNamespaceResourceGroup": {
        "type": "string",
        "defaultValue": ""
     },
@@ -64,7 +64,7 @@
     {
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2018-01-01-preview",
-      "name": "[parameters('eventHubNamespace')]",
+      "name": "[parameters('eventHubNamespaceName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "[parameters('skuName')]",
@@ -84,12 +84,12 @@
             "type": "providers/diagnosticSettings",
             "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
             "dependsOn": [
-              "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespace'))]"
+              "[resourceId('Microsoft.EventHub/namespaces', parameters('eventHubNamespaceName'))]"
             ],
             "apiVersion": "2017-05-01-preview",
             "properties": {
               "name": "[parameters('diagnosticsSettingName')]",
-              "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+              "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubNamespaceResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
               "logs": [
                 {
                   "category": "ArchiveLogs",

@@ -1,7 +1,7 @@
 {
 	"name": "@azbake/ingredient-event-hub",
 	"description": "Ingredient for deploying an instance of Event Hub resource",
-	"version": "0.1.59",
+	"version": "0.1.61",
 	"main": "dist/index.js",
 	"typings": "src/index.ts",
 	"author": "HCHB",
@@ -24,8 +24,8 @@
 		"@types/node": "^10.12.18"
 	},
 	"dependencies": {
-		"@azbake/arm-helper": "^0.1.59",
-		"@azure/arm-eventhub": "3.1.0"
+		"@azbake/arm-helper": "^0.1.61",
+		"@azure/arm-eventhub": "3.2.0"
 	},
 	"publishConfig": {
 		"access": "public"
