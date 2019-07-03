@@ -37,7 +37,7 @@ recipe:
       type: "@azbake/ingredient-storage"
       source: ""
       parameters:
-        storageAccountName: StorageAccount
+        storageAccountName: "[storage.create_resource_name()]"
 ```
 
 
@@ -79,7 +79,7 @@ Gets the name create for the traffic manager profile deployed.
 ```yaml
 ...
 parameters:
-    storageName: "[storage.create_resource_name()]"
+    storageAccountName: "[storage.create_resource_name()]"
 ...
 ```
 
