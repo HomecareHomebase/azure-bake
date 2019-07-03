@@ -42,7 +42,7 @@ function build(done) {
 
         else if (!!params.build.buildReason.match(/Manual/ig)) {
             console.log('Running Azure DevOps Manual Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done)
+            gulp.series(printVersion, toolInstall, lernaBuild)(done)
         }
 
         else {
