@@ -166,11 +166,12 @@ function runCmd(command, done) {
     });
     child.on('error', function (errors) {
         console.log('Comand Errors: ' + errors);
-        done(errors);
+        throw(errors);
     });
     child.on('close', function (code) {
         console.log('closing code: ' + code);
-        done(null, code);
+        if (code != 0) { throw('Build failed with errors!'); }
+        else { done(null, code); }
     });
 
 }
@@ -229,20 +230,7 @@ function tagAndPush(done) {
     var result = imageTags.forEach( function (tag) {
         console.log(`Tagging docker image: bake:release with ${tag}`);
         let dockerScript = `docker image tag bake:release ${tag} && docker push ${tag}`;                
-        var child = exec(dockerScript);
-        child.stdout.on('data', function (data) {
-            console.log(`stdout: ${data}`);
-        });
-        child.stderr.on('data', function (data) {
-            console.log(`stderr: ${data}`);
-        });
-        child.on('error', function (errors) {
-            console.log(`Comand Errors: ${errors}`);                        
-            throw errors;
-        });
-        child.on('close', function (code) {
-            console.log(`Exit Code: ${code}`);            
-        });
+        runCmd(dockerScript, done);
     });
     done(null, result);
 }
