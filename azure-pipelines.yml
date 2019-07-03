@@ -53,14 +53,15 @@ steps:
 
 - task: Npm@1
   inputs:
+    displayName: NPM Install
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 
-- bash: "echo '//registry.npmjs.org/:_authToken=\"${NPM_TOKEN}\"' > .npmrc"
+- bash: export NPM_TOKEN=$NPM_AUTH_TOKEN && echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN}\ > .npmrc
   displayName: "NPM Token Export"
   env:
-    NPM_TOKEN: ${Npm_Auth_Token}
+    NPM_AUTH_TOKEN: ${Npm_Auth_Token}
 
 - task: gulp@1
   displayName: GULP List Environment
