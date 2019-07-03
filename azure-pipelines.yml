@@ -56,7 +56,7 @@ steps:
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
     customRegistry: 'useNpmrc'
-    customEndpoint: '$(NPM_SERVICE_CONNECTION)'
+    customEndpoint: 'hchb-npm-public-registry'
     verbose: true
 
 - task: gulp@1
