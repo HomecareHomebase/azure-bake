@@ -1,0 +1,27 @@
+name: Deploys multiple Application Insights resources
+#shortName will be a component of the resource group name.  ie <env><shortName> --> prodappinsights
+shortName: appinsights
+version: 0.0.2
+ingredients:
+  - "@azbake/ingredient-app-insights@~0"
+resourceGroup: true
+#rgOverride: 
+recipe:
+  appinsights-property:
+    properties:
+      type: "@azbake/ingredient-app-insights"
+      source: ""
+      parameters:
+        #App Insights resource name
+        appInsightsName: "[appinsights.get_resource_name('property')]"
+        #App Insights region.
+        appInsightsLocation: "East US"
+  appinsights-payroll:
+    properties:
+      type: "@azbake/ingredient-app-insights"
+      source: ""
+      parameters:
+        #App Insights resource name
+        appInsightsName: "[appinsights.get_resource_name('payroll')]"
+        #App Insights region.
+        appInsightsLocation: "East US"

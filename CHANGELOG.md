@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+
+### Bug Fixes
+
+* Feature/alert ingredient ([#52](https://github.com/HomecareHomebase/azure-bake/issues/52)) ([f03f96a](https://github.com/HomecareHomebase/azure-bake/commit/f03f96a))
+
+
+
+
+
+## [0.1.60](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.59...v0.1.60) (2019-07-02)
+
+
+### Bug Fixes
+
+* Added Network interface helper functions ([#90](https://github.com/HomecareHomebase/azure-bake/issues/90)) ([1e6277a](https://github.com/HomecareHomebase/azure-bake/commit/1e6277a))
+* Fixed issue with redeploying geo-redundant service bus instances ([#92](https://github.com/HomecareHomebase/azure-bake/issues/92)) ([9913027](https://github.com/HomecareHomebase/azure-bake/commit/9913027))
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+
+### Bug Fixes
+
+* quick touch to fix deployment ([90d2fec](https://github.com/HomecareHomebase/azure-bake/commit/90d2fec))
+
+
+
+
+
 ## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
 
 

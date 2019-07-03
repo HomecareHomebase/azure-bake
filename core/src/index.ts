@@ -8,7 +8,6 @@ import {BaseIngredient} from './base-ingredient'
 import {BaseUtility} from './base-utility'
 import {TagGenerator} from './tag-generator'
 
-
 export {BakeEval, BakeVariable, BaseUtility, DeploymentContext,Logger,
     IBakeAuthentication, IBakeConfig, IBakeEnvironment, IBakePackage, IBakeRegion, IIngredient, IIngredientProperties,
     IngredientManager, BaseIngredient, TagGenerator
