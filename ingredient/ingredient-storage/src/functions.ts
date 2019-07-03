@@ -47,10 +47,9 @@ export class StorageUtils extends BaseUtility {
         let key: string = ""
 
         key = await this.get_primary_key(name, rg);
-        
-        let accountName: string = this.create_resource_name();
+    
 
-        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${accountName};AccountKey=${key};`        
+        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${name};AccountKey=${key};`        
         
         return connectionString;
     }
@@ -59,10 +58,8 @@ export class StorageUtils extends BaseUtility {
         let key: string = ""
 
         key = await this.get_secondary_key(name, rg);
-        
-        let accountName: string = this.create_resource_name();
 
-        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${accountName};AccountKey=${key};`        
+        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${name};AccountKey=${key};`        
         
         return connectionString;        
     }
