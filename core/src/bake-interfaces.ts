@@ -26,6 +26,7 @@ export interface IBakeEnvironment {
 export interface IIngredientProperties {
     type: string,
     source: BakeVariable,
+    condition?: BakeVariable,
     parameters: Map<string,BakeVariable>,
     tokens: Map<string,BakeVariable>
 }
