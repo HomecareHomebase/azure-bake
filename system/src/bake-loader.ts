@@ -211,6 +211,9 @@ export class BakePackage {
             ingredient.properties.source = new BakeVariable( source || "" )
             ingredient.dependsOn = ingredient.dependsOn || []
             ingredient.properties = ingredient.properties || <IIngredientProperties>{}
+
+            let condition: any = ingredient.properties.condition
+            ingredient.properties.condition =  condition ? new BakeVariable(condition) : undefined
             ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})
             ingredient.properties.tokens = this.objToVariableMap(ingredient.properties.tokens || new Map<string, BakeVariable>())
         })
