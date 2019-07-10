@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
+
+
+### Bug Fixes
+
+* Fix/app insights smart detection ([#99](https://github.com/HomecareHomebase/azure-bake/issues/99)) ([f07a616](https://github.com/HomecareHomebase/azure-bake/commit/f07a616))
+
+
+
+
+
 ## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
 
 **Note:** Version bump only for package @azbake/ingredient-app-insights

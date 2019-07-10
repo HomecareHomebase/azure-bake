@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-metric-alert",
   "description": "Ingredient for deploying a metric alert",
-  "version": "0.1.64",
+  "version": "0.1.65",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
