@@ -91,7 +91,7 @@ export class CoreUtils extends BaseUtility {
                 }
             }
 
-            return new BakeVariable(def || "");
+            return "";
             
         } else {
             return ""
