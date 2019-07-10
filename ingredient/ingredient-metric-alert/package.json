@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-metric-alert",
   "description": "Ingredient for deploying a metric alert",
-  "version": "0.1.63",
+  "version": "0.1.64",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,11 +19,11 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.63",
+    "@azbake/core": "^0.1.64",
     "@azure/ms-rest-nodeauth": "0.9.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.63"
+    "@azbake/arm-helper": "^0.1.64"
   }
 }
