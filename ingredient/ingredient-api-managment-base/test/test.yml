@@ -16,8 +16,7 @@ recipe:
         publisherName: John Smith
         virtualNetworkName: testvnet
         virtualNetworkResourceGroupName: test
-        SubnetName: testsubnet
-        Environment: DEV
+        SubnetName: testsubnet        
         properties:
           foo:
             key: bar
@@ -26,7 +25,10 @@ recipe:
               - test
               - dev
         logger:
-          name: testai
-          resourceGroup: test
-          type: applicationInsights
-          clean: true
+          testai:            
+            resourceGroup: test
+            type: applicationInsights
+            clean: true
+          testai2:            
+            resourceGroup: test
+            type: applicationInsights        

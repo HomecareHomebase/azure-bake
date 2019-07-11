@@ -83,22 +83,6 @@
           "description": "Enter the application location."
         }
       },
-      "environment": {
-        "type": "string",
-        "defaultValue": "Development",
-        "allowedValues": [
-          "SBX",
-          "DEV",
-          "QA",
-          "STG",
-          "TRN",
-          "PLT",
-          "PRD"
-        ],
-        "metadata": {
-          "description": "The name of the environment"
-        }
-      },
       "locationCode": {
         "type": "string",
         "metadata": {
@@ -154,14 +138,7 @@
     },
     "variables": {
       "vnetID": "[resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-      "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnetName'))]",
-      "appInsightsName": "[toUpper(concat('AI','_',parameters('apiManagementServiceName'),'_',parameters('locationCode'),'_',parameters('environment')))]",
-      "priceArray": [
-        "Basic",
-        "Application Insights Enterprise"
-      ],
-      "pricePlan": "[take(variables('priceArray'),int(parameters('priceCode')))]",
-      "billingplan": "[concat(variables('appInsightsName'),'/', variables('pricePlan')[0])]"
+      "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnetName'))]"     
     },
     "resources": [
       {
