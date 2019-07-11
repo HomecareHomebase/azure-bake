@@ -42,4 +42,25 @@ export class StorageUtils extends BaseUtility {
         }
         return key
     }
+
+    public async get_primary_connectionstring(name: string, rg: string | null = null) : Promise<string> {
+        let key: string = ""
+
+        key = await this.get_primary_key(name, rg);
+    
+
+        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${name};AccountKey=${key};`        
+        
+        return connectionString;
+    }
+
+    public async get_secondary_connectionstring(name: string, rg: string | null = null) : Promise<string> {
+        let key: string = ""
+
+        key = await this.get_secondary_key(name, rg);
+
+        let connectionString = `DefaultEndpointsProtocol=https;AccountName=${name};AccountKey=${key};`        
+        
+        return connectionString;        
+    }
 }

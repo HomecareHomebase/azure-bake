@@ -2,18 +2,15 @@ name: func-app-test
 shortName: funcapptest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-network-interface@0.0.1"
+  - "@azbake/ingredient-storage@~0"
 resourceGroup: false
 rgOverride: "test-rg"
 parallelRegions: false
 variables:  
-  test1: "[networkinterfaceutility.get('sample-nic3')]"    
 recipe:
-  nic:
+  test-storage:
     properties:
-      type: "@azbake/ingredient-network-interface"
+      type: "@azbake/ingredient-storage"
+      condition: "[!coreutils.current_region_primary()]"
       parameters:
-        networkInterfaceName: "sample-nic5"        
-        location: "centralus"
-        virtualNetworkName: "test-vnet"
-        subnetName: "default"
+        storageAccountName: "[storage.create_resource_name()]"

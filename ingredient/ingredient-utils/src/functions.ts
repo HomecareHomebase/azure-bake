@@ -1,4 +1,4 @@
-import {BakeVariable} from '@azbake/core'
+import {BakeVariable, IBakeRegion} from '@azbake/core'
 import { DeploymentContext } from '@azbake/core';
 import { BaseUtility} from '@azbake/core'
 
@@ -41,13 +41,39 @@ export class CoreUtils extends BaseUtility {
         // if current region code matches the first in the array, return true
         return regions[0].code == this.current_region().code;
     }
-    
-    public async resource_group(name: string | null = null, useRegionCode: boolean = true): Promise<string> {
+
+    public primary_region(): IBakeRegion | null {
+
+        const regions = this.context.Environment.regions;
+
+        if (regions.length < 1)
+            return null
+        
+        return regions[0]
+    }
+
+    //if no secondary region defined, return primary as secondary
+    public secondary_region(): IBakeRegion | null {
+
+        const regions = this.context.Environment.regions;
+
+        if (regions.length < 2)
+            return this.primary_region();
+        
+        return regions[1]
+    }
+     
+    public async resource_group(name: string | null = null, useRegionCode: boolean = true, region : IBakeRegion | null = null): Promise<string> {
         let override = this.context.Config.rgOverride
         if (override) {
             return await override.valueAsync(this.context)
         } else {
-            return this.create_resource_name("", name, useRegionCode)
+            if (region) {
+                return this.create_region_resource_name("", name, region)
+            }
+            else {
+                return this.create_resource_name("", name, useRegionCode)
+            }
         }
     }
     
@@ -65,16 +91,31 @@ export class CoreUtils extends BaseUtility {
                 }
             }
 
-            return new BakeVariable(def || "");
+            return "";
             
         } else {
             return ""
         }
     }
+
+    public create_region_resource_name(resType: string, name: string | null = null, region: IBakeRegion | null, suffix: string = ""): string {
+        let rgn = ""
+        if (region)
+            rgn = region.code
+
+        return this._create_resource_name(resType, rgn, suffix)
+    }
     
     public create_resource_name(resType: string, name: string | null = null, useRegionCode: boolean = true, suffix: string = ""): string {
-        let env = this.context.Environment.environmentCode
         let rgn = this.context.Region.code
+        if (!useRegionCode)
+            rgn = ""
+
+        return this._create_resource_name(resType, rgn, suffix)
+    }
+
+    private _create_resource_name(resType: string, name: string | null = null, rgn: string, suffix: string = ""): string {
+        let env = this.context.Environment.environmentCode
         let pkg = this.context.Config.shortName
     
         //NOT to be used for VM names (15 max chars, use :TODO:)
@@ -84,10 +125,7 @@ export class CoreUtils extends BaseUtility {
         //resType = 3
         //suffix: 3
         //pkg = 10
-    
-        if (!useRegionCode)
-            rgn = ""
-    
+        
         pkg = name || pkg
     
         return (env + rgn + resType + pkg + suffix).toLocaleLowerCase()
