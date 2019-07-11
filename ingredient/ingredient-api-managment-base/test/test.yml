@@ -1,0 +1,32 @@
+name: apim-api-test
+shortName: apitest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-api-management-base@0~"
+resourceGroup: true
+rgOverride: test
+parallelRegions: false
+recipe:
+  apim-test:
+    properties:
+      type: "@azbake/ingredient-api-management-base"
+      parameters:
+        apiManagementServiceName: charlietestapim
+        publisherEmail: john.smith@contoso.com
+        publisherName: John Smith
+        virtualNetworkName: testvnet
+        virtualNetworkResourceGroupName: test
+        SubnetName: testsubnet
+        Environment: DEV
+        properties:
+          foo:
+            key: bar
+            isSecret: true
+            tags:
+              - test
+              - dev
+        logger:
+          name: testai
+          resourceGroup: test
+          type: applicationInsights
+          clean: true
