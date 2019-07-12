@@ -216,6 +216,7 @@ export class BakePackage {
             ingredient.properties.condition =  condition ? new BakeVariable(condition) : undefined
             ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})
             ingredient.properties.tokens = this.objToVariableMap(ingredient.properties.tokens || new Map<string, BakeVariable>())
+            ingredient.properties.alerts = this.objToVariableMap(ingredient.properties.alerts || new Map<string, BakeVariable>())
         })
 
         this._validatePackage(config)

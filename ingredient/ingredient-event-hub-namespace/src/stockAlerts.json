@@ -1,0 +1,44 @@
+{
+    "ServerErrors": {
+        "alertDescription": "my server errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ServerErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "UserErrors": {
+        "alertDescription": "my user errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "UserErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    }
+}

@@ -1,0 +1,165 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "alertName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the alert"
+      }
+    },
+    "alertDescription": {
+      "type": "string",
+      "defaultValue": "This is a metric alert",
+      "metadata": {
+        "description": "Description of alert"
+      }
+    },
+    "alertSeverity": {
+      "type": "int",
+      "defaultValue": 3,
+      "allowedValues": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "metadata": {
+        "description": "Severity of alert {0,1,2,3,4}"
+      }
+    },
+    "isEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Specifies whether the alert is enabled"
+      }
+    },
+    "source-name": {
+      "type": "string"
+    },
+    "source-rg": {
+      "type": "string"
+    },
+    "source-type": {
+      "type": "string"
+    },
+    "metricName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the metric used in the comparison to activate the alert."
+      }
+    },
+    "operator": {
+      "type": "string",
+      "allowedValues": [
+        "Equals",
+        "NotEquals",
+        "GreaterThan",
+        "GreaterThanOrEqual",
+        "LessThan",
+        "LessThanOrEqual",
+        "GreaterOrLessThan"
+      ],
+      "metadata": {
+        "description": "Operator comparing the current value with the threshold.  GreaterOrLessThan, GreaterThan, and LessThan are applicable to dynamic.  All applicable to static except GreaterOrLessThan."
+      }
+    },
+    "threshold": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The threshold value at which the alert is activated."
+      }
+    },
+    "timeAggregation": {
+      "type": "string",
+      "defaultValue": "Average",
+      "allowedValues": [
+        "Average",
+        "Minimum",
+        "Maximum",
+        "Total"
+      ],
+      "metadata": {
+        "description": "How the data that is collected should be combined over time."
+      }
+    },
+    "windowSize": {
+      "type": "string",
+      "defaultValue": "PT5M",
+      "metadata": {
+        "description": "Period of time used to monitor alert activity based on the threshold. Must be between five minutes and one day. ISO 8601 duration format."
+      }
+    },
+    "evaluationFrequency": {
+      "type": "string",
+      "defaultValue": "PT5M",
+      "metadata": {
+        "description": "How often the metric alert is evaluated represented in ISO 8601 duration format"
+      }
+    },
+    "actionGroupName": {
+      "type": "string"
+    },
+    "actionGroupResourceGroup": {
+      "type": "string"      
+    },
+    "alertType": {
+      "type": "string",
+      "allowedValues": ["Static","Dynamic"]
+    },
+    "dynamicAlertProperties": {
+      "type": "object",
+      "defaultValue": {
+        "alertSensitivity": "Low",
+        "failingPeriods": {
+          "numberOfEvaluationPeriods": "4",
+          "minFailingPeriodsToAlert": "3"
+        }
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('alertName')]",
+      "type": "Microsoft.Insights/metricAlerts",
+      "location": "global",
+      "apiVersion": "2018-03-01",
+      "tags": {},
+      "properties": {
+        "description": "[parameters('alertDescription')]",
+        "severity": "[parameters('alertSeverity')]",
+        "enabled": "[parameters('isEnabled')]",
+        "scopes": [ "[resourceId(parameters('source-rg'), parameters('source-type'), parameters('source-name'))]" ],
+        "evaluationFrequency": "[parameters('evaluationFrequency')]",
+        "windowSize": "[parameters('windowSize')]",
+        "criteria": {
+          "odata.type": "[concat('Microsoft.Azure.Monitor.', if(equals(parameters('alertType'),'Static'),'SingleResourceMultipleMetricCriteria','MultipleResourceMultipleMetricCriteria'))]",
+          "allOf": [
+            {
+              "criterionType": "[if(equals(parameters('alertType'),'Static'),'StaticThresholdCriterion','DynamicThresholdCriterion')]",
+              "name": "1st criterion",
+              "metricName": "[parameters('metricName')]",
+              "dimensions": [],
+              "operator": "[parameters('operator')]",
+              "threshold": "[if(equals(parameters('alertType'),'Static'),parameters('threshold'),'')]",
+              "alertSensitivity": "[if(equals(parameters('alertType'),'Dynamic'),parameters('dynamicAlertProperties').alertSensitivity,'')]",
+              "failingPeriods": "[if(equals(parameters('alertType'),'Dynamic'),parameters('dynamicAlertProperties').failingPeriods,json('null'))]",
+              "timeAggregation": "[parameters('timeAggregation')]"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "actionGroupId": "[resourceId(parameters('actionGroupResourceGroup'), 'Microsoft.Insights/actiongroups', parameters('actionGroupName'))]"
+          }
+        ]
+      }
+    }
+  ]
+}

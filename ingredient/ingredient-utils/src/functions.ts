@@ -103,7 +103,7 @@ export class CoreUtils extends BaseUtility {
         if (region)
             rgn = region.code
 
-        return this._create_resource_name(resType, rgn, suffix)
+        return this._create_resource_name(resType, name, rgn, suffix)
     }
     
     public create_resource_name(resType: string, name: string | null = null, useRegionCode: boolean = true, suffix: string = ""): string {
@@ -111,7 +111,7 @@ export class CoreUtils extends BaseUtility {
         if (!useRegionCode)
             rgn = ""
 
-        return this._create_resource_name(resType, rgn, suffix)
+        return this._create_resource_name(resType, name, rgn, suffix)
     }
 
     private _create_resource_name(resType: string, name: string | null = null, rgn: string, suffix: string = ""): string {

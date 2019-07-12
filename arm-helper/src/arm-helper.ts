@@ -1,8 +1,9 @@
-import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator } from '@azbake/core';
+import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator, IngredientManager } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { stringify } from 'querystring';
 import { AnyCnameRecord } from 'dns';
+//import ARMTemplate from "./alert.json"
 
 export class ARMHelper {
 
@@ -75,6 +76,31 @@ export class ARMHelper {
             logger.error('deployment failed: ' + error);
             throw error;
         }
+    }
+
+    public async DeployAlerts(deploymentName: string, alertParams: any, resourceGroup: string, metricTarget: string): Promise<void> {
+        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
+        var json = require('./alert.json');
+
+        //for (var alert in alertParams)
+        //{
+            let params = alertParams; //[alert];
+            let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+
+            params["source-rg"] = { "value": resourceGroup };
+            params["source-name"] = { "value": metricTarget };
+
+            const timeAggregation = params["timeAggregation"].value;
+            const metricName = params["metricName"].value;
+            const alertType = params["alertType"].value;
+            const tempName = '-' + metricTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
+            const alertName = util.create_resource_name("alert", tempName, true);            
+            logger.log(alertName);
+            params["alertName"] = { "value": alertName };
+
+            await this.DeployTemplate(deploymentName, json, params, resourceGroup);
+        //}
+
     }
 
     public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
