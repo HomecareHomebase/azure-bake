@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { BaseIngredient, BakeVariable } from "@azbake/core"
+import { BaseIngredient, BakeVariable, IngredientManager } from "@azbake/core"
 import { promisify } from 'util';
 import { exec as exec_from_child_process } from 'child_process';
 const replace = require('replace-in-file');
@@ -9,6 +9,13 @@ const exec = promisify(exec_from_child_process);
 export class KubernetesPlugin extends BaseIngredient {
 
     public async Execute(): Promise<void> {
+
+        //k8s only executes against the primary/first region.. ignore all other regions
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+        if (!util.current_region_primary()) {
+            return
+        }
+
         const kubeconfigFilename = Math.random().toString(36).substring(7) + '.yaml'
         try {
             let k8sYamlPath = await this._ingredient.properties.source.valueAsync(this._ctx);

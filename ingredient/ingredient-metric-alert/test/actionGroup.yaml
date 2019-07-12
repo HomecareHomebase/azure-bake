@@ -5,7 +5,6 @@ ingredients:
   - "@azbake/ingredient-arm@~0"
 resourceGroup: true
 parallelRegions: true
-rgOverride: whilke-poc
 recipe:
   actiongroup-deploy:
     properties:
