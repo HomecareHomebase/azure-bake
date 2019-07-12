@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.66](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.65...v0.1.66) (2019-07-12)
+
+
+### Bug Fixes
+
+* Fix/coreutils.create resource name ([#104](https://github.com/HomecareHomebase/azure-bake/issues/104)) ([c19542f](https://github.com/HomecareHomebase/azure-bake/commit/c19542f))
+
+
+
+
+
 ## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
 
 **Note:** Version bump only for package @azbake/ingredient-utils
