@@ -27,13 +27,19 @@ recipe:
         #Disabling diagnostics
         diagnosticsEnabled: "no"
       alerts:
+        # - ServerErrors:            
+        #     alertDescription: "my server errors override"
+        #     alertSeverity: 3
         ServerErrors:
           alertDescription: "my server errors override"
-          alertSeverity: "3"
+          alertSeverity: 3
           #dynamicAlertProperties:
+          #    alertSensitivity: "Low"
+        # - UserErrors:
+        #     alertDescription: "my user errors override"
+        #     alertSeverity: 2
+          # dynamicAlertProperties:
           #    alertSensitivity: "Low"
         UserErrors:
           alertDescription: "my user errors override"
-          alertSeverity: "2"
-          #dynamicAlertProperties:
-          #    alertSensitivity: "Low"
+          alertSeverity: 2

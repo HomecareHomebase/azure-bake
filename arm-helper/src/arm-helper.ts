@@ -78,29 +78,49 @@ export class ARMHelper {
         }
     }
 
-    public async DeployAlerts(deploymentName: string, alertParams: any, resourceGroup: string, metricTarget: string): Promise<void> {
+    public async DeployAlerts(deploymentName: string, resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
         var json = require('./alert.json');
 
-        //for (var alert in alertParams)
-        //{
-            let params = alertParams; //[alert];
-            let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+        let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);
+        let stockAlertsMap = this.objToVariableMap(stockAlerts);
+        let stockAlertsParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertsMap);
 
-            params["source-rg"] = { "value": resourceGroup };
-            params["source-name"] = { "value": metricTarget };
+        for (let stockAlert in stockAlerts) {
+            let stockAlertMap = this.objToVariableMap(stockAlerts[stockAlert]);
 
-            const timeAggregation = params["timeAggregation"].value;
-            const metricName = params["metricName"].value;
-            const alertType = params["alertType"].value;
-            const tempName = '-' + metricTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
-            const alertName = util.create_resource_name("alert", tempName, true);            
+
+            let i: any  | undefined
+            i = alertsOverrides.get(stockAlert)
+
+            if (i !== undefined) {
+                var b = await i.valueAsync(this._ctx) 
+            }
+
+            var c = this.objToVariableMap(b);
+            var d = await this.BakeParamsToARMParamsAsync(deploymentName, c);
+
+            let stockAlertParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertMap);
+            let alertOverrideParams = alertOverridesParams[stockAlert];
+
+            //let alertARM = await this.BakeParamsToARMParamsAsync(deploymentName, alertOverrideParams);
+
+            let mergedAlertParams = this.mergeDeep(stockAlertParams, d)
+
+            mergedAlertParams["source-rg"] = { "value": resourceGroup };
+            mergedAlertParams["source-name"] = { "value": alertTarget };
+
+            let timeAggregation = mergedAlertParams["timeAggregation"].value;
+            let metricName = mergedAlertParams["metricName"].value;
+            let alertType = mergedAlertParams["alertType"].value;
+            let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
+            let alertName = util.create_resource_name("alert", tempName, true);            
             logger.log(alertName);
-            params["alertName"] = { "value": alertName };
+            mergedAlertParams["alertName"] = { "value": alertName };
 
-            await this.DeployTemplate(deploymentName, json, params, resourceGroup);
-        //}
-
+            await this.DeployTemplate(deploymentName, json, mergedAlertParams, resourceGroup);
+        }
     }
 
     public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
@@ -149,5 +169,42 @@ export class ARMHelper {
 
         template.resources = resources;
         return template;
+    }
+
+    private objToVariableMap(obj: any) {
+        let strMap = new Map<string,BakeVariable>();
+
+        //support variables being empty, or not defined in the YAML.
+        if (obj == null || undefined)
+        {
+            return strMap
+        }
+
+        for (let k of Object.keys(obj)) {
+            strMap.set(k, new BakeVariable(obj[k]));
+        }
+        return strMap;
+    }
+
+    private isObject(item:any) {
+        return (item && typeof item === 'object' && !Array.isArray(item));
+    }
+  
+    private mergeDeep(target:any, ...sources:any): any {
+        if (!sources.length) return target;
+        const source = sources.shift();
+    
+        if (this.isObject(target) && this.isObject(source)) {
+            for (const key in source) {
+                if (this.isObject(source[key])) {
+                    if (!target[key]) Object.assign(target, { [key]: {} });
+                    this.mergeDeep(target[key], source[key]);
+                } else {
+                    Object.assign(target, { [key]: source[key] });
+                }
+            }
+        }
+  
+        return this.mergeDeep(target, ...sources);
     }
 }
