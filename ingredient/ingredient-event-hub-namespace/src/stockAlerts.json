@@ -40,5 +40,41 @@
                 "minFailingPeriodsToAlert": "3"
             }
         }         
+    },
+    "ThrottledRequests": {
+        "alertDescription": "my throttled errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ThrottledRequests",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "ActiveConnections": {
+        "alertDescription": "static connections",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ActiveConnections",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "9000"
     }
 }

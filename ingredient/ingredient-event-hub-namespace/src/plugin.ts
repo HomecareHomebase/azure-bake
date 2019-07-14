@@ -12,19 +12,8 @@ export class EventHubNamespacePlugin extends BaseIngredient {
             this._logger.log('Event Hub Namespace Plugin Logging: ')
 
             const helper = new ARMHelper(this._ctx);
-                    
-            //var stockAlertsMap = this.objToVariableMap(stockAlerts)
-            //var stockAlertsMap = this.objToVariableMap(stockAlerts.ServerErrors)
-            //let mergedAlerts = new Map([...stockAlertsMap, ...this._ingredient.properties.alerts]);
-            
+                                
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            //let alertParams = await helper.BakeParamsToARMParamsAsync(this._name, mergedAlerts)
-            //let stockAlertParams = await helper.BakeParamsToARMParamsAsync(this._name, stockAlertsMap)
-            //let overriddenAlertParams = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.alerts)
-
-            //let mergedAlertParams = {...stockAlertParams, ...overriddenAlertParams};
-            //let mergedAlertParams = {...overriddenAlertParams, ...stockAlertParams};
-            //let mergedAlertParams = this.mergeDeep(stockAlertParams, overriddenAlertParams)
 
             if (!params["diagnosticsEnabled"])
                 params["diagnosticsEnabled"] = {"value": "yes"}

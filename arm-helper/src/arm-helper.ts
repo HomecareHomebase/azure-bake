@@ -89,37 +89,34 @@ export class ARMHelper {
 
         for (let stockAlert in stockAlerts) {
             let stockAlertMap = this.objToVariableMap(stockAlerts[stockAlert]);
+            let stockAlertParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertMap);
+            let alertOverrideParams: any  | undefined
+            alertOverrideParams = alertsOverrides.get(stockAlert)
+            
+            let mergedAlertParamsARM: any, alertOverrideParamsARM: any;
 
+            if (alertOverrideParams !== undefined) {
+                let alertOverrideParamsMap = this.objToVariableMap(await alertOverrideParams.valueAsync(this._ctx))
+                alertOverrideParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, alertOverrideParamsMap)
 
-            let i: any  | undefined
-            i = alertsOverrides.get(stockAlert)
-
-            if (i !== undefined) {
-                var b = await i.valueAsync(this._ctx) 
+                mergedAlertParamsARM = this.mergeDeep(stockAlertParamsARM, alertOverrideParamsARM)
+            }
+            else {
+                mergedAlertParamsARM = stockAlertParamsARM
             }
 
-            var c = this.objToVariableMap(b);
-            var d = await this.BakeParamsToARMParamsAsync(deploymentName, c);
+            mergedAlertParamsARM["source-rg"] = { "value": resourceGroup };
+            mergedAlertParamsARM["source-name"] = { "value": alertTarget };
 
-            let stockAlertParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertMap);
-            let alertOverrideParams = alertOverridesParams[stockAlert];
-
-            //let alertARM = await this.BakeParamsToARMParamsAsync(deploymentName, alertOverrideParams);
-
-            let mergedAlertParams = this.mergeDeep(stockAlertParams, d)
-
-            mergedAlertParams["source-rg"] = { "value": resourceGroup };
-            mergedAlertParams["source-name"] = { "value": alertTarget };
-
-            let timeAggregation = mergedAlertParams["timeAggregation"].value;
-            let metricName = mergedAlertParams["metricName"].value;
-            let alertType = mergedAlertParams["alertType"].value;
+            let timeAggregation = mergedAlertParamsARM["timeAggregation"].value;
+            let metricName = mergedAlertParamsARM["metricName"].value;
+            let alertType = mergedAlertParamsARM["alertType"].value;
             let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
             let alertName = util.create_resource_name("alert", tempName, true);            
             logger.log(alertName);
-            mergedAlertParams["alertName"] = { "value": alertName };
+            mergedAlertParamsARM["alertName"] = { "value": alertName };
 
-            await this.DeployTemplate(deploymentName, json, mergedAlertParams, resourceGroup);
+            await this.DeployTemplate(deploymentName, json, mergedAlertParamsARM, resourceGroup);
         }
     }
 
