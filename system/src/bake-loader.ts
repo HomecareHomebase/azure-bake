@@ -57,7 +57,7 @@ export class BakePackage {
             if (file && fs.existsSync(file)) {
                 let content = fs.readFileSync(file, 'utf8')
                 let obj  =YAML.safeLoad(content)
-                this._env.variables = this.objToVariableMap( obj || [] )
+                this._env.variables = objToVariableMap( obj || [] )
             }
            
         } catch (e) {
@@ -83,22 +83,6 @@ export class BakePackage {
             strMap.set(k, obj[k]);
         }
         return strMap;
-    }
-
-    private objToVariableMap(obj: any) {
-        // let strMap = new Map<string,BakeVariable>();
-
-        // //support variables being empty, or not defined in the YAML.
-        // if (obj == null || undefined)
-        // {
-        //     return strMap
-        // }
-
-        // for (let k of Object.keys(obj)) {
-        //     strMap.set(k, new BakeVariable(obj[k]));
-        // }
-        // return strMap;
-        return objToVariableMap(obj)
     }
 
     private _loadPackage(source: string){
@@ -188,7 +172,7 @@ export class BakePackage {
         logger.log('Ingredients loaded')
         
         //start with config vars based on env based vars
-        let vars = this.objToVariableMap(config.variables)
+        let vars = objToVariableMap(config.variables)
 
         //merge config vars into the env vars (overwriting as needed)
         config.variables = this._env.variables || new Map<string,BakeVariable>()
@@ -215,9 +199,9 @@ export class BakePackage {
 
             let condition: any = ingredient.properties.condition
             ingredient.properties.condition =  condition ? new BakeVariable(condition) : undefined
-            ingredient.properties.parameters = this.objToVariableMap(ingredient.properties.parameters || {})
-            ingredient.properties.tokens = this.objToVariableMap(ingredient.properties.tokens || new Map<string, BakeVariable>())
-            ingredient.properties.alerts = this.objToVariableMap(ingredient.properties.alerts || new Map<string, BakeVariable>())
+            ingredient.properties.parameters = objToVariableMap(ingredient.properties.parameters || {})
+            ingredient.properties.tokens = objToVariableMap(ingredient.properties.tokens || new Map<string, BakeVariable>())
+            ingredient.properties.alerts = objToVariableMap(ingredient.properties.alerts || new Map<string, BakeVariable>())
         })
 
         this._validatePackage(config)
