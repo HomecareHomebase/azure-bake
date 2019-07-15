@@ -7,10 +7,12 @@ resourceGroup: false
 rgOverride: "test-rg"
 parallelRegions: false
 variables:  
+  test1: "10"
+  test_var: "[coreutils.toNumber(await coreutils.variable('test1'))]"
 recipe:
   test-storage:
     properties:
       type: "@azbake/ingredient-storage"
-      condition: "[!coreutils.current_region_primary()]"
+      condition: "[coreutils.variable('test_var')]"
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
