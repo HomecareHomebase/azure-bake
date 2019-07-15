@@ -3,7 +3,7 @@ import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { stringify } from 'querystring';
 import { AnyCnameRecord } from 'dns';
-//import ARMTemplate from "./alert.json"
+import alertTemplate from "./alert.json"
 
 export class ARMHelper {
 
@@ -78,10 +78,10 @@ export class ARMHelper {
         }
     }
 
-    public async DeployAlerts(deploymentName: string, resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
+    public async DeployAlerts(resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
+        let deploymentName:string = 'alerts-deploy'
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
-        var json = require('./alert.json');
-
+        
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
         let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);
         let stockAlertsMap = objToVariableMap(stockAlerts);
@@ -112,11 +112,12 @@ export class ARMHelper {
             let metricName = mergedAlertParamsARM["metricName"].value;
             let alertType = mergedAlertParamsARM["alertType"].value;
             let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
-            let alertName = util.create_resource_name("alert", tempName, true);            
-            logger.log(alertName);
+            let alertName:string = util.create_resource_name("alert", tempName, true);                        
+            alertName = alertName.substr(0, 128)    //Azure limits alert names to 128 characters
+            logger.log(alertName);            
             mergedAlertParamsARM["alertName"] = { "value": alertName };
 
-            await this.DeployTemplate(deploymentName, json, mergedAlertParamsARM, resourceGroup);
+            await this.DeployTemplate(deploymentName, alertTemplate, mergedAlertParamsARM, resourceGroup);
         }
     }
 

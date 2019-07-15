@@ -6,18 +6,18 @@
         "source-type": "Microsoft.Storage/storageAccounts",
         "metricName": "Transactions",
         "operator": "GreaterThan",        
-        "timeAggregation": "Count",
+        "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "actionGroupName": "bdevactemailops",
         "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dimensionFilter":
-        {
+        [{
             "name": "ResponseType",
-            "operator": "Exclude",
-            "values": ["Success"]
-        },
+            "operator": "Include",
+            "values": ["ServerOtherError","ServerBusyError","ServerTimeoutError","AuthorizationError","NetworkError","ClientThrottlingError","ClientTimeoutError","ClientOtherError"]
+        }],
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
@@ -33,7 +33,7 @@
         "source-type": "Microsoft.Storage/storageAccounts",
         "metricName": "SuccessE2ELatency",
         "operator": "GreaterThan",        
-        "timeAggregation": "Total",
+        "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "actionGroupName": "bdevactemailops",

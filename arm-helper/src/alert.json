@@ -123,8 +123,8 @@
       }
     },
     "dimensionFilter": {
-      "type": "object",
-      "defaultValue": {}
+      "type": "array",
+      "defaultValue": []
     }
   },
   "variables": {},
@@ -149,7 +149,7 @@
               "criterionType": "[if(equals(parameters('alertType'),'Static'),'StaticThresholdCriterion','DynamicThresholdCriterion')]",
               "name": "1st criterion",
               "metricName": "[parameters('metricName')]",
-              "dimensions": ["[parameters('dimensionFilter')]"],
+              "dimensions": "[parameters('dimensionFilter')]",
               "operator": "[parameters('operator')]",
               "threshold": "[if(equals(parameters('alertType'),'Static'),parameters('threshold'),'')]",
               "alertSensitivity": "[if(equals(parameters('alertType'),'Dynamic'),parameters('dynamicAlertProperties').alertSensitivity,'')]",
