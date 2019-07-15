@@ -2,7 +2,7 @@ import * as YAML from 'js-yaml'
 import * as fs from 'fs'
 import * as path from 'path'
 import {BakeVariable, IBakeEnvironment, IBakeConfig, IBakeAuthentication,
-    IIngredientProperties, IIngredient, Logger, IngredientManager} from '@azbake/core'
+    IIngredientProperties, IIngredient, Logger, IngredientManager, objToVariableMap} from '@azbake/core'
 import { ShellRunner } from 'azcli-npm';
 
 export class BakePackage {
@@ -86,18 +86,19 @@ export class BakePackage {
     }
 
     private objToVariableMap(obj: any) {
-        let strMap = new Map<string,BakeVariable>();
+        // let strMap = new Map<string,BakeVariable>();
 
-        //support variables being empty, or not defined in the YAML.
-        if (obj == null || undefined)
-        {
-            return strMap
-        }
+        // //support variables being empty, or not defined in the YAML.
+        // if (obj == null || undefined)
+        // {
+        //     return strMap
+        // }
 
-        for (let k of Object.keys(obj)) {
-            strMap.set(k, new BakeVariable(obj[k]));
-        }
-        return strMap;
+        // for (let k of Object.keys(obj)) {
+        //     strMap.set(k, new BakeVariable(obj[k]));
+        // }
+        // return strMap;
+        return objToVariableMap(obj)
     }
 
     private _loadPackage(source: string){

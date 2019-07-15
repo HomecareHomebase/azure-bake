@@ -1,0 +1,32 @@
+{
+    "CpuPercentage": {
+        "alertDescription": "CPU Percentage",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Web/serverfarms",
+        "metricName": "CpuPercentage",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "80"
+    },
+    "MemoryPercentage": {
+        "alertDescription": "MemoryPercentage",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Web/sites",
+        "metricName": "MemoryPercentage",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "80"
+    }
+}

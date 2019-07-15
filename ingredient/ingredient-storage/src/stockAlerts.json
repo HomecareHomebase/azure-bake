@@ -1,0 +1,50 @@
+{
+    "Errors": {
+        "alertDescription": "Requests that errored",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "Transactions",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Count",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dimensionFilter":
+        {
+            "name": "ResponseType",
+            "operator": "Exclude",
+            "values": ["Success"]
+        },
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "SuccessE2ELatency": {
+        "alertDescription": "Success E2E Latency",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "SuccessE2ELatency",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    }
+}

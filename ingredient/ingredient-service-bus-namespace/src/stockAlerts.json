@@ -1,0 +1,140 @@
+{
+    "ServerErrors": {
+        "alertDescription": "my server errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "ServerErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "UserErrors": {
+        "alertDescription": "my user errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "UserErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "ThrottledRequests": {
+        "alertDescription": "my throttled errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "ThrottledRequests",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "ActiveConnections": {
+        "alertDescription": "static connections",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "ActiveConnections",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "4500"
+    },
+    "DeadletteredMessages": {
+        "alertDescription": "static count of dead-lettered messages in a Queue/Topic. ",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "DeadletteredMessages",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "0"
+    },
+    "Size": {
+        "alertDescription": "static size of an Queue/Topic in Bytes ",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "Size",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "966367641"
+    },
+    "CPUXNS": {
+        "alertDescription": "static service bus premium namespace CPU usage metric",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "Size",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "80"
+    },
+    "WSXNS": {
+        "alertDescription": "static service bus premium namespace CPU usage metric",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.ServiceBus/namespaces",
+        "metricName": "Size",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "actionGroupName": "bdevactemailops",
+        "actionGroupResourceGroup": "bdeveusactiongroups",
+        "alertType": "Static",
+        "threshold": "80"
+    }
+}
