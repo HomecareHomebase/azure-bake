@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+
+### Bug Fixes
+
+* BakeVaribales now support async/await of internal calls ([#105](https://github.com/HomecareHomebase/azure-bake/issues/105)) ([719810b](https://github.com/HomecareHomebase/azure-bake/commit/719810b))
+
+
+
+
+
 ## [0.1.66](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.65...v0.1.66) (2019-07-12)
 
 
