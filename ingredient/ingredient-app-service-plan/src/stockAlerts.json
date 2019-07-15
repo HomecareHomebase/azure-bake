@@ -18,7 +18,7 @@
         "alertDescription": "MemoryPercentage",
         "alertSeverity": 3,
         "isEnabled": true,
-        "source-type": "Microsoft.Web/sites",
+        "source-type": "Microsoft.Web/serverfarms",
         "metricName": "MemoryPercentage",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",

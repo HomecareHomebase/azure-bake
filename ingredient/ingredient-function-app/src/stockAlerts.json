@@ -6,7 +6,7 @@
         "source-type": "Microsoft.Web/sites",
         "metricName": "Http5xx",
         "operator": "GreaterThan",        
-        "timeAggregation": "Count",
+        "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "actionGroupName": "bdevactemailops",
@@ -61,35 +61,5 @@
                 "minFailingPeriodsToAlert": "3"
             }
         }         
-    },
-    "CpuPercentage": {
-        "alertDescription": "CPU Percentage",
-        "alertSeverity": 3,
-        "isEnabled": true,
-        "source-type": "Microsoft.Web/serverfarms",
-        "metricName": "CpuPercentage",
-        "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
-        "windowSize": "PT15M",
-        "evaluationFrequency": "PT15M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
-        "alertType": "Static",
-        "threshold": "80"
-    },
-    "MemoryPercentage": {
-        "alertDescription": "MemoryPercentage",
-        "alertSeverity": 3,
-        "isEnabled": true,
-        "source-type": "Microsoft.Web/sites",
-        "metricName": "MemoryPercentage",
-        "operator": "GreaterThan",        
-        "timeAggregation": "Average",
-        "windowSize": "PT15M",
-        "evaluationFrequency": "PT15M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
-        "alertType": "Static",
-        "threshold": "80"
     }
 }

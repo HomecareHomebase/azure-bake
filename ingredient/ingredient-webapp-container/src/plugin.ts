@@ -1,6 +1,7 @@
 import { BaseIngredient, IngredientManager, BakeVariable, Logger } from "@azbake/core"
 import { IIngredient,  DeploymentContext } from "@azbake/core";
 import { ARMHelper } from "@azbake/arm-helper";
+import stockAlerts from "./stockAlerts.json"
 
 import arm from './arm.json';
 import { WebAppUtils } from './functions';
@@ -42,6 +43,10 @@ export class WebAppContainer extends BaseIngredient {
             props["location"] = {"value": webAppRegion};
 
             await helper.DeployTemplate(this._name, armTemplate, props, await util.resource_group());
+
+            let alertTarget = webAppName;
+            let alertOverrides = this._ingredient.properties.alerts
+            await helper.DeployAlerts(await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;

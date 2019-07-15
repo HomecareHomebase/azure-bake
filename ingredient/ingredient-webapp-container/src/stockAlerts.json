@@ -6,7 +6,7 @@
         "source-type": "Microsoft.Web/sites",
         "metricName": "Http5xx",
         "operator": "GreaterThan",        
-        "timeAggregation": "Count",
+        "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "actionGroupName": "bdevactemailops",

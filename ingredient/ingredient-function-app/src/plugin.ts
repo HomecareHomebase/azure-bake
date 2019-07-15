@@ -1,6 +1,7 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./arm.json"
+import stockAlerts from "./stockAlerts.json"
 
 export class FunctionAppPlugin extends BaseIngredient {
 
@@ -33,9 +34,11 @@ export class FunctionAppPlugin extends BaseIngredient {
             params["appInsightsName"] = {"value": aiResource.resource};
             params["appInsightsRG"] = {"value": (aiResource.resourceGroup || await util.resource_group())};
 
-
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group());
 
+            let alertTarget = params["appName"].value;
+            let alertOverrides = this._ingredient.properties.alerts
+            await helper.DeployAlerts(await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error);
             throw error;
