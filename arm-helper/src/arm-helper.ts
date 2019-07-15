@@ -1,4 +1,4 @@
-import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator, IngredientManager } from '@azbake/core';
+import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator, IngredientManager, objToVariableMap } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { stringify } from 'querystring';
@@ -84,11 +84,11 @@ export class ARMHelper {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
         let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);
-        let stockAlertsMap = this.objToVariableMap(stockAlerts);
+        let stockAlertsMap = objToVariableMap(stockAlerts);
         let stockAlertsParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertsMap);
 
         for (let stockAlert in stockAlerts) {
-            let stockAlertMap = this.objToVariableMap(stockAlerts[stockAlert]);
+            let stockAlertMap = objToVariableMap(stockAlerts[stockAlert]);
             let stockAlertParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertMap);
             let alertOverrideParams: any  | undefined
             alertOverrideParams = alertsOverrides.get(stockAlert)
@@ -96,7 +96,7 @@ export class ARMHelper {
             let mergedAlertParamsARM: any, alertOverrideParamsARM: any;
 
             if (alertOverrideParams !== undefined) {
-                let alertOverrideParamsMap = this.objToVariableMap(await alertOverrideParams.valueAsync(this._ctx))
+                let alertOverrideParamsMap = objToVariableMap(await alertOverrideParams.valueAsync(this._ctx))
                 alertOverrideParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, alertOverrideParamsMap)
 
                 mergedAlertParamsARM = this.mergeDeep(stockAlertParamsARM, alertOverrideParamsARM)
@@ -166,21 +166,6 @@ export class ARMHelper {
 
         template.resources = resources;
         return template;
-    }
-
-    private objToVariableMap(obj: any) {
-        let strMap = new Map<string,BakeVariable>();
-
-        //support variables being empty, or not defined in the YAML.
-        if (obj == null || undefined)
-        {
-            return strMap
-        }
-
-        for (let k of Object.keys(obj)) {
-            strMap.set(k, new BakeVariable(obj[k]));
-        }
-        return strMap;
     }
 
     private isObject(item:any) {

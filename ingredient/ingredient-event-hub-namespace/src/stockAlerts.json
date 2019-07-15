@@ -48,7 +48,7 @@
         "source-type": "Microsoft.EventHub/namespaces",
         "metricName": "ThrottledRequests",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maxiumum",
+        "timeAggregation": "Maximum",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "actionGroupName": "bdevactemailops",

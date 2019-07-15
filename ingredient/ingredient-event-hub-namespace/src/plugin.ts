@@ -31,10 +31,9 @@ export class EventHubNamespacePlugin extends BaseIngredient {
                 params["diagnosticsEventHubNamespaceResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
             }
 
-            //await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             
             let alertTarget = params["eventHubNamespaceName"].value
-            //await helper.DeployAlerts(this._name, alertParams, await util.resource_group(), metricTarget)
             let alertOverrides = this._ingredient.properties.alerts
             await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
 
