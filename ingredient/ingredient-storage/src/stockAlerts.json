@@ -9,8 +9,6 @@
         "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dimensionFilter":
         [{
@@ -36,8 +34,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",

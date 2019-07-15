@@ -9,8 +9,6 @@
         "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
@@ -30,8 +28,6 @@
         "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
@@ -51,8 +47,6 @@
         "timeAggregation": "Maximum",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",

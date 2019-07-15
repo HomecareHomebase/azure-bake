@@ -9,8 +9,6 @@
         "timeAggregation": "Maximum",
         "windowSize": "PT15M",
         "evaluationFrequency": "PT15M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "80"
     },
@@ -24,8 +22,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT15M",
         "evaluationFrequency": "PT15M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "80"
     }

@@ -102,11 +102,9 @@
         "description": "How often the metric alert is evaluated represented in ISO 8601 duration format"
       }
     },
-    "actionGroupName": {
-      "type": "string"
-    },
-    "actionGroupResourceGroup": {
-      "type": "string"      
+    "actionGroups": {
+      "type": "array",
+      "defaultValue": []
     },
     "alertType": {
       "type": "string",
@@ -158,11 +156,7 @@
             }
           ]
         },
-        "actions": [
-          {
-            "actionGroupId": "[resourceId(parameters('actionGroupResourceGroup'), 'Microsoft.Insights/actiongroups', parameters('actionGroupName'))]"
-          }
-        ]
+        "actions": "[parameters('actionGroups')]"
       }
     }
   ]

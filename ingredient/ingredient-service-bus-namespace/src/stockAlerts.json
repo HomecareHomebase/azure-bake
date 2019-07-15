@@ -9,8 +9,6 @@
         "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
@@ -30,8 +28,6 @@
         "timeAggregation": "Total",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
@@ -51,8 +47,6 @@
         "timeAggregation": "Maximum",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
@@ -72,8 +66,6 @@
         "timeAggregation": "Maximum",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "4500"
     },
@@ -87,8 +79,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "0"
     },
@@ -102,8 +92,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "966367641"
     },
@@ -117,8 +105,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "80"
     },
@@ -132,8 +118,6 @@
         "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
-        "actionGroupName": "bdevactemailops",
-        "actionGroupResourceGroup": "bdeveusactiongroups",
         "alertType": "Static",
         "threshold": "80"
     }
