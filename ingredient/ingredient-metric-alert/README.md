@@ -81,12 +81,14 @@ recipe:
 | dynamicAlertProperties | no (default below) | Object for specifying dynamic alert properties. |
 
 **dynamicAlertProperties object**
+
 | property|required|description|
 |---------|--------|-----------|
 | alertSensitivity | no (default `Low`) | Low, Medium, and High sensitivities (in order of least to most noisy alerts.)
 | failingPeriods | no (default below) | Object for specifying dynamic alert failing periods properties. |
 
 **failingPeriods object** - this advanced criteria defaults to fire the alert if 3 of of the last 4 evaluation periods failed
+
 | property|required|description|
 |---------|--------|-----------|
 | numberOfEvaluationPeriods | no (default `4`) | The total number of periods for evaluating against the failing periods. |
