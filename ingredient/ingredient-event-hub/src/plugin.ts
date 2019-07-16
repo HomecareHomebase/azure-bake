@@ -9,10 +9,21 @@ export class EventHubPlugin extends BaseIngredient {
             this._logger.log('Event Hub Plugin Logging: ' + await this._ingredient.properties.source.valueAsync(this._ctx))
 
             const helper = new ARMHelper(this._ctx);
-
+            
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+            
+            let ehnRG: string
 
-            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            if (params["eventHubNamespaceResourceGroup"]) {
+                ehnRG = params["eventHubNamespaceResourceGroup"].value
+                delete params["eventHubNamespaceResourceGroup"]
+            }
+            else
+            {
+                ehnRG = await util.resource_group()
+            }            
+
+            await helper.DeployTemplate(this._name, ARMTemplate, params, ehnRG)
 
         } catch (error) {
             this._logger.error('deployment failed: ' + error)
