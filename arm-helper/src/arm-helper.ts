@@ -116,7 +116,8 @@ export class ARMHelper {
         params["source-name"] = { "value": alertTarget };
 
         let timeAggregation = params["timeAggregation"].value;
-        let metricName = params["metricName"].value;
+        let metricName:string = params["metricName"].value;
+        metricName = metricName.replace(/[/%]/g,'_')  //replace / and % with _.  They are valid metric name character but not valid in alert names.
         let alertType = params["alertType"].value;
         let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
         let alertName:string = util.create_resource_name("alert", tempName, true);                        
