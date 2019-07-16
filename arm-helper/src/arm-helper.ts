@@ -82,7 +82,6 @@ export class ARMHelper {
         let deploymentName:string = 'alerts-deploy'
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
         
-        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
         let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);
         let stockAlertsMap = objToVariableMap(stockAlerts);
         let stockAlertsParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertsMap);
@@ -105,20 +104,29 @@ export class ARMHelper {
                 mergedAlertParamsARM = stockAlertParamsARM
             }
 
-            mergedAlertParamsARM["source-rg"] = { "value": resourceGroup };
-            mergedAlertParamsARM["source-name"] = { "value": alertTarget };
+            await this.DeployAlert(deploymentName, resourceGroup, alertTarget, mergedAlertParamsARM)
 
-            let timeAggregation = mergedAlertParamsARM["timeAggregation"].value;
-            let metricName = mergedAlertParamsARM["metricName"].value;
-            let alertType = mergedAlertParamsARM["alertType"].value;
-            let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
-            let alertName:string = util.create_resource_name("alert", tempName, true);                        
-            alertName = alertName.substr(0, 128)    //Azure limits alert names to 128 characters
-            logger.log(alertName);            
-            mergedAlertParamsARM["alertName"] = { "value": alertName };
-
-            await this.DeployTemplate(deploymentName, alertTemplate, mergedAlertParamsARM, resourceGroup);
         }
+    }
+
+    public async DeployAlert(deploymentName: string, resourceGroup: string, alertTarget: string, params: any): Promise<void> {
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+        
+        params["source-rg"] = { "value": resourceGroup };
+        params["source-name"] = { "value": alertTarget };
+
+        let timeAggregation = params["timeAggregation"].value;
+        let metricName = params["metricName"].value;
+        let alertType = params["alertType"].value;
+        let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
+        let alertName:string = util.create_resource_name("alert", tempName, true);                        
+        alertName = alertName.substr(0, 128)    //Azure limits alert names to 128 characters
+        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
+        logger.log(alertName);            
+        params["alertName"] = { "value": alertName };
+
+        await this.DeployTemplate(deploymentName, alertTemplate, params, resourceGroup);
+
     }
 
     public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
