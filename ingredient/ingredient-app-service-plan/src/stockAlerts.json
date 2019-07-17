@@ -6,7 +6,7 @@
         "source-type": "Microsoft.Web/serverfarms",
         "metricName": "CpuPercentage",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
+        "timeAggregation": "Average",
         "windowSize": "PT15M",
         "evaluationFrequency": "PT15M",
         "alertType": "Static",
