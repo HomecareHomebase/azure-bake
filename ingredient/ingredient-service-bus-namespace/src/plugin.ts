@@ -78,7 +78,7 @@ export class ServiceBusNamespace extends BaseIngredient {
                 delete stockAlerts["CPUXNS"]
                 delete stockAlerts["WSXNS"]
             }
-            await helper.DeployAlerts(await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error

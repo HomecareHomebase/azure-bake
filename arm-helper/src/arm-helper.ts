@@ -78,8 +78,8 @@ export class ARMHelper {
         }
     }
 
-    public async DeployAlerts(resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
-        let deploymentName:string = 'alerts-deploy'
+    public async DeployAlerts(targetDeploymentName: string, resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
+        let deploymentName:string = 'alerts-' + targetDeploymentName;
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
         
         let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);

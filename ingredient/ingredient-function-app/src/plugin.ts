@@ -38,7 +38,7 @@ export class FunctionAppPlugin extends BaseIngredient {
 
             let alertTarget = params["appName"].value;
             let alertOverrides = this._ingredient.properties.alerts
-            await helper.DeployAlerts(await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error);
             throw error;

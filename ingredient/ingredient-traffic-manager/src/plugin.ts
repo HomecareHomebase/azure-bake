@@ -101,7 +101,7 @@ export class TrafficManager extends BaseIngredient {
 
             let alertTarget = profileName
             let alertOverrides = this._ingredient.properties.alerts
-            await this._helper.DeployAlerts(await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+            await this._helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
             
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
