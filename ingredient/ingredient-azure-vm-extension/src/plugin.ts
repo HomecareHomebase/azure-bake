@@ -4,6 +4,9 @@ import  ARMTemplate  from "./arm.json"
 import { utils } from "mocha";
 
 export class VirtualMachineExtensions extends BaseIngredient {
+import ARMTemplate from "./arm.json"
+
+export class AzureVMExtension extends BaseIngredient {
 
     public async Execute(): Promise<void> {
         try {
@@ -20,6 +23,11 @@ export class VirtualMachineExtensions extends BaseIngredient {
            // value = await vmext.delete('test-rg','testvm101','CustomScript')
            // this._logger.log('list :' + JSON.stringify(value))
             
+            this._logger.log('Azure VM Extension Logging: ' + this._ingredient.properties.source)
+            const helper = new ARMHelper(this._ctx)
+            let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+
+            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error
