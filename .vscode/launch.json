@@ -6,7 +6,7 @@
         "request": "launch",
         "name": "Debug Locally",
         "program": "${workspaceFolder}/system/dist/index.js",
-        "args": ["serve","c:/git/bake/system/package/test.yaml"],
+        "args": ["serve","c:/repos/azure-bake/system/package/test.yaml"],
         "envFile": "${workspaceFolder}/.env",
         "env": {
           "NODE_ENV": "development"

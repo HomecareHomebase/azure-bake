@@ -8,7 +8,7 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
     public create_resource_name() {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        const name = util.create_resource_name("ni", null, false);
+        const name = util.create_resource_name("vmext", null, false);
         return name;
     }   
 

@@ -11,9 +11,14 @@ export class VirtualMachineExtensions extends BaseIngredient {
             this._logger.log('Virtual Machine Extensions Plugin Logging: ' + this._ingredient.properties.source)
 
             let vmext = IngredientManager.getIngredientFunction("vmextensionsutility", this._ctx)
-           let value = await vmext.get('test-rg','CustomScript')
-           this._logger.log(value)
+            let value = await vmext.get('test-rg','testvm101','CustomScript')
+            this._logger.log('get :' + JSON.stringify(value))
             
+            value = await vmext.list('test-rg','testvm101')
+            this._logger.log('list :' + JSON.stringify(value))
+                        
+           // value = await vmext.delete('test-rg','testvm101','CustomScript')
+           // this._logger.log('list :' + JSON.stringify(value))
             
         } catch(error){
             this._logger.error('deployment failed: ' + error)
