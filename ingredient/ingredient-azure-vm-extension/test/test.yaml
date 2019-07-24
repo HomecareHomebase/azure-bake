@@ -1,17 +1,23 @@
-name: func-app-test
-shortName: funcapptest
+name: vm-ext-test
+shortName: vmext
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-function-app@0.0.3"
+  - "@azbake/ingredient-azure-vm-extension@0.0.1"
 resourceGroup: true
-rgOverride: "randomrg"
+rgOverride: "default"
 parallelRegions: false
 recipe:
-  funcapp:
+  vmext:
     properties:
-      type: "@azbake/ingredient-function-app"
+      type: "@azbake/ingredient-azure-vm-extension"
       parameters:
-        appName: "[functionapputils.create_resource_name()]"
-        planName: "funcapprg/testappserviceplans1"
-        storageAccountName: "funcapprg/funcappstoragekevintest2"
-        appInsightsName: "funcapprg/funcappAI"
+        extName: "BGInfo"
+        vmName: "winVM"
+        publisher: "Microsoft.Compute"
+        typeHandlerVersion: "2.1"
+        settings:
+          things: "thing"
+          andstuff: "stuff"
+        protectedSettings:
+          password: "asdf"
+          othersetting: "abcd"

@@ -27,7 +27,43 @@ export class AzureVMExtension extends BaseIngredient {
             const helper = new ARMHelper(this._ctx)
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
 
-            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            this._ctx._logger.log(`params ${Object.keys(params.settings)}`)
+
+            //stuff to modify ARMTemplate
+            let settings = params['settings'].value || undefined
+            let protectedSettings: any = params['protectedSettings'].value || undefined
+
+            let resources: any = ARMTemplate.resources
+
+            if(settings)
+            {
+              let values = settings
+              let keys = Object.keys(values)
+              for (let i = 0; i < keys.length; i++)
+              {
+                let key = keys[i]
+                //add the settings to ARMTemplate
+                this._ctx._logger.log(`${Object.keys(resources[0].properties)}`)
+                resources[0].properties.settings[key] = values[key]
+              }
+            }
+
+            if(protectedSettings)
+            {
+              let values = protectedSettings
+              let keys = Object.keys(values)
+              for (let i = 0; i < keys.length; i++)
+              {
+                let key = keys[i]
+                //add the settings to ARMTemplate
+                resources[0].properties.protectedSettings[key] = values[key]
+              }
+            }
+
+            ARMTemplate.resources = resources
+
+            // await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            this._ctx._logger.log(`ARMTemplate ${JSON.stringify(ARMTemplate)}`)
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error

@@ -1,42 +1,49 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "vmName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the VM that the extension is being deployed to."
-        }
-      },
-      "extName": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of the extension being deployed."
-        }
-      },
-      "typeHandlerVersion": {
-        "type": "string",
-        "metadata": {
-          "description": "The version of the script handler."
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VM that the extension is being deployed to."
       }
     },
-    "variables": {},
-    "resources": [
-      {
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "name": "[concat(parameters('vmName'), '/', parameters('extName'))]",
-        "apiVersion": "2018-10-01",
-        "location": "[resourceGroup().location]",
-        "properties": {
-          "publisher": "Microsoft.Compute",
-          "type": "[parameters('extName')]",
-          "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-          "autoUpgradeMinorVersion": true,
-          "settings": {},
-          "protectedSettings": {},
-          "instanceView": {}
-        }
+    "extName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the extension being deployed."
       }
-    ]
-  }
+    },
+    "publisher": {
+      "type": "string",
+      "defaultValue": "Microsoft.Compute",
+      "metadata": {
+        "description": "The version of the script handler."
+      }
+    },
+    "typeHandlerVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The version of the script handler."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmName'), '/', parameters('extName'))]",
+      "apiVersion": "2018-10-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publisher": "[parameters('publisher')]",
+        "type": "[parameters('extName')]",
+        "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "settings": {},
+        "protectedSettings": {},
+        "instanceView": {}
+      }
+    }
+  ]
+}
