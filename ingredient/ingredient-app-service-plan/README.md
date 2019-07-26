@@ -17,7 +17,7 @@ ingredients:
   - "@azbake/ingredient-app-service-plan@~0"
 resourceGroup: true
 recipe:
-  mypkg-app-insights:
+  mypkg-deploy:
     properties:
       type: "@azbake/ingredient-app-service-plan"
       source: ""

@@ -1,0 +1,59 @@
+{
+    "Http5xx": {
+        "alertDescription": "Http 5xx Errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Web/sites",
+        "metricName": "Http5xx",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "Http4xx": {
+        "alertDescription": "Http 4xx",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Web/sites",
+        "metricName": "Http4xx",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "AverageResponseTime": {
+        "alertDescription": "Average Response Time",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Web/sites",
+        "metricName": "AverageResponseTime",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    }
+}
