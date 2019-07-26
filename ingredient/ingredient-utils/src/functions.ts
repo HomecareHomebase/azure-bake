@@ -63,9 +63,9 @@ export class CoreUtils extends BaseUtility {
         return regions[1]
     }
      
-    public async resource_group(name: string | null = null, useRegionCode: boolean = true, region : IBakeRegion | null = null): Promise<string> {
+    public async resource_group(name: string | null = null, useRegionCode: boolean = true, region : IBakeRegion | null = null, ignoreOverride: boolean = false): Promise<string> {
         let override = this.context.Config.rgOverride
-        if (override) {
+        if (override && !ignoreOverride) {
             return await override.valueAsync(this.context)
         } else {
             if (region) {
@@ -139,8 +139,11 @@ export class CoreUtils extends BaseUtility {
         let pkg = this.context.Config.shortName
         
         pkg = name || pkg
+
+        if (rgn)
+            rgn = rgn + "_"
     
-        return (`rg_${pkg}_${rgn}_${env}`).toLocaleUpperCase()
+        return (`rg_${pkg}_${rgn}${env}`).toLocaleUpperCase()
     }
     
     public create_storage_name(name: string | null = null, suffix: string = "") {
