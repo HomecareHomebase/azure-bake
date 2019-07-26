@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* added support for specifying rg of ehn ([#108](https://github.com/HomecareHomebase/azure-bake/issues/108)) ([b4a5739](https://github.com/HomecareHomebase/azure-bake/commit/b4a5739))
+* API Management ([#103](https://github.com/HomecareHomebase/azure-bake/issues/103)) ([d89149b](https://github.com/HomecareHomebase/azure-bake/commit/d89149b))
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+* Fix table format ([#107](https://github.com/HomecareHomebase/azure-bake/issues/107)) ([6c97c34](https://github.com/HomecareHomebase/azure-bake/commit/6c97c34))
+
+
+
+
+
 ## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
 
 
