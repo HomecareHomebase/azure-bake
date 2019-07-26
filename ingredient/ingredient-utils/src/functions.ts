@@ -69,10 +69,13 @@ export class CoreUtils extends BaseUtility {
             return await override.valueAsync(this.context)
         } else {
             if (region) {
-                return this.create_region_resource_name("", name, region)
+                return this._create_resource_group_name(name,region.code)
             }
             else {
-                return this.create_resource_name("", name, useRegionCode)
+                let rgn = this.context.Region.code
+                if (!useRegionCode)
+                    rgn = ""
+                return this._create_resource_group_name(name,rgn)
             }
         }
     }
@@ -130,6 +133,15 @@ export class CoreUtils extends BaseUtility {
     
         return (env + rgn + resType + pkg + suffix).toLocaleLowerCase()
     }
+
+    private _create_resource_group_name(name: string | null = null, rgn: string = ""): string {
+        let env = this.context.Environment.environmentCode
+        let pkg = this.context.Config.shortName
+        
+        pkg = name || pkg
+    
+        return (`rg_${pkg}_${rgn}_${env}`).toLocaleUpperCase()
+    }
     
     public create_storage_name(name: string | null = null, suffix: string = "") {
         return this.create_resource_name("st", name, true, suffix)
@@ -157,7 +169,8 @@ export class CoreUtils extends BaseUtility {
     }
 
     public get_resource_group(pkgName: string): string {
-        return this.create_resource_name("", pkgName, true);
+        let rgn = this.context.Region.code
+        return this._create_resource_group_name(pkgName,rgn)
     }
 
     public async get_ingredient_source(): Promise<string> {

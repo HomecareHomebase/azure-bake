@@ -3,8 +3,7 @@ shortName: funcapptest
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-storage@~0"
-resourceGroup: false
-rgOverride: "test-rg"
+resourceGroup: true
 parallelRegions: false
 variables:  
   test1: "10"
