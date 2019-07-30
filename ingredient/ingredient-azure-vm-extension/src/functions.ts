@@ -22,6 +22,7 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let response = await vm.get(rg, vmName, vmExtensionName) ;                     
         return response;
     }   
+    
     public async list(rg: string, vmName: string, vmExtensionName: string) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
@@ -42,9 +43,8 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         const vm = new VirtualMachineExtensions(client);            
         let response = await vm.deleteMethod(rg, vmName, vmExtensionName) ;                     
         return response;
-    }   
+    }
 
-    
     public async update(rg: string, vmName: string, vmExtensionName: string, extensionParameters: VirtualMachineExtensionUpdate) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);

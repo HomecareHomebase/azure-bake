@@ -21,6 +21,13 @@
         "description": "The version of the script handler."
       }
     },
+    "extensionType": {
+      "type": "string",
+      "defaultValue": "[parmaters('extName')]",
+      "metadata": {
+        "description": "The version of the script handler."
+      }    
+    },
     "typeHandlerVersion": {
       "type": "string",
       "metadata": {
@@ -37,12 +44,9 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "publisher": "[parameters('publisher')]",
-        "type": "[parameters('extName')]",
+        "type": "[parameters('extensionType')]",
         "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-        "autoUpgradeMinorVersion": true,
-        "settings": {},
-        "protectedSettings": {},
-        "instanceView": {}
+        "autoUpgradeMinorVersion": true
       }
     }
   ]

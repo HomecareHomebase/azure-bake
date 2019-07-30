@@ -4,20 +4,19 @@ version: 1.0.0
 ingredients:
   - "@azbake/ingredient-azure-vm-extension@0.0.1"
 resourceGroup: true
-rgOverride: "default"
+rgOverride: "test"
 parallelRegions: false
 recipe:
   vmext:
     properties:
       type: "@azbake/ingredient-azure-vm-extension"
       parameters:
-        extName: "BGInfo"
-        vmName: "winVM"
-        publisher: "Microsoft.Compute"
-        typeHandlerVersion: "2.1"
+        extName: "InstallCustomScript"
+        vmName: "testvm"
+        publisher: "Microsoft.Azure.Extensions"
+        typeHandlerVersion: "2.0"        
+        extensionType: "CustomScript"
         settings:
-          things: "thing"
-          andstuff: "stuff"
-        protectedSettings:
-          password: "asdf"
-          othersetting: "abcd"
+          fileUris: 
+            - "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-customscript-extension-public-storage-on-ubuntu/scripts/hello.sh"
+          commandToExecute: "sh hello.sh"
