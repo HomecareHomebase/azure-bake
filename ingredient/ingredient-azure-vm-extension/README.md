@@ -96,6 +96,7 @@ parameters:
 string[]
 
 ### delete(rg: string, vmName: string, vmExtensionName: string)
+Gets the specified extension installed on a vm
 ```yaml
 ...
 parameters:
@@ -106,57 +107,12 @@ parameters:
 string
 
 ### update(rg: string, vmName: string, vmExtensionName: string, extensionParameters: VirtualMachineExtensionUpdate)
+Updates the extension installed on a vm
 ```yaml
 ...
 parameters:
-    eventHubName: "[vmextensionsutility.delete('test','testvm','testext')]"
+    eventHubName: "[vmextensionsutility.delete('test','testvm','testext', 'updateobject: {}')]"
 ...
 ```
 ### Returns
 string
-#### get_primary_key()
-Returns the primary access key
-```yaml
-...
-parameters:
-    primary: "[eventhub.get_primary_key(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
-...
-```
-### Returns
-string
-
-#### get_secondary_key()
-Returns the secondary access key
-```yaml
-...
-parameters:
-    secondary: "[eventhub.get_secondary_key(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
-...
-```
-### Returns
-string
-
-
-#### get_primary_connectionstring()
-Returns the primary connection string
-```yaml
-...
-parameters:
-    primary: "[eventhub.get_primary_connectionstring(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
-...
-```
-### Returns
-string
-
-
-#### get_secondary_connectionstring()
-Returns the secondary connection string
-```yaml
-...
-parameters:
-    secondary: "[eventhub.get_secondary_connectionstring(eventhubnamespace.get_resource_name('ehnName'), eventhub.create_resource_name(), 'defaultPolicy')]"
-...
-```
-### Returns
-string
-
