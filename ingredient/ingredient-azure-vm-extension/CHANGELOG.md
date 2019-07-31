@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.71](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.70...v0.1.71) (2019-07-31)
+
+
+### Bug Fixes
+
+* Azure VM Extension Ingredient ([#111](https://github.com/HomecareHomebase/azure-bake/issues/111)) ([8e18197](https://github.com/HomecareHomebase/azure-bake/commit/8e18197))
+
+
+
+
+
 ## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub
