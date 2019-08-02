@@ -27,7 +27,7 @@ export class BakeVariable {
         else {
             let funcWrapper = IngredientManager.getIngredientFunction
             let result = this._compiled(ctx, funcWrapper)
-            let unwrap = await Promise.resolve(result)
+            let unwrap = await result()
             return unwrap
         }
     }

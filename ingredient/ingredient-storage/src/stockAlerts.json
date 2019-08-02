@@ -1,0 +1,46 @@
+{
+    "Errors": {
+        "alertDescription": "Requests that errored",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "Transactions",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dimensionFilter":
+        [{
+            "name": "ResponseType",
+            "operator": "Include",
+            "values": ["ServerOtherError","ServerBusyError","ServerTimeoutError","AuthorizationError","NetworkError","ClientThrottlingError","ClientTimeoutError","ClientOtherError"]
+        }],
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "SuccessE2ELatency": {
+        "alertDescription": "Success E2E Latency",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "SuccessE2ELatency",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    }
+}

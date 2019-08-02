@@ -2,6 +2,7 @@ import { BaseIngredient, IngredientManager, IIngredient, DeploymentContext } fro
 import { ARMHelper } from "@azbake/arm-helper"
 import { ServiceBusManagementClient } from "@azure/arm-servicebus";
 import ARMTemplate from "./arm.json"
+import stockAlerts from "./stockAlerts.json"
 
 export class ServiceBusNamespace extends BaseIngredient {
 
@@ -69,6 +70,15 @@ export class ServiceBusNamespace extends BaseIngredient {
             }
 
             await helper.DeployTemplate(this._name, ARMTemplate, armParameters, resourceGroupName)
+
+            let alertTarget = armParameters['name'].value
+            let alertOverrides = this._ingredient.properties.alerts
+            //Only the Premium SKU supports CPU and Memory metrics
+            if (armParameters['skuName'].value != "Premium") {
+                delete stockAlerts["CPUXNS"]
+                delete stockAlerts["WSXNS"]
+            }
+            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error

@@ -5,6 +5,7 @@ import { ARMHelper } from "@azbake/arm-helper";
 import profile from './trf-mgr.json';
 import endpoint from './endpoint.json';
 import { TrafficUtils } from './functions';
+import stockAlerts from "./stockAlerts.json"
 
 export class TrafficManager extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -97,6 +98,11 @@ export class TrafficManager extends BaseIngredient {
             props["source-type"] = temp["source-type"];
 
             await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, await util.resource_group());
+
+            let alertTarget = profileName
+            let alertOverrides = this._ingredient.properties.alerts
+            await this._helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+            
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
             throw error;

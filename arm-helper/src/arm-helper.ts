@@ -1,8 +1,9 @@
-import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator } from '@azbake/core';
+import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator, IngredientManager, objToVariableMap } from '@azbake/core';
 import { ResourceManagementClient } from '@azure/arm-resources';
 import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
 import { stringify } from 'querystring';
 import { AnyCnameRecord } from 'dns';
+import alertTemplate from "./alert.json"
 
 export class ARMHelper {
 
@@ -77,6 +78,58 @@ export class ARMHelper {
         }
     }
 
+    public async DeployAlerts(targetDeploymentName: string, resourceGroup: string, alertTarget: string, stockAlerts: any, alertsOverrides: Map<string, BakeVariable>): Promise<void> {
+        let deploymentName:string = 'alerts-' + targetDeploymentName;
+        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
+        
+        let alertOverridesParams = await this.BakeParamsToARMParamsAsync(deploymentName, alertsOverrides);
+        let stockAlertsMap = objToVariableMap(stockAlerts);
+        let stockAlertsParams = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertsMap);
+
+        for (let stockAlert in stockAlerts) {
+            let stockAlertMap = objToVariableMap(stockAlerts[stockAlert]);
+            let stockAlertParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, stockAlertMap);
+            let alertOverrideParams: any  | undefined
+            alertOverrideParams = alertsOverrides.get(stockAlert)
+            
+            let mergedAlertParamsARM: any, alertOverrideParamsARM: any;
+
+            if (alertOverrideParams !== undefined) {
+                let alertOverrideParamsMap = objToVariableMap(await alertOverrideParams.valueAsync(this._ctx))
+                alertOverrideParamsARM = await this.BakeParamsToARMParamsAsync(deploymentName, alertOverrideParamsMap)
+
+                mergedAlertParamsARM = this.mergeDeep(stockAlertParamsARM, alertOverrideParamsARM)
+            }
+            else {
+                mergedAlertParamsARM = stockAlertParamsARM
+            }
+
+            await this.DeployAlert(deploymentName, resourceGroup, alertTarget, mergedAlertParamsARM)
+
+        }
+    }
+
+    public async DeployAlert(deploymentName: string, resourceGroup: string, alertTarget: string, params: any): Promise<void> {
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+        
+        params["source-rg"] = { "value": resourceGroup };
+        params["source-name"] = { "value": alertTarget };
+
+        let timeAggregation = params["timeAggregation"].value;
+        let metricName:string = params["metricName"].value;
+        metricName = metricName.replace(/[/%]/g,'_')  //replace / and % with _.  They are valid metric name character but not valid in alert names.
+        let alertType = params["alertType"].value;
+        let tempName = '-' + alertTarget + '-' + timeAggregation + '-' + metricName + '-' + alertType;
+        let alertName:string = util.create_resource_name("alert", tempName, true);                        
+        alertName = alertName.substr(0, 128)    //Azure limits alert names to 128 characters
+        const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
+        logger.log(alertName);            
+        params["alertName"] = { "value": alertName };
+
+        await this.DeployTemplate(deploymentName, alertTemplate, params, resourceGroup);
+
+    }
+
     public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
 
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName));
@@ -123,5 +176,27 @@ export class ARMHelper {
 
         template.resources = resources;
         return template;
+    }
+
+    private isObject(item:any) {
+        return (item && typeof item === 'object' && !Array.isArray(item));
+    }
+  
+    private mergeDeep(target:any, ...sources:any): any {
+        if (!sources.length) return target;
+        const source = sources.shift();
+    
+        if (this.isObject(target) && this.isObject(source)) {
+            for (const key in source) {
+                if (this.isObject(source[key])) {
+                    if (!target[key]) Object.assign(target, { [key]: {} });
+                    this.mergeDeep(target[key], source[key]);
+                } else {
+                    Object.assign(target, { [key]: source[key] });
+                }
+            }
+        }
+  
+        return this.mergeDeep(target, ...sources);
     }
 }
