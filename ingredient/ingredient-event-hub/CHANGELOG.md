@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* added support for specifying rg of ehn ([#108](https://github.com/HomecareHomebase/azure-bake/issues/108)) ([b4a5739](https://github.com/HomecareHomebase/azure-bake/commit/b4a5739))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
 ## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub

@@ -63,16 +63,19 @@ export class CoreUtils extends BaseUtility {
         return regions[1]
     }
      
-    public async resource_group(name: string | null = null, useRegionCode: boolean = true, region : IBakeRegion | null = null): Promise<string> {
+    public async resource_group(name: string | null = null, useRegionCode: boolean = true, region : IBakeRegion | null = null, ignoreOverride: boolean = false): Promise<string> {
         let override = this.context.Config.rgOverride
-        if (override) {
+        if (override && !ignoreOverride) {
             return await override.valueAsync(this.context)
         } else {
             if (region) {
-                return this.create_region_resource_name("", name, region)
+                return this._create_resource_group_name(name,region.code)
             }
             else {
-                return this.create_resource_name("", name, useRegionCode)
+                let rgn = this.context.Region.code
+                if (!useRegionCode)
+                    rgn = ""
+                return this._create_resource_group_name(name,rgn)
             }
         }
     }
@@ -103,7 +106,7 @@ export class CoreUtils extends BaseUtility {
         if (region)
             rgn = region.code
 
-        return this._create_resource_name(resType, rgn, suffix)
+        return this._create_resource_name(resType, name, rgn, suffix)
     }
     
     public create_resource_name(resType: string, name: string | null = null, useRegionCode: boolean = true, suffix: string = ""): string {
@@ -111,7 +114,7 @@ export class CoreUtils extends BaseUtility {
         if (!useRegionCode)
             rgn = ""
 
-        return this._create_resource_name(resType, rgn, suffix)
+        return this._create_resource_name(resType, name, rgn, suffix)
     }
 
     private _create_resource_name(resType: string, name: string | null = null, rgn: string, suffix: string = ""): string {
@@ -129,6 +132,18 @@ export class CoreUtils extends BaseUtility {
         pkg = name || pkg
     
         return (env + rgn + resType + pkg + suffix).toLocaleLowerCase()
+    }
+
+    private _create_resource_group_name(name: string | null = null, rgn: string = ""): string {
+        let env = this.context.Environment.environmentCode
+        let pkg = this.context.Config.shortName
+        
+        pkg = name || pkg
+
+        if (rgn)
+            rgn = rgn + "_"
+    
+        return (`rg_${pkg}_${rgn}${env}`).toLocaleUpperCase()
     }
     
     public create_storage_name(name: string | null = null, suffix: string = "") {
@@ -157,7 +172,8 @@ export class CoreUtils extends BaseUtility {
     }
 
     public get_resource_group(pkgName: string): string {
-        return this.create_resource_name("", pkgName, true);
+        let rgn = this.context.Region.code
+        return this._create_resource_group_name(pkgName,rgn)
     }
 
     public async get_ingredient_source(): Promise<string> {

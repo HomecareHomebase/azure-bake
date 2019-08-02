@@ -1,0 +1,14 @@
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-app-service-plan@~0"
+resourceGroup: true
+recipe:
+  mypkg-deploy:
+    properties:
+      type: "@azbake/ingredient-app-service-plan"
+      source: ""
+      parameters:
+        appServicePlanName: "AppServicePlanName"
+        kind: "linux"

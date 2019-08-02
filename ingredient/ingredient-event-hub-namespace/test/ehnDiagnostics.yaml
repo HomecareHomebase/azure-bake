@@ -1,7 +1,7 @@
 #This recipe deploys a simple event hub namespace based on a given short name
 #Provide name 
 name: Event Hubs Namespace Diagnostic Logs
-shortName: Diagnostics
+shortName: thDiagnostics
 version: 0.0.1
 #Specify the names of the ingredients to use in the recipe.  This is the name of the ingredient in package.json.  
 #Specify the local path to the module during development.
@@ -20,9 +20,26 @@ recipe:
       type: "@azbake/ingredient-event-hub-namespace"
       source: ""
       parameters:
-        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('diagnostics')]"      
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name('thdiagnostics')]"      
         skuName: Standard
         skuTier: Standard
         skuCapacity: "1"
         #Disabling diagnostics
         diagnosticsEnabled: "no"
+      alerts:
+        # - ServerErrors:            
+        #     alertDescription: "my server errors override"
+        #     alertSeverity: 3
+        ServerErrors:
+          alertDescription: "my server errors override"
+          alertSeverity: 3
+          #dynamicAlertProperties:
+          #    alertSensitivity: "Low"
+        # - UserErrors:
+        #     alertDescription: "my user errors override"
+        #     alertSeverity: 2
+          # dynamicAlertProperties:
+          #    alertSensitivity: "Low"
+        UserErrors:
+          alertDescription: "my user errors override"
+          alertSeverity: 2

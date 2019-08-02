@@ -3,14 +3,15 @@ shortName: funcapptest
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-storage@~0"
-resourceGroup: false
-rgOverride: "test-rg"
+resourceGroup: true
 parallelRegions: false
 variables:  
+  test1: "10"
+  test_var: "[coreutils.toNumber(await coreutils.variable('test1'))]"
 recipe:
   test-storage:
     properties:
       type: "@azbake/ingredient-storage"
-      condition: "[!coreutils.current_region_primary()]"
+      condition: "[coreutils.variable('test_var')]"
       parameters:
         storageAccountName: "[storage.create_resource_name()]"

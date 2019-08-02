@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.71](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.70...v0.1.71) (2019-07-31)
+
+
+### Bug Fixes
+
+* Azure VM Extension Ingredient ([#111](https://github.com/HomecareHomebase/azure-bake/issues/111)) ([8e18197](https://github.com/HomecareHomebase/azure-bake/commit/8e18197))
+
+
+
+
+
+## [0.1.70](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.68...v0.1.70) (2019-07-26)
+
+
+### Bug Fixes
+
+* changing resource group naming schema ([#110](https://github.com/HomecareHomebase/azure-bake/issues/110)) [#100](https://github.com/HomecareHomebase/azure-bake/issues/100) [#93](https://github.com/HomecareHomebase/azure-bake/issues/93) ([2ec49c2](https://github.com/HomecareHomebase/azure-bake/commit/2ec49c2))
+* updated borked upload ver ([#109](https://github.com/HomecareHomebase/azure-bake/issues/109)) ([332557c](https://github.com/HomecareHomebase/azure-bake/commit/332557c))
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* added support for specifying rg of ehn ([#108](https://github.com/HomecareHomebase/azure-bake/issues/108)) ([b4a5739](https://github.com/HomecareHomebase/azure-bake/commit/b4a5739))
+* API Management ([#103](https://github.com/HomecareHomebase/azure-bake/issues/103)) ([d89149b](https://github.com/HomecareHomebase/azure-bake/commit/d89149b))
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+* Fix table format ([#107](https://github.com/HomecareHomebase/azure-bake/issues/107)) ([6c97c34](https://github.com/HomecareHomebase/azure-bake/commit/6c97c34))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+
+### Bug Fixes
+
+* BakeVaribales now support async/await of internal calls ([#105](https://github.com/HomecareHomebase/azure-bake/issues/105)) ([719810b](https://github.com/HomecareHomebase/azure-bake/commit/719810b))
+
+
+
+
+
+## [0.1.66](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.65...v0.1.66) (2019-07-12)
+
+
+### Bug Fixes
+
+* Fix/coreutils.create resource name ([#104](https://github.com/HomecareHomebase/azure-bake/issues/104)) ([c19542f](https://github.com/HomecareHomebase/azure-bake/commit/c19542f))
+
+
+
+
+
 ## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
 
 

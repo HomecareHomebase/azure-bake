@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.70](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.68...v0.1.70) (2019-07-26)
+
+
+### Bug Fixes
+
+* updated borked upload ver ([#109](https://github.com/HomecareHomebase/azure-bake/issues/109)) ([332557c](https://github.com/HomecareHomebase/azure-bake/commit/332557c))
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
 ## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
 
 
