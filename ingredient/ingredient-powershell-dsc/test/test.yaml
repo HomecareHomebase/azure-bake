@@ -1,0 +1,17 @@
+name: ps-dsc-test
+shortName: psdsc
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-powershell-dsc@0.0.1"
+resourceGroup: true
+rgOverride: "test"
+parallelRegions: false
+recipe:
+  vmext:
+    properties:
+      type: "@azbake/ingredient-powershell-dsc"
+      parameters:
+        vmName: "winVM"
+        registrationURL: "https://eus-agentservice-prod-1.azure-automation.net/accounts/d5d56429-c355-4715-9889-dd2eda93b677"
+        registrationKey: "tJMeKloTrqAd2ZF3CuuG3Z6nUyzYELv2KM0n2OMhUdHaDy7BS5axU+Qhtc5bjxFnMovYiZbpENqj9evyPzvisg=="        
+        nodeConfigurationName: "TestConfig.NotWebServer"
