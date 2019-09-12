@@ -94,10 +94,10 @@ export class CoreUtils extends BaseUtility {
                 }
             }
 
-            return "";
+            return def || "";
             
         } else {
-            return ""
+            return def || ""
         }
     }
 
