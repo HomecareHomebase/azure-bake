@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
+
+
+### Bug Fixes
+
+* default values for variables stopped working ([#117](https://github.com/HomecareHomebase/azure-bake/issues/117)) ([8f4b427](https://github.com/HomecareHomebase/azure-bake/commit/8f4b427))
+
+
+
+
+
 ## [0.1.73](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.72...v0.1.73) (2019-09-10)
 
 
