@@ -126,8 +126,36 @@ export class ARMHelper {
         logger.log(alertName);            
         params["alertName"] = { "value": alertName };
 
-        await this.DeployTemplate(deploymentName, alertTemplate, params, resourceGroup);
+        if (params["actionGroups"])
+        {
+            if (params["actionGroups"].value) {
+                params["actionGroups"].value.forEach(async  (element:any) => {
+                    if (element.actionGroupShortName) 
+                    {
+                        let actionGroupShortName = element.actionGroupShortName;
+                        
+                        let subscriptionId = this._ctx.Environment.authentication.subscriptionId;
+                        let actionResourceGroup = await util.resource_group("actiongroups",false,null,true); 
+                        let actionGroup = util.create_resource_name("act", actionGroupShortName, false);
 
+                        let actionGroupId = "/subscriptions/" + subscriptionId + "/resourceGroups/" + actionResourceGroup + "/providers/Microsoft.Insights/actionGroups/" + actionGroup                        
+
+                        element.actionGroupId = actionGroupId; //Add the actionGroupId param
+                        delete element.actionGroupShortName; //Remove the actionGroupShortName param
+                    }
+                });
+            }
+            else {
+                delete params["actionGroups"]; //Remove the actionGroups section if there aren't any specified
+            }
+        }
+
+        // Don't fail the Bake recipe if there are problems deploying an alert.  Instead, log as a warning and continue.
+        try {
+            await this.DeployTemplate(deploymentName, alertTemplate, params, resourceGroup);
+        } catch (error) {
+            logger.warn('Unable to deploy alert.  Continuing deployments.');
+        }        
     }
 
     public async BakeParamsToARMParamsAsync(deploymentName: string, params: Map<string, BakeVariable>): Promise<any> {
