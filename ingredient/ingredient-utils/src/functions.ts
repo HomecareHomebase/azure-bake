@@ -80,7 +80,7 @@ export class CoreUtils extends BaseUtility {
         }
     }
     
-    public async variable(key: string, def?: string): Promise<any> {
+    private _find_variable(key: string) : BakeVariable | undefined {
         if (this.context.Config.variables) {
 
             //we want keys to be case insensitive, so we iterate all keys and find first case-insensitive match
@@ -89,16 +89,28 @@ export class CoreUtils extends BaseUtility {
             for(let variableKey of this.context.Config.variables.entries()){
                 if (stringCompareInsensitive(variableKey[0], key)) {
                 
-                    let v: BakeVariable = this.context.Config.variables.get(variableKey[0]) || new BakeVariable(def || "")
-                    return await v.valueAsync(this.context)  
+                    let v = this.context.Config.variables.get(variableKey[0])
+                    return v
                 }
-            }
+            }            
+        } 
+        return undefined
+    }
 
-            return def || "";
-            
-        } else {
-            return def || ""
-        }
+    public async variable(key: string, def?: string): Promise<any> {
+        let v: BakeVariable = this._find_variable(key) || new BakeVariable(def || "");
+        return await v.valueAsync(this.context);
+    }
+
+    public async regionVariable(key: string, def?: string, region?: IBakeRegion | null): Promise<any> {
+        let rgn = region || this.context.Region
+        let rgn_code = rgn.shortName
+
+        //first try and resolve the variable by prepending the region code.
+        let rgn_key = rgn_code + "__" + key
+
+        let v: BakeVariable = this._find_variable(rgn_key) || this._find_variable(key) || new BakeVariable(def || "")
+        return await v.valueAsync(this.context);
     }
 
     public create_region_resource_name(resType: string, name: string | null = null, region: IBakeRegion | null, suffix: string = ""): string {
