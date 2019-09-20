@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+**Note:** Version bump only for package @azbake/ingredient-api-management-base
+
+
+
+
+
+## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
+
+**Note:** Version bump only for package @azbake/ingredient-api-management-base
+
+
+
+
+
+## [0.1.73](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.72...v0.1.73) (2019-09-10)
+
+**Note:** Version bump only for package @azbake/ingredient-api-management-base
+
+
+
+
+
 ## [0.1.72](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.71...v0.1.72) (2019-08-07)
 
 **Note:** Version bump only for package @azbake/ingredient-api-management-base
