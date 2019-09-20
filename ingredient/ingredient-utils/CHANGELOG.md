@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
+
+
+### Bug Fixes
+
+* adding new util func => regionVariable() ([#119](https://github.com/HomecareHomebase/azure-bake/issues/119)) ([23a3aeb](https://github.com/HomecareHomebase/azure-bake/commit/23a3aeb))
+
+
+
+
+
 ## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
 
 
