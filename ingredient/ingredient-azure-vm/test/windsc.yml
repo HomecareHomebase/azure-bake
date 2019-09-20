@@ -19,5 +19,5 @@ recipe:
         storageAccountName: "kevinvmstorage"
         osType: "windsc"
         registrationURL: "https://eus-agentservice-prod-1.azure-automation.net/accounts/d5d56429-c355-4715-9889-dd2eda93b677"
-        registrationKey: "8ZTJ3ZAMBuLGv7bqZ1IpKfDchjfA4No9AjCea7TZ7b7u1B4FmN/R8f/cteCRmVT2Q2Gk61t4VMksy6rXOkN1OQ=="
+        registrationKey: "secret"
         nodeConfigurationName: "TestConfig.NotWebServer"
