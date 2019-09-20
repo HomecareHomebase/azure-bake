@@ -4,7 +4,7 @@ version: 1.0.0
 ingredients:
   - "@azbake/ingredient-azure-vm@0~"
 resourceGroup: true
-rgOverride: test
+rgOverride: default
 parallelRegions: false
 recipe:
   windows-test:
@@ -13,10 +13,11 @@ recipe:
       parameters:
         vmName: "dscVM"
         adminUsername: "kevinreilly"
-        adminKey: "Hchb2019!"
+        adminPassword: "Hchb2019!"
+        nicName: "dscvm508"
         subnetName: "default"
         storageAccountName: "kevinvmstorage"
         osType: "windsc"
         registrationURL: "https://eus-agentservice-prod-1.azure-automation.net/accounts/d5d56429-c355-4715-9889-dd2eda93b677"
-        registrationKey: "secret"
+        registrationKey: "8ZTJ3ZAMBuLGv7bqZ1IpKfDchjfA4No9AjCea7TZ7b7u1B4FmN/R8f/cteCRmVT2Q2Gk61t4VMksy6rXOkN1OQ=="
         nodeConfigurationName: "TestConfig.NotWebServer"
