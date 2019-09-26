@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
+
+
+### Bug Fixes
+
+* adding new util func => regionVariable() ([#119](https://github.com/HomecareHomebase/azure-bake/issues/119)) ([23a3aeb](https://github.com/HomecareHomebase/azure-bake/commit/23a3aeb))
+
+
+
+
+
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+
+### Bug Fixes
+
+* Feature/enhanced alert action groups ([#118](https://github.com/HomecareHomebase/azure-bake/issues/118)) ([2418cb6](https://github.com/HomecareHomebase/azure-bake/commit/2418cb6))
+
+
+
+
+
+## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
+
+
+### Bug Fixes
+
+* default values for variables stopped working ([#117](https://github.com/HomecareHomebase/azure-bake/issues/117)) ([8f4b427](https://github.com/HomecareHomebase/azure-bake/commit/8f4b427))
+
+
+
+
+
+## [0.1.73](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.72...v0.1.73) (2019-09-10)
+
+
+### Bug Fixes
+
+* Updating kubectl to 1.13.5 ([#115](https://github.com/HomecareHomebase/azure-bake/issues/115)) ([2ba15d7](https://github.com/HomecareHomebase/azure-bake/commit/2ba15d7))
+
+
+
+
+
 ## [0.1.72](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.71...v0.1.72) (2019-08-07)
 
 **Note:** Version bump only for package root
