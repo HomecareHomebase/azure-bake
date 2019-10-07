@@ -8,6 +8,11 @@
 * [@azbake/ingredient-traffic-manager](./ingredient/ingredient-traffic-manager/CHANGELOG.md)
 * [@azbake/ingredient-host-names](./ingredient/ingredient-host-names/CHANGELOG.md)
 * [@azbake/ingredient-service-bus-namespace](./ingredient/ingredient-service-bus-namespace/CHANGELOG.md)
+* [@azbake/ingredient-databricks](./ingredient/ingredient-databricks/CHANGELOG.md)
+* [@azbake/ingredient-datafactoryv2](./ingredient/ingredient-datafactoryv2/CHANGELOG.md)
+* [@azbake/ingredient-sql-dwh](./ingredient/ingredient-sql-dwh/CHANGELOG.md)
+* [@azbake/ingredient-sqldb](./ingredient/ingredient-sqldb/CHANGELOG.md)
+* [@azbake/ingredient-sqlserver-logical](./ingredient/ingredient-sqlserver-logical/CHANGELOG.md)
 
 ## Tools
 
