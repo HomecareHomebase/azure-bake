@@ -1,0 +1,26 @@
+name: sqlserver-sql-dwh
+shortName: sqldwh
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-sql-dwh@0~"
+resourceGroup: true
+rgOverride: HCHB_DataAdmins_DataWarehouse_Dev
+parallelRegions: false
+variables:
+  databaseName : "testsqldwh"
+  skuName : "DW100c"
+  serverName : "testsqlserverlogical"
+  serverLocation : "centralus"
+  collation : "SQL_Latin1_General_CP1_CI_AS"
+  databaseTags : {}
+recipe:
+  namespace:
+    properties:
+      type: "@azbake/ingredient-sql-dwh"
+      parameters:
+        databaseName : "[coreutils.variable('databaseName')]"
+        skuName : "[coreutils.variable('skuName')]"
+        serverName : "[coreutils.variable('serverName')]"
+        serverLocation : "[coreutils.variable('serverLocation')]"
+        collation : "[coreutils.variable('collation')]"
+        databaseTags : "[coreutils.variable('databaseTags')]"

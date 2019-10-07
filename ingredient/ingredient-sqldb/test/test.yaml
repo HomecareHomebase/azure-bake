@@ -1,0 +1,48 @@
+name: SQL SB
+shortName: sqldbdeployment
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-sqldb@0~"
+resourceGroup: true
+rgOverride: HCHB_DataAdmins_DataWarehouse_Dev
+variables:
+  collation : "SQL_Latin1_General_CP1_CI_AS"
+  databaseName : "testdb"
+  tier : "Basic"
+  skuName : "Basic"
+  maxSizeBytes : 2147483648
+  serverName : "testsqlserverlogical"
+  serverLocation : "centralus"
+  sampleName : 
+  zoneRedundant : False
+  licenseType : 
+  readScaleOut : "Disabled"
+  numberOfReplicas : 0
+  minCapacity : 
+  autoPauseDelay : 
+  databaseTags :  {}
+  enableADS : False
+  enableVA : False
+recipe:
+  sqlserverlogical:
+    properties:
+      type: "@azbake/ingredient-sqldb"
+      parameters:
+        serverName : "[coreutils.variable('serverName')]"
+        collation : "[coreutils.variable('collation')]"
+        databaseName : "[coreutils.variable('databaseName')]"
+        tier : "[coreutils.variable('tier')]"
+        skuName : "[coreutils.variable('skuName')]"
+        maxSizeBytes : "[coreutils.variable('maxSizeBytes')]"
+        serverLocation : "[coreutils.variable('serverLocation')]"
+        sampleName : "[coreutils.variable('sampleName')]"
+        zoneRedundant : "[(coreutils.variable('zoneRedundant') == true)]" #this is only available in premium
+        licenseType : "[coreutils.variable('licenseType')]"
+        readScaleOut : "[coreutils.variable('readScaleOut')]"
+        databaseTags : "[coreutils.variable('databaseTags')]"
+        minCapacity : "[coreutils.variable('minCapacity')]"
+        #numberOfReplicas : "[coreutils.variable('numberOfReplicas')]" #this is only available in premium
+        autoPauseDelay : "[coreutils.variable('autoPauseDelay')]"
+        enableADS : "[(coreutils.variable('enableADS') == true)]"
+        enableVA : "[(coreutils.variable('enableVA') == true)]"
+   
