@@ -1,6 +1,6 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient, ApiPolicy } from "@azure/arm-apimanagement"
-import { ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails } from "@azure/arm-apimanagement/esm/models";
 import { RestError, RequestOptionsBase } from "@azure/ms-rest-js"
 let request = require('async-request')
 
@@ -9,8 +9,15 @@ interface IApimPolicy {
     data: PolicyContract
 }
 
+interface IApimApiVersion {
+    id: string
+    data: ApiVersionSetContract
+    versions: Array<IApimApi>
+}
+
 interface IApimApi {
     id : string
+    version: string
     data: ApiCreateOrUpdateParameter
     policies?: Array<IApimPolicy>
 }
@@ -79,14 +86,14 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        let apis :IApimApi[] = await apisParam.valueAsync(this._ctx)
+        let apis :IApimApiVersion[] = await apisParam.valueAsync(this._ctx)
         if (!apis){
             return
         }
 
         for(let i =0; i < apis.length; ++i) {
             let api = apis[i];
-            await this.BuildAPI(api)
+            await this.BuildAPiVersion(api)
         }       
     }
 
@@ -170,17 +177,30 @@ export class ApimPlugin extends BaseIngredient {
 
         return userId
     }
+
+    private async BuildAPiVersion(api: IApimApiVersion) : Promise<void> { 
+
+        if (this.apim_client == undefined) return
+
+        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
+        for(let i=0; i< api.versions.length; ++i) {
+            let version = api.versions[i]
+            await this.BuildAPI(version, apiVersionResponse)
+        }
+
+    }
     
-    private async BuildAPI(api: IApimApi) : Promise<void> { 
+    private async BuildAPI(api: IApimApi, apiVersion: ApiVersionSetContractDetails) : Promise<void> { 
         
         if (this.apim_client == undefined) return
 
         let apiContract = this.GetApi(api.id)
         if (apiContract) {
-            this._logger.log('Updating API ' + api.id)
+            this._logger.log('Updating API ' + api.id + " " + api.version)
         }
         else {
-            this._logger.log('Creating API ' + api.id)
+            this._logger.log('Creating API ' + api.id + " " + api.version)
 
         }
 
@@ -193,6 +213,9 @@ export class ApimPlugin extends BaseIngredient {
 
         let apiRevisionId : string
         try {
+            api.data.apiVersion = api.version
+            api.data.apiVersionSetId = apiVersion.id
+            api.data.apiVersionSet = apiVersion
             let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, {ifMatch : '*'})
             this._logger.log("API " + result.displayName + " published")
             apiRevisionId = result.apiRevision || ""
