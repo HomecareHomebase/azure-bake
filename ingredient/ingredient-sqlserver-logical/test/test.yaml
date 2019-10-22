@@ -1,0 +1,21 @@
+name: Sql Server Test
+shortName: logicalsqlserver
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-sqlserver-logical@0~"
+resourceGroup: true
+rgOverride: HCHB_DataAdmins_DataWarehouse_Dev
+variables:
+  serverName : "testsqlserverlogical"
+  administratorLogin : "testadmin"
+  administratorLoginPassword : "Training2019"
+  location : "centralus"
+recipe:
+  sqlserverlogical:
+    properties:
+      type: "@azbake/ingredient-sqlserver-logical"
+      parameters:
+        serverName : "[coreutils.variable('serverName')]"
+        administratorLogin : "[coreutils.variable('administratorLogin')]"
+        administratorLoginPassword : "[coreutils.variable('administratorLoginPassword')]"
+        location : "[coreutils.variable('location')]"
