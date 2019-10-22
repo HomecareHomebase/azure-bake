@@ -32,7 +32,7 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish, tagAndPush)(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, resetNpmAuth, systemPublish, tagAndPush)(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
@@ -258,6 +258,21 @@ function writeFilenameToFile() {
         //Callback signals the operation is done and returns the object to the pipeline
         cb(null, file);
     });
+}
+
+function resetNpmAuth() {
+    let filename = './.npmrc'
+    let npmString = '//registry.npmjs.org/:_authToken=$(Npm_Auth_Token)'
+    src._read = function () {
+        this.push(new gutil.File({
+          cwd: "",
+          base: "",
+          path: filename,
+          contents: new Buffer(npmString)
+        }))
+        this.push(null)
+      }
+      return src
 }
 
 //Tasks
