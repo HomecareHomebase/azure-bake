@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-apim",
   "description": "Ingredient for deploying and configuring APIs against an APIM instance",
-  "version": "0.1.79",
+  "version": "0.1.80",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -26,7 +26,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.75",
+    "@azbake/arm-helper": "^0.1.80",
     "@azure/arm-apimanagement": "^5.1.1",
     "@azure/ms-rest-js": "^2.0.4",
     "async-request": "^1.2.0"
