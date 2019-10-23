@@ -20,7 +20,7 @@
             "alertSensitivity": "Low",
             "failingPeriods": {
                 "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "minFailingPeriodsToAlert": "4"
             }
         }        
     },
@@ -39,8 +39,22 @@
             "alertSensitivity": "Low",
             "failingPeriods": {
                 "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "minFailingPeriodsToAlert": "4"
             }
         }         
+    },
+    "TransactionVolume": {
+        "alertDescription": "Transaction Volume",
+        "alertSeverity": 2,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "Transactions",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
+        "alertType": "Static",
+        "threshold": "16200000",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
     }
 }
