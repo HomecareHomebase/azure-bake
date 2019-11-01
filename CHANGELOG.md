@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
+
+
+### Bug Fixes
+
+* Feature/azure alert tweaks ([#123](https://github.com/HomecareHomebase/azure-bake/issues/123)) ([1405c7c](https://github.com/HomecareHomebase/azure-bake/commit/1405c7c))
+
+
+
+
+
+## [0.1.79](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.78...v0.1.79) (2019-10-22)
+
+
+### Bug Fixes
+
+* Reset the NPM Key before build commits it ([#122](https://github.com/HomecareHomebase/azure-bake/issues/122)) ([cf771ca](https://github.com/HomecareHomebase/azure-bake/commit/cf771ca))
+
+
+
+
+
+## [0.1.78](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.77...v0.1.78) (2019-10-22)
+
+
+### Bug Fixes
+
+* Checking in new bake ingredients ([#120](https://github.com/HomecareHomebase/azure-bake/issues/120)) ([7801849](https://github.com/HomecareHomebase/azure-bake/commit/7801849))
+
+
+
+
+
+## [0.1.77](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.76...v0.1.77) (2019-10-22)
+
+
+### Bug Fixes
+
+* Feature/apim ([#121](https://github.com/HomecareHomebase/azure-bake/issues/121)) ([4295c29](https://github.com/HomecareHomebase/azure-bake/commit/4295c29))
+
+
+
+
+
 ## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
 
 

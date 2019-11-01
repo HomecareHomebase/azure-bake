@@ -118,7 +118,7 @@
         "alertSensitivity": "Low",
         "failingPeriods": {
           "numberOfEvaluationPeriods": "4",
-          "minFailingPeriodsToAlert": "3"
+          "minFailingPeriodsToAlert": "4"
         }
       }
     }

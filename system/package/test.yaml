@@ -3,15 +3,76 @@ shortName: funcapptest
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-storage@~0"
-resourceGroup: true
+  - "@azbake/ingredient-apim@~0"
+resourceGroup: false
 parallelRegions: false
 variables:  
-  test1: "10"
-  test_var: "[coreutils.toNumber(await coreutils.variable('test1'))]"
+  url: http://petstore.swagger.io/v2/swagger.json
+  primaryKey: "[apim.get_subscription_key('whilke-poc', 'whilkeApim', 'my-product-sub')]"
 recipe:
-  test-storage:
+  test-apim:
     properties:
-      type: "@azbake/ingredient-storage"
-      condition: "[coreutils.variable('test_var')]"
+      type: "@azbake/ingredient-apim"
+      source: whilke-poc/whilkeAPIM
+      condition: "[coreutils.primary_region()]"
       parameters:
-        storageAccountName: "[storage.create_resource_name()]"
+        options:
+          apiWaitSeconds: 60 #define how many seconds to wait for any web link (api.data.value or policy.data.value) to return a 2XX response code before handing over to APIM. Defaults to 120
+        apis:
+          - id: my-api #unique API version identifier across APIM
+            data:
+              displayName: My API Set
+              versioningScheme: Segment
+            versions:
+              - id: my-api-v1 # unique API identifer across APIM
+                version: v1
+                data:
+                  apiType: http #unless you're using soap
+                  path: pets #base apim url for this api
+                  protocols: #array of http and/or https
+                    - https
+                  format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
+                  value: "[coreutils.variable('url')]" #value supports bake variables.
+                policies: #can apply policies for the entire API, or override at the operation level
+                  - data: #this policy does not set the operation, so will default to the entire API (operation: base does the same thing)
+                      format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+                      value: "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>"
+                  - operation: addPet #override the addPet operation policy
+                    data:
+                      format: xml
+                      value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"
+              - id: my-api-v2 # unique API identifer across APIM
+                version: v2
+                data:
+                  apiType: http #unless you're using soap
+                  path: pets #base apim url for this api
+                  protocols: #array of http and/or https
+                    - https
+                  format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
+                  value: "[coreutils.variable('url')]" #value supports bake variables.
+                policies: #can apply policies for the entire API, or override at the operation level
+                  - data: #this policy does not set the operation, so will default to the entire API (operation: base does the same thing)
+                      format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+                      value: "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>"
+                  - operation: addPet #override the addPet operation policy
+                    data:
+                      format: xml
+                      value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"        
+        products:
+          - id: my-product
+            data:
+              displayName: My Product Name
+              description: My Product
+              terms: My terms
+              subscriptionRequired: true
+              approvalRequired: true
+              state: published
+            apis:
+              - my-api-v1
+              - my-api-v2
+            groups:
+              - Administrators
+              - Developers
+            subscriptions:
+              - id: my-product-sub
+                user: Administrator

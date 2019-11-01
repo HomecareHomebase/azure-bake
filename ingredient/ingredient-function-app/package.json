@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-function-app",
   "description": "Ingredient for deploying Function Apps",
-  "version": "0.1.75",
+  "version": "0.1.80",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.75"
+    "@azbake/arm-helper": "^0.1.80"
   },
   "publishConfig": {
     "access": "public"

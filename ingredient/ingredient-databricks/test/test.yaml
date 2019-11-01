@@ -1,0 +1,20 @@
+name: databricks
+shortName: databricks
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-databricks@~"
+resourceGroup: true
+rgOverride: HCHB_DataAdmins_DataWarehouse_Dev
+parallelRegions: false
+variables:
+  location : "centralus"
+  workspaceName : "az_databricks_test"
+  tier : "premium"
+recipe:
+  namespace:
+    properties:
+      type: "@azbake/ingredient-databricks"
+      parameters:
+        location : "[coreutils.variable('location')]"
+        workspaceName : "[coreutils.variable('workspaceName')]"
+        tier : "[coreutils.variable('tier')]"
