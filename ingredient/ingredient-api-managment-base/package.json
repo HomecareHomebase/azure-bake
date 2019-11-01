@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-api-management-base",
   "description": "Ingredient for deploying an Azure API Management Instance.",
-  "version": "0.1.76",
+  "version": "0.1.80",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -34,7 +34,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.75",
+    "@azbake/arm-helper": "^0.1.80",
     "@azure/arm-apimanagement": "^5.1.0",
     "@azure/arm-appinsights": "^2.1.0"
   },

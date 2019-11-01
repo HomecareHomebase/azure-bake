@@ -8,6 +8,11 @@
 * [@azbake/ingredient-traffic-manager](./ingredient/ingredient-traffic-manager/CHANGELOG.md)
 * [@azbake/ingredient-host-names](./ingredient/ingredient-host-names/CHANGELOG.md)
 * [@azbake/ingredient-service-bus-namespace](./ingredient/ingredient-service-bus-namespace/CHANGELOG.md)
+* [@azbake/ingredient-databricks](./ingredient/ingredient-databricks/CHANGELOG.md)
+* [@azbake/ingredient-datafactoryv2](./ingredient/ingredient-datafactoryv2/CHANGELOG.md)
+* [@azbake/ingredient-sql-dwh](./ingredient/ingredient-sql-dwh/CHANGELOG.md)
+* [@azbake/ingredient-sqldb](./ingredient/ingredient-sqldb/CHANGELOG.md)
+* [@azbake/ingredient-sqlserver-logical](./ingredient/ingredient-sqlserver-logical/CHANGELOG.md)
 
 ## Tools
 
@@ -185,3 +190,28 @@ Ingredient that allows deploying App Service Plan. Parameters are supplied via n
 Ingredient that allows deploying Service Bus Namespace. Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-service-bus-namespace/README.md)
+
+### @azbake/ingredient-databricks
+Ingredient that allows deploying Databricks. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-databricks/README.md)
+
+### @azbake/ingredient-datafactoryv2
+Ingredient that allows deploying Azure Data Factory. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-datafactoryv2/README.md)
+
+### @azbake/ingredient-sql-dwh
+Ingredient that allows deploying SQL Data Warehouse. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-sql-dwhj/README.md)
+
+### @azbake/ingredient-sqldb
+Ingredient that allows deploying SQL Database. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-sqldb/README.md)
+
+### @azbake/ingredient-sqlserver-logical
+Ingredient that allows deploying SQL Server Logical. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-sqlserver-logical/README.md)
