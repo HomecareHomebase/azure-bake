@@ -1,0 +1,25 @@
+{
+  "name": "",
+  "description": "",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "author": "",
+  "license": "",
+  "scripts": {
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "@azbake/core": "0.*",
+    "@azure/ms-rest-nodeauth": "0.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "@azure/ms-rest-nodeauth": "0.9.2"
+  }
+}
