@@ -1,11 +1,11 @@
 {
-  "name": "",
-  "description": "",
+  "name": "@azbake/ingredient-key-vault",
+  "description": "Ingredient for deploying Key Vault",
   "version": "0.0.0",
   "main": "dist/index.js",
   "typings": "src/index.ts",
-  "author": "",
-  "license": "",
+  "author": "HCHB",
+  "license": "MIT",
   "scripts": {
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
