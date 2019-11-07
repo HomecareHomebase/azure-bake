@@ -2,14 +2,14 @@ name: key-vault-test
 shortName: keyvaulttest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-key-vault@0.0.1"
+  - "@azbake/ingredient-key-vault"
 resourceGroup: true
 rgOverride: "default"
 parallelRegions: false
 recipe:
   keyvault:
     properties:
-      type: "@azbake/ingredient-key-vault@0.0.1"
+      type: "@azbake/ingredient-key-vault"
       parameters:
         name: "[keyvaultutils.create_resource_name()]"
         location: "northcentralus"
