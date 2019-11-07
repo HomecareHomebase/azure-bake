@@ -1,49 +1,20 @@
-name: test-package
-shortName: tstpkg
+name: key-vault-test
+shortName: keyvaulttest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-arm@~0"
-  - "@azbake/ingredient-script@~0"
-  - "@azbake/ingredient-storage@~0"
+  - "@azbake/ingredient-key-vault@0.0.1"
 resourceGroup: true
-parallelRegions: true
-rgOverride: whilke-poc
-variables:
-  test1: "[coreutils.variable('test2','default')]"
-  test2: whilke-poc
+rgOverride: "default"
+parallelRegions: false
 recipe:
-  webapp:
+  keyvault:
     properties:
-      type: software
-      source: webapp
+      type: "@azbake/ingredient-key-vault@0.0.1"
       parameters:
-    dependsOn:
-      - storage1
-      - storage2
-  custom:
-    properties:
-      type: "@azbake/ingredient-script"
-      source: ./script.ts
-      parameters:
-        name: "[coreutils.create_storage_name('wpoctest1')]"
-        name 2: "[coreutils.resource_group()]"
-    dependsOn:
-      - storage1
-      - storage2
-  storage1:
-    properties:
-      type: "@azbake/ingredient-arm"
-      source: ./arm.json
-      parameters:
-        name: "[coreutils.create_storage_name('wpoctest1')]"
-        name 2: "[coreutils.resource_group()]"
-    dependsOn:    
-  storage2:
-    properties:
-      type: "@azbake/ingredient-arm"
-      source: ./arm2.json
-      parameters:
-        name: "[coreutils.create_storage_name('wpoctest2')]"
-        primary: "[storage.get_primary_key(coreutils.create_storage_name('wpoctest1'))]"
-    dependsOn:    
-      - storage1
+        name: "[keyvaultutils.create_resource_name()]"
+        location: "northcentralus"
+        sku: "5tandard"
+        tenant: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
+        enabledForDeployment: true
+        enabledForTemplateDeployment: true
+        enabledForDiskEncryption: true
