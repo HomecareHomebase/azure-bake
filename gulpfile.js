@@ -264,16 +264,9 @@ function writeFilenameToFile() {
 function resetNpmAuth() {
     let filename = './.npmrc'
     let npmString = '//registry.npmjs.org/:_authToken=$(Npm_Auth_Token)'
-    src._read = function () {
-        this.push(new gutil.File({
-          cwd: "",
-          base: "",
-          path: filename,
-          contents: new Buffer(npmString)
-        }))
-        this.push(null)
-      }
-      return src
+    return new Promise (function(cb){
+        fs.writeFile(filename, npmString, cb);        
+    });
 }
 
 //Tasks
@@ -292,3 +285,4 @@ exports.printversion = printVersion;
 exports.setupcoveragepool = setupCoveragePool;
 exports.tagandpush = tagAndPush;
 exports.testnycmocha = testNycMocha;
+exports.resetNpmAuth = resetNpmAuth;
