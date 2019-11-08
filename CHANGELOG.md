@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.81](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.80...v0.1.81) (2019-11-08)
+
+
+### Bug Fixes
+
+* updated to untrack .npmrc ([#124](https://github.com/HomecareHomebase/azure-bake/issues/124)) ([4ee7020](https://github.com/HomecareHomebase/azure-bake/commit/4ee7020))
+
+
+
+
+
 ## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
 
 
