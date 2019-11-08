@@ -3,7 +3,7 @@ import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./arm.json"
 
 
-export class KeyVaultPlugin extends BaseIngredient {
+export class KeyVault extends BaseIngredient {
 
     public async Execute(): Promise<void> {
         try {

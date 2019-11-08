@@ -9,7 +9,7 @@ parallelRegions: false
 recipe:
   keyvault:
     properties:
-      type: "@azbake/ingredient-key-vault@0.0.1"
+      type: "@azbake/ingredient-key-vault"
       parameters:
         name: "[keyvaultutils.create_resource_name()]"
         location: "northcentralus"

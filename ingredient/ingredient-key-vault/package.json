@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-key-vault",
   "description": "Ingredient for deploying Key Vault",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
