@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.82](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.81...v0.1.82) (2019-11-08)
+
+
+### Bug Fixes
+
+* fixed reset npm function ([#125](https://github.com/HomecareHomebase/azure-bake/issues/125)) ([a5a54aa](https://github.com/HomecareHomebase/azure-bake/commit/a5a54aa))
+
+
+
+
+
 ## [0.1.81](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.80...v0.1.81) (2019-11-08)
 
 
