@@ -77,6 +77,7 @@ function gitCommit(done) {
     var gitScript = `sudo git checkout ${branchName} && 
     sudo git config user.email "${params.build.buildRequestedForEmail}" &&
     sudo git config user.name "${params.build.buildRequestedFor}" &&
+    sudo git update-index --assume-unchanged .npmrc &&
     sudo git add . && 
     sudo git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "chore[skip ci]: Update & Commit Locks" && 
     sudo git tag v${lerna.version} &&
