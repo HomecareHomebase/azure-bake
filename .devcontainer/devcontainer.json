@@ -1,0 +1,11 @@
+{
+    "name": "Azure Bake Developement",
+    "dockerFile": "Dockerfile",
+    "appPort": 3000,
+    "extensions": [
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-tslint-plugin"
+    ],
+    "runArgs": ["--env-file","./.env"],
+    "postCreateCommand": "npm run clean:build && npm run load:ingredients && git config credential.helper '!f() { sleep 1; echo \"username=${GIT_USER}\"; echo \"password=${GIT_PASSWORD}\"; }; f' && echo \"${REGISTRY_PASSWORD}\" | docker login --username \"${REGISTRY_USER}\" --password-stdin ${REGISTRY_URL} && cd /usr/local/bin && ln -s /workspaces/azure-bake/system/dist/index.js bake"                       
+}  

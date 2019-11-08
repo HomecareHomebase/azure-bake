@@ -3,6 +3,109 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
+
+
+### Bug Fixes
+
+* Feature/azure alert tweaks ([#123](https://github.com/HomecareHomebase/azure-bake/issues/123)) ([1405c7c](https://github.com/HomecareHomebase/azure-bake/commit/1405c7c))
+
+
+
+
+
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
+## [0.1.70](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.68...v0.1.70) (2019-07-26)
+
+
+### Bug Fixes
+
+* updated borked upload ver ([#109](https://github.com/HomecareHomebase/azure-bake/issues/109)) ([332557c](https://github.com/HomecareHomebase/azure-bake/commit/332557c))
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
+## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
+
+
+### Bug Fixes
+
+* Fix/app insights smart detection ([#99](https://github.com/HomecareHomebase/azure-bake/issues/99)) ([f07a616](https://github.com/HomecareHomebase/azure-bake/commit/f07a616))
+
+
+
+
+
+## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
+## [0.1.63](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.62...v0.1.63) (2019-07-03)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
+## [0.1.62](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.61...v0.1.62) (2019-07-03)
+
+
+### Bug Fixes
+
+* App Insights get ikey functionality ([#51](https://github.com/HomecareHomebase/azure-bake/issues/51)) ([a1bd384](https://github.com/HomecareHomebase/azure-bake/commit/a1bd384))
+
+
+
+
+
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+**Note:** Version bump only for package @azbake/ingredient-app-insights
+
+
+
+
+
 ## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
 
 **Note:** Version bump only for package @azbake/ingredient-app-insights

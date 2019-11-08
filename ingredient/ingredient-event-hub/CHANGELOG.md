@@ -3,6 +3,88 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* added support for specifying rg of ehn ([#108](https://github.com/HomecareHomebase/azure-bake/issues/108)) ([b4a5739](https://github.com/HomecareHomebase/azure-bake/commit/b4a5739))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
+## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
+## [0.1.63](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.62...v0.1.63) (2019-07-03)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
+## [0.1.62](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.61...v0.1.62) (2019-07-03)
+
+
+### Bug Fixes
+
+* App Insights get ikey functionality ([#51](https://github.com/HomecareHomebase/azure-bake/issues/51)) ([a1bd384](https://github.com/HomecareHomebase/azure-bake/commit/a1bd384))
+* Azure VM Ingredient ([#91](https://github.com/HomecareHomebase/azure-bake/issues/91)) ([1988506](https://github.com/HomecareHomebase/azure-bake/commit/1988506))
+
+
+
+
+
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+
+### Bug Fixes
+
+* Feature/alert ingredient ([#52](https://github.com/HomecareHomebase/azure-bake/issues/52)) ([f03f96a](https://github.com/HomecareHomebase/azure-bake/commit/f03f96a))
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub
+
+
+
+
+
 ## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub

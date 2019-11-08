@@ -1,0 +1,52 @@
+name: Event Hub Namespace for diagnostics with a custom metric alert
+shortName: diagnostics
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-metric-alert@~0"
+  - "@azbake/ingredient-event-hub-namespace@~0"
+parallelRegions: true
+#rgOverride:
+resourceGroup: true
+variables:
+recipe:
+  ehndiag-deploy: 
+    properties:
+      type: "@azbake/ingredient-event-hub-namespace"
+      source: ""
+      parameters:    
+        eventHubNamespaceName: "[eventhubnamespace.get_resource_name()]"            
+        skuName: Standard
+        skuTier: Standard
+        skuCapacity: "1"
+        isAutoInflateEnabled: "true"
+        maximumThroughputUnits: "10"  
+  alert-deploy: 
+    properties:
+      type: "@azbake/ingredient-metric-alert"
+      source: "[eventhubnamespace.get_resource_profile()]"
+      parameters:
+        alertName: "Event Hub Namespace Alert"
+        alertDescription: "New alert created via Bake"
+        alertSeverity: 3
+        isEnabled: true
+        source-type: "Microsoft.EventHub/namespaces"
+        metricName: "ThrottledRequests"
+        operator: "GreaterThan"
+        threshold: "0"
+        timeAggregation: "Maximum"
+        windowSize: "PT5M"
+        evaluationFrequency: "PT5M"
+        actionGroupName: "[coreutils.create_resource_name('act','emailops', false)]"
+        actionGroupResourceGroup: "[coreutils.create_resource_name('','actiongroups', true)]"
+        #Uncomment below and comment above if using rgOverride 
+        #actionGroupResourceGroup: "[coreutils.resource_group()]"
+        #alertType: "Static"
+        alertType: "Dynamic"
+        #Dynamic alert params have defaults.  Uncomment and specify below to override defaults.
+        # dynamicAlertParameters:
+        #   alertSensitivity: "Low"
+        #   failingPeriods:
+        #     numberOfEvaluationPeriods: "4"
+        #     minFailingPeriodsToAlert: "3"
+    dependsOn:
+      - ehndiag-deploy

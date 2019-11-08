@@ -50,6 +50,27 @@ export class BakeRunner {
             })
 
             if (depsDone){
+
+                //check if ingredient has a condition
+                if (ingredient.properties.condition) {
+                    try {
+                        let result = await ingredient.properties.condition.valueAsync(ctx)
+                        if (!result) {
+                            let tmpLogger = new Logger(ctx.Logger.getPre().concat(ingredientName), ctx.Environment.logLevel)
+                            tmpLogger.log("Condition check failed...skipping")
+                            finished.push(ingredientName)
+                            continue
+                        }    
+                    }
+                    catch(e)
+                    {
+                        this._logger.error("Error running condition check for " + ingredientName + " => " + e);
+                        foundErrors = true;
+                        finished.push(ingredientName)
+                        continue
+                    }
+                }
+
                 let exec = IngredientFactory.Build(ingredientName, ingredient, ctx)
                 if (exec) {
 

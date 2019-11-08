@@ -8,8 +8,8 @@ dist
 system/lerna-debug\.log
 *.tgz
 
-
 node_modules/
+.npmrc
 lerna-debug.log
 npm-debug.log
 lib
@@ -20,3 +20,4 @@ azdevops/**/*.js
 !azdevops/imports/**/*.js
 /.vs
 .env
+/.devcontainer

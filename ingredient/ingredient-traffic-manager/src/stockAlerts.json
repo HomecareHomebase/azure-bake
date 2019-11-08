@@ -1,0 +1,16 @@
+{
+    "Endpoint Probe Status": {
+        "alertDescription": "",
+        "alertSeverity": 1,
+        "isEnabled": true,
+        "source-type": "Microsoft.Network/trafficManagerProfiles",
+        "metricName": "ProbeAgentCurrentEndpointStateByProfileResourceId",
+        "operator": "LessThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT1M",
+        "alertType": "Static",
+        "threshold": "1",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]
+    }
+}

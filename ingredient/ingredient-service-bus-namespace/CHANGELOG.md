@@ -3,6 +3,144 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.70](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.68...v0.1.70) (2019-07-26)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.66](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.65...v0.1.66) (2019-07-12)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.63](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.62...v0.1.63) (2019-07-03)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.62](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.61...v0.1.62) (2019-07-03)
+
+
+### Bug Fixes
+
+* Converted params ref to armParameters ([#94](https://github.com/HomecareHomebase/azure-bake/issues/94)) ([6077867](https://github.com/HomecareHomebase/azure-bake/commit/6077867))
+* Feature/az mon unified diag settings2 ([#86](https://github.com/HomecareHomebase/azure-bake/issues/86)) ([29d6045](https://github.com/HomecareHomebase/azure-bake/commit/29d6045))
+
+
+
+
+
+## [0.1.61](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.60...v0.1.61) (2019-07-02)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.60](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.59...v0.1.60) (2019-07-02)
+
+
+### Bug Fixes
+
+* Fixed issue with redeploying geo-redundant service bus instances ([#92](https://github.com/HomecareHomebase/azure-bake/issues/92)) ([9913027](https://github.com/HomecareHomebase/azure-bake/commit/9913027))
+
+
+
+
+
+## [0.1.59](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.58...v0.1.59) (2019-07-01)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.58](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.57...v0.1.58) (2019-06-28)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
 ## [0.1.55](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.54...v0.1.55) (2019-06-19)
 
 **Note:** Version bump only for package @azbake/ingredient-service-bus-namespace

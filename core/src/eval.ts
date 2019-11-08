@@ -27,8 +27,16 @@ export class BakeEval {
 
         private static compile(data: string, ctx: DeploymentContext) : Function {
             let utilStr = IngredientManager.buildUtilWrapperEval("ctx","funcWrapper")   
-            let func = new Function('ctx', 'funcWrapper', utilStr + "\n return(" + data +")")
-            return func
 
+            let funcStr = `
+            ${utilStr}
+            return (async()=>{
+                return await ${data}
+            })
+            `
+
+            let func = new Function('ctx', 'funcWrapper', funcStr)
+            return func
         }
 }
+

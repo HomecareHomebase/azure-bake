@@ -1,0 +1,22 @@
+{
+    "Server response time": {
+        "alertDescription": "Dynamic threshold alert for server response time",
+        "alertSeverity": 2,
+        "isEnabled": true,
+        "source-type": "Microsoft.Insights/Components",
+        "metricName": "requests/duration",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "4"
+            }
+        },
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+    }    
+}

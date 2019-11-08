@@ -2,6 +2,7 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./storage.json"
+import stockAlerts from "./stockAlerts.json"
 import { StorageUtils } from "./functions.js";
 import { StorageManagementClient } from "@azure/arm-storage"
 import { ServiceURL, StorageURL, SharedKeyCredential, Aborter } from "@azure/storage-blob"
@@ -20,6 +21,9 @@ export class StoragePlugIn extends BaseIngredient {
 
             await this.ConfigureDiagnosticSettings(params, util);
 
+            let alertTarget = params["storageAccountName"].value
+            let alertOverrides = this._ingredient.properties.alerts
+            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error

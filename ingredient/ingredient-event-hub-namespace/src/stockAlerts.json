@@ -1,0 +1,72 @@
+{
+    "ServerErrors": {
+        "alertDescription": "my server errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ServerErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }        
+    },
+    "UserErrors": {
+        "alertDescription": "my user errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "UserErrors",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "ThrottledRequests": {
+        "alertDescription": "my throttled errors",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ThrottledRequests",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "4",
+                "minFailingPeriodsToAlert": "3"
+            }
+        }         
+    },
+    "ActiveConnections": {
+        "alertDescription": "static connections",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.EventHub/namespaces",
+        "metricName": "ActiveConnections",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Maximum",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Static",
+        "threshold": "9000"
+    }
+}

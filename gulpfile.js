@@ -32,17 +32,17 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish, tagAndPush)(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, resetNpmAuth, systemPublish, tagAndPush)(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
             console.log('Running Azure DevOps Pull Request Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done);
+            gulp.series(printVersion, toolInstall, lernaBuild)(done);
         }
 
         else if (!!params.build.buildReason.match(/Manual/ig)) {
             console.log('Running Azure DevOps Manual Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild)(done)
+            gulp.series(printVersion, toolInstall, lernaBuild)(done)
         }
 
         else {
@@ -166,11 +166,12 @@ function runCmd(command, done) {
     });
     child.on('error', function (errors) {
         console.log('Comand Errors: ' + errors);
-        done(errors);
+        throw(errors);
     });
     child.on('close', function (code) {
         console.log('closing code: ' + code);
-        done(null, code);
+        if (code != 0) { throw('Build failed with errors!'); }
+        else { done(null, code); }
     });
 
 }
@@ -229,20 +230,7 @@ function tagAndPush(done) {
     var result = imageTags.forEach( function (tag) {
         console.log(`Tagging docker image: bake:release with ${tag}`);
         let dockerScript = `docker image tag bake:release ${tag} && docker push ${tag}`;                
-        var child = exec(dockerScript);
-        child.stdout.on('data', function (data) {
-            console.log(`stdout: ${data}`);
-        });
-        child.stderr.on('data', function (data) {
-            console.log(`stderr: ${data}`);
-        });
-        child.on('error', function (errors) {
-            console.log(`Comand Errors: ${errors}`);                        
-            throw errors;
-        });
-        child.on('close', function (code) {
-            console.log(`Exit Code: ${code}`);            
-        });
+        runCmd(dockerScript, done);
     });
     done(null, result);
 }
@@ -270,6 +258,21 @@ function writeFilenameToFile() {
         //Callback signals the operation is done and returns the object to the pipeline
         cb(null, file);
     });
+}
+
+function resetNpmAuth() {
+    let filename = './.npmrc'
+    let npmString = '//registry.npmjs.org/:_authToken=$(Npm_Auth_Token)'
+    src._read = function () {
+        this.push(new gutil.File({
+          cwd: "",
+          base: "",
+          path: filename,
+          contents: new Buffer(npmString)
+        }))
+        this.push(null)
+      }
+      return src
 }
 
 //Tasks
