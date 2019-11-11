@@ -18,4 +18,48 @@ recipe:
         enabledForDeployment: true
         enabledForTemplateDeployment: true
         enabledForDiskEncryption: true
+        accessPolicies:
+          - objectId: "b1830c7e-f0d2-4591-a4a7-758afe6e63ad"
+            tenantId: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
+            permissions:
+              keys:
+              - Get
+              - List
+              - Update
+              - Create
+              - Import
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+              secrets:
+              - Get
+              - List
+              - Set
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+              certificates:
+              - Get
+              - List
+              - Update
+              - Create
+              - Import
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+              - ManageContacts
+              - ManageIssuers
+              - GetIssuers
+              - ListIssuers
+              - SetIssuers
+              - DeleteIssuers
+        networkAcls:
+          defaultAction: "Allow"
+          bypass: "AzureServices"
+          ipRules: []
+          virtualNetworkRules: []
+
         

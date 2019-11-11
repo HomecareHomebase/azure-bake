@@ -13,8 +13,50 @@ recipe:
       parameters:
         name: "[keyvaultutils.create_resource_name()]"
         location: "northcentralus"
-        sku: "5tandard"
+        sku: "standard"
         tenant: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
         enabledForDeployment: true
         enabledForTemplateDeployment: true
         enabledForDiskEncryption: true
+        accessPolicies:
+          tenantId: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
+          permissions:
+            - keys:
+              - Get
+              - List
+              - Update
+              - Create
+              - Import
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+            - secrets:
+              - Get
+              - List
+              - Set
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+            - certificates:
+              - Get
+              - List
+              - Update
+              - Create
+              - Import
+              - Delete
+              - Recover
+              - Backup
+              - Restore
+              - ManageContacts
+              - ManageIssuers
+              - GetIssuers
+              - ListIssuers
+              - SetIssuers
+              - DeleteIssuers
+        networkAcls:
+          defaultAction: "Deny"
+          bypass: "AzureServices"
+          ipRules: []
+          virtualNetworkRules: []

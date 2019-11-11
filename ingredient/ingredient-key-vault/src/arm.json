@@ -41,13 +41,7 @@
             "type": "bool"
         },
         "networkAcls": {
-            "type": "object",
-            "defaultValue": {                
-                    "defaultAction": "Deny",
-                    "bypass": "AzureServices",
-                    "ipRules": [],
-                    "virtualNetworkRules": []
-                },
+            "type": "object",      
             "metadata": {
                 "description": "The network firewall defined for this vault."
             }
