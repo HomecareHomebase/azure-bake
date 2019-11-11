@@ -1,5 +1,5 @@
-name: key-vault-test
-shortName: keyvaulttest
+name: kv-test
+shortName: keyvault
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-key-vault@0.0.1"
@@ -57,7 +57,7 @@ recipe:
               - SetIssuers
               - DeleteIssuers
         networkAcls:
-          defaultAction: "Allow"
+          defaultAction: "Deny"
           bypass: "AzureServices"
           ipRules: []
           virtualNetworkRules: []

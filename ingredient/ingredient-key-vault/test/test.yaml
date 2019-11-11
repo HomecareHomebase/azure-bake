@@ -1,10 +1,10 @@
-name: key-vault-test
-shortName: keyvaulttest
+name: kv-test
+shortName: keyvault
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-key-vault@0.0.1"
 resourceGroup: true
-rgOverride: "default"
+rgOverride: "test-rg"
 parallelRegions: false
 recipe:
   keyvault:
@@ -19,9 +19,10 @@ recipe:
         enabledForTemplateDeployment: true
         enabledForDiskEncryption: true
         accessPolicies:
-          tenantId: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
-          permissions:
-            - keys:
+          - objectId: "b1830c7e-f0d2-4591-a4a7-758afe6e63ad"
+            tenantId: "31f75d09-c5c6-46c3-bb35-ba673d15e588"
+            permissions:
+              keys:
               - Get
               - List
               - Update
@@ -31,7 +32,7 @@ recipe:
               - Recover
               - Backup
               - Restore
-            - secrets:
+              secrets:
               - Get
               - List
               - Set
@@ -39,7 +40,7 @@ recipe:
               - Recover
               - Backup
               - Restore
-            - certificates:
+              certificates:
               - Get
               - List
               - Update
@@ -60,3 +61,5 @@ recipe:
           bypass: "AzureServices"
           ipRules: []
           virtualNetworkRules: []
+
+        
