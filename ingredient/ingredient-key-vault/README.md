@@ -34,7 +34,7 @@ recipe:
 | name | yes | The name for the Key Vault |
 | location | no | Sets the location. Defaults to the parent resource group location. |
 | sku | yes | SKU for the vault |
-| accessPolicies | yes | The access policies defined for this vault |
+| accessPolicies | no | The access policies defined for this vault |
 | tenant | no | Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault |
 | enabledForDeployment | no | Boolean flag to specify whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault. Default value is false |
 | enabledForTemplateDeployment | no | Boolean flag to specify whether Azure Resource Manager is permitted to retrieve secrets from the key vault. Default value is false |
