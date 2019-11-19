@@ -27,5 +27,8 @@
   "dependencies": {
     "@azbake/core": "^0.1.68",
     "@azbake/arm-helper": "^0.1.75"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  }  
 }
