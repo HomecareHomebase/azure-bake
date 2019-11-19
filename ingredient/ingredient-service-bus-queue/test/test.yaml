@@ -1,0 +1,43 @@
+name: service-bus-queue-test
+shortName: sbqueuetest
+version: 0.1.0
+ingredients:
+  - "@azbake/ingredient-service-bus-queue@~0"
+resourceGroup: true
+#rgOverride: "" 
+variables:
+  serviceBusNamespaceName: kn-service-bus
+  serviceBusQueueName: test-service-bus-queue-1
+  queueResourceGroup: kn-bake-rg
+  lockDuration: PT1M
+  maxSizeInMegabytes: 1024
+  requiresDuplicateDetection: False
+  requiresSession: False
+  defaultMessageTimeToLive: P10675199DT2H48M5.4775807S
+  deadLetteringOnMessageExpiration: False
+  duplicateDetectionHistoryTimeWindow: PT10M
+  maxDeliveryCount: 10
+  autoDeleteOnIdle: P10675199DT2H48M5.4775807S
+  enablePartitioning: True
+  enableExpress: False
+recipe:
+  queues:
+    properties:
+      type: "@azbake/ingredient-service-bus-queue"
+      source: ./arm.json
+      parameters:
+        serviceBusNamespaceName: "[coreutils.variable('serviceBusNamespaceName')]"
+        serviceBusQueueName: "[coreutils.variable('serviceBusQueueName')]"
+        resourceGroup: "[coreutils.variable('queueResourceGroup')]"
+        lockDuration: "[coreutils.variable('lockDuration')]"
+        maxSizeInMegabytes: "[coreutils.variable('maxSizeInMegabytes')]"
+        requiresDuplicateDetection: "[coreutils.variable('requiresDuplicateDetection')]"
+        requiresSession: "[coreutils.variable('requiresSession')]"
+        defaultMessageTimeToLive: "[coreutils.variable('defaultMessageTimeToLive')]"
+        deadLetteringOnMessageExpiration: "[coreutils.variable('deadLetteringOnMessageExpiration')]"
+        duplicateDetectionHistoryTimeWindow: "[coreutils.variable('duplicateDetectionHistoryTimeWindow')]"
+        maxDeliveryCount: "[coreutils.variable('maxDeliveryCount')]"
+        autoDeleteOnIdle: "[coreutils.variable('autoDeleteOnIdle')]"
+        enablePartitioning: "[coreutils.variable('enablePartitioning')]"
+        enableExpress: "[coreutils.variable('enableExpress')]"
+
