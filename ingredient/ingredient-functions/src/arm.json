@@ -52,6 +52,7 @@
         },
         "location": {
             "type": "string",
+            "defaultValue": "[resourceGroup().location]",
             "metadata": {
                 "description": "Resource Location."
             }

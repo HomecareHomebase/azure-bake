@@ -1,5 +1,5 @@
-name: functions deployment
-shortName: funcdepl
+name: functions-test
+shortName: functest
 version: 0.1.0
 ingredients:
   - "@azbake/ingredient-app-insights@~0"
@@ -7,24 +7,27 @@ ingredients:
 resourceGroup: true
 #rgOverride: "" 
 variables:
-  funcAppResourceGroup:  func-apps-test-rg
-  storageAccountConnectionString: DefaultEndpointsProtocol=https;AccountName=funcappsstorageaccount;AccountKey=***;EndpointSuffix=core.windows.net
-  hostingPlanName: func-apps-app-service-plan
-  hostingEnvironment: func-apps-test-rg-hosting-environment
+  funcAppResourceGroup:  kn-bake-rg
+  storageAccountConnectionString: DefaultEndpointsProtocol=https;AccountName=knbakestorageaccount;AccountKey=vbhcYmauSy6PIZ4yW4YnU8qR7ClpozYwXJMW+AA4OBMyUBLsyEi8VUJeY4l5QyGHzVFYBywDXGDG0JjlTBgThw==;EndpointSuffix=core.windows.net
+  container_registry_url: https://index.docker.io
+  container_registry_user: nikitkon
+  container_registry_password: 
+  hostingPlanName: kn-bake-app-service-plan
+  hostingEnvironment: hello-docker-function-hosting-environment
 recipe:
   functions:
     properties:
       type: "@azbake/ingredient-functions"
       source: ./arm.json
       parameters:
-        funcAppName: hello-docker-function-1
+        funcAppName: "[functions.create_resource_name('hello-docker-function-1')]"
         funcAppResourceGroup: "[coreutils.variable('funcAppResourceGroup')]"
         storageAccountConnectionString: "[coreutils.variable('storageAccountConnectionString')]"
         container_registry_url: "[coreutils.variable('container_registry_url')]"
         container_registry_user: "[coreutils.variable('container_registry_user')]"
         container_registry_password: "[coreutils.variable('container_registry_password')]"
-        container_image_name: func-apps-test/hello-docker-functions:latest
+        container_image_name: nikitkon/hello-docker-function:v1.0.2
         hostingPlanName: "[coreutils.variable('hostingPlanName')]"
         location: East US
         hostingEnvironment: "[coreutils.variable('hostingEnvironment')]"
-        appInsightsKey: "[appinsights.get_instrumentation_key('hellodockerfunctions','appinsights')]"
+        appInsightsKey: "[appinsights.get_instrumentation_key('helloworld','appinsights')]"

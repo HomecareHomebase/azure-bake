@@ -64,3 +64,29 @@ recipe:
 
 ### Best Practices
 Since there is some secure information required to deploy your web site in a container, it is recommended that this information should be stored inside of the environment and referenced through ``coreutils.variable()``.  Do not set these values in the recipe itself as it could risk exposing this information publicly. Sample above uses this method to keep secure user credentials and password for the container registry.
+
+
+## Utilities
+
+Utility classes can be used inside of the bake.yaml file for parameter and source values.
+
+### ``functions`` class
+
+|function|description|
+|--------|-----------|
+|create_resource_name(shortName)|Creates the full function app name by passing a short name.|
+
+#### Function Details
+
+#### create_resource_name(shortName)
+Creates the full function app name in the format ``<environment_name>fa<shortname>``
+
+```yaml
+...
+parameters:
+  funcAppName: "[functions.create_resource_name('hello-docker-function-1')]"
+...
+```
+#### Returns
+string
+
