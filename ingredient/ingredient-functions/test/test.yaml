@@ -17,7 +17,7 @@ recipe:
       type: "@azbake/ingredient-functions"
       source: ./arm.json
       parameters:
-        funcAppName: "[functions.create_resource_name('hello-docker-function-1')]"
+        funcAppName: hello-docker-function-1
         funcAppResourceGroup: "[coreutils.variable('funcAppResourceGroup')]"
         storageAccountConnectionString: "[coreutils.variable('storageAccountConnectionString')]"
         container_registry_url: "[coreutils.variable('container_registry_url')]"
