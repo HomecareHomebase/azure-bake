@@ -39,7 +39,6 @@ recipe:
 | enabledForDeployment | no | Boolean flag to specify whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault. Default value is false |
 | enabledForTemplateDeployment | no | Boolean flag to specify whether Azure Resource Manager is permitted to retrieve secrets from the key vault. Default value is false |
 | enabledForDiskEncryption | no | Boolean flag to specify whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys. Default value is false |
-| networkAcls | no | The network firewall defined for this vault |
 ## Utilities
 
 Utility classes can be used inside of the bake.yaml file for parameter and source values.
