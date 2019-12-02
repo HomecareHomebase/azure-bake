@@ -44,7 +44,8 @@ recipe:
         vmSize: "Standard_D2s_v3"
         imageName: "az-pipeline-image.v1" 
         osType: "linux"  
-        storageAccountName: "adhivm"     
+        storageAccountName: "adhivm"
+        availabilitySetName: "az-pl-availset001"     
   agentvm002:
     properties:
       type: "@azbake/ingredient-azure-vm"      
@@ -58,5 +59,6 @@ recipe:
         vmSize: "Standard_D2s_v3"
         imageName: "az-pipeline-image.v1"    
         osType: "linux"
-        storageAccountName: "adhivm"  
+        storageAccountName: "adhivm"
+        availabilitySetName: "az-pl-availset001"     
   
