@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.86](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.85...v0.1.86) (2019-11-27)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.85](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.84...v0.1.85) (2019-11-22)
+
+
+### Bug Fixes
+
+* Added ingredient-functions to deploy a function app in a Linux-based container. ([#130](https://github.com/HomecareHomebase/azure-bake/issues/130)) ([82386b1](https://github.com/HomecareHomebase/azure-bake/commit/82386b1))
+
+
+
+
+
+## [0.1.84](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.83...v0.1.84) (2019-11-19)
+
+
+### Bug Fixes
+
+* added ingredient-service-bus-queue ([#127](https://github.com/HomecareHomebase/azure-bake/issues/127)) ([59601a6](https://github.com/HomecareHomebase/azure-bake/commit/59601a6))
+
+
+
+
+
+## [0.1.83](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.82...v0.1.83) (2019-11-13)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.82](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.81...v0.1.82) (2019-11-08)
+
+
+### Bug Fixes
+
+* fixed reset npm function ([#125](https://github.com/HomecareHomebase/azure-bake/issues/125)) ([a5a54aa](https://github.com/HomecareHomebase/azure-bake/commit/a5a54aa))
+
+
+
+
+
+## [0.1.81](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.80...v0.1.81) (2019-11-08)
+
+
+### Bug Fixes
+
+* updated to untrack .npmrc ([#124](https://github.com/HomecareHomebase/azure-bake/issues/124)) ([4ee7020](https://github.com/HomecareHomebase/azure-bake/commit/4ee7020))
+
+
+
+
+
 ## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
 
 

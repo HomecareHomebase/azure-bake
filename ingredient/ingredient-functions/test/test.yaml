@@ -1,0 +1,30 @@
+name: functions deployment
+shortName: funcdepl
+version: 0.1.0
+ingredients:
+  - "@azbake/ingredient-app-insights@~0"
+  - "@azbake/ingredient-functions@~0"
+resourceGroup: true
+#rgOverride: "" 
+variables:
+  funcAppResourceGroup:  func-apps-test-rg
+  storageAccountConnectionString: DefaultEndpointsProtocol=https;AccountName=funcappsstorageaccount;AccountKey=***;EndpointSuffix=core.windows.net
+  hostingPlanName: func-apps-app-service-plan
+  hostingEnvironment: func-apps-test-rg-hosting-environment
+recipe:
+  functions:
+    properties:
+      type: "@azbake/ingredient-functions"
+      source: ./arm.json
+      parameters:
+        funcAppName: "[functions.create_resource_name('hello-docker-function-1')]"
+        funcAppResourceGroup: "[coreutils.variable('funcAppResourceGroup')]"
+        storageAccountConnectionString: "[coreutils.variable('storageAccountConnectionString')]"
+        container_registry_url: "[coreutils.variable('container_registry_url')]"
+        container_registry_user: "[coreutils.variable('container_registry_user')]"
+        container_registry_password: "[coreutils.variable('container_registry_password')]"
+        container_image_name: func-apps-test/hello-docker-functions:latest
+        hostingPlanName: "[coreutils.variable('hostingPlanName')]"
+        location: East US
+        hostingEnvironment: "[coreutils.variable('hostingEnvironment')]"
+        appInsightsKey: "[appinsights.get_instrumentation_key('hellodockerfunctions','appinsights')]"
