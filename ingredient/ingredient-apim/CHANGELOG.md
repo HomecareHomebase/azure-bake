@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.86](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.85...v0.1.86) (2019-11-27)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.85](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.84...v0.1.85) (2019-11-22)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.84](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.83...v0.1.84) (2019-11-19)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.83](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.82...v0.1.83) (2019-11-13)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.82](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.81...v0.1.82) (2019-11-08)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.81](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.80...v0.1.81) (2019-11-08)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
 ## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
 
 **Note:** Version bump only for package @azbake/ingredient-apim

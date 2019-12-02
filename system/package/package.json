@@ -1,0 +1,34 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "lerna": "^3.13.0",
+    "typescript": "^3.3.3"
+  },
+  "scripts": {
+    "clean:build": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile",
+    "load:build": "lerna bootstrap --hoist && lerna run compile",
+    "load:ingredients": "lerna run link:ingredients",
+    "build": "lerna bootstrap --hoist && lerna run compile",
+    "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes"
+  },
+  "dependencies": {
+    "@azure/arm-compute": "^10.0.0",
+    "@azure/arm-network": "^14.0.0",
+    "azure-arm-compute": "^10.0.0",
+    "child_process": "^1.0.2",
+    "del": "^4.1.1",
+    "event-stream": "^4.0.1",
+    "file-system": "^2.2.2",
+    "git-rev": "^0.2.1",
+    "gulp": "^4.0.2",
+    "gulp-bump": "^3.1.3",
+    "gulp-debug": "^4.0.0",
+    "gulp-git": "^2.9.0",
+    "gulp-inline-source": "^4.0.0",
+    "gulp-shell": "^0.7.1",
+    "moment": "^2.24.0",
+    "yargs": "^13.2.4"
+  }
+}
