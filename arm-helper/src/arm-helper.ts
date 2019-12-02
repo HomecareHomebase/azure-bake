@@ -174,6 +174,29 @@ export class ARMHelper {
         return props;
     }
 
+    public async ConfigureDiagnostics(armParameters: any): Promise<any> {
+
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+
+        if (!armParameters["diagnosticsEnabled"])
+        armParameters["diagnosticsEnabled"] = {"value": "yes"}
+
+        if (armParameters["diagnosticsEnabled"].value == "yes") {
+            const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
+
+            var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
+            armParameters["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
+        
+            var diagnosticsEventHubNamespaceResourceGroup: string
+
+            diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
+
+            armParameters["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
+        }        
+
+        return armParameters;
+    }
+
     public GenerateTags(extraTags: Map<string,string> | null = null) : any
     {
        var tagGen = new TagGenerator(this._ctx)
