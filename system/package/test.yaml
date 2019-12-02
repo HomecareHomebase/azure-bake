@@ -1,22 +1,62 @@
-name: kv-test
-shortName: kv
+name: Azure Pipeline Agent VM Set
+shortName: azAgent
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-key-vault@0.0.1"
+  - "@azbake/ingredient-availability-set@~0"
+  - "@azbake/ingredient-network-interface@~0"
+  - "@azbake/ingredient-azure-vm@~0"
 resourceGroup: true
 rgOverride: "test-rg"
 parallelRegions: false
 recipe:
-  keyvault:
+  availset:
     properties:
-      type: "@azbake/ingredient-key-vault"
+      type: "@azbake/ingredient-availability-set"      
       parameters:
-        name: "[keyvaultutils.create_resource_name()]"       
-        sku: "standard"                      
-        networkAcls:
-          defaultAction: "Deny"
-          bypass: "AzureServices"
-          ipRules: []
-          virtualNetworkRules: []
-
-        
+        name: "az-pl-availset001"
+        faultDomains: "1"
+        updateDomains: "1"
+        sku: "Aligned"
+  nic001:
+    properties:
+      type: "@azbake/ingredient-network-interface"      
+      parameters:
+        networkInterfaceName: "az-pl-nic001"
+        virtualNetworkName: "testVNET_1"        
+        subnetName: "default"
+  nic002:
+    properties:
+      type: "@azbake/ingredient-network-interface"      
+      parameters:
+        networkInterfaceName: "az-pl-nic002"
+        virtualNetworkName: "testVNET_1"        
+        subnetName: "default"
+  agentvm001:
+    properties:
+      type: "@azbake/ingredient-azure-vm"      
+      parameters:
+        vmName: "az-pl-agent-001"
+        adminUsername: "pluser"
+        adminKey: 'AAAAB3NzaC1yc2EAAAABJQAAAQEAhFNeqNpkPxrxROl6AUxhrwA+0aGV49khDVqvGQxz4crtz9/GbphTlSAfv1DxJnss9/o1mqzUnqjxhd9iy/WsKhdNxKOW0IteJIawax4CxcmKDSUX9Xh+nXtt7zeX1Bw8HcGoc5lweVDfg/jfnKFALuyUKyrsuloPviwbxO+zCxqYVhEnfTF+sS1WKGu+iIPCdvOIFdCZcf21HW5C6t3j0Dk+MqoXIR9YOLtLUjX9LZdUUQUjqsINhLwyzlWAf3lG0AIm/N38yTenJXqavEZe4XQWb3FAHpwO/FknzAYnq/hZR/n92Eot3sqYkyCjABsYlOYCqZ25PyKeBSX7WjVmew=='
+        subnetName: "default"
+        nicName: "az-pl-nic001"
+        virtualNetworkName: "testVNET_1"        
+        vmSize: "Standard_D2s_v3"
+        imageName: "az-pipeline-image.v1" 
+        osType: "linux"  
+        storageAccountName: "adhivm"     
+  agentvm002:
+    properties:
+      type: "@azbake/ingredient-azure-vm"      
+      parameters:
+        vmName: "az-pl-agent-002"
+        adminUsername: "pluser"
+        adminKey: 'AAAAB3NzaC1yc2EAAAABJQAAAQEAhFNeqNpkPxrxROl6AUxhrwA+0aGV49khDVqvGQxz4crtz9/GbphTlSAfv1DxJnss9/o1mqzUnqjxhd9iy/WsKhdNxKOW0IteJIawax4CxcmKDSUX9Xh+nXtt7zeX1Bw8HcGoc5lweVDfg/jfnKFALuyUKyrsuloPviwbxO+zCxqYVhEnfTF+sS1WKGu+iIPCdvOIFdCZcf21HW5C6t3j0Dk+MqoXIR9YOLtLUjX9LZdUUQUjqsINhLwyzlWAf3lG0AIm/N38yTenJXqavEZe4XQWb3FAHpwO/FknzAYnq/hZR/n92Eot3sqYkyCjABsYlOYCqZ25PyKeBSX7WjVmew=='
+        subnetName: "default"
+        nicName: "az-pl-nic002"
+        virtualNetworkName: "testVNET_1"        
+        vmSize: "Standard_D2s_v3"
+        imageName: "az-pipeline-image.v1"    
+        osType: "linux"
+        storageAccountName: "adhivm"  
+  
