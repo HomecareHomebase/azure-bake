@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.87](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.86...v0.1.87) (2019-12-04)
+
+
+### Bug Fixes
+
+* Added a function to compare environment codes ([#133](https://github.com/HomecareHomebase/azure-bake/issues/133)) ([6f94c4d](https://github.com/HomecareHomebase/azure-bake/commit/6f94c4d))
+
+
+
+
+
 ## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
 
 

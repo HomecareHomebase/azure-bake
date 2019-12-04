@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.87](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.86...v0.1.87) (2019-12-04)
+
+
+### Bug Fixes
+
+* Added a function to compare environment codes ([#133](https://github.com/HomecareHomebase/azure-bake/issues/133)) ([6f94c4d](https://github.com/HomecareHomebase/azure-bake/commit/6f94c4d))
+* Diagnostic settings for apim and key vault ([#132](https://github.com/HomecareHomebase/azure-bake/issues/132)) ([8455591](https://github.com/HomecareHomebase/azure-bake/commit/8455591))
+
+
+
+
+
 ## [0.1.86](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.85...v0.1.86) (2019-11-27)
 
 **Note:** Version bump only for package root
