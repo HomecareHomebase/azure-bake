@@ -57,6 +57,41 @@
             "metadata": {
                 "description": "The network firewall defined for this vault."
             }
+        },
+        "diagnosticsEnabled": {
+        "type": "string",
+        "defaultValue": "yes",
+        "metadata": {
+            "description": "Specifies whether to configure diagnostic settings to expose logs and metrics for consumption."
+        }
+        },
+        "diagnosticsSettingName": {
+            "type": "string",
+            "defaultValue": "diagToEHN",
+            "metadata": {
+                "description": "Diagnostic setting name.  Most by unique for the resource."
+            }
+        },
+        "diagnosticsEventHubResourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The resource group of the Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubNamespace": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubAuthorizationRule": {
+            "type": "string",
+            "defaultValue": "RootManageSharedAccessKey",
+            "metadata": {
+                "description": "The authorization rule to use for transmitting diagnostics."
+            }
         }
     },
     "resources": [
@@ -77,7 +112,42 @@
                 },
                 "networkAcls": "[parameters('networkAcls')]"
             },
-            "tags": {}
+            "tags": {},
+            "resources": [
+                {
+                    "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+                    "type": "providers/diagnosticSettings",
+                    "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                    "name": "[parameters('diagnosticsSettingName')]",
+                    "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+                    "logs": [
+                        {
+                        "category": "AuditEvent",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        }
+                    ],
+                    "metrics": [
+                        {
+                        "timeGrain": "PT1M",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "enabled": false,
+                            "days": 0
+                        }
+                        }
+                    ]
+                    }
+                }        
+            ]            
         }
     ]
 }
