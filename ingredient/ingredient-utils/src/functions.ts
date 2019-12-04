@@ -42,6 +42,13 @@ export class CoreUtils extends BaseUtility {
         return regions[0].code == this.current_region().code;
     }
 
+    public is_current_environment_code(environmentCode: string): boolean {
+        var currentEnvironmentCode = this.context.Environment.environmentCode;
+
+        return environmentCode == currentEnvironmentCode;
+
+    }
+
     public primary_region(): IBakeRegion | null {
 
         const regions = this.context.Environment.regions;
