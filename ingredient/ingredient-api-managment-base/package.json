@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-api-management-base",
   "description": "Ingredient for deploying an Azure API Management Instance.",
-  "version": "0.1.88",
+  "version": "0.1.89",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
