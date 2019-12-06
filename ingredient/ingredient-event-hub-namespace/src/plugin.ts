@@ -15,21 +15,7 @@ export class EventHubNamespacePlugin extends BaseIngredient {
                                 
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
 
-            if (!params["diagnosticsEnabled"])
-                params["diagnosticsEnabled"] = {"value": "yes"}
-
-            if (params["diagnosticsEnabled"].value == "yes") {
-                const ehnUtils = new EventHubNamespaceUtils(this._ctx);
-
-                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
-                params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
-              
-                var diagnosticsEventHubNamespaceResourceGroup: string
-
-                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
-
-                params["diagnosticsEventHubNamespaceResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
-            }
+            params = await helper.ConfigureDiagnostics(params);
 
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             

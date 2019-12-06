@@ -39,13 +39,17 @@ recipe:
 | enabledForDeployment | no | Boolean flag to specify whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault. Default value is false |
 | enabledForTemplateDeployment | no | Boolean flag to specify whether Azure Resource Manager is permitted to retrieve secrets from the key vault. Default value is false |
 | enabledForDiskEncryption | no | Boolean flag to specify whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys. Default value is false |
+| enableSoftDelete | no | Boolean flag to specify whether soft delete functionality is enabled. Default value is false |
+| enablePurgeProtection | no | Boolean flag to specify whether purge protection is enabled. Default value is false |
+
 ## Utilities
 
 Utility classes can be used inside of the bake.yaml file for parameter and source values.
 
-### ``keyvalut`` class
+### ``keyvault`` class
 
 | function | description |
+| -------- | ----------- |
 | `create_resource_name()` | Returns the name created for the Key Vault when deployed |
 
 ### Function Details
