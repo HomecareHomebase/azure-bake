@@ -14,10 +14,10 @@
         },
         "virtualNetworkName": {
             "type": "string"
-        } ,             
+        }   ,          
         "subnetName": {
             "type": "string"
-        }              
+        }           
         ,      
         "privateIPAllocationMethod": {
             "type": "string",
@@ -30,9 +30,9 @@
         }                            
     },
     "variables": {       
-       "resourceGroupName":"[toLower(resourceGroup().name)]",       
-       "ipConfigName":"[ concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]",
-       "subnetId":"[ concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/',parameters('subnetName'))]"
+       "resourceGroupName":"[toLower(resourceGroup().name)]",          
+       "ipConfigName":"[concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]",
+       "subnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
     },
     "resources": [
         {
