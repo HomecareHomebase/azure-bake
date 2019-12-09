@@ -21,6 +21,8 @@ export class ApimBase extends BaseIngredient {
             delete params["properties"]
             let loggerProps = params["logger"]
             delete params["logger"]
+            
+            params = await helper.ConfigureDiagnostics(params);
             //Deploy primary ARM template
             await helper.DeployTemplate(this._name, ApimTemplate, params, await util.resource_group())
             //Deploy named Key/Value pairs

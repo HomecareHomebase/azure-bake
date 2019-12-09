@@ -3,10 +3,10 @@ import { ResourceManagementClient } from '@azure/arm-resources';
 
 export class AvailabilitySetUtils extends BaseUtility {
 
-    public create_resource_name(): string {
+    public create_resource_name(shortName?: string): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
 
-        const name = util.create_resource_name("avail", null, true);
+        const name = util.create_resource_name("avail", (shortName != undefined) ? shortName : null, true);
         return name;
     }
 

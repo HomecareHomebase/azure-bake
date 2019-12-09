@@ -2,10 +2,11 @@ import {BaseUtility, IngredientManager} from '@azbake/core'
 import { NetworkManagementClient } from "@azure/arm-network";
 export class NetworkInterfaceUtils extends BaseUtility {
 
-    public create_resource_name() {
+    public create_resource_name(shortName?: string): string {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        const name = util.create_resource_name("ni", null, false);
+      
+        const name = util.create_resource_name("ni", (shortName != undefined) ? shortName : null, false);
         return name;
     }   
 

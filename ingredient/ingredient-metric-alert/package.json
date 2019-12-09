@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-metric-alert",
   "description": "Ingredient for deploying a metric alert",
-  "version": "0.1.80",
+  "version": "0.1.87",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.80"
+    "@azbake/arm-helper": "^0.1.87"
   },
   "publishConfig": {
     "access": "public"

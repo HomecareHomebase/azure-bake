@@ -59,6 +59,14 @@
                 "description": "Publisher for the VM Image"
             }
         },
+        "imageName": {
+            "type": "string",   
+            "defaultValue": "",         
+            "metadata": {
+                "description": "VM Image Name"
+            }
+        }
+        ,
         "imageOffer": {
             "type": "string",
             "defaultValue": "UbuntuServer",
@@ -97,9 +105,24 @@
             "type": "string",
             "defaultValue": "MyVNet",
             "metadata": {
-                "description": "Virtual Network NAme"
+                "description": "Virtual Network Name"
+            }
+        },
+        "availabilitySetName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Availability Set Name"
+            }
+        },
+        "diskSizeGB": {
+            "type": "int",
+            "defaultValue": 1023,
+            "metadata": {
+                "description": "Disk Size in GB"
             }
         }
+        
     },
     "variables": {
         "linuxConfiguration": {
@@ -113,13 +136,16 @@
                 ]
             }
         },
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
+        "imageReferenceId": "[ concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Compute/images/', parameters('imageName'))]",
+        "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-10-01",
-            "name": "[parameters('vmName')]",
+            "name": "AvailabilitySet",
+            "condition": "[not (empty(parameters('availabilitySetName')))]",
             "location": "[parameters('location')]",
             "properties": {
                 "hardwareProfile": {
@@ -133,17 +159,71 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('imagePublisher')]",
-                        "offer": "[parameters('imageOffer')]",
-                        "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
+                        "id": "[if(not(empty(parameters('imageName'))), variables('imageReferenceId'), json('null'))]",
+                        "publisher": "[if(empty(parameters('imageName')), parameters('imagePublisher'), json('null'))]",
+                        "offer": "[if(empty(parameters('imageName')), parameters('imageOffer'), json('null'))]",
+                        "sku": "[if(empty(parameters('imageName')), parameters('ubuntuOSVersion'), json('null'))]",
+                        "version": "[if(empty(parameters('imageName')), 'latest', json('null'))]"
                     },
                     "osDisk": {
                         "createOption": "FromImage"
                     },
                     "dataDisks": [
                         {
-                            "diskSizeGB": 1023,
+                            "diskSizeGB": "[parameters('diskSizeGB')]",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('nicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+                    }
+                },
+                "availabilitySet": {
+                    "id": "[variables('availabilitySetId')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2018-10-01",
+            "name": "NoAvailabilitySet",
+            "condition": "[empty(parameters('availabilitySetName'))]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminKey')]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[if(not(empty(parameters('imageName'))), variables('imageReferenceId'), json('null'))]",
+                        "publisher": "[if(empty(parameters('imageName')), parameters('imagePublisher'), json('null'))]",
+                        "offer": "[if(empty(parameters('imageName')), parameters('imageOffer'), json('null'))]",
+                        "sku": "[if(empty(parameters('imageName')), parameters('ubuntuOSVersion'), json('null'))]",
+                        "version": "[if(empty(parameters('imageName')), 'latest', json('null'))]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "[parameters('diskSizeGB')]",
                             "lun": 0,
                             "createOption": "Empty"
                         }
