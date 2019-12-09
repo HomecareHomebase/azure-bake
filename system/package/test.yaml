@@ -18,5 +18,3 @@ recipe:
           bypass: "AzureServices"
           ipRules: []
           virtualNetworkRules: []
-
-        

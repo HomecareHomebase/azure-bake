@@ -53,21 +53,7 @@ export class ServiceBusNamespace extends BaseIngredient {
                 }
             }
 
-            if (!armParameters["diagnosticsEnabled"])
-                armParameters["diagnosticsEnabled"] = {"value": "yes"}
-
-            if (armParameters["diagnosticsEnabled"].value == "yes") {
-                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
-
-                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
-                armParameters["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
-              
-                var diagnosticsEventHubNamespaceResourceGroup: string
-
-                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
-
-                armParameters["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
-            }
+            armParameters = await helper.ConfigureDiagnostics(armParameters);
 
             await helper.DeployTemplate(this._name, ARMTemplate, armParameters, resourceGroupName)
 

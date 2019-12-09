@@ -13,6 +13,8 @@ export class KeyVault extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);
 
+            params = await helper.ConfigureDiagnostics(params);
+
             await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group());
 
         } catch(error){
