@@ -14,7 +14,10 @@
         },
         "virtualNetworkName": {
             "type": "string"
-        }   ,          
+        }   , 
+        "virtualNetworkResourceGroup": {
+            "type": "string"
+        },         
         "subnetName": {
             "type": "string"
         }           
@@ -32,7 +35,7 @@
     "variables": {       
        "resourceGroupName":"[toLower(resourceGroup().name)]",          
        "ipConfigName":"[concat(variables('resourceGroupName'),'-',parameters('networkInterfaceName'),'-ipCfg')]",
-       "subnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+       "subnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
     },
     "resources": [
         {
