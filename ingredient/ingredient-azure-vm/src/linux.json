@@ -137,7 +137,7 @@
             }
         },
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
-        "imageReferenceId": "[ concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Compute/images/', parameters('imageName'))]",
+        "imageReferenceId": "[resourceId('Microsoft.Compute/images', parameters('imageName'))]",
         "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
     },
     "resources": [
