@@ -1,6 +1,6 @@
 {
     "Endpoint Probe Status": {
-        "alertDescription": "",
+        "alertDescription": "The ProbeAgentCurrentEndpointState metric is indicating that the load balanced resource is unavailable.",
         "alertSeverity": 1,
         "isEnabled": true,
         "source-type": "Microsoft.Network/trafficManagerProfiles",
@@ -8,7 +8,7 @@
         "operator": "LessThan",        
         "timeAggregation": "Maximum",
         "windowSize": "PT5M",
-        "evaluationFrequency": "PT1M",
+        "evaluationFrequency": "PT5M",
         "alertType": "Static",
         "threshold": "1",
         "actionGroups": [{"actionGroupShortName": "opsgenie"}]
