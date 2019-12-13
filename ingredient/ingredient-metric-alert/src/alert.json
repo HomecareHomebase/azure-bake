@@ -117,8 +117,8 @@
       "defaultValue": {
         "alertSensitivity": "Low",
         "failingPeriods": {
-          "numberOfEvaluationPeriods": "4",
-          "minFailingPeriodsToAlert": "4"
+          "numberOfEvaluationPeriods": "6",
+          "minFailingPeriodsToAlert": "6"
         }
       }
     }
