@@ -1,7 +1,7 @@
 {
-    "Server response time": {
-        "alertDescription": "Dynamic threshold alert for server response time",
-        "alertSeverity": 2,
+    "RequestsDuration": {
+        "alertDescription": "The requests/duration metric has exceeded the dynamic threshold criteria.",
+        "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Insights/Components",
         "metricName": "requests/duration",
@@ -13,8 +13,8 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "4"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         },
         "actionGroups": [{"actionGroupShortName": "opsgenie"}]        

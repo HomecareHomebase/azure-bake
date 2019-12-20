@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-datafactoryv2",
   "description": "Ingredient for deploying an Data Factory v2.",
-  "version": "0.1.91",
+  "version": "0.1.92",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",

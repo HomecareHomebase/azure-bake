@@ -1,28 +1,28 @@
 {
     "CpuPercentage": {
-        "alertDescription": "CPU Percentage",
+        "alertDescription": "The CpuPercentage metric has exceeded the static threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Web/serverfarms",
         "metricName": "CpuPercentage",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT15M",
-        "evaluationFrequency": "PT15M",
+        "windowSize": "PT30M",
+        "evaluationFrequency": "PT30M",
         "alertType": "Static",
-        "threshold": "80"
+        "threshold": "95"
     },
     "MemoryPercentage": {
-        "alertDescription": "MemoryPercentage",
+        "alertDescription": "The MemoryPercentage metric has exceeded the static threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Web/serverfarms",
         "metricName": "MemoryPercentage",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT15M",
-        "evaluationFrequency": "PT15M",
+        "windowSize": "PT30M",
+        "evaluationFrequency": "PT30M",
         "alertType": "Static",
-        "threshold": "80"
+        "threshold": "95"
     }
 }
