@@ -27,7 +27,7 @@
     "SuccessE2ELatency": {
         "alertDescription": "The SuccessE2ELatency metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
-        "isEnabled": true,
+        "isEnabled": false,
         "source-type": "Microsoft.Storage/storageAccounts",
         "metricName": "SuccessE2ELatency",
         "operator": "GreaterThan",        

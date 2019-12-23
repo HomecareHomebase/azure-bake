@@ -2,7 +2,7 @@
     "RequestsDuration": {
         "alertDescription": "The requests/duration metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
-        "isEnabled": true,
+        "isEnabled": false,
         "source-type": "Microsoft.Insights/Components",
         "metricName": "requests/duration",
         "operator": "GreaterThan",        
