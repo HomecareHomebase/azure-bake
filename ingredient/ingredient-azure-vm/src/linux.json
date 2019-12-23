@@ -138,15 +138,16 @@
         },
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
         "imageReferenceId": "[resourceId('Microsoft.Compute/images', parameters('imageName'))]",
-        "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
+        "availabilitySetId": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
+            }        
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-10-01",
-            "name": "AvailabilitySet",
-            "condition": "[not (empty(parameters('availabilitySetName')))]",
-            "location": "[parameters('location')]",
+            "name": "[parameters('vmName')]",
+            "location": "[parameters('location')]",           
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "[parameters('vmSize')]"
@@ -189,60 +190,8 @@
                         "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
                     }
                 },
-                "availabilitySet": {
-                    "id": "[variables('availabilitySetId')]"
+                "availabilitySet": "[if(not(empty(parameters('availabilitySetName'))), variables('availabilitySetId'), json('null'))]"
                 }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2018-10-01",
-            "name": "NoAvailabilitySet",
-            "condition": "[empty(parameters('availabilitySetName'))]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
-                },
-                "osProfile": {
-                    "computerName": "[parameters('vmName')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminKey')]",
-                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "id": "[if(not(empty(parameters('imageName'))), variables('imageReferenceId'), json('null'))]",
-                        "publisher": "[if(empty(parameters('imageName')), parameters('imagePublisher'), json('null'))]",
-                        "offer": "[if(empty(parameters('imageName')), parameters('imageOffer'), json('null'))]",
-                        "sku": "[if(empty(parameters('imageName')), parameters('ubuntuOSVersion'), json('null'))]",
-                        "version": "[if(empty(parameters('imageName')), 'latest', json('null'))]"
-                    },
-                    "osDisk": {
-                        "createOption": "FromImage"
-                    },
-                    "dataDisks": [
-                        {
-                            "diskSizeGB": "[parameters('diskSizeGB')]",
-                            "lun": 0,
-                            "createOption": "Empty"
-                        }
-                    ]
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('nicName'))]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
-                    }
-                }
-            }
-        }
+            }        
     ]
 }
