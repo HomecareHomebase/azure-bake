@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.93](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.92...v0.1.93) (2019-12-23)
+
+**Note:** Version bump only for package @azbake/ingredient-azure-vm-extension
+
+
+
+
+
 ## [0.1.87](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.86...v0.1.87) (2019-12-04)
 
 **Note:** Version bump only for package @azbake/ingredient-azure-vm-extension
