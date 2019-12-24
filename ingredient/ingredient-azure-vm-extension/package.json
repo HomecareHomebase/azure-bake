@@ -1,7 +1,7 @@
 {
 	"name": "@azbake/ingredient-azure-vm-extension",
 	"description": "Ingredient for deploying an instance of azure vm extension resource",
-	"version": "0.1.93",
+	"version": "0.1.94",
 	"main": "dist/index.js",
 	"typings": "src/index.ts",
 	"author": "HCHB",
@@ -25,8 +25,8 @@
 	},
 	"dependencies": {
 		"@azbake/arm-helper": "^0.1.87",
-		"@azure/arm-eventhub": "3.2.0",
-   	"@azure/arm-compute": "^10.0.0"
+		"@azure/arm-compute": "^10.0.0",
+		"@azure/arm-eventhub": "3.2.0"
 	},
 	"publishConfig": {
 		"access": "public"
