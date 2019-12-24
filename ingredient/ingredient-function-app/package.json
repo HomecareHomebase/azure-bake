@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-function-app",
   "description": "Ingredient for deploying Function Apps",
-  "version": "0.1.87",
+  "version": "0.1.92",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",

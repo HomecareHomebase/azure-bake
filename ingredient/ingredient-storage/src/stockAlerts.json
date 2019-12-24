@@ -1,6 +1,6 @@
 {
     "Errors": {
-        "alertDescription": "Requests that errored",
+        "alertDescription": "The Error Response Types of the Transactions metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Storage/storageAccounts",
@@ -19,13 +19,13 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "4"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }        
     },
     "SuccessE2ELatency": {
-        "alertDescription": "Success E2E Latency",
+        "alertDescription": "The SuccessE2ELatency metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Storage/storageAccounts",
@@ -38,13 +38,13 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "4"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "TransactionVolume": {
-        "alertDescription": "Transaction Volume",
+        "alertDescription": "The Transactions metric's average value has exceeded 90% of the service limit.",
         "alertSeverity": 2,
         "isEnabled": true,
         "source-type": "Microsoft.Storage/storageAccounts",

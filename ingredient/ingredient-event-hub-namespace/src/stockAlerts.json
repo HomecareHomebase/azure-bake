@@ -1,6 +1,6 @@
 {
     "ServerErrors": {
-        "alertDescription": "my server errors",
+        "alertDescription": "The ServerErrors metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.EventHub/namespaces",
@@ -13,13 +13,13 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }        
     },
     "UserErrors": {
-        "alertDescription": "my user errors",
+        "alertDescription": "The UserErrors metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.EventHub/namespaces",
@@ -32,41 +32,42 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "ThrottledRequests": {
-        "alertDescription": "my throttled errors",
+        "alertDescription": "The ThrottledRequests metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.EventHub/namespaces",
         "metricName": "ThrottledRequests",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
+        "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "ActiveConnections": {
-        "alertDescription": "static connections",
-        "alertSeverity": 3,
+        "alertDescription": "The ActiveConnections metric's average value has exceeded 90% of the service limit.",
+        "alertSeverity": 2,
         "isEnabled": true,
         "source-type": "Microsoft.EventHub/namespaces",
         "metricName": "ActiveConnections",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "timeAggregation": "Average",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
         "alertType": "Static",
-        "threshold": "9000"
+        "threshold": "4500",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
     }
 }
