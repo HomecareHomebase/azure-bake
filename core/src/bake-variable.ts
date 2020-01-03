@@ -12,7 +12,9 @@ export class BakeVariable {
     _compiled: Function | undefined | null
 
     public get Code(): any {
-        return this._value || ""
+        if (this._value == null || this._value == undefined)
+             return "";
+        else return this._value;
     }
 
     public async valueAsync(ctx: DeploymentContext): Promise<any> {

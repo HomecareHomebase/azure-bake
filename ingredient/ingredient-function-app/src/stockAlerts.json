@@ -40,7 +40,7 @@
     "AverageResponseTime": {
         "alertDescription": "The Average Response Time metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
-        "isEnabled": true,
+        "isEnabled": false,
         "source-type": "Microsoft.Web/sites",
         "metricName": "AverageResponseTime",
         "operator": "GreaterThan",        
