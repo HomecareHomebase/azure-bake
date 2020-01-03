@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
+
+
+### Bug Fixes
+
+* Fix/disable dynamic alerts ([#140](https://github.com/HomecareHomebase/azure-bake/issues/140)) ([aab2106](https://github.com/HomecareHomebase/azure-bake/commit/aab2106))
+
+
+
+
+
 ## [0.1.92](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.91...v0.1.92) (2019-12-13)
 
 **Note:** Version bump only for package @azbake/ingredient-function-app
