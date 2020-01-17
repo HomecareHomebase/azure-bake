@@ -182,7 +182,69 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
             "name": "SoftDelete",
-            "condition": "[parameters('enableSoftDelete')]",
+            "condition": "[and(parameters('enableSoftDelete'), not(parameters('enablePurgeProtection')))]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [{
+                        "apiVersion": "2016-10-01",
+                        "name": "[parameters('name')]",
+                        "location": "[parameters('location')]",
+                        "type": "Microsoft.KeyVault/vaults",
+                        "properties": {
+                            "enabledForDeployment": "[parameters('enabledForDeployment')]",
+                            "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                            "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
+                            "enableSoftDelete": "[parameters('enableSoftDelete')]",
+                            "accessPolicies": "[parameters('accessPolicies')]",
+                            "tenantId": "[parameters('tenant')]",
+                            "sku": {
+                                "name": "[parameters('sku')]",
+                                "family": "A"
+                            },
+                            "networkAcls": "[parameters('networkAcls')]"
+                        },
+                        "tags": {},
+                        "resources": [{
+                            "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+                            "type": "providers/diagnosticSettings",
+                            "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
+                            ],
+                            "apiVersion": "2017-05-01-preview",
+                            "properties": {
+                                "name": "[parameters('diagnosticsSettingName')]",
+                                "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+                                "logs": [{
+                                    "category": "AuditEvent",
+                                    "enabled": true,
+                                    "retentionPolicy": {
+                                        "days": 0,
+                                        "enabled": false
+                                    }
+                                }],
+                                "metrics": [{
+                                    "timeGrain": "PT1M",
+                                    "enabled": true,
+                                    "retentionPolicy": {
+                                        "enabled": false,
+                                        "days": 0
+                                    }
+                                }]
+                            }
+                        }]
+                    }]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "PurgeProtection",
+            "condition": "[and(parameters('enableSoftDelete'), parameters('enablePurgeProtection'))]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
