@@ -1,17 +1,71 @@
-name: func-app-test
-shortName: funcapptest
+name: Benchmarking Environment
+shortName: bnchmrk
 version: 1.0.0
 ingredients:
+  - "@azbake/ingredient-arm@~0"
+  - "@azbake/ingredient-databricks@~0"
+  - "@azbake/ingredient-datafactoryv2@~0"
+  - "@azbake/ingredient-sql-dwh@~0"
+  - "@azbake/ingredient-sqldb@~0"
+  - "@azbake/ingredient-sqlserver-logical@~0"
   - "@azbake/ingredient-storage@~0"
 resourceGroup: true
 parallelRegions: false
-variables:  
-  test1: "10"
-  test_var: "[coreutils.toNumber(await coreutils.variable('test1'))]"
+variables:
+  SqlServerAdministratorLogin : "TrainingUser"
+  SqlServerAdministratorLoginPassword : "ThisIsAStrongPassword$1"
 recipe:
-  test-storage:
+  sqldwh-deploy:
+    properties:
+      type: "@azbake/ingredient-sql-dwh"
+      source: ""
+      parameters:
+        databaseName : "BI_EDW_Benchmark"
+        skuName : "DW100C"
+        serverName : "[sqlserverlogical.create_resource_name()]"
+        collation : "SQL_Latin1_General_CP1_CI_AS"
+        databaseTags : {}
+    dependsOn:
+       - sqlserverlogicaldeploy
+  sqldb-deploy:
+    properties:
+      type: "@azbake/ingredient-sqldb"
+      source: ""
+      parameters:
+        serverName : "[sqlserverlogical.create_resource_name()]"
+        collation : "SQL_Latin1_General_CP1_CI_AS"
+        databaseName : "Config_EDW"
+        tier : "Basic"
+        skuName : "Basic"
+        maxSizeBytes : 2147483648
+        databaseTags :  {}
+    dependsOn:
+       - sqlserverlogicaldeploy
+  sqlserverlogicaldeploy:
+    properties:
+      type: "@azbake/ingredient-sqlserver-logical"
+      source: ""
+      parameters:
+        serverName : "[sqlserverlogical.create_resource_name()]"
+        administratorLogin : "[coreutils.variable('SqlServerAdministratorLogin')]"
+        administratorLoginPassword : "[coreutils.variable('SqlServerAdministratorLoginPassword')]"
+        allowAzureIPs : true
+  storage-deploy:
     properties:
       type: "@azbake/ingredient-storage"
-      condition: "[coreutils.variable('test_var')]"
+      source: ""
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
+  datafactory-deploy:
+    properties:
+      type: "@azbake/ingredient-datafactoryv2"
+      source: ""
+      parameters:
+        name : "[datafactory.create_resource_name()]"
+  databricks-deploy:
+    properties:
+      type: "@azbake/ingredient-databricks"
+      source: ""
+      parameters:
+        workspaceName : "[DataBricks.create_resource_name()]"
+        tier : "premium"

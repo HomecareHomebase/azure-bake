@@ -8,7 +8,7 @@
         },
         "location": {
             "type": "string",
-            "defaultValue": "East US"
+            "defaultValue": "[resourceGroup().location]"
         },
         "apiVersion": {
             "type": "string",
