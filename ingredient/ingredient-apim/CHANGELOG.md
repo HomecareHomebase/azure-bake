@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.96...v0.1.97) (2020-01-28)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
 ## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.95...v0.1.96) (2020-01-17)
 
 **Note:** Version bump only for package @azbake/ingredient-apim
