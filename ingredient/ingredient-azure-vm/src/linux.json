@@ -108,6 +108,13 @@
                 "description": "Virtual Network Name"
             }
         },
+        "storageResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource Group of specified Storage"
+            }
+        },
         "availabilitySetName": {
             "type": "string",
             "defaultValue": "",
@@ -140,7 +147,9 @@
         "imageReferenceId": "[resourceId('Microsoft.Compute/images', parameters('imageName'))]",
         "availabilitySetId": {
             "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
-            }        
+            }
+
+
     },
     "resources": [
         {
@@ -187,7 +196,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+                        "storageUri": "[concat(reference(resourceId(parameters('storageResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"                        
                     }
                 },
                 "availabilitySet": "[if(not(empty(parameters('availabilitySetName'))), variables('availabilitySetId'), json('null'))]"
