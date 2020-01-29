@@ -115,6 +115,13 @@
                 "description": "Resource Group of specified Storage"
             }
         },
+        "imageResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource Group of specified Image reference"
+            }
+        },        
         "availabilitySetName": {
             "type": "string",
             "defaultValue": "",
@@ -144,12 +151,10 @@
             }
         },
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
-        "imageReferenceId": "[resourceId('Microsoft.Compute/images', parameters('imageName'))]",
+        "imageReferenceId": "[resourceId(parameters('imageResourceGroup'), 'Microsoft.Compute/images', parameters('imageName'))]",
         "availabilitySetId": {
             "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
             }
-
-
     },
     "resources": [
         {
