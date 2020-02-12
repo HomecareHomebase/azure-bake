@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.96 (2020-02-12)
+
+
+
+## 0.1.95 (2020-01-03)
+
+
+
+## 0.1.94 (2019-12-24)
+
+
+
+## 0.1.93 (2019-12-23)
+
+
+
+## 0.1.87 (2019-12-04)
+
+
+
+## 0.1.80 (2019-10-23)
+
+
+
+## 0.1.75 (2019-09-19)
+
+
+
+## 0.1.71 (2019-07-31)
+
+
+### Bug Fixes
+
+* Azure VM Extension Ingredient ([#111](https://github.com/HomecareHomebase/azure-bake/issues/111)) ([8e18197](https://github.com/HomecareHomebase/azure-bake/commit/8e18197))
+
+
+
+
+
 ## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
 
 **Note:** Version bump only for package @azbake/ingredient-azure-vm-extension

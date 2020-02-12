@@ -3,6 +3,181 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.17...@azbake/core@0.1.96) (2020-02-12)
+
+
+### Bug Fixes
+
+* Adding owner schema property and tag for azure resources ([4ab5dc8](https://github.com/HomecareHomebase/azure-bake/commit/4ab5dc8))
+
+
+
+## 0.1.95 (2020-01-03)
+
+
+### Bug Fixes
+
+* Fix/disable dynamic alerts ([#140](https://github.com/HomecareHomebase/azure-bake/issues/140)) ([aab2106](https://github.com/HomecareHomebase/azure-bake/commit/aab2106))
+
+
+
+## 0.1.68 (2019-07-26)
+
+
+### Bug Fixes
+
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+
+
+
+## 0.1.67 (2019-07-15)
+
+
+### Bug Fixes
+
+* BakeVaribales now support async/await of internal calls ([#105](https://github.com/HomecareHomebase/azure-bake/issues/105)) ([719810b](https://github.com/HomecareHomebase/azure-bake/commit/719810b))
+
+
+
+## 0.1.64 (2019-07-10)
+
+
+### Bug Fixes
+
+* Add optional condition to ingredients. ([#102](https://github.com/HomecareHomebase/azure-bake/issues/102)) ([3ebeee5](https://github.com/HomecareHomebase/azure-bake/commit/3ebeee5))
+
+
+
+## 0.1.63 (2019-07-03)
+
+
+
+## 0.1.59 (2019-07-01)
+
+
+### Bug Fixes
+
+* quick touch to fix deployment ([90d2fec](https://github.com/HomecareHomebase/azure-bake/commit/90d2fec))
+
+
+
+## 0.1.55 (2019-06-19)
+
+
+### Bug Fixes
+
+* gulp commit fixes ([701be4c](https://github.com/HomecareHomebase/azure-bake/commit/701be4c))
+
+
+
+## 0.1.54 (2019-06-17)
+
+
+### Bug Fixes
+
+* Added BAKE_AUTH_SKIP which will skip azure signon ([#72](https://github.com/HomecareHomebase/azure-bake/issues/72)) ([94f2ffc](https://github.com/HomecareHomebase/azure-bake/commit/94f2ffc))
+
+
+
+## 0.1.47 (2019-05-15)
+
+
+### Bug Fixes
+
+* Allowing bake to be debugged from mono repo ([4dd7239](https://github.com/HomecareHomebase/azure-bake/commit/4dd7239))
+
+
+
+## 0.1.46 (2019-05-15)
+
+
+### Bug Fixes
+
+* Resolving ingredient version loading for just downloaded ingredients ([39f841c](https://github.com/HomecareHomebase/azure-bake/commit/39f841c))
+
+
+
+## 0.1.45 (2019-05-15)
+
+
+### Bug Fixes
+
+* bake can now be installed globally, and ingredients developed/debugged when serving a local file/folder ([99590e0](https://github.com/HomecareHomebase/azure-bake/commit/99590e0))
+
+
+
+## 0.1.44 (2019-04-17)
+
+
+
+## 0.1.43 (2019-04-17)
+
+
+### Bug Fixes
+
+* eventhubingredients ([#49](https://github.com/HomecareHomebase/azure-bake/issues/49)) ([d00e291](https://github.com/HomecareHomebase/azure-bake/commit/d00e291))
+
+
+
+## 0.1.42 (2019-04-17)
+
+
+### Bug Fixes
+
+* Resolve [#47](https://github.com/HomecareHomebase/azure-bake/issues/47) by wrapping eval in try/catch ([c9af4ab](https://github.com/HomecareHomebase/azure-bake/commit/c9af4ab))
+
+
+
+## 0.1.37 (2019-04-08)
+
+
+
+## 0.1.36 (2019-04-04)
+
+
+
+## 0.1.34 (2019-04-04)
+
+
+
+## 0.1.33 (2019-04-04)
+
+
+### Bug Fixes
+
+* resolving mismatched peerDeps ([eca4e13](https://github.com/HomecareHomebase/azure-bake/commit/eca4e13))
+
+
+
+## 0.1.30 (2019-03-20)
+
+
+### Bug Fixes
+
+* Ingredient build fix ([#33](https://github.com/HomecareHomebase/azure-bake/issues/33)) ([28cde6f](https://github.com/HomecareHomebase/azure-bake/commit/28cde6f))
+
+
+
+## 0.1.28 (2019-03-19)
+
+
+### Bug Fixes
+
+* Moved Tag generator into core so it can be used everywhere in the ecosystem ([#31](https://github.com/HomecareHomebase/azure-bake/issues/31)) ([1dcef96](https://github.com/HomecareHomebase/azure-bake/commit/1dcef96))
+
+
+
+## 0.1.22 (2019-02-15)
+
+
+### Bug Fixes
+
+* Fixing lerna setup for proper mono-repo build/clean/bootstrap ([d8e0977](https://github.com/HomecareHomebase/azure-bake/commit/d8e0977))
+
+
+
+
+
 ## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
 
 

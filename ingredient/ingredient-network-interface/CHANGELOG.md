@@ -3,6 +3,102 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.96 (2020-02-12)
+
+
+
+## 0.1.95 (2020-01-03)
+
+
+
+## 0.1.91 (2019-12-10)
+
+
+
+## 0.1.90 (2019-12-09)
+
+
+
+## 0.1.89 (2019-12-06)
+
+
+
+## 0.1.87 (2019-12-04)
+
+
+
+## 0.1.80 (2019-10-23)
+
+
+
+## 0.1.76 (2019-09-20)
+
+
+
+## 0.1.75 (2019-09-19)
+
+
+
+## 0.1.74 (2019-09-12)
+
+
+
+## 0.1.70 (2019-07-26)
+
+
+
+## 0.1.68 (2019-07-26)
+
+
+
+## 0.1.67 (2019-07-15)
+
+
+
+## 0.1.66 (2019-07-12)
+
+
+
+## 0.1.65 (2019-07-10)
+
+
+
+## 0.1.64 (2019-07-10)
+
+
+
+## 0.1.63 (2019-07-03)
+
+
+
+## 0.1.61 (2019-07-02)
+
+
+
+## 0.1.60 (2019-07-02)
+
+
+### Bug Fixes
+
+* Added Network interface helper functions ([#90](https://github.com/HomecareHomebase/azure-bake/issues/90)) ([1e6277a](https://github.com/HomecareHomebase/azure-bake/commit/1e6277a))
+
+
+
+## 0.1.59 (2019-07-01)
+
+
+
+## 0.1.58 (2019-06-28)
+
+
+### Bug Fixes
+
+* Bake Ingredient - Network interface ([#88](https://github.com/HomecareHomebase/azure-bake/issues/88)) ([df98d85](https://github.com/HomecareHomebase/azure-bake/commit/df98d85))
+
+
+
+
+
 ## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
 
 **Note:** Version bump only for package @azbake/ingredient-network-interface
