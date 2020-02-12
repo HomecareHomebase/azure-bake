@@ -25,6 +25,7 @@ Note: Not all features are supported, such as functions.
 name: string
 shortName: string
 version: string
+owner: string
 ingredients: [ ingredientTag ]
 resourceGroup: bool
 rgOverride: string | expression
@@ -38,6 +39,7 @@ recipe: {string: ingredient block}
 |name|yes|Descriptive name for recipe|
 |shortName|yes|code use for resource naming [a-z][A-Z][0-9], 8 chars max|
 |version|yes|version should match the docker tag|
+|owner|no|Owner of package as either a team name, email, person, etc.|
 |ingredients|yes|List of bake ingredients to use in the recipe|
 |resourceGroup|no (default true)|Create a resource group for the recipe deployment |
 |rgOverride|no (default blank)|Name of the resource group to create, if set. Otherwise standard format will be used|
