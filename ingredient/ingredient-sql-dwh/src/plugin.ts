@@ -2,8 +2,6 @@ import { BaseIngredient, IngredientManager, IIngredient, DeploymentContext } fro
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./arm.json"
 import { SqlManagementClient, SqlManagementModels, SqlManagementMappers } from "@azure/arm-sql";
-
-
 export class SqlDwh extends BaseIngredient {
 
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
@@ -106,12 +104,30 @@ export class SqlDwh extends BaseIngredient {
             let resourcegroup = await util.resource_group()
             
             let dbstatus = await this._GetDatabaseStatus(resourcegroup,servername,databasename)
+
+            if (!params["diagnosticsEnabled"])
+            params["diagnosticsEnabled"] = {"value": "yes"}
+
+            if (params["diagnosticsEnabled"].value === "yes") {
+                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
+
+                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
+                params["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
+              
+                var diagnosticsEventHubNamespaceResourceGroup: string
+
+                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
+
+                params["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};   
+
+                this._logger.log('diagnosticsEventHubNamespace: ' + diagnosticsEventHubNamespace)
+                this._logger.log('diagnosticsEventHubNamespaceResourceGroup: ' + diagnosticsEventHubNamespaceResourceGroup)
+            }
             
             await helper.DeployTemplate(this._name, ARMTemplate, params, resourcegroup) 
 
             this._Check = true;
-          
-            
+                 
             if (this._IsDBPaused === true || this._IsNewDB === true){
                 
                 let pauseanswer = await this._pausesqldwh(resourcegroup,servername,databasename)
@@ -119,6 +135,8 @@ export class SqlDwh extends BaseIngredient {
                 this._logger.log('Database Status: '+pauseanswer.status+' ,DB: ' + databasename + ' ,RG:' + resourcegroup + ' ,Svr:' + servername)
            
             }
+
+
 
             
 

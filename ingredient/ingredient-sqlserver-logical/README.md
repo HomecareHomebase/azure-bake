@@ -38,7 +38,7 @@ recipe:
 | serverName | yes | The name of the SQL logical server. |
 | administratorLogin | Yes | The administrator username of the SQL logical server. |
 | administratorLoginPassword | Yes | The administrator password of the SQL logical server. |
-| location | Yes (default:[resourceGroup().location]) | Location for all resources. |
+| location | No (default:[resourceGroup().location]) | Location for all resources. |
 
 ## Utilities
 

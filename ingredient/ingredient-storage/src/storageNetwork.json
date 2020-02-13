@@ -58,7 +58,11 @@
             "metadata": {
                 "description": "Account HierarchicalNamespace enabled if sets to true."
             }
-        }
+        },
+        "NetworkAcls" : {
+            "type" : "object",
+            "defaultvalue" : { "bypass": "None" , "defaultAction": "Allow","ipRules" : [],"virtualNetworkRules" : []  }
+        }    
     },
     "resources": [
         {
@@ -74,7 +78,32 @@
           "properties": {
             "accessTier": "[parameters('storageAccessTier')]",
             "isHnsEnabled" : "[parameters('IsHierarchicalNamespace')]",
-            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" 
+            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",            
+            "networkAcls": {
+                            "bypass": "[parameters('NetworkAcls').bypass]",
+                            "defaultAction": "Deny",
+                            "copy" : [{
+                                "name" : "ipRules",
+                                "count" : "[length(parameters('NetworkAcls').ipRules)]",                                
+                                "input" : {
+                                    "value": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].value]",
+                                    "action": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].action]"
+                                    }
+                            },
+                            {
+                                    "name" : "virtualNetworkRules",
+                                    "count" : "[length(parameters('NetworkAcls').virtualNetworkRules)]",
+                                    "input" : {
+                                                "id": "[resourceId(subscription().subscriptionId,parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetName, parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnetName)]",
+                                                "action": "[parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].action]"
+                                    }
+                                }                            
+                            ]                                          
+                        },
+            "azureFilesIdentityBasedAuthentication": {
+            "directoryServiceOptions": "None"
+            }
+                    
           },
           "tags": {
             "Metrics": "*"

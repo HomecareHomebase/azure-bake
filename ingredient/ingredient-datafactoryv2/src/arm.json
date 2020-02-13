@@ -13,11 +13,43 @@
         "apiVersion": {
             "type": "string",
             "defaultValue": "2018-06-01"
+        },
+        "diagnosticsEnabled": {
+            "type": "string",
+            "defaultValue": "yes",
+            "metadata": {
+                "description": "Specifies whether to configure diagnostic settings to expose logs and metrics for consumption."
+            }
+        },
+        "diagnosticsSettingName": {
+            "type": "string",
+            "defaultValue": "diagToEHN",
+            "metadata": {
+                "description": "Diagnostic setting name.  Most by unique for the resource."
+            }
+        },
+        "diagnosticsEventHubResourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The resource group of the Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubNamespace": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubAuthorizationRule": {
+            "type": "string",
+            "defaultValue": "RootManageSharedAccessKey",
+            "metadata": {
+                "description": "The authorization rule to use for transmitting diagnostics."
+            }
         }
         
-    },
-    "variables": {
-        "location": "[concat(uniqueString(subscription().subscriptionId), 'storage')]"
     },
     "resources": [
         {
@@ -28,7 +60,57 @@
             "identity": {
                 "type": "SystemAssigned"
             },
-            "properties": {}
+            "resources": [
+                     {   
+                    "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+                    "type": "providers/diagnosticSettings",
+                    "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+                    "dependsOn": [                    
+                    "[parameters('name')]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                    "name": "[parameters('diagnosticsSettingName')]",
+                    "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+                    "logs": [
+                        {
+                        "category": "ActivityRuns",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        },
+                        {
+                        "category": "PipelineRuns",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        },
+                        {
+                        "category": "TriggerRuns",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        }
+                        ],"metrics": [
+                                  {
+                                    "timeGrain": "PT1M",
+                                    "enabled": true,                                    
+                                    "retentionPolicy": {
+                                      "enabled": false,
+                                      "days": 0
+                                    }
+                                  }
+                        ]
+                        
+                    }
+                }
+            ]
         }
     ]
 }

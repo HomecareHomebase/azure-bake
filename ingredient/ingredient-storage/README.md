@@ -38,6 +38,21 @@ recipe:
       source: ""
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
+        NetworkAcls :
+          bypass: "AzureServices"
+          IsHttpsTrafficOnly : true
+          IsHierarchicalNamespace : true
+          virtualNetworkRules: 
+          - vnetRuleName: "NonProdNetwork"
+            vnetResourceGroup: "RSomeResourceGroup"
+            vnetName: "SomeVNet"
+            subnetName: "SomeSubnet"
+            action: "Allow"
+          ipRules:
+          - value: "0.0.0.0"
+            action: "Allow"
+          defaultAction: "Deny"
+        
 ```
 
 
@@ -49,6 +64,23 @@ recipe:
 | location | no | Parent resource group geographic location | The location for this resource |
 | storageAccountType | no | | The type for the storage account See [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/2018-11-01/storageaccounts) |
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
+| IsHttpsTrafficOnly | no | true | Allows https traffic only to storage service if sets to true. The default value is true since API version 2019-04-01.
+| IsHierarchicalNamespace | no | false |	Account HierarchicalNamespace enabled if sets to true.
+| NetworkAcls | no | "" | 
+        NetworkAcls : Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging
+          bypass: AzureServices 
+          virtualNetworkRules: # | Sets the virtual network rules - VirtualNetworkRule object
+          - vnetRuleName: "NonProdNetwork"
+            vnetResourceGroup: "RSomeResourceGroup"
+            vnetName: "SomeVNet"
+            subnetName: "SomeSubnet"
+            action: "Allow" | The action of virtual network rule. - Allow
+          ipRules: # | Sets the IP ACL rules - IPRule object
+          - value: "0.0.0.0"
+            action: "Allow" | The action of virtual network rule. - Allow
+          defaultAction: "Deny" | Specifies the default action of allow or deny when no other rules match. - Allow or Deny
+  | NetworkRuleSet object
+
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|

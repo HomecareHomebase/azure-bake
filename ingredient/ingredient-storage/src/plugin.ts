@@ -2,6 +2,7 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./storage.json"
+import ARMTemplateNetwork from "./storageNetwork.json"
 import stockAlerts from "./stockAlerts.json"
 import { StorageUtils } from "./functions.js";
 import { StorageManagementClient } from "@azure/arm-storage"
@@ -16,8 +17,17 @@ export class StoragePlugIn extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            
-            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+
+            //let networkAcls = params['NetworkAcls'] ? params['NetworkAcls'].value : undefined;
+
+            if(params['NetworkAcls']){
+
+                await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, await util.resource_group())
+                //there is a limitation around the copy function in the current architecture
+
+            }else{
+                await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            }
 
             await this.ConfigureDiagnosticSettings(params, util);
 

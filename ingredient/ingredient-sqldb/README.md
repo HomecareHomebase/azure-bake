@@ -68,7 +68,7 @@ recipe:
 | skuName | no (default:false) | Sku refers to DTU. |
 | maxSizeBytes |  no (default:true) | Database size in kilobytes|
 | serverName | Yes  |  Logical Sql Server name. |
-| serverLocation | Yes | Resource Group of Logical SQL Server. |
+| serverLocation | No (default:[resourceGroup().location]) | Resource Group of Logical SQL Server. |
 | sampleName | No | Valid options are AdventureWorksLIT |
 | zoneRedundant | No (default:[False]) | Available to SQL single databases and elastic pools in the Premium service tier at no extra cost. Meaning replicas of this database will be spread across multiple availability zones |
 | licenseType | No (default:[BasePrice]) | License type to apply for this database. Valid options are LicenseIncluded, BasePrice |
@@ -79,6 +79,16 @@ recipe:
 | databaseTags | No (default:[{}]) | Azure resource tags |
 | enableADS | No (default:[False]) | Protect your data using Advanced Data Security, a unified security package including Data Classification, Vulnerability Assessment and Advanced Threat Protection for your server. |
 | enableVA | No (default:[False]) | Enable database vulnerability assessment. |
+| diagnosticsEnabled | no (default `yes`) |  Specifies whether to enable diagnostic settings to make logs available for consumption.  **_Note that you must reference @azbake/ingredient-event-hub-namespace when diagnostics are enabled._** |
+
+| variable |required|default|description|
+|---------|--------|-----------|-----------|
+| blobDiagnosticHourlyMetricsEnabled | no | "true" | Enables recording of hourly metrics to Storage Analytics. Currently accepts "true" / "false" as strings only. |
+| blobDiagnosticHourlyMetricsRetentionDays | no | 10 | Data retention of hourly metrics in Storage Analytics. |
+| blobDiagnosticMinuteMetricsEnabled | no | "true" | Enables recording of minute metrics to Storage Analytics. Currently accepts "true" / "false" as strings only.  |
+| blobDiagnosticMinuteMetricsRetentionDays | no | 10 | Data retention of minute metrics in Storage Analytics |
+| blobDiagnosticLoggingEnabled | no | "true" | Enables recording of diagnostic logs to Storage Analytics.   Currently accepts "true" / "false" as strings only. |
+| blobDiagnosticLoggingRetentionDays | 10 | "true" | Data retention of diagnostic logs in Storage Analytics |
 
 ## Utilities
 

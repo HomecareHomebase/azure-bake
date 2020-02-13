@@ -7,7 +7,7 @@ export class SqlServerLogicalUtils extends BaseUtility {
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         
-        const name = util.create_resource_name("sqlserver", null, false);
+        const name = util.create_resource_name("sqlsrvr", null, true);
 
         return name
     }
