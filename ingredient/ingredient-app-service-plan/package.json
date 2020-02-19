@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-app-service-plan",
   "description": "Ingredient for deploying an instance of App Service Plan.",
-  "version": "0.1.96",
+  "version": "0.1.97",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -34,7 +34,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.96"
+    "@azbake/arm-helper": "^0.1.97"
   },
   "publishConfig": {
     "access": "public"
