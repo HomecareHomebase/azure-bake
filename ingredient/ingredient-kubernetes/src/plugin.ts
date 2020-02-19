@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { BaseIngredient, BakeVariable, IngredientManager, TagGenerator } from "@azbake/core"
 import { promisify } from 'util';
-import { exec as exec_from_child_process } from 'child_process';
+import { exec as exec_from_child_process, execSync } from 'child_process';
 const replace = require('replace-in-file');
 const YAML = require('yaml');
 const YAMLTYPES = require('yaml/types');
@@ -33,10 +33,11 @@ export class KubernetesPlugin extends BaseIngredient {
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
             try {
-                let { stdout } = await exec(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
+
+                const stdout = execSync(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
                 this._logger.log(`${stdout}`);
                 if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
-                    ({ stdout } = await exec(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`));
+                    const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
                     this._logger.log(`${stdout}`);
                 }
             } finally {
