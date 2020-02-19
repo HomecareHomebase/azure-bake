@@ -2,19 +2,16 @@ name: kv-test
 shortName: kv
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-key-vault@0.0.1"
+  - "@azbake/ingredient-kubernetes@~0"
 resourceGroup: true
 rgOverride: "whilke-poc"
 parallelRegions: false
 recipe:
   keyvault:
     properties:
-      type: "@azbake/ingredient-key-vault"
+      type: "@azbake/ingredient-kubernetes"
+      source: ./k8
       parameters:
-        name: "[keyvaultutils.create_resource_name()]"       
-        sku: "standard"                      
-        networkAcls:
-          defaultAction: "Deny"
-          bypass: "AzureServices"
-          ipRules: []
-          virtualNetworkRules: []
+        name: "[keyvaultutils.create_resource_name()]"              
+        parameters:
+          kubeconfig: "[coreutils.variable('k8s_config')]"

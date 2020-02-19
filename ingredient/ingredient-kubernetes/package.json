@@ -24,7 +24,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "replace-in-file": "^4.1.0"
+    "replace-in-file": "^4.1.0",
+    "yaml": "^1.7.2"
   },
   "publishConfig": {
     "access": "public"
