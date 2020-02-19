@@ -57,7 +57,13 @@ export class ARMHelper {
                 if (validate.error.details){
                     errorMsg += "\nDetails:";
                     validate.error.details.forEach(x=>{
-                        errorMsg += `\n${x.message}`;
+                        errorMsg += `\n\t${x.message}`;
+                        if (x.details) {
+                            let dIdx = 0;
+                            x.details.forEach(d=>{
+                                errorMsg += `\n\tDetail[${dIdx++}]: ${d.code} => ${d.message}`
+                            });
+                        }
                     });
                 }
 

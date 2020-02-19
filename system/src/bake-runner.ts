@@ -232,7 +232,10 @@ export class BakeRunner {
                     new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel))
 
                 try{
-                    await this._bakeRegion(ctx)                    
+                    let r = await this._bakeRegion(ctx)
+                    if (!r) {
+                        throw new Error('Not all regions deployed successfully') //force failed result code
+                    }                  
                 }
                 catch(err){
                     throw err
