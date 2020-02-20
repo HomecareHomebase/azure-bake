@@ -12,6 +12,7 @@ export class TrafficManager extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
     }
+    
     _helper: ARMHelper;
 
     public async Execute(): Promise<void> {
