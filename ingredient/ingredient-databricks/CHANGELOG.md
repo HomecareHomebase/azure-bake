@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.102](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-databricks@0.1.101...@azbake/ingredient-databricks@0.1.102) (2020-02-20)
+
+**Note:** Version bump only for package @azbake/ingredient-databricks
+
+
+
+
+
 ## [0.1.101](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-databricks@0.1.100...@azbake/ingredient-databricks@0.1.101) (2020-02-19)
 
 **Note:** Version bump only for package @azbake/ingredient-databricks

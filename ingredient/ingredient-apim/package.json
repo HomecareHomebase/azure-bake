@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-apim",
   "description": "Ingredient for deploying and configuring APIs against an APIM instance",
-  "version": "0.1.101",
+  "version": "0.1.102",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
