@@ -37,6 +37,7 @@
       ,
     "commandToExecute": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "Optional command to execute"
       }    
