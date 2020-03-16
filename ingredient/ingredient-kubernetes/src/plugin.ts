@@ -1,8 +1,12 @@
 import fs from 'fs'
-import { BaseIngredient, BakeVariable, IngredientManager } from "@azbake/core"
+import path from 'path'
+import { BaseIngredient, BakeVariable, IngredientManager, TagGenerator } from "@azbake/core"
 import { promisify } from 'util';
-import { exec as exec_from_child_process } from 'child_process';
+import { exec as exec_from_child_process, execSync } from 'child_process';
 const replace = require('replace-in-file');
+const YAML = require('yaml');
+const YAMLTYPES = require('yaml/types');
+
 
 const exec = promisify(exec_from_child_process);
 
@@ -22,14 +26,18 @@ export class KubernetesPlugin extends BaseIngredient {
             if (!await promisify(fs.exists)(k8sYamlPath)) {
                 throw "file/path not found: " + k8sYamlPath
             }
+
             await this.replaceTokens(k8sYamlPath);
+            await this.addTagsAsMetadata(k8sYamlPath);
+
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
             try {
-                let { stdout } = await exec(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
+
+                const stdout = execSync(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
                 this._logger.log(`${stdout}`);
                 if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
-                    ({ stdout } = await exec(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`));
+                    const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
                     this._logger.log(`${stdout}`);
                 }
             } finally {
@@ -46,6 +54,140 @@ export class KubernetesPlugin extends BaseIngredient {
             throw error
         }
     }
+    private async addTagsAsMetadata(path: any): Promise<void> {
+
+        const tagGen = new TagGenerator(this._ctx);
+        const tags = tagGen.GenerateTags();
+
+        var fileList: string[] = []
+        if (await this.isDirectory(path)) {
+            fileList = this.getAllFiles(path, /\.yaml$/, fileList);
+        }
+        else {
+            fileList.push(path)
+        }
+
+        fileList.forEach( async (file)=> {
+            this.addTagsToFile(file, tags)
+        })
+    }
+
+    private addTagsToFile(file: string, tags: any): void {
+
+        this._logger.log("Adding tag annotations to: " + file);
+        const fileData = fs.readFileSync(file, 'utf8');
+        const docs = YAML.parseAllDocuments(fileData);
+
+        let fileContent = "";
+
+        docs.forEach((doc: any) => {
+            
+            if (doc.contents == null){
+                return;
+            }
+
+            this.addTagsToYamlDocument(doc, tags)
+            const yamlContent = doc.toString();
+            fileContent += yamlContent;
+            fileContent += '\r\n---\r\n'
+        });
+
+        fs.writeFileSync(file, fileContent);
+    }
+
+
+    private addTagsToYamlDocument(doc: any, tags: any): void {
+
+        this.addAnnotations(doc.contents, tags);
+
+        const docKind = this.getMapValue(doc.contents, 'kind').value.toLowerCase();
+        if (docKind == "deployment") {
+            const template = this.getMapValue(this.getMapValue(doc.contents, 'spec'), 'template');
+            this.addAnnotations(template, tags);
+        }
+    }
+
+    private addAnnotations(map: any, tags: any) {
+
+        let metadataProp = this.getOrCreateYamlObject(map, 'metadata');
+        let annotationProp = this.getOrCreateYamlObject(metadataProp.value, 'annotations');
+
+        for(const property in tags) {
+            const value = tags[property];
+            this.addAnnotation(annotationProp.value, property, value);
+        }
+    }
+
+    private getMapValue(map: any, key: string) {
+        let kindProp: any = null;
+        map.items.forEach((prop: any)=> {
+            if (prop.key.value.toLowerCase() == key){
+                kindProp = prop;
+            }
+        });
+        if (kindProp == null) return null;
+        return kindProp.value;
+    }
+
+    private addAnnotation(map: any, name: string, value: string) {
+        const annotationHeader = "bake.tag/";
+        const annotationName = annotationHeader + name.toLocaleLowerCase();
+
+        let annotation: any = null
+        map.items.forEach((prop: any)=>{
+            if (prop.key.value.toLowerCase() == annotationName) {
+                annotation = prop;
+            }
+        })
+
+        if (annotation == null) {
+            annotation = new YAMLTYPES.Pair(new YAMLTYPES.Scalar(annotationName), new YAMLTYPES.Scalar(value));
+            map.items.push(annotation);
+        }
+        else {
+            annotation.value.value = value;
+        }
+    }
+
+    private getOrCreateYamlObject(map: any, key: string): any {
+        let yamlProp: any = null;
+        map.items.forEach((prop: any)=> {
+            if (prop.key.value.toLowerCase() == key){
+                yamlProp = prop;
+            }
+        });
+
+        if (yamlProp == null) {
+            yamlProp = new YAMLTYPES.Pair(new YAMLTYPES.Scalar(key),new YAMLTYPES.YAMLMap({}));
+            yamlProp.key.type = 'PLAIN';
+            map.items.push(yamlProp);
+        }
+
+        if (yamlProp.value == null) {
+            yamlProp.value = new YAMLTYPES.YAMLMap({});
+        }
+
+        return yamlProp;
+    }
+
+    private getAllFiles(dir: any, filter: RegExp, fileList : string[] = []) : string[] {
+        const files = fs.readdirSync(dir);
+        files.forEach((file)=> {
+            
+            const filePath = path.join(dir, file);
+            const fileStat = fs.lstatSync(filePath);
+
+            if (fileStat.isDirectory()) {
+                this.getAllFiles(filePath, filter, fileList);
+            }
+            else if (filter.test(file))
+            {
+                fileList.push(filePath);
+            }
+        });
+        return fileList;
+    }
+
     private async getKubeConfigParameter(kubeconfigFilename: string) {
         let configParam = "";
         let b64KubeConfigContent = this._ingredient.properties.parameters.get("kubeconfig");
@@ -61,6 +203,7 @@ export class KubernetesPlugin extends BaseIngredient {
         }
         return configParam;
     }
+
     private async replaceTokens(path: any): Promise<void> {
         const openingDelimiter = "{{"
         const closingDelimiter = "}}"

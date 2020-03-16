@@ -3,6 +3,219 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.0.15...@azbake/ingredient-utils@0.1.96) (2020-02-12)
+
+
+
+## 0.1.95 (2020-01-03)
+
+
+
+## 0.1.87 (2019-12-04)
+
+
+### Bug Fixes
+
+* Added a function to compare environment codes ([#133](https://github.com/HomecareHomebase/azure-bake/issues/133)) ([6f94c4d](https://github.com/HomecareHomebase/azure-bake/commit/6f94c4d))
+
+
+
+## 0.1.76 (2019-09-20)
+
+
+### Bug Fixes
+
+* adding new util func => regionVariable() ([#119](https://github.com/HomecareHomebase/azure-bake/issues/119)) ([23a3aeb](https://github.com/HomecareHomebase/azure-bake/commit/23a3aeb))
+
+
+
+## 0.1.74 (2019-09-12)
+
+
+### Bug Fixes
+
+* default values for variables stopped working ([#117](https://github.com/HomecareHomebase/azure-bake/issues/117)) ([8f4b427](https://github.com/HomecareHomebase/azure-bake/commit/8f4b427))
+
+
+
+## 0.1.70 (2019-07-26)
+
+
+### Bug Fixes
+
+* changing resource group naming schema ([#110](https://github.com/HomecareHomebase/azure-bake/issues/110)) [#100](https://github.com/HomecareHomebase/azure-bake/issues/100) [#93](https://github.com/HomecareHomebase/azure-bake/issues/93) ([2ec49c2](https://github.com/HomecareHomebase/azure-bake/commit/2ec49c2))
+
+
+
+## 0.1.68 (2019-07-26)
+
+
+
+## 0.1.67 (2019-07-15)
+
+
+
+## 0.1.66 (2019-07-12)
+
+
+### Bug Fixes
+
+* Fix/coreutils.create resource name ([#104](https://github.com/HomecareHomebase/azure-bake/issues/104)) ([c19542f](https://github.com/HomecareHomebase/azure-bake/commit/c19542f))
+
+
+
+## 0.1.65 (2019-07-10)
+
+
+
+## 0.1.64 (2019-07-10)
+
+
+### Bug Fixes
+
+* Add optional condition to ingredients. ([#102](https://github.com/HomecareHomebase/azure-bake/issues/102)) ([3ebeee5](https://github.com/HomecareHomebase/azure-bake/commit/3ebeee5))
+
+
+
+## 0.1.63 (2019-07-03)
+
+
+
+## 0.1.61 (2019-07-02)
+
+
+### Bug Fixes
+
+* Feature/alert ingredient ([#52](https://github.com/HomecareHomebase/azure-bake/issues/52)) ([f03f96a](https://github.com/HomecareHomebase/azure-bake/commit/f03f96a))
+
+
+
+## 0.1.59 (2019-07-01)
+
+
+
+## 0.1.58 (2019-06-28)
+
+
+### Bug Fixes
+
+* Feature/az mon unified diag settings traffic mgr ([#87](https://github.com/HomecareHomebase/azure-bake/issues/87)) ([c9ba1c5](https://github.com/HomecareHomebase/azure-bake/commit/c9ba1c5))
+
+
+
+## 0.1.55 (2019-06-19)
+
+
+### Bug Fixes
+
+* forcing a docker pull when mixing ([#78](https://github.com/HomecareHomebase/azure-bake/issues/78)) ([4cc3658](https://github.com/HomecareHomebase/azure-bake/commit/4cc3658))
+* forcing full update ([2dca56c](https://github.com/HomecareHomebase/azure-bake/commit/2dca56c))
+
+
+
+## 0.1.54 (2019-06-17)
+
+
+
+## 0.1.52 (2019-06-11)
+
+
+
+## 0.1.47 (2019-05-15)
+
+
+### Bug Fixes
+
+* Allowing bake to be debugged from mono repo ([4dd7239](https://github.com/HomecareHomebase/azure-bake/commit/4dd7239))
+
+
+
+## 0.1.46 (2019-05-15)
+
+
+
+## 0.1.45 (2019-05-15)
+
+
+
+## 0.1.44 (2019-04-17)
+
+
+
+## 0.1.43 (2019-04-17)
+
+
+### Bug Fixes
+
+* eventhubingredients ([#49](https://github.com/HomecareHomebase/azure-bake/issues/49)) ([d00e291](https://github.com/HomecareHomebase/azure-bake/commit/d00e291))
+
+
+
+## 0.1.42 (2019-04-17)
+
+
+
+## 0.1.37 (2019-04-08)
+
+
+
+## 0.1.36 (2019-04-04)
+
+
+
+## 0.1.34 (2019-04-04)
+
+
+
+## 0.1.33 (2019-04-04)
+
+
+### Bug Fixes
+
+* resolving mismatched peerDeps ([eca4e13](https://github.com/HomecareHomebase/azure-bake/commit/eca4e13))
+
+
+
+## 0.1.31 (2019-03-26)
+
+
+
+## 0.1.30 (2019-03-20)
+
+
+### Bug Fixes
+
+* Ingredient build fix ([#33](https://github.com/HomecareHomebase/azure-bake/issues/33)) ([28cde6f](https://github.com/HomecareHomebase/azure-bake/commit/28cde6f))
+
+
+
+## 0.1.28 (2019-03-19)
+
+
+
+## 0.1.23 (2019-02-15)
+
+
+
+## 0.1.22 (2019-02-15)
+
+
+### Bug Fixes
+
+* Fixing lerna setup for proper mono-repo build/clean/bootstrap ([d8e0977](https://github.com/HomecareHomebase/azure-bake/commit/d8e0977))
+
+
+
+
+
+## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
+
+**Note:** Version bump only for package @azbake/ingredient-utils
+
+
+
+
+
 ## [0.1.87](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.86...v0.1.87) (2019-12-04)
 
 

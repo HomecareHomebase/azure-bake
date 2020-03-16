@@ -1,6 +1,6 @@
 {
     "Http5xx": {
-        "alertDescription": "Http 5xx Errors",
+        "alertDescription": "The Http 5xx Errors has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Web/sites",
@@ -13,13 +13,13 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }        
     },
     "Http4xx": {
-        "alertDescription": "Http 4xx",
+        "alertDescription": "The Http 4xx metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.Web/sites",
@@ -32,27 +32,27 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "AverageResponseTime": {
-        "alertDescription": "Average Response Time",
+        "alertDescription": "The Average Response Time metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
-        "isEnabled": true,
+        "isEnabled": false,
         "source-type": "Microsoft.Web/sites",
         "metricName": "AverageResponseTime",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
+        "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     }

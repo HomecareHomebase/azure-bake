@@ -226,7 +226,7 @@ function systemPublish(done) {
 }
 
 function tagAndPush(done) {
-    var imageVersion = JSON.parse(fs.readFileSync('lerna.json')).version;
+    var imageVersion = JSON.parse(fs.readFileSync('./system/package.json')).version;
     var imageTags = [`${params.docker.baseRepository}/bake:${imageVersion}`, `${params.docker.baseRepository}/bake:latest`];
     var result = imageTags.forEach( function (tag) {
         console.log(`Tagging docker image: bake:release with ${tag}`);

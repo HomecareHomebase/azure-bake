@@ -1,6 +1,6 @@
 {
     "ServerErrors": {
-        "alertDescription": "my server errors",
+        "alertDescription": "The ServerErrors metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
@@ -13,13 +13,13 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }        
     },
     "UserErrors": {
-        "alertDescription": "my user errors",
+        "alertDescription": "The UserErrors metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
@@ -32,42 +32,43 @@
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "ThrottledRequests": {
-        "alertDescription": "my throttled errors",
+        "alertDescription": "The ThrottledRequests metric has exceeded the dynamic threshold criteria.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
         "metricName": "ThrottledRequests",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
+        "timeAggregation": "Average",
         "windowSize": "PT5M",
         "evaluationFrequency": "PT5M",
         "alertType": "Dynamic",
         "dynamicAlertProperties": {
             "alertSensitivity": "Low",
             "failingPeriods": {
-                "numberOfEvaluationPeriods": "4",
-                "minFailingPeriodsToAlert": "3"
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
             }
         }         
     },
     "ActiveConnections": {
-        "alertDescription": "static connections",
-        "alertSeverity": 3,
+        "alertDescription": "The ActiveConnections metric's average value has exceeded 90% of the service limit.",
+        "alertSeverity": 2,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
         "metricName": "ActiveConnections",
         "operator": "GreaterThan",        
-        "timeAggregation": "Maximum",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "timeAggregation": "Average",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
         "alertType": "Static",
-        "threshold": "4500"
+        "threshold": "4500",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
     },
     "DeadletteredMessages": {
         "alertDescription": "static count of dead-lettered messages in a Queue/Topic. ",
@@ -77,48 +78,49 @@
         "metricName": "DeadletteredMessages",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
         "alertType": "Static",
         "threshold": "0"
     },
     "Size": {
-        "alertDescription": "static size of an Queue/Topic in Bytes ",
-        "alertSeverity": 3,
+        "alertDescription": "The Size metric's average value has exceeded 90% of the service limit.",
+        "alertSeverity": 2,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
         "metricName": "Size",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
         "alertType": "Static",
-        "threshold": "966367641"
+        "threshold": "77309411328",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
     },
     "CPUXNS": {
-        "alertDescription": "static service bus premium namespace CPU usage metric",
+        "alertDescription": "The CPU metric's average value has exceeded 95% for longer than the duration allowed.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
         "metricName": "CPUXNS",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "windowSize": "PT30M",
+        "evaluationFrequency": "PT30M",
         "alertType": "Static",
-        "threshold": "80"
+        "threshold": "95"
     },
     "WSXNS": {
-        "alertDescription": "static service bus premium namespace CPU usage metric",
+        "alertDescription": "The Memory Usage metric's average value has exceeded 95% for longer than the duration allowed.",
         "alertSeverity": 3,
         "isEnabled": true,
         "source-type": "Microsoft.ServiceBus/namespaces",
         "metricName": "WSXNS",
         "operator": "GreaterThan",        
         "timeAggregation": "Average",
-        "windowSize": "PT5M",
-        "evaluationFrequency": "PT5M",
+        "windowSize": "PT30M",
+        "evaluationFrequency": "PT30M",
         "alertType": "Static",
-        "threshold": "80"
+        "threshold": "95"
     }
 }

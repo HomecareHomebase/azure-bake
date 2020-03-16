@@ -118,16 +118,30 @@ export class BakeRunner {
                 }
                 catch{}
     
+                let tagGenerator = new TagGenerator(ctx)
                 if (!rgExists){
-    
-                    let tagGenerator = new TagGenerator(ctx)
-    
+
                     ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
+
                     await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
-                        tags:  tagGenerator.GenerateTags(),
+                        tags: tagGenerator.GenerateTags(),
                         location: region_name
                     })
                 }
+                else {
+
+                    ctx.Logger.log('Updating resource group ' + cyan(rg_name))
+
+                    //for updates we still want to createOrUpdate so that tags can sync
+                    //but we need to use the RG location in case it's different in later runs.
+                    const rg = await client.resourceGroups.get(rg_name);
+                    await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
+                        tags: tagGenerator.GenerateTags(),
+                        location: rg.location
+                    });
+                }
+
+
             }
 
             let recipe = ctx.Config.recipe
@@ -218,7 +232,10 @@ export class BakeRunner {
                     new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel))
 
                 try{
-                    await this._bakeRegion(ctx)                    
+                    let r = await this._bakeRegion(ctx)
+                    if (!r) {
+                        throw new Error('Not all regions deployed successfully') //force failed result code
+                    }                  
                 }
                 catch(err){
                     throw err

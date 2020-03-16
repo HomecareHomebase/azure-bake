@@ -50,6 +50,7 @@ export interface IBakeConfig {
     name: string,
     shortName: string,
     version: string,
+    owner?: string,
     ingredients?: Array<string>,
     resourceGroup: boolean,
     rgOverride?: BakeVariable,

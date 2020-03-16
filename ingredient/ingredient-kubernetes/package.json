@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-kubernetes",
   "description": "Ingredient for deploying Kubernetes configs",
-  "version": "0.1.68",
+  "version": "0.1.97",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,12 +19,13 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.68",
+    "@azbake/core": "^0.1.96",
     "@azure/ms-rest-nodeauth": "0.9.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "replace-in-file": "^4.1.0"
+    "replace-in-file": "^4.1.0",
+    "yaml": "^1.7.2"
   },
   "publishConfig": {
     "access": "public"
