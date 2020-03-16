@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.98](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.97...v0.1.98) (2020-01-29)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.96...v0.1.97) (2020-01-28)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.95...v0.1.96) (2020-01-17)
+
+
+### Bug Fixes
+
+* **keyvault:** Support for soft delete only ([0297649](https://github.com/HomecareHomebase/azure-bake/commit/0297649))
+
+
+
+
+
+## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
+
+
+### Bug Fixes
+
+* Fix/disable dynamic alerts ([#140](https://github.com/HomecareHomebase/azure-bake/issues/140)) ([aab2106](https://github.com/HomecareHomebase/azure-bake/commit/aab2106))
+
+
+
+
+
+## [0.1.94](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.93...v0.1.94) (2019-12-24)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.93](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.92...v0.1.93) (2019-12-23)
+
+**Note:** Version bump only for package root
+
+
+
+
+
 ## [0.1.92](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.91...v0.1.92) (2019-12-13)
 
 **Note:** Version bump only for package root

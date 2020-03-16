@@ -12,6 +12,7 @@ export class TrafficManager extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
     }
+    
     _helper: ARMHelper;
 
     public async Execute(): Promise<void> {
@@ -83,11 +84,13 @@ export class TrafficManager extends BaseIngredient {
             props["source-name"] = { "value": resource.resource };
             props["source-type"] = temp["source-type"];
 
-            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, await util.resource_group());
+            const primaryRG = await util.resource_group(null, true, util.primary_region());
+        
+            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, primaryRG);
 
             let alertTarget = profileName
             let alertOverrides = this._ingredient.properties.alerts
-            await this._helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+            await this._helper.DeployAlerts(this._name, await primaryRG, alertTarget, stockAlerts, alertOverrides)
             
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
