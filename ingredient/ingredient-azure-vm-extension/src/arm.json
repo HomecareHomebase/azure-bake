@@ -34,7 +34,15 @@
         "description": "The version of the script handler."
       }
     }
-  },
+      ,
+    "commandToExecute": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional command to execute"
+      }    
+  }
+},
   "variables": {},
   "resources": [
     {
