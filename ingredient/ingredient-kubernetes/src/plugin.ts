@@ -97,14 +97,27 @@ export class KubernetesPlugin extends BaseIngredient {
 
 
     private addTagsToYamlDocument(doc: any, tags: any): void {
-
-        this.addAnnotations(doc.contents, tags);
-
         const docKind = this.getMapValue(doc.contents, 'kind').value.toLowerCase();
-        if (docKind == "deployment") {
-            const template = this.getMapValue(this.getMapValue(doc.contents, 'spec'), 'template');
-            this.addAnnotations(template, tags);
+
+        //configmaplist doesn't support annotations since it supports listmeta rather than objectmeta.
+        //Apply annotations to the configmaps within the configmaplist instead.
+        if (docKind == "configmaplist") {
+            var configMapListItems = this.getMapValue(doc.contents, 'items');
+
+            configMapListItems.items.forEach((item: any) => {
+                this.addAnnotations(item, tags);
+            });
         }
+        else {
+            this.addAnnotations(doc.contents, tags);
+
+            if (docKind == "deployment") {
+                const template = this.getMapValue(this.getMapValue(doc.contents, 'spec'), 'template');
+                this.addAnnotations(template, tags);
+            }
+        }
+        
+
     }
 
     private addAnnotations(map: any, tags: any) {
