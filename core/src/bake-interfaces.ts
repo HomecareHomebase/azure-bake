@@ -42,8 +42,9 @@ export interface IBaseUtilityType {
 
 export interface IIngredient {
     properties: IIngredientProperties,
-    dependsOn: Array<string>
-    pluginVersion: string
+    dependsOn: Array<string>,
+    pluginVersion: string,
+    customAuthToken?: string | null  //should not be set from config file, will get set dynamically if auth is configured correctly.
 }
 
 export interface IBakeConfig {

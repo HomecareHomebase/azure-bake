@@ -2,14 +2,14 @@ name: kv-test
 shortName: kv
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-kubernetes@~0"
+  - "@azbake/ingredient-key-vault@~0"
 resourceGroup: true
 rgOverride: "whilke-poc"
 parallelRegions: false
 recipe:
   keyvault:
     properties:
-      type: "@azbake/ingredient-kubernetes"
+      type: "@azbake/ingredient-key-vault"
       source: ./k8
       parameters:
         name: "[keyvaultutils.create_resource_name()]"              

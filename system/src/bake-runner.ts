@@ -187,13 +187,27 @@ export class BakeRunner {
             try {
                 this._AuthCreds =  await msRestNodeAuth
                 .loginWithServicePrincipalSecret(auth.serviceId, auth.secretKey, auth.tenantId)
-                return true;
             }
             catch(err){
                 this._logger.error(red("login failed: " + err.message))
                 return false
             }
-        })
+
+            //check if any ingredients need access to the service principal credientals for custom auth
+            let recipe = this._package.Config.recipe
+
+            let ctx = new DeploymentContext(this._AuthCreds, this._package, <IBakeRegion>{},this._logger);
+
+            for (const iterator of recipe) {
+                let name = iterator[0];
+                let ingredient = iterator[1];
+
+                let exec = IngredientFactory.Build(name, ingredient, ctx)
+                ingredient.customAuthToken = exec ? (await exec.Auth(auth)) : null
+        }   
+            
+            return true;
+        });
 
         return result
     }
