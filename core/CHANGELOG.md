@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.96...@azbake/core@0.1.97) (2020-04-22)
+
+
+### Bug Fixes
+
+* Adding support for ingredients using custom auth with the bake auth credentials ([#155](https://github.com/HomecareHomebase/azure-bake/issues/155)) ([04edf69](https://github.com/HomecareHomebase/azure-bake/commit/04edf69))
+
+
+
+
+
 ## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.17...@azbake/core@0.1.96) (2020-02-12)
 
 

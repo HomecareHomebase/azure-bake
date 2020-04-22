@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.98](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.97...@azbake/ingredient-event-hub-namespace@0.1.98) (2020-04-22)
+
+**Note:** Version bump only for package @azbake/ingredient-event-hub-namespace
+
+
+
+
+
 ## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.96...@azbake/ingredient-event-hub-namespace@0.1.97) (2020-02-19)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub-namespace

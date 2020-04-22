@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.104...@azbake/ingredient-sqlserver-logical@0.1.105) (2020-04-22)
+
+
+### Bug Fixes
+
+* Adding support for ingredients using custom auth with the bake auth credentials ([#155](https://github.com/HomecareHomebase/azure-bake/issues/155)) ([04edf69](https://github.com/HomecareHomebase/azure-bake/commit/04edf69))
+
+
+
+
+
 ## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.103...@azbake/ingredient-sqlserver-logical@0.1.104) (2020-03-17)
 
 **Note:** Version bump only for package @azbake/ingredient-sqlserver-logical

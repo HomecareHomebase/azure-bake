@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.99](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-azure-vm-extension@0.1.98...@azbake/ingredient-azure-vm-extension@0.1.99) (2020-04-22)
+
+**Note:** Version bump only for package @azbake/ingredient-azure-vm-extension
+
+
+
+
+
 ## [0.1.98](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-azure-vm-extension@0.1.97...@azbake/ingredient-azure-vm-extension@0.1.98) (2020-03-17)
 
 **Note:** Version bump only for package @azbake/ingredient-azure-vm-extension

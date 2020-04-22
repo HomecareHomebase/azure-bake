@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.1.96...@azbake/ingredient-script@0.1.97) (2020-04-22)
+
+**Note:** Version bump only for package @azbake/ingredient-script
+
+
+
+
+
 ## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.0.9...@azbake/ingredient-script@0.1.96) (2020-02-12)
 
 
