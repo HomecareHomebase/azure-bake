@@ -8,11 +8,11 @@ metadata:
     bake.tag/region: East US
     bake.tag/recipe: kv-test
     bake.tag/package_version: 1.0.0
-    bake.tag/bake_version: 0.5.1
+    bake.tag/bake_version: 0.5.3
     bake.tag/owner: ""
-    bake.tag/ing_version: 0.1.96
+    bake.tag/ing_version: 0.1.98
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2020-02-19T00:46:33.750Z
+    bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
 spec:
   selector:
     matchLabels:
@@ -28,11 +28,11 @@ spec:
         bake.tag/region: East US
         bake.tag/recipe: kv-test
         bake.tag/package_version: 1.0.0
-        bake.tag/bake_version: 0.5.1
+        bake.tag/bake_version: 0.5.3
         bake.tag/owner: ""
-        bake.tag/ing_version: 0.1.96
+        bake.tag/ing_version: 0.1.98
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: 2020-02-19T00:46:33.750Z
+        bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
     spec:
       containers:
         - name: nginx
@@ -52,11 +52,11 @@ metadata:
     bake.tag/region: East US
     bake.tag/recipe: kv-test
     bake.tag/package_version: 1.0.0
-    bake.tag/bake_version: 0.5.1
+    bake.tag/bake_version: 0.5.3
     bake.tag/owner: ""
-    bake.tag/ing_version: 0.1.96
+    bake.tag/ing_version: 0.1.98
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2020-02-19T00:46:33.750Z
+    bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
 spec:
   selector:
     matchLabels:
@@ -72,11 +72,11 @@ spec:
         bake.tag/region: East US
         bake.tag/recipe: kv-test
         bake.tag/package_version: 1.0.0
-        bake.tag/bake_version: 0.5.1
+        bake.tag/bake_version: 0.5.3
         bake.tag/owner: ""
-        bake.tag/ing_version: 0.1.96
+        bake.tag/ing_version: 0.1.98
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: 2020-02-19T00:46:33.750Z
+        bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
     spec:
       containers:
         - name: nginx
