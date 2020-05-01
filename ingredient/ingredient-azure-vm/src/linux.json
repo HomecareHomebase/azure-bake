@@ -59,6 +59,14 @@
                 "description": "Publisher for the VM Image"
             }
         },
+        "imageName": {
+            "type": "string",   
+            "defaultValue": "",         
+            "metadata": {
+                "description": "VM Image Name"
+            }
+        }
+        ,
         "imageOffer": {
             "type": "string",
             "defaultValue": "UbuntuServer",
@@ -97,9 +105,38 @@
             "type": "string",
             "defaultValue": "MyVNet",
             "metadata": {
-                "description": "Virtual Network NAme"
+                "description": "Virtual Network Name"
+            }
+        },
+        "storageResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource Group of specified Storage"
+            }
+        },
+        "imageResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource Group of specified Image reference"
+            }
+        },        
+        "availabilitySetName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Availability Set Name"
+            }
+        },
+        "diskSizeGB": {
+            "type": "int",
+            "defaultValue": 1023,
+            "metadata": {
+                "description": "Disk Size in GB"
             }
         }
+        
     },
     "variables": {
         "linuxConfiguration": {
@@ -113,14 +150,18 @@
                 ]
             }
         },
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
+        "imageReferenceId": "[resourceId(parameters('imageResourceGroup'), 'Microsoft.Compute/images', parameters('imageName'))]",
+        "availabilitySetId": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"        
+            }
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-10-01",
             "name": "[parameters('vmName')]",
-            "location": "[parameters('location')]",
+            "location": "[parameters('location')]",           
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "[parameters('vmSize')]"
@@ -133,17 +174,18 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('imagePublisher')]",
-                        "offer": "[parameters('imageOffer')]",
-                        "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
+                        "id": "[if(not(empty(parameters('imageName'))), variables('imageReferenceId'), json('null'))]",
+                        "publisher": "[if(empty(parameters('imageName')), parameters('imagePublisher'), json('null'))]",
+                        "offer": "[if(empty(parameters('imageName')), parameters('imageOffer'), json('null'))]",
+                        "sku": "[if(empty(parameters('imageName')), parameters('ubuntuOSVersion'), json('null'))]",
+                        "version": "[if(empty(parameters('imageName')), 'latest', json('null'))]"
                     },
                     "osDisk": {
                         "createOption": "FromImage"
                     },
                     "dataDisks": [
                         {
-                            "diskSizeGB": 1023,
+                            "diskSizeGB": "[parameters('diskSizeGB')]",
                             "lun": 0,
                             "createOption": "Empty"
                         }
@@ -159,10 +201,11 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
+                        "storageUri": "[concat(reference(resourceId(parameters('storageResourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"                        
                     }
+                },
+                "availabilitySet": "[if(not(empty(parameters('availabilitySetName'))), variables('availabilitySetId'), json('null'))]"
                 }
-            }
-        }
+            }        
     ]
 }

@@ -50,6 +50,27 @@ export class BakeRunner {
             })
 
             if (depsDone){
+
+                //check if ingredient has a condition
+                if (ingredient.properties.condition) {
+                    try {
+                        let result = await ingredient.properties.condition.valueAsync(ctx)
+                        if (!result) {
+                            let tmpLogger = new Logger(ctx.Logger.getPre().concat(ingredientName), ctx.Environment.logLevel)
+                            tmpLogger.log("Condition check failed...skipping")
+                            finished.push(ingredientName)
+                            continue
+                        }    
+                    }
+                    catch(e)
+                    {
+                        this._logger.error("Error running condition check for " + ingredientName + " => " + e);
+                        foundErrors = true;
+                        finished.push(ingredientName)
+                        continue
+                    }
+                }
+
                 let exec = IngredientFactory.Build(ingredientName, ingredient, ctx)
                 if (exec) {
 
@@ -97,16 +118,30 @@ export class BakeRunner {
                 }
                 catch{}
     
+                let tagGenerator = new TagGenerator(ctx)
                 if (!rgExists){
-    
-                    let tagGenerator = new TagGenerator(ctx)
-    
+
                     ctx.Logger.log('Setting up resource group ' + cyan(rg_name))
+
                     await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
-                        tags:  tagGenerator.GenerateTags(),
+                        tags: tagGenerator.GenerateTags(),
                         location: region_name
                     })
                 }
+                else {
+
+                    ctx.Logger.log('Updating resource group ' + cyan(rg_name))
+
+                    //for updates we still want to createOrUpdate so that tags can sync
+                    //but we need to use the RG location in case it's different in later runs.
+                    const rg = await client.resourceGroups.get(rg_name);
+                    await client.resourceGroups.createOrUpdate(rg_name, <ResourceGroup>{
+                        tags: tagGenerator.GenerateTags(),
+                        location: rg.location
+                    });
+                }
+
+
             }
 
             let recipe = ctx.Config.recipe
@@ -152,13 +187,27 @@ export class BakeRunner {
             try {
                 this._AuthCreds =  await msRestNodeAuth
                 .loginWithServicePrincipalSecret(auth.serviceId, auth.secretKey, auth.tenantId)
-                return true;
             }
             catch(err){
                 this._logger.error(red("login failed: " + err.message))
                 return false
             }
-        })
+
+            //check if any ingredients need access to the service principal credientals for custom auth
+            let recipe = this._package.Config.recipe
+
+            let ctx = new DeploymentContext(this._AuthCreds, this._package, <IBakeRegion>{},this._logger);
+
+            for (const iterator of recipe) {
+                let name = iterator[0];
+                let ingredient = iterator[1];
+
+                let exec = IngredientFactory.Build(name, ingredient, ctx)
+                ingredient.customAuthToken = exec ? (await exec.Auth(auth)) : null
+        }   
+            
+            return true;
+        });
 
         return result
     }
@@ -197,7 +246,10 @@ export class BakeRunner {
                     new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel))
 
                 try{
-                    await this._bakeRegion(ctx)                    
+                    let r = await this._bakeRegion(ctx)
+                    if (!r) {
+                        throw new Error('Not all regions deployed successfully') //force failed result code
+                    }                  
                 }
                 catch(err){
                     throw err

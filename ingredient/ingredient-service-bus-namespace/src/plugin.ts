@@ -2,6 +2,7 @@ import { BaseIngredient, IngredientManager, IIngredient, DeploymentContext } fro
 import { ARMHelper } from "@azbake/arm-helper"
 import { ServiceBusManagementClient } from "@azure/arm-servicebus";
 import ARMTemplate from "./arm.json"
+import stockAlerts from "./stockAlerts.json"
 
 export class ServiceBusNamespace extends BaseIngredient {
 
@@ -52,23 +53,18 @@ export class ServiceBusNamespace extends BaseIngredient {
                 }
             }
 
-            if (!armParameters["diagnosticsEnabled"])
-                armParameters["diagnosticsEnabled"] = {"value": "yes"}
-
-            if (armParameters["diagnosticsEnabled"].value == "yes") {
-                const ehnUtils = IngredientManager.getIngredientFunction("eventhubnamespace", this._ctx)
-
-                var diagnosticsEventHubNamespace = ehnUtils.get_resource_name("diagnostics");
-                armParameters["diagnosticsEventHubNamespace"] = {"value": diagnosticsEventHubNamespace};
-              
-                var diagnosticsEventHubNamespaceResourceGroup: string
-
-                diagnosticsEventHubNamespaceResourceGroup = await util.resource_group("diagnostics");
-
-                armParameters["diagnosticsEventHubResourceGroup"] = {"value": diagnosticsEventHubNamespaceResourceGroup};                
-            }
+            armParameters = await helper.ConfigureDiagnostics(armParameters);
 
             await helper.DeployTemplate(this._name, ARMTemplate, armParameters, resourceGroupName)
+
+            let alertTarget = armParameters['name'].value
+            let alertOverrides = this._ingredient.properties.alerts
+            //Only the Premium SKU supports CPU and Memory metrics
+            if (armParameters['skuName'].value != "Premium") {
+                delete stockAlerts["CPUXNS"]
+                delete stockAlerts["WSXNS"]
+            }
+            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error

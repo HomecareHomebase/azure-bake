@@ -24,8 +24,7 @@ recipe:
       parameters:
         #App Insights resource name
         appInsightsName: "[appinsights.get_resource_name('property')]"
-        #App Insights region.
-        appInsightsLocation: "East US"
+
   appinsights-payroll:
     properties:
       type: "@azbake/ingredient-app-insights"
@@ -33,8 +32,7 @@ recipe:
       parameters:
         #App Insights resource name
         appInsightsName: "[appinsights.get_resource_name('payroll')]"
-        #App Insights region.
-        appInsightsLocation: "East US"
+
 ```
 
 ### Recipe for referencing a resource

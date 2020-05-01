@@ -5,13 +5,14 @@ import { IIngredient } from ".";
 
 export class DeploymentContext {
     constructor(auth: ApplicationTokenCredentials, bake : IBakePackage, 
-        region: IBakeRegion, logger: Logger, ingredient: IIngredient = <IIngredient>{}) {
+        region: IBakeRegion = <IBakeRegion>{} , logger: Logger, ingredient: IIngredient = <IIngredient>{}, customAuthToken: string | null = null) {
 
         this._package = bake
         this._region = region
         this._logger = logger
         this._auth = auth
         this._ingredient = ingredient
+        this._authToken = customAuthToken
     }
 
     _package: IBakePackage
@@ -19,6 +20,7 @@ export class DeploymentContext {
     _region: IBakeRegion
     _logger: Logger
     _auth: ApplicationTokenCredentials
+    _authToken: string | null
 
     public get Config() : IBakeConfig {
         return this._package.Config
@@ -45,5 +47,9 @@ export class DeploymentContext {
     
     public get Ingredient(): IIngredient {
         return this._ingredient
+    }
+
+    public get CustomAuthToken(): string | null {
+        return this._authToken
     }
 }

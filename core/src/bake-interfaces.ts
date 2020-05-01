@@ -26,8 +26,10 @@ export interface IBakeEnvironment {
 export interface IIngredientProperties {
     type: string,
     source: BakeVariable,
+    condition?: BakeVariable,
     parameters: Map<string,BakeVariable>,
-    tokens: Map<string,BakeVariable>
+    tokens: Map<string,BakeVariable>,
+    alerts: Map<string,BakeVariable>
 }
 
 export interface IIngredientType {
@@ -40,14 +42,16 @@ export interface IBaseUtilityType {
 
 export interface IIngredient {
     properties: IIngredientProperties,
-    dependsOn: Array<string>
-    pluginVersion: string
+    dependsOn: Array<string>,
+    pluginVersion: string,
+    customAuthToken?: string | null  //should not be set from config file, will get set dynamically if auth is configured correctly.
 }
 
 export interface IBakeConfig {
     name: string,
     shortName: string,
     version: string,
+    owner?: string,
     ingredients?: Array<string>,
     resourceGroup: boolean,
     rgOverride?: BakeVariable,

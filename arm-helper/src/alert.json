@@ -55,22 +55,22 @@
     },
     "operator": {
       "type": "string",
-      "defaultValue": "GreaterThan",
       "allowedValues": [
         "Equals",
         "NotEquals",
         "GreaterThan",
         "GreaterThanOrEqual",
         "LessThan",
-        "LessThanOrEqual"
+        "LessThanOrEqual",
+        "GreaterOrLessThan"
       ],
       "metadata": {
-        "description": "Operator comparing the current value with the threshold value."
+        "description": "Operator comparing the current value with the threshold.  GreaterOrLessThan, GreaterThan, and LessThan are applicable to dynamic.  All applicable to static except GreaterOrLessThan."
       }
     },
     "threshold": {
       "type": "string",
-      "defaultValue": "0",
+      "defaultValue": "",
       "metadata": {
         "description": "The threshold value at which the alert is activated."
       }
@@ -97,16 +97,32 @@
     },
     "evaluationFrequency": {
       "type": "string",
-      "defaultValue": "PT1M",
+      "defaultValue": "PT5M",
       "metadata": {
         "description": "How often the metric alert is evaluated represented in ISO 8601 duration format"
       }
     },
-    "actionGroupName": {
-      "type": "string"
+    "actionGroups": {
+      "type": "array",
+      "defaultValue": []
     },
-    "actionGroupResourceGroup": {
-      "type": "string"      
+    "alertType": {
+      "type": "string",
+      "allowedValues": ["Static","Dynamic"]
+    },
+    "dynamicAlertProperties": {
+      "type": "object",
+      "defaultValue": {
+        "alertSensitivity": "Low",
+        "failingPeriods": {
+          "numberOfEvaluationPeriods": "4",
+          "minFailingPeriodsToAlert": "4"
+        }
+      }
+    },
+    "dimensionFilter": {
+      "type": "array",
+      "defaultValue": []
     }
   },
   "variables": {},
@@ -125,23 +141,22 @@
         "evaluationFrequency": "[parameters('evaluationFrequency')]",
         "windowSize": "[parameters('windowSize')]",
         "criteria": {
-          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "odata.type": "[concat('Microsoft.Azure.Monitor.', if(equals(parameters('alertType'),'Static'),'SingleResourceMultipleMetricCriteria','MultipleResourceMultipleMetricCriteria'))]",
           "allOf": [
             {
+              "criterionType": "[if(equals(parameters('alertType'),'Static'),'StaticThresholdCriterion','DynamicThresholdCriterion')]",
               "name": "1st criterion",
               "metricName": "[parameters('metricName')]",
-              "dimensions": [],
+              "dimensions": "[parameters('dimensionFilter')]",
               "operator": "[parameters('operator')]",
-              "threshold": "[parameters('threshold')]",
+              "threshold": "[if(equals(parameters('alertType'),'Static'),parameters('threshold'),'')]",
+              "alertSensitivity": "[if(equals(parameters('alertType'),'Dynamic'),parameters('dynamicAlertProperties').alertSensitivity,'')]",
+              "failingPeriods": "[if(equals(parameters('alertType'),'Dynamic'),parameters('dynamicAlertProperties').failingPeriods,json('null'))]",
               "timeAggregation": "[parameters('timeAggregation')]"
             }
           ]
         },
-        "actions": [
-          {
-            "actionGroupId": "[resourceId(parameters('actionGroupResourceGroup'), 'Microsoft.Insights/actiongroups', parameters('actionGroupName'))]"
-          }
-        ]
+        "actions": "[parameters('actionGroups')]"
       }
     }
   ]

@@ -3,6 +3,353 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.98](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.97...v0.1.98) (2020-01-29)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.97](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.96...v0.1.97) (2020-01-28)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.96](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.95...v0.1.96) (2020-01-17)
+
+
+### Bug Fixes
+
+* **keyvault:** Support for soft delete only ([0297649](https://github.com/HomecareHomebase/azure-bake/commit/0297649))
+
+
+
+
+
+## [0.1.95](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.94...v0.1.95) (2020-01-03)
+
+
+### Bug Fixes
+
+* Fix/disable dynamic alerts ([#140](https://github.com/HomecareHomebase/azure-bake/issues/140)) ([aab2106](https://github.com/HomecareHomebase/azure-bake/commit/aab2106))
+
+
+
+
+
+## [0.1.94](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.93...v0.1.94) (2019-12-24)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.93](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.92...v0.1.93) (2019-12-23)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.92](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.91...v0.1.92) (2019-12-13)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.91](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.90...v0.1.91) (2019-12-10)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.90](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.89...v0.1.90) (2019-12-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.89](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.88...v0.1.89) (2019-12-06)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.88](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.87...v0.1.88) (2019-12-05)
+
+
+### Bug Fixes
+
+* Added soft delete support to key vault ([81f631a](https://github.com/HomecareHomebase/azure-bake/commit/81f631a))
+
+
+
+
+
+## [0.1.87](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.86...v0.1.87) (2019-12-04)
+
+
+### Bug Fixes
+
+* Added a function to compare environment codes ([#133](https://github.com/HomecareHomebase/azure-bake/issues/133)) ([6f94c4d](https://github.com/HomecareHomebase/azure-bake/commit/6f94c4d))
+* Diagnostic settings for apim and key vault ([#132](https://github.com/HomecareHomebase/azure-bake/issues/132)) ([8455591](https://github.com/HomecareHomebase/azure-bake/commit/8455591))
+
+
+
+
+
+## [0.1.86](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.85...v0.1.86) (2019-11-27)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.85](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.84...v0.1.85) (2019-11-22)
+
+
+### Bug Fixes
+
+* Added ingredient-functions to deploy a function app in a Linux-based container. ([#130](https://github.com/HomecareHomebase/azure-bake/issues/130)) ([82386b1](https://github.com/HomecareHomebase/azure-bake/commit/82386b1))
+
+
+
+
+
+## [0.1.84](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.83...v0.1.84) (2019-11-19)
+
+
+### Bug Fixes
+
+* added ingredient-service-bus-queue ([#127](https://github.com/HomecareHomebase/azure-bake/issues/127)) ([59601a6](https://github.com/HomecareHomebase/azure-bake/commit/59601a6))
+
+
+
+
+
+## [0.1.83](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.82...v0.1.83) (2019-11-13)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.82](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.81...v0.1.82) (2019-11-08)
+
+
+### Bug Fixes
+
+* fixed reset npm function ([#125](https://github.com/HomecareHomebase/azure-bake/issues/125)) ([a5a54aa](https://github.com/HomecareHomebase/azure-bake/commit/a5a54aa))
+
+
+
+
+
+## [0.1.81](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.80...v0.1.81) (2019-11-08)
+
+
+### Bug Fixes
+
+* updated to untrack .npmrc ([#124](https://github.com/HomecareHomebase/azure-bake/issues/124)) ([4ee7020](https://github.com/HomecareHomebase/azure-bake/commit/4ee7020))
+
+
+
+
+
+## [0.1.80](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.79...v0.1.80) (2019-10-23)
+
+
+### Bug Fixes
+
+* Feature/azure alert tweaks ([#123](https://github.com/HomecareHomebase/azure-bake/issues/123)) ([1405c7c](https://github.com/HomecareHomebase/azure-bake/commit/1405c7c))
+
+
+
+
+
+## [0.1.79](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.78...v0.1.79) (2019-10-22)
+
+
+### Bug Fixes
+
+* Reset the NPM Key before build commits it ([#122](https://github.com/HomecareHomebase/azure-bake/issues/122)) ([cf771ca](https://github.com/HomecareHomebase/azure-bake/commit/cf771ca))
+
+
+
+
+
+## [0.1.78](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.77...v0.1.78) (2019-10-22)
+
+
+### Bug Fixes
+
+* Checking in new bake ingredients ([#120](https://github.com/HomecareHomebase/azure-bake/issues/120)) ([7801849](https://github.com/HomecareHomebase/azure-bake/commit/7801849))
+
+
+
+
+
+## [0.1.77](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.76...v0.1.77) (2019-10-22)
+
+
+### Bug Fixes
+
+* Feature/apim ([#121](https://github.com/HomecareHomebase/azure-bake/issues/121)) ([4295c29](https://github.com/HomecareHomebase/azure-bake/commit/4295c29))
+
+
+
+
+
+## [0.1.76](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.75...v0.1.76) (2019-09-20)
+
+
+### Bug Fixes
+
+* adding new util func => regionVariable() ([#119](https://github.com/HomecareHomebase/azure-bake/issues/119)) ([23a3aeb](https://github.com/HomecareHomebase/azure-bake/commit/23a3aeb))
+
+
+
+
+
+## [0.1.75](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.74...v0.1.75) (2019-09-19)
+
+
+### Bug Fixes
+
+* Feature/enhanced alert action groups ([#118](https://github.com/HomecareHomebase/azure-bake/issues/118)) ([2418cb6](https://github.com/HomecareHomebase/azure-bake/commit/2418cb6))
+
+
+
+
+
+## [0.1.74](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.73...v0.1.74) (2019-09-12)
+
+
+### Bug Fixes
+
+* default values for variables stopped working ([#117](https://github.com/HomecareHomebase/azure-bake/issues/117)) ([8f4b427](https://github.com/HomecareHomebase/azure-bake/commit/8f4b427))
+
+
+
+
+
+## [0.1.73](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.72...v0.1.73) (2019-09-10)
+
+
+### Bug Fixes
+
+* Updating kubectl to 1.13.5 ([#115](https://github.com/HomecareHomebase/azure-bake/issues/115)) ([2ba15d7](https://github.com/HomecareHomebase/azure-bake/commit/2ba15d7))
+
+
+
+
+
+## [0.1.72](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.71...v0.1.72) (2019-08-07)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+## [0.1.71](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.70...v0.1.71) (2019-07-31)
+
+
+### Bug Fixes
+
+* Azure VM Extension Ingredient ([#111](https://github.com/HomecareHomebase/azure-bake/issues/111)) ([8e18197](https://github.com/HomecareHomebase/azure-bake/commit/8e18197))
+
+
+
+
+
+## [0.1.70](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.68...v0.1.70) (2019-07-26)
+
+
+### Bug Fixes
+
+* changing resource group naming schema ([#110](https://github.com/HomecareHomebase/azure-bake/issues/110)) [#100](https://github.com/HomecareHomebase/azure-bake/issues/100) [#93](https://github.com/HomecareHomebase/azure-bake/issues/93) ([2ec49c2](https://github.com/HomecareHomebase/azure-bake/commit/2ec49c2))
+* updated borked upload ver ([#109](https://github.com/HomecareHomebase/azure-bake/issues/109)) ([332557c](https://github.com/HomecareHomebase/azure-bake/commit/332557c))
+
+
+
+
+
+## [0.1.68](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.67...v0.1.68) (2019-07-26)
+
+
+### Bug Fixes
+
+* added support for specifying rg of ehn ([#108](https://github.com/HomecareHomebase/azure-bake/issues/108)) ([b4a5739](https://github.com/HomecareHomebase/azure-bake/commit/b4a5739))
+* API Management ([#103](https://github.com/HomecareHomebase/azure-bake/issues/103)) ([d89149b](https://github.com/HomecareHomebase/azure-bake/commit/d89149b))
+* Feature/stock alerts ([#106](https://github.com/HomecareHomebase/azure-bake/issues/106)) ([74ac805](https://github.com/HomecareHomebase/azure-bake/commit/74ac805))
+* Fix table format ([#107](https://github.com/HomecareHomebase/azure-bake/issues/107)) ([6c97c34](https://github.com/HomecareHomebase/azure-bake/commit/6c97c34))
+
+
+
+
+
+## [0.1.67](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.66...v0.1.67) (2019-07-15)
+
+
+### Bug Fixes
+
+* BakeVaribales now support async/await of internal calls ([#105](https://github.com/HomecareHomebase/azure-bake/issues/105)) ([719810b](https://github.com/HomecareHomebase/azure-bake/commit/719810b))
+
+
+
+
+
+## [0.1.66](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.65...v0.1.66) (2019-07-12)
+
+
+### Bug Fixes
+
+* Fix/coreutils.create resource name ([#104](https://github.com/HomecareHomebase/azure-bake/issues/104)) ([c19542f](https://github.com/HomecareHomebase/azure-bake/commit/c19542f))
+
+
+
+
+
+## [0.1.65](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.64...v0.1.65) (2019-07-10)
+
+
+### Bug Fixes
+
+* Feature/dynamic alerts ([#101](https://github.com/HomecareHomebase/azure-bake/issues/101)) ([7aa7b9a](https://github.com/HomecareHomebase/azure-bake/commit/7aa7b9a))
+* Fix/app insights smart detection ([#99](https://github.com/HomecareHomebase/azure-bake/issues/99)) ([f07a616](https://github.com/HomecareHomebase/azure-bake/commit/f07a616))
+
+
+
+
+
+## [0.1.64](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.63...v0.1.64) (2019-07-10)
+
+
+### Bug Fixes
+
+* Add optional condition to ingredients. ([#102](https://github.com/HomecareHomebase/azure-bake/issues/102)) ([3ebeee5](https://github.com/HomecareHomebase/azure-bake/commit/3ebeee5))
+
+
+
+
+
 ## [0.1.63](https://github.com/HomecareHomebase/azure-bake/compare/v0.1.62...v0.1.63) (2019-07-03)
 
 

@@ -2,14 +2,24 @@ name: storage-test
 shortName: strtest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-storage@0.0.3"
+  - "@azbake/ingredient-storage"
+  - "@azbake/ingredient-arm"
 resourceGroup: true
 rgOverride: "test"
 parallelRegions: false
 recipe:
-  storage:
+  storage-deploy:
     properties:
       type: "@azbake/ingredient-storage"
       parameters:
-        -name: "test-storage"
-  
+        storageAccountName: "th1teststorage"
+  arm-deploy:
+    properties:
+      type: "@azbake/ingredient-arm"
+      source: ./arm2.json
+      parameters:
+        name: "[coreutils.create_storage_name('th2teststorage')]"
+        primary: "[storage.get_primary_connectionstring('th1teststorage', 'test')]" 
+        secondary: "[storage.get_secondary_connectionstring('th1teststorage', 'test')]" 
+    dependsOn:
+      - storage-deploy

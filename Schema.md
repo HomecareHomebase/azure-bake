@@ -25,6 +25,7 @@ Note: Not all features are supported, such as functions.
 name: string
 shortName: string
 version: string
+owner: string
 ingredients: [ ingredientTag ]
 resourceGroup: bool
 rgOverride: string | expression
@@ -38,6 +39,7 @@ recipe: {string: ingredient block}
 |name|yes|Descriptive name for recipe|
 |shortName|yes|code use for resource naming [a-z][A-Z][0-9], 8 chars max|
 |version|yes|version should match the docker tag|
+|owner|no|Owner of package as either a team name, email, person, etc.|
 |ingredients|yes|List of bake ingredients to use in the recipe|
 |resourceGroup|no (default true)|Create a resource group for the recipe deployment |
 |rgOverride|no (default blank)|Name of the resource group to create, if set. Otherwise standard format will be used|
@@ -77,6 +79,7 @@ An ingredient block describes an instance of an ingredient to deploy. It has a l
 ```yaml
 properties:
     type: string
+    condition: variable
     source: string
     tokens: {string: variable}
     parameters: {string: variable}
@@ -86,6 +89,7 @@ dependsOn: [string]
 | property | required | description|
 |----------|----------|------------|
 |type|yes|name of ingredient to deploy (check ingredient docs for name)|
+|condition|no|optional condition check that will skip this ingredient if it returns false|
 |source|depends on ingredient|source file/option for some ingredients|
 |tokens|depends on ingredient|Token values typically used to update configuration files when deployed.  Check ingredient docs for token options|
 |parameters|depends on ingredient|check ingredient docs for parameter options|

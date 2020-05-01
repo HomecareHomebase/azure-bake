@@ -325,5 +325,7 @@ if (canExecute) {
 
     if (cmd == "mix") build()
     if (cmd == "serve") deploy()
-    if (cmd == "run") run().then(code=> process.exit(code))
+    if (cmd == "run") run().then(code=> {
+        process.exit(code);
+    });
 }

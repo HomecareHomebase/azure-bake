@@ -1,4 +1,4 @@
-import { IBakeConfig, IIngredient, IBakeRegion} from "./bake-interfaces";
+import { IBakeConfig, IIngredient, IBakeRegion, IBakeAuthentication} from "./bake-interfaces";
 import {Logger} from './logger'
 import {DeploymentContext} from './deployment-context'
 import * as colors from 'colors'
@@ -25,4 +25,7 @@ export class BaseIngredient {
     public async Execute(): Promise<void> {
     }
 
+    public async Auth(auth: IBakeAuthentication): Promise<string | null> {
+        return null;       
+    }
 }

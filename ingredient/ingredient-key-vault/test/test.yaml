@@ -1,0 +1,24 @@
+name: kv-test
+shortName: thkv
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-key-vault@0.0.1"
+  #Event hub namespace reference is required in order to enable the diagnostics setting (enabled by default) that transmits logs to a diagnostics event hub
+  - "@azbake/ingredient-event-hub-namespace"  
+resourceGroup: true
+rgOverride: "test-rg"
+parallelRegions: false
+recipe:
+  keyvault:
+    properties:
+      type: "@azbake/ingredient-key-vault"
+      parameters:
+        name: "[keyvaultutils.create_resource_name()]"       
+        sku: "standard"                      
+        networkAcls:
+          defaultAction: "Deny"
+          bypass: "AzureServices"
+          ipRules: []
+          virtualNetworkRules: []
+
+        

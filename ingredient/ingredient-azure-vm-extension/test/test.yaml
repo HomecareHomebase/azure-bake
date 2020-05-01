@@ -1,0 +1,23 @@
+name: vm-ext-test
+shortName: vmext
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-azure-vm-extension@0.0.1"
+resourceGroup: true
+rgOverride: "test"
+parallelRegions: false
+recipe:
+  vmext:
+    properties:
+      type: "@azbake/ingredient-azure-vm-extension"
+      parameters:
+        extName: "InstallCustomScript"
+        vmName: "testvm"
+        publisher: "Microsoft.Azure.Extensions"
+        typeHandlerVersion: "2.0"        
+        extensionType: "CustomScript"
+        commandToExecute: "sh hello.sh"
+        settings:
+          fileUris: 
+            - "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-customscript-extension-public-storage-on-ubuntu/scripts/hello.sh"
+          commandToExecute: "[parameters('commandToExecute')]"

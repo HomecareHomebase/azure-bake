@@ -32,7 +32,7 @@ function build(done) {
         if ((!!params.build.buildReason.match(/IndividualCI/ig) || !!params.build.buildReason.match(/BatchedCI/ig)) &&
             !!params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '').match(/master/ig)) {
             console.log('Running Azure DevOps Release Build');
-            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, systemPublish, tagAndPush)(done);
+            gulp.series(printVersion, adoPrep, toolInstall, lernaBuild, gitCommit, lernaPublish, resetNpmAuth, systemPublish, tagAndPush)(done);
         }
 
         else if (!!params.build.buildReason.match(/PullRequest/ig)) {
@@ -77,6 +77,7 @@ function gitCommit(done) {
     var gitScript = `sudo git checkout ${branchName} && 
     sudo git config user.email "${params.build.buildRequestedForEmail}" &&
     sudo git config user.name "${params.build.buildRequestedFor}" &&
+    sudo git update-index --assume-unchanged .npmrc &&
     sudo git add . && 
     sudo git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "chore[skip ci]: Update & Commit Locks" && 
     sudo git tag v${lerna.version} &&
@@ -225,7 +226,7 @@ function systemPublish(done) {
 }
 
 function tagAndPush(done) {
-    var imageVersion = JSON.parse(fs.readFileSync('lerna.json')).version;
+    var imageVersion = JSON.parse(fs.readFileSync('./system/package.json')).version;
     var imageTags = [`${params.docker.baseRepository}/bake:${imageVersion}`, `${params.docker.baseRepository}/bake:latest`];
     var result = imageTags.forEach( function (tag) {
         console.log(`Tagging docker image: bake:release with ${tag}`);
@@ -260,6 +261,14 @@ function writeFilenameToFile() {
     });
 }
 
+function resetNpmAuth() {
+    let filename = './.npmrc'
+    let npmString = '//registry.npmjs.org/:_authToken=$(Npm_Auth_Token)'
+    return new Promise (function(cb){
+        fs.writeFile(filename, npmString, cb);        
+    });
+}
+
 //Tasks
 exports.build = build;
 exports.conditions = conditions;
@@ -276,3 +285,4 @@ exports.printversion = printVersion;
 exports.setupcoveragepool = setupCoveragePool;
 exports.tagandpush = tagAndPush;
 exports.testnycmocha = testNycMocha;
+exports.resetNpmAuth = resetNpmAuth;

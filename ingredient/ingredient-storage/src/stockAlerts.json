@@ -1,0 +1,60 @@
+{
+    "Errors": {
+        "alertDescription": "The Error Response Types of the Transactions metric has exceeded the dynamic threshold criteria.",
+        "alertSeverity": 3,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "Transactions",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dimensionFilter":
+        [{
+            "name": "ResponseType",
+            "operator": "Include",
+            "values": ["ServerOtherError","ServerBusyError","ServerTimeoutError","AuthorizationError","NetworkError","ClientThrottlingError","ClientTimeoutError","ClientOtherError"]
+        }],
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
+            }
+        }        
+    },
+    "SuccessE2ELatency": {
+        "alertDescription": "The SuccessE2ELatency metric has exceeded the dynamic threshold criteria.",
+        "alertSeverity": 3,
+        "isEnabled": false,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "SuccessE2ELatency",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Average",
+        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "alertType": "Dynamic",
+        "dynamicAlertProperties": {
+            "alertSensitivity": "Low",
+            "failingPeriods": {
+                "numberOfEvaluationPeriods": "6",
+                "minFailingPeriodsToAlert": "6"
+            }
+        }         
+    },
+    "TransactionVolume": {
+        "alertDescription": "The Transactions metric's average value has exceeded 90% of the service limit.",
+        "alertSeverity": 2,
+        "isEnabled": true,
+        "source-type": "Microsoft.Storage/storageAccounts",
+        "metricName": "Transactions",
+        "operator": "GreaterThan",        
+        "timeAggregation": "Total",
+        "windowSize": "PT15M",
+        "evaluationFrequency": "PT15M",
+        "alertType": "Static",
+        "threshold": "16200000",
+        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+    }
+}
