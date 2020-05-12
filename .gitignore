@@ -21,3 +21,4 @@ azdevops/**/*.js
 /.vs
 .env
 /.devcontainer
+/_ReSharper.Caches
