@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-datafactoryv2@0.1.105...@azbake/ingredient-datafactoryv2@0.1.106) (2020-05-12)
+
+
+### Bug Fixes
+
+* Property service bake ingredient ([#157](https://github.com/HomecareHomebase/azure-bake/issues/157)) ([193f344](https://github.com/HomecareHomebase/azure-bake/commit/193f344))
+
+
+
+
+
 ## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-datafactoryv2@0.1.104...@azbake/ingredient-datafactoryv2@0.1.105) (2020-04-22)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.5](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.4...azure-bake@0.5.5) (2020-05-12)
+
+
+### Bug Fixes
+
+* Property service bake ingredient ([#157](https://github.com/HomecareHomebase/azure-bake/issues/157)) ([193f344](https://github.com/HomecareHomebase/azure-bake/commit/193f344))
+
+
+
+
+
 ## [0.5.4](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.3...azure-bake@0.5.4) (2020-04-22)
 
 
