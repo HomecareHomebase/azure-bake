@@ -1,33 +1,36 @@
-import { DeploymentContext, IIngredient, BaseIngredient } from '@azbake/core'
+import { DeploymentContext, IIngredient, BaseIngredient, IBakeAuthentication } from '@azbake/core'
 
-import { PropertyServiceClient, PropertyServiceClientAuthenticator } from './serviceclient'
-import { ConfigurationValueResolver, ConfigurationProvider, PropertyServiceConfiguration, IOperationConfiguration } from './configuration'
-import { ServerOperation, PropertyOperation, SecretOperation, EncryptionKeyOperation, CertificateOperation } from './operations'
-
-import { ApplicationTokenCredentials } from '@azure/ms-rest-nodeauth';
-
+import { ConfigurationProvider, ConfigurationValueResolver, PropertyServiceConfiguration } from './configuration';
+import { ClientFactory, Authenticator, PropertyServiceSource } from './client';
+import { OperationBase, } from './operations';
+import { OperationFactory } from './operations/operationFactory';
 
 export class PropertyServicePlugIn extends BaseIngredient {
 
     private readonly _valueResolver: ConfigurationValueResolver;
     private readonly _configurationProvider: ConfigurationProvider;
-    private readonly _authenticator: PropertyServiceClientAuthenticator;
-
-    private readonly _baseUrl: string = `https://property-hchb-shared.k8s-dev.hchb.local`;
 
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
         super(name, ingredient, ctx)
 
         this._valueResolver = new ConfigurationValueResolver(this._logger, this._ctx, this._ingredient);
         this._configurationProvider = new ConfigurationProvider(this._logger, this._valueResolver);
-        this._authenticator = new PropertyServiceClientAuthenticator(this._logger);
+    }
+
+    public async Auth(auth: IBakeAuthentication): Promise<string | null> {
+
+        const source: PropertyServiceSource = await PropertyServiceSource.Parse(this._ctx);
+        const authenticator: Authenticator = new Authenticator(this._logger)
+
+        return await authenticator.Authenticate(auth.serviceId, auth.secretKey, auth.tenantId, source.resourceUrl)
     }
 
     public async Execute(): Promise<void> {
 
         try {
-            let operations: Array<ServerOperation<any, any, any, any>> = await this.Initialize();
-            await this.Run(operations);
+            await this._initialize().then(async (operations) => {
+                await this._runOperationLoop(operations);
+            });
         }
         catch (error) {
             this._logger.error('deployment failed: ' + error);
@@ -35,82 +38,58 @@ export class PropertyServicePlugIn extends BaseIngredient {
         }
     }
 
-    private async Initialize(): Promise<Array<ServerOperation<any, any, any, any>>> {
+    private async _initialize(): Promise<Array<OperationBase<any, any, any>>> {
 
         this._logger.log('Begin Propery Service Plugin Initalization'.cyan);
 
-        let configuration: PropertyServiceConfiguration = await this._configurationProvider.LoadConfiguration();
-        let client: PropertyServiceClient = await this.InitializeClient();
+        const configuration: PropertyServiceConfiguration = await this._configurationProvider.Initialize();
+        const clientFactory: ClientFactory = await this._initializeClients();
 
-        let operations: Array<ServerOperation<any, any, any, any>> = await this.InitializeOperations(configuration, client);
-
-        this._logger.log('End Propery Service Plugin Initalization'.cyan);
-
-        return operations;
+        return Promise.resolve(this._initializeOperations(configuration, clientFactory));
     }
 
-    private async InitializeOperations(configuration: PropertyServiceConfiguration, client: PropertyServiceClient): Promise<Array<ServerOperation<any, any, any, any>>> {
-
-        if (!configuration) {
-            throw new Error('configuration is null.')
-        }
-        if (!client) {
-            throw new Error('client is null.')
-        }
+    private _initializeOperations(configuration: PropertyServiceConfiguration, clientFactory: ClientFactory): Array<OperationBase<any, any, any>> {
 
         this._logger.log('Begin loading operations'.cyan);
 
-        let operations: Array<ServerOperation<any, any, any, any>> = [];
-
-        if (configuration.PropertyConfiguration) {
-            operations.push(new PropertyOperation(this._logger, client, this._valueResolver, configuration.PropertyConfiguration));
-            this._logger.log('Loaded property operation');
-        }
-
-        if (configuration.SecretConfiguration) {
-            operations.push(new SecretOperation(this._logger, client, this._valueResolver, configuration.SecretConfiguration));
-            this._logger.log('Loaded secret operation');
-        }
-
-        if (configuration.EncryptionKeyConfiguration) {
-            operations.push(new EncryptionKeyOperation(this._logger, client, this._valueResolver, configuration.EncryptionKeyConfiguration));
-            this._logger.log('Loaded encryptionkey operation');
-        }
-
-        if (configuration.CertificateConfiguration) {
-            operations.push(new CertificateOperation(this._logger, client, this._valueResolver, configuration.CertificateConfiguration));
-            this._logger.log('Loaded certificate operation');
-        }
+        const operationFactory: OperationFactory = new OperationFactory(this._logger, clientFactory);
+        const operations: Array<OperationBase<any, any, any>> = operationFactory.CreateOperations(configuration);
 
         if (operations.length == 0) {
             this._logger.error('Failed to load operations');
             throw new Error('Failed to load operations');
         }
 
-        this._logger.log(`Loaded ${operations.length} operations successfully`);
+        this._logger.log(`Loaded [${operations.length}] operations successfully`);
         this._logger.log('End loading operations'.cyan);
 
         return operations;
     }
 
-    private async InitializeClient(): Promise<PropertyServiceClient> {
+    private async _initializeClients(): Promise<ClientFactory> {
         this._logger.log('Begin creating service client'.cyan);
 
-        let credentials: ApplicationTokenCredentials = await this._authenticator.Authenticate();
-        let client = new PropertyServiceClient(this._logger, this._baseUrl, credentials);
+        const source: PropertyServiceSource = await PropertyServiceSource.Parse(this._ctx);
+
+        this._logger.log(`Loaded baseUrl [${source.baseUrl}] from properties.source successfully`);
+
+        const accessToken: string | null = this._ctx.CustomAuthToken;
+        if (!accessToken || accessToken == '') {
+            throw new Error('The access token is null or empty.');
+        }
+
+        this._logger.log('Loaded access token successfully');
+
+        const factory: ClientFactory = new ClientFactory(this._logger, source.baseUrl, accessToken);
 
         this._logger.log('Service client initialization was successful');
 
         this._logger.log('End creating service client'.cyan);
 
-        return client;
+        return factory;
     }
 
-    private async Run(operations: Array<ServerOperation<any, any, any, any>>): Promise<void> {
-
-        if (!operations) {
-            throw new Error('operations is null.')
-        }
+    private async _runOperationLoop(operations: Array<OperationBase<any, any, any>>): Promise<void> {
 
         this._logger.log('Begin Property service communication'.cyan);
 
