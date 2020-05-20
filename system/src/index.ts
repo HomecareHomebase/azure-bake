@@ -211,16 +211,21 @@ function build(){
 
     console.log('Mixing...' + recipeName)
     cli.start().arg('build').arg('--pull').arg("-t=" + recipeName).arg(".").execStream()
-    .then(()=>{
+    .then((code)=>{ 
         fs.unlinkSync(dockerFile)
         fs.unlinkSync(".dockerignore")
-        console.log('Mix Completed.')
-    })
+        if (code != 0 ) 
+        { console.error('Failed to mix.'); }
+        else
+        {   console.log('Mix Completed.')}          
+        process.exit(code);    
+        })
     .catch((e)=>{
         fs.unlinkSync(dockerFile)
         fs.unlinkSync(".dockerignore")
         console.error('Failed to mix')
         console.error(e)
+        process.exit(15);        
     })
 
     try {
