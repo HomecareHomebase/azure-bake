@@ -1,0 +1,138 @@
+---
+name: Testing
+shortName: test
+version: 1.0.0
+owner: jlynch@hchb.com
+ingredients:
+  - "@azbake/ingredient-property-service@~0"
+resourceGroup: false
+rgOverride: null
+parallelRegions: true
+variables:
+  property1-name: property-1
+  property1-selectors:
+    agency: "1"
+    live: "true"
+  property-1-expirationDate: 2020-06-20 11:02:57
+  secret1-name: secret-1
+  secret1-selectors:
+    agency: "1"
+    live: "true"
+  secret-1-expirationDate: 2020-06-20 11:02:57
+recipe:
+  property-service:
+    properties:
+      type: "@azbake/ingredient-property-service"
+      source:
+        baseUrl: https://localhost:44338
+        resourceUrl: https://hchbazure.onmicrosoft.com/d1f4903f-2a7e-4182-96dd-0dea6b20373f
+      parameters:
+        properties:
+          create:
+            - name: "[coreutils.variable('property1-name')]"
+              value: property-1
+              selectors: "[coreutils.variable('property1-selectors')]"
+              contentType: text/plain
+              expirationDate: "[coreutils.variable('property-1-expirationDate')]"
+              activeDate: 2020-04-21 9:00:00
+            - name: property-2
+              value: property-2
+              selectors:
+                live: "true"
+                agency: "2"
+              contentType: text/plain
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-21 9:00:00
+            - name: property-2
+              value: property-2
+              selectors:
+                agency: "2"
+                live: "false"
+              contentType: text/plain
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-21 10:00:00
+          update:
+            - target:
+                name: property-1
+                selectors:
+                  agency: "1"
+                  live: "true"
+              activeDate: 2020-04-22 9:00:00
+            - target:
+                name: property-3
+                selectors:
+                  agency: "3"
+                  live: "true"
+              name: property-2
+              value: property-2
+              selectors:
+                agency: "foobar"
+                live: "true"
+              contentType: text/json+patch
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-22 9:00:00
+          delete:
+            - name: property-2
+              operator: None
+        secrets:
+          create:
+            - name: secret-1
+              value: secret-1
+              selectors: "[coreutils.variable('secret1-selectors')]"
+              contentType: text/plain
+              expirationDate: "[coreutils.variable('secret-1-expirationDate')]"
+              activeDate: 2020-04-21 9:00:00
+            - name: secret-2
+              value: secret-2
+              selectors:
+                live: "true"
+                agency: "2"
+              contentType: text/plain
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-21 9:00:00
+            - name: secret-2
+              value: secret-2
+              selectors:
+                agency: "2"
+                live: "false"
+              contentType: text/plain
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-21 10:00:00
+          update:
+            - target:
+                name: secret-1
+                selectors:
+                  agency: "1"
+                  live: "true"
+              name: secret-3
+              value: secret-3-UPDATE
+              selectors:
+                agency: "3"
+                live: "true"
+              contentType: text/json
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-22 9:00:00
+            - target:
+                name: secret-3
+                selectors:
+                  agency: "3"
+                  live: "true"
+              name: secret-2
+              value: secret-2-UPDATE
+              selectors:
+                agency: "foobar"
+                live: "true"
+              contentType: text/json+patch
+              expirationDate: 2020-06-20 11:02:57
+              activeDate: 2020-04-22 9:00:00
+          delete:
+            - name: secret-2
+              operator: Contains
+              selectors:
+                live: "true"
+              allVersions: true
+            - name: secret-2
+              operator: Contains
+              selectors:
+                live: "false"
+              allVersions: true

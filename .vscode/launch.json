@@ -1,16 +1,19 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Debug Locally",
-        "program": "${workspaceFolder}/system/dist/index.js",
-        "args": ["serve","c:/git/azure-bake/system/package/test.yaml"],
-        "envFile": "${workspaceFolder}/.env",
-        "env": {
-          "NODE_ENV": "development"
-        }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Locally",
+      "program": "${workspaceFolder}/system/dist/index.js",
+      "args": [
+        "serve",
+        "C:/Users/jlynch/Repo/azure-bake/ingredient/ingredient-property-service/tests/test.yaml"
+      ],
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_ENV": "development"
       }
+    }
   ]
 }
