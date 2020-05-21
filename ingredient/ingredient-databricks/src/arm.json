@@ -2,8 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "type": "string"
+        "location": {            
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
         },
         "workspaceName": {
             "type": "string"
@@ -11,10 +12,46 @@
         "tier": {
             "defaultValue": "premium",
             "type": "string"
+        },
+        "diagnosticsEnabled": {
+            "type": "string",
+            "defaultValue": "yes",
+            "metadata": {
+                "description": "Specifies whether to configure diagnostic settings to expose logs and metrics for consumption."
+            }
+        },
+        "diagnosticsSettingName": {
+            "type": "string",
+            "defaultValue": "diagToEHN",
+            "metadata": {
+                "description": "Diagnostic setting name.  Most by unique for the resource."
+            }
+        },
+        "diagnosticsEventHubResourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The resource group of the Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubNamespace": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Event Hub Namespace where diagnostics are sent."
+            }
+        },
+        "diagnosticsEventHubAuthorizationRule": {
+            "type": "string",
+            "defaultValue": "RootManageSharedAccessKey",
+            "metadata": {
+                "description": "The authorization rule to use for transmitting diagnostics."
+            }
         }
     },
     "resources": [
         {
+            "type":  "Microsoft.Databricks/workspaces",
             "apiVersion": "2018-04-01",
             "location": "[parameters('location')]",
             "name": "[parameters('workspaceName')]",
@@ -24,12 +61,44 @@
             "comments": "Please do not use an existing resource group for ManagedResourceGroupId.",
             "properties": {
                 "ManagedResourceGroupId": "[variables('managedResourceGroupId')]"
-            },
-            "type": "Microsoft.Databricks/workspaces"
+            },            
+            "resources": [
+                {
+                    "condition": "[equals(parameters('diagnosticsEnabled'), 'yes')]",
+                    "type": "providers/diagnosticSettings",
+                    "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
+                    "dependsOn": [                    
+                    "[parameters('workspaceName')]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                    "name": "[parameters('diagnosticsSettingName')]",
+                    "eventHubAuthorizationRuleId": "[resourceId(parameters('diagnosticsEventHubResourceGroup'),'Microsoft.EventHub/namespaces/authorizationRules', parameters('diagnosticsEventHubNamespace'), parameters('diagnosticsEventHubAuthorizationRule'))]",
+                    "logs": [
+                        {
+                        "category": "workspace",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        },
+                        {
+                        "category": "jobs",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 0,
+                            "enabled": false
+                        }
+                        }
+                    ]
+                    }
+                }        
+            ]
         }
     ],
     "variables": {
         "managedResourceGroupId": "[concat(subscription().id, '/resourceGroups/', variables('managedResourceGroupName'))]",
-        "managedResourceGroupName": "[concat('databricks-rg-', parameters('workspaceName'), '-', uniqueString(parameters('workspaceName'), resourceGroup().id))]"
+        "managedResourceGroupName": "[concat(parameters('location'), '_', 'databricks')]"
     }
 }

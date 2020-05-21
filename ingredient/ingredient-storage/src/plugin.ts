@@ -6,6 +6,7 @@ import stockAlerts from "./stockAlerts.json"
 import { StorageUtils } from "./functions.js";
 import { StorageManagementClient } from "@azure/arm-storage"
 import { ServiceURL, StorageURL, SharedKeyCredential, Aborter } from "@azure/storage-blob"
+import ARMTemplateNetwork from "./storageNetwork.json"
 
 export class StoragePlugIn extends BaseIngredient {
     public async Execute(): Promise<void> {
@@ -17,7 +18,14 @@ export class StoragePlugIn extends BaseIngredient {
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             
-            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            if(params['NetworkAcls']){
+
+                await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, await util.resource_group())
+                //there is a limitation around the copy function in the current architecture
+
+            }else{
+                await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            }
 
             await this.ConfigureDiagnosticSettings(params, util);
 
