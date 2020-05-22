@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.101](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.100...@azbake/ingredient-storage@0.1.101) (2020-05-22)
+
+
+### Bug Fixes
+
+* remove hns property as it's not supported for current storage accounts ([2461b40](https://github.com/HomecareHomebase/azure-bake/commit/2461b40))
+
+
+
+
+
 ## [0.1.100](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.99...@azbake/ingredient-storage@0.1.100) (2020-05-21)
 
 
