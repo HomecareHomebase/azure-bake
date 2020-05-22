@@ -51,13 +51,6 @@
             "metadata": {
                 "description": "Allows https traffic only to storage service if sets to true."
             }
-        },
-        "IsHierarchicalNamespace": {
-            "type": "bool",
-            "defaultValue": false,
-            "metadata": {
-                "description": "Account HierarchicalNamespace enabled if sets to true."
-            }
         }
     },
     "resources": [
@@ -73,7 +66,6 @@
             "kind": "[parameters('storageKind')]",
           "properties": {
             "accessTier": "[parameters('storageAccessTier')]",
-            "isHnsEnabled" : "[parameters('IsHierarchicalNamespace')]",
             "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" 
           },
           "tags": {
