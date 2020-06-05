@@ -12,12 +12,21 @@ export class AppInsightsPlugIn extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            
-            await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+    
+            let resourceGroup = await util.resource_group()
+
+            let rgOverrideParam  = this._ingredient.properties.parameters.get('rgOverride')
+            if (rgOverrideParam){
+                resourceGroup = await rgOverrideParam.valueAsync(this._ctx)
+                // remove rgOverride if it exists since its not in the ARM template
+                delete params["rgOverride"]
+            }
+
+            await helper.DeployTemplate(this._name, ARMTemplate, params, resourceGroup)
 
             let alertTarget = params["appInsightsName"].value
             let alertOverrides = this._ingredient.properties.alerts
-            await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)            
+            await helper.DeployAlerts(this._name, resourceGroup, alertTarget, stockAlerts, alertOverrides)            
         } catch(error){
             this._logger.error('deployment failed: ' + error)
             throw error
