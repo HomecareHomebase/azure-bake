@@ -1,7 +1,7 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import { ApiManagementClient, ApiPolicy } from "@azure/arm-apimanagement"
-import { AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails } from "@azure/arm-apimanagement/esm/models";
+import { LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails } from "@azure/arm-apimanagement/esm/models";
 import ApimTemplate from "./apim-deploy.json"
 import { RestError, RequestOptionsBase } from "@azure/ms-rest-js"
 let request = require('async-request')
@@ -67,7 +67,7 @@ export class ApimPlugin extends BaseIngredient {
             await this.BuildGroups()
             await this.BuildUsers()
             await this.BuildProducts()
-            //await this.BuildLoggers()
+            await this.BuildLoggers()
             await this.BuildAuthServers()
         } catch(error){
             this._logger.error('APIM Plugin Error: ' + error)
@@ -84,14 +84,23 @@ export class ApimPlugin extends BaseIngredient {
         let rgOverride : string
         rgOverride = await util.resource_group();
 
-        if (!source) {
-            this._logger.log('APIM Source can not be empty')
-            return false
-        }
+        if (source) {
+            // if source is being supplied then APIM is deployed. The ingredient is being used to deploy things like named values for specific API's
+            this.deployArm = false
 
-        let bakeResource = util.parseResource(source)
-        this.resource_group = bakeResource.resourceGroup || rgOverride
-        this.resource_name = bakeResource.resource
+            let bakeResource = util.parseResource(source)
+            this.resource_group = bakeResource.resourceGroup || rgOverride
+            this.resource_name = bakeResource.resource
+        }
+        else {
+            this.resource_group = rgOverride
+
+            let apimServiceName = this._ingredient.properties.parameters.get('apiManagementServiceName')
+
+            if(apimServiceName){
+                this.resource_name = await apimServiceName.valueAsync(this._ctx)
+            }
+        }
 
         if (!this.resource_group) {
             this._logger.log('APIM resourceGroup can not be empty')
@@ -349,6 +358,54 @@ export class ApimPlugin extends BaseIngredient {
                 let sub = product.subscriptions[i]
                 await this.BuildSubscription(sub, product.id)
             }
+        }
+    }
+
+    private async BuildLoggers(): Promise<void> {
+        let loggersParam  = this._ingredient.properties.parameters.get('loggers')
+        if (!loggersParam){
+            return
+        }
+
+        let loggers :IApimLogger[] = await loggersParam.valueAsync(this._ctx)
+        if (!loggers){
+            return
+        }
+
+        for(let i =0; i < loggers.length; ++i) {
+            let logger = loggers[i];
+            await this.BuildLogger(logger)
+        }   
+    }
+
+    private async BuildLogger(logger: IApimLogger): Promise<void>{
+        if (this.apim_client == undefined) return
+
+        if (logger.appInsightsName) {
+            
+            logger.appInsightsName = (await (new BakeVariable(logger.appInsightsName)).valueAsync(this._ctx))            
+        }
+
+        if (logger.data.credentials) {
+            logger.data.credentials["instrumentationKey"] = (await (new BakeVariable(logger.data.credentials["instrumentationKey"])).valueAsync(this._ctx))            
+        }
+
+        if (logger.data.loggerType == "applicationInsights") {
+            this._logger.log('APIM-Standup: Add/Update APIM logger: ' + logger.appInsightsName)
+            
+            var response = await this.apim_client.logger.createOrUpdate(
+                this.resource_group,
+                this.resource_name,
+                logger.appInsightsName,
+                logger.data,
+                <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
+            
+            if (response._response.status != 200 && response._response.status != 201) {
+                this._logger.error(`APIM-Standup: Could not create/update logger for '+ logger.appInsightsName`)
+            }
+        }
+        else if (logger.data.loggerType == "azureEventHub") {
+            this._logger.error(`APIM-Standup: Logger EventHub functionality is yet to be implemented`)
         }
     }
 
