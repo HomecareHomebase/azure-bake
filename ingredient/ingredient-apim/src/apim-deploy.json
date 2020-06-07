@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "apiManagementServiceName": {
+      "apimServiceName": {
         "type": "string",
         "metadata": {
           "description": "APIM service name"
@@ -179,7 +179,7 @@
     "resources": [
       {
         "apiVersion": "2017-03-01",
-        "name": "[toLower(parameters('apiManagementServiceName'))]",
+        "name": "[toLower(parameters('apimServiceName'))]",
         "type": "Microsoft.ApiManagement/service",
         "location": "[resourceGroup().location]",
         "tags": {},
@@ -211,7 +211,7 @@
               "type": "providers/diagnosticSettings",
               "name": "[concat('Microsoft.Insights/', parameters('diagnosticsSettingName'))]",
               "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service', toLower(parameters('apiManagementServiceName')))]"
+                "[resourceId('Microsoft.ApiManagement/service', toLower(parameters('apimServiceName')))]"
               ],
               "apiVersion": "2017-05-01-preview",
               "properties": {

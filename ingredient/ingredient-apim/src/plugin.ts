@@ -94,7 +94,7 @@ export class ApimPlugin extends BaseIngredient {
         else {
             this.resource_group = rgOverride
 
-            let apimServiceName = this._ingredient.properties.parameters.get('apiManagementServiceName')
+            let apimServiceName = this._ingredient.properties.parameters.get('apimServiceName')
 
             if(apimServiceName){
                 this.resource_name = await apimServiceName.valueAsync(this._ctx)
