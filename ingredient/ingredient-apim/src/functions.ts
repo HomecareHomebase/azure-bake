@@ -4,21 +4,26 @@ import { SubscriptionGetResponse } from '@azure/arm-apimanagement/esm/models';
 
 export class ApimUtils extends BaseUtility {
 
-    public get_resource_name(): string {
+    public get_resource_name(name: string | null = null): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const name = util.create_resource_name("apim", null, false);
+        const resourceNname = util.create_resource_name("apim", name, false);
 
         this.context._logger.debug(`ApimUtils.get_resource_name() returned ${name}`);
 
-        return name;
+        return resourceNname;
     }
     
-    public async get_source(): Promise<string> {
+    public async get_source(
+        shortName: string,
+        rgShortName: string | null = null, 
+        useRegionCode: boolean = true, 
+        ignoreOverride: boolean = false): Promise<string> {
+
         let coreutil = IngredientManager.getIngredientFunction("coreutils", this.context);
         var util = new ApimUtils(this.context)
 
-        let resourceGroup = await coreutil.resource_group()
-        let resourceName = util.get_resource_name()
+        let resourceGroup = await coreutil.resource_group(rgShortName, useRegionCode, null, ignoreOverride)
+        let resourceName = util.get_resource_name(shortName)
         let source =  resourceGroup + "/" + resourceName
 
         this.context._logger.debug(`ApimUtils.get_source() returned ${source}`);
