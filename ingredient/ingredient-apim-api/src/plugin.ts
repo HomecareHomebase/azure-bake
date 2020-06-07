@@ -232,7 +232,7 @@ export class ApimApiPlugin extends BaseIngredient {
         if (this.apim_client == undefined) return
 
         if (diagnostics.data.loggerId) {
-            diagnostics.data.loggerId = (await (new BakeVariable(diagnostics.data.loggerId))?.valueAsync(this._ctx))            
+            diagnostics.data.loggerId = (await (new BakeVariable(diagnostics.data.loggerId)).valueAsync(this._ctx))            
         }
 
         this._logger.log('Applying diagnostics ' + diagnostics.id + " to API " + apiId)
