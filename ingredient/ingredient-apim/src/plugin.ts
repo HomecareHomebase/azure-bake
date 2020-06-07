@@ -1,9 +1,13 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
-import { LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { IdentityProviderType, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
 import ApimTemplate from "./apim-deploy.json"
-let request = require('async-request')
+
+interface IApiIdentityProvider{
+    id: IdentityProviderType
+    data: IdentityProviderContract
+}
 
 interface IApimAuthServer{
     id: string
@@ -32,10 +36,6 @@ interface IApimNamedValue{
     data: PropertyContract
 }
 
-interface IApimOptions {
-    apiWaitTime: number
-}
-
 interface IApimProduct {
     id: string
     data: ProductContract
@@ -55,7 +55,6 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
-    private     apim_options:       IApimOptions | undefined
     private     deployArm:          boolean      = true
 
     public async Execute(): Promise<void> {
@@ -69,6 +68,7 @@ export class ApimPlugin extends BaseIngredient {
             await this.BuildProducts()
             await this.BuildLoggers()
             await this.BuildAuthServers()
+            await this.BuildIdentityProviders()
         } catch(error){
             this._logger.error('APIM Plugin: ' + error)
             throw error
@@ -119,18 +119,6 @@ export class ApimPlugin extends BaseIngredient {
             return false
         }
 
-        let optionParam =this._ctx.Ingredient.properties.parameters.get('options') || undefined
-        if (optionParam){
-            this.apim_options = await optionParam.valueAsync(this._ctx) || <IApimOptions>{}
-        }
-        else{
-            this.apim_options = <IApimOptions>{}
-        }
-
-        if (this.apim_options){
-            this.apim_options.apiWaitTime = this.apim_options.apiWaitTime <= 0 || !this.apim_options.apiWaitTime ? 120 : this.apim_options.apiWaitTime
-        }
-
         return true
     }
 
@@ -149,6 +137,7 @@ export class ApimPlugin extends BaseIngredient {
         delete params["users"]
         delete params["loggers"]
         delete params["authServers"]
+        delete params["identityProviders"]
 
         //Deploy primary ARM template
         this._logger.log('APIM Plugin: Deploying ARM template')
@@ -426,10 +415,10 @@ export class ApimPlugin extends BaseIngredient {
                     await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
                     await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
                         .then((result) => {
-                            this._logger.log(`APIM Plugin: : Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
+                            this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
                         })
                         .catch((failure) => {
-                            this._logger.error(`APIM Plugin: : Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
+                            this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
                         })
                 }
             }
@@ -472,6 +461,44 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildIdentityProviders(): Promise<void> {
+
+        let identityProvidersParam  = this._ingredient.properties.parameters.get('identityProviders')
+        if (!identityProvidersParam){
+            return
+        }
+
+        let identityProviders :IApiIdentityProvider[] = await identityProvidersParam.valueAsync(this._ctx)
+        if (!identityProviders){
+            return
+        }
+
+        for(let i =0; i < identityProviders.length; ++i) {
+            let identityProvider = identityProviders[i];
+            await this.BuildIdentityProvider(identityProvider)
+        }       
+    }
+
+    private async BuildIdentityProvider(identityProvider: IApiIdentityProvider): Promise<void> {
+
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.id)
+
+        identityProvider.data.identityProviderContractType = identityProvider.id
+
+        let response = await this.apim_client.identityProvider.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            identityProvider.id,
+            identityProvider.data,
+            <IdentityProviderCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update identity provider " + identityProvider.id)
+        }
+    }
+
     private async ResolvePolicy(policy: PolicyContract): Promise<PolicyContract> {
 
         if (policy.value) {
@@ -481,16 +508,6 @@ export class ApimPlugin extends BaseIngredient {
         if (policy.format != "rawxml-link" &&
             policy.format != "xml-link") {
                 return policy
-        }
-
-        let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
-
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(policy.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                return policy
-            }
-            await this.Sleep(1000)
         }
 
         throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
@@ -529,11 +546,5 @@ export class ApimPlugin extends BaseIngredient {
         })
 
         return userId
-    }
-
-    private Sleep(ms: number) : Promise<void> {
-        return new Promise(resolve=>{
-            setTimeout(resolve,ms)
-        })
     }
 }
