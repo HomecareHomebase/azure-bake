@@ -4,26 +4,22 @@ import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, Api
 import { RestError } from "@azure/ms-rest-js"
 let request = require('async-request')
 
-interface IApimDiagnostics{
+interface IApimDiagnostics extends DiagnosticContract{
     id: string
-    data: DiagnosticContract
 }
 
-interface IApimPolicy {
+interface IApimPolicy extends PolicyContract{
     operation?: string
-    data: PolicyContract
 }
 
-interface IApimApiVersion {
+interface IApimApiVersion extends ApiVersionSetContract{
     id: string
-    data: ApiVersionSetContract
     versions: Array<IApimApi>
 }
 
-interface IApimApi {
+interface IApimApi extends ApiCreateOrUpdateParameter{
     id : string
     version: string
-    data: ApiCreateOrUpdateParameter
     policies?: Array<IApimPolicy>
     products?: Array<string>
     diagnostics?: Array<IApimDiagnostics>
@@ -131,7 +127,7 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
-        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.id, api, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         for(let i=0; i< api.versions.length; ++i) {
             let version = api.versions[i]
@@ -152,19 +148,26 @@ export class ApimApiPlugin extends BaseIngredient {
 
         }
 
-        api.data = await this.ResolveApi(api.data)
+        if (api.serviceUrl) {
+            api.serviceUrl = (await (new BakeVariable(api.serviceUrl)).valueAsync(this._ctx))            
+        }
+
+        if (api.value) {
+            api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
+        }
+        
         let blockResult = await this.BlockForApi(api)
 
         if (!blockResult) {
-            throw new Error("APIM API Plugin: Could not fetch API source => " + api.data.value)
+            throw new Error("APIM API Plugin: Could not fetch API source => " + api.value)
         }
 
         let apiRevisionId : string
         try {
-            api.data.apiVersion = api.version
-            api.data.apiVersionSetId = apiVersion.id
-            api.data.apiVersionSet = apiVersion
-            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, {ifMatch : '*'})
+            api.apiVersion = api.version
+            api.apiVersionSetId = apiVersion.id
+            api.apiVersionSet = apiVersion
+            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api, {ifMatch : '*'})
             this._logger.log("API " + result.displayName + " published")
             apiRevisionId = result.apiRevision || ""
                 
@@ -208,17 +211,17 @@ export class ApimApiPlugin extends BaseIngredient {
 
     private async BlockForApi(api: IApimApi): Promise<boolean> {
 
-        if (api.data.format != "openapi-link" &&
-            api.data.format != "swagger-link-json" &&
-            api.data.format != "wadl-link-json" &&
-            api.data.format != "wsdl-link") {
+        if (api.format != "openapi-link" &&
+            api.format != "swagger-link-json" &&
+            api.format != "wadl-link-json" &&
+            api.format != "wsdl-link") {
             return true
         }
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
         for(let i=0; i < blockTime; ++i){
-            let response = await request(api.data.value)
+            let response = await request(api.value)
             if (response.statusCode >= 200 && response.statusCode < 400){
                 return true
             }
@@ -231,8 +234,8 @@ export class ApimApiPlugin extends BaseIngredient {
 	private async ApplyDiagnostics(diagnostics: IApimDiagnostics, apiId: string) : Promise<void> {
         if (this.apim_client == undefined) return
 
-        if (diagnostics.data.loggerId) {
-            diagnostics.data.loggerId = (await (new BakeVariable(diagnostics.data.loggerId)).valueAsync(this._ctx))            
+        if (diagnostics.loggerId) {
+            diagnostics.loggerId = (await (new BakeVariable(diagnostics.loggerId)).valueAsync(this._ctx))            
         }
 
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.id + " to API " + apiId)
@@ -242,7 +245,7 @@ export class ApimApiPlugin extends BaseIngredient {
             this.resource_name,
             apiId,
             diagnostics.id,
-            diagnostics.data,
+            diagnostics,
             <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
@@ -257,7 +260,7 @@ export class ApimApiPlugin extends BaseIngredient {
         let operation = policy.operation || "base"
 
         this._logger.log("APIM API Plugin: Applying API Policy for API: " + apiId + " operation: " + operation)
-        let policyData = await this.ResolvePolicy(policy.data)
+        let policyData = await this.ResolvePolicy(policy)
 
         if (operation == "base") {
             let response = await this.apim_client.apiPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, policyData, <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
@@ -297,19 +300,6 @@ export class ApimApiPlugin extends BaseIngredient {
         });
 
         return rApi
-    }
-
-    private async ResolveApi(api: ApiCreateOrUpdateParameter) : Promise<ApiCreateOrUpdateParameter> {
-
-        if (api.serviceUrl) {
-            api.serviceUrl = (await (new BakeVariable(api.serviceUrl)).valueAsync(this._ctx))            
-        }
-
-        if (api.value) {
-            api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
-        }
-
-        return api
     }
 
     private async ResolvePolicy(policy: PolicyContract): Promise<PolicyContract> {
