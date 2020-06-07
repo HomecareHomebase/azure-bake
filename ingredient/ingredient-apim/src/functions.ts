@@ -6,7 +6,7 @@ export class ApimUtils extends BaseUtility {
 
     public get_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const name = util.create_resource_name("apim", "hchb-api", false);
+        const name = util.create_resource_name("apim", null, false);
 
         this.context._logger.debug(`ApimUtils.get_resource_name() returned ${name}`);
 
@@ -17,7 +17,7 @@ export class ApimUtils extends BaseUtility {
         let coreutil = IngredientManager.getIngredientFunction("coreutils", this.context);
         var util = new ApimUtils(this.context)
 
-        let resourceGroup = await coreutil.resource_group("apim", true)
+        let resourceGroup = await coreutil.resource_group()
         let resourceName = util.get_resource_name()
         let source =  resourceGroup + "/" + resourceName
 
