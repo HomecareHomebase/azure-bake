@@ -6,41 +6,34 @@ interface IApim extends ApiManagementServiceResource{
     apimServiceName: string
 }
 
-interface IApiIdentityProvider{
+interface IApiIdentityProvider extends IdentityProviderContract{
     id: IdentityProviderType
-    data: IdentityProviderContract
 }
 
-interface IApimAuthServer{
+interface IApimAuthServer extends AuthorizationServerContract{
     id: string
-    data: AuthorizationServerContract
 }
 
-interface IApimUser{
+interface IApimUser extends UserCreateParameters{
     id: string
-    data: UserCreateParameters
     groups?: Array<string>
 }
 
-interface IApimGroup{
+interface IApimGroup extends GroupCreateParameters{
     id: string
-    data: GroupCreateParameters
 }
 
-interface IApimLogger{
+interface IApimLogger extends LoggerContract{
     appInsightsName: string
-    clean: boolean
-    data: LoggerContract
+    cleanKeys: boolean
 }
 
-interface IApimNamedValue{
+interface IApimNamedValue extends PropertyContract{
     id: string
-    data: PropertyContract
 }
 
-interface IApimProduct {
+interface IApimProduct extends ProductContract{
     id: string
-    data: ProductContract
     apis?: Array<string>
     groups?: Array<string>
     policy?: PolicyContract
@@ -190,7 +183,7 @@ export class ApimPlugin extends BaseIngredient {
                 this.resource_group,
                 this.resource_name,
                 namedValue.id,
-                namedValue.data,
+                namedValue,
                 <PropertyCreateOrUpdateOptionalParams>{ifMatch:'*'}
             )
 
@@ -220,13 +213,13 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildGroup(group: IApimGroup): Promise<void> {
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM Plugin: Add/Update APIM group: ' + group.data.displayName)
+        this._logger.log('APIM Plugin: Add/Update APIM group: ' + group.displayName)
         
         let response = await this.apim_client.group.createOrUpdate(
             this.resource_group,
             this.resource_name,
             group.id,
-            group.data,
+            group,
             <GroupCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -261,7 +254,7 @@ export class ApimPlugin extends BaseIngredient {
             this.resource_group,
             this.resource_name,
             user.id,
-            user.data,
+            user,
             <UserCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -309,7 +302,7 @@ export class ApimPlugin extends BaseIngredient {
             this.resource_group,
             this.resource_name,
             product.id,
-            product.data,
+            product,
             <ProductCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -393,20 +386,20 @@ export class ApimPlugin extends BaseIngredient {
             logger.appInsightsName = (await (new BakeVariable(logger.appInsightsName)).valueAsync(this._ctx))            
         }
 
-        if (logger.data.credentials) {
-            aiKey = (await (new BakeVariable(logger.data.credentials["instrumentationKey"])).valueAsync(this._ctx))
+        if (logger.credentials) {
+            aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
 
-            logger.data.credentials["instrumentationKey"] = aiKey
+            logger.credentials["instrumentationKey"] = aiKey
         }
 
-        if (logger.data.loggerType == "applicationInsights") {
+        if (logger.loggerType == "applicationInsights") {
             this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.appInsightsName)
             
             var response = await this.apim_client.logger.createOrUpdate(
                 this.resource_group,
                 this.resource_name,
                 logger.appInsightsName,
-                logger.data,
+                logger,
                 <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
             if (response._response.status != 200 && response._response.status != 201) {
@@ -415,12 +408,12 @@ export class ApimPlugin extends BaseIngredient {
 
             currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
         }
-        else if (logger.data.loggerType == "azureEventHub") {
+        else if (logger.loggerType == "azureEventHub") {
             this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
         }
 
         //Clean logger keys
-        if (logger.clean == undefined || logger.clean) {
+        if (logger.cleanKeys == undefined || logger.cleanKeys) {
             let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
             let propEtag = ""
             for (let i = 0; i < result.length; i++) {
@@ -468,7 +461,7 @@ export class ApimPlugin extends BaseIngredient {
             this.resource_group,
             this.resource_name,
             authServer.id,
-            authServer.data,
+            authServer,
             <AuthorizationServerCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -500,13 +493,13 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.id)
 
-        identityProvider.data.identityProviderContractType = identityProvider.id
+        identityProvider.identityProviderContractType = identityProvider.id
 
         let response = await this.apim_client.identityProvider.createOrUpdate(
             this.resource_group,
             this.resource_name,
             identityProvider.id,
-            identityProvider.data,
+            identityProvider,
             <IdentityProviderCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
