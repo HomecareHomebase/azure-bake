@@ -237,9 +237,10 @@ export class ApimApiPlugin extends BaseIngredient {
 
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.id + " to API " + apiId)
 
-        let apiResponse = await this.apim_client.diagnostic.createOrUpdate(
+        let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
             this.resource_group,
             this.resource_name,
+            apiId,
             diagnostics.id,
             diagnostics.data,
             <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
