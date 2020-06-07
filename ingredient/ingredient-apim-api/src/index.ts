@@ -1,8 +1,8 @@
-import { ApimApi } from './plugin'
+import { ApimApiPlugin } from './plugin'
 import { ApimApiUtils } from './functions'
 
 /*  comment out these entries if you are not including an ingredient plugin runner*/
-exports.plugin = ApimApi
+exports.plugin = ApimApiPlugin
 exports.pluginNS = "@azbake/ingredient-apim-api" //name of the ingredient to reference in a bake.yaml recipe
 
 /* comment out these entries if you are not including a set of expression functions*/
