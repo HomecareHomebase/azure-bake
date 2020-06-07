@@ -1,8 +1,10 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
-import { ARMHelper } from "@azbake/arm-helper"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
-import { IdentityProviderType, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
-import ApimTemplate from "./apim-deploy.json"
+import { ApiManagementServiceResource, IdentityProviderType, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+
+interface IApim extends ApiManagementServiceResource{
+    apimServiceName: string
+}
 
 interface IApiIdentityProvider{
     id: IdentityProviderType
@@ -55,20 +57,21 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
-    private     deployArm:          boolean      = true
 
     public async Execute(): Promise<void> {
         try {
             
-            await this.Setup()
-            await this.DeployArmTemplate()
-            await this.BuildNamedValues()
-            await this.BuildGroups()
-            await this.BuildUsers()
-            await this.BuildProducts()
-            await this.BuildLoggers()
-            await this.BuildAuthServers()
-            await this.BuildIdentityProviders()
+            if(await this.Setup())
+            {
+                await this.BuildAPIM()
+                await this.BuildNamedValues()
+                await this.BuildGroups()
+                await this.BuildUsers()
+                await this.BuildProducts()
+                await this.BuildLoggers()
+                await this.BuildAuthServers()
+                await this.BuildIdentityProviders()
+            }
         } catch(error){
             this._logger.error('APIM Plugin: ' + error)
             throw error
@@ -85,9 +88,6 @@ export class ApimPlugin extends BaseIngredient {
         rgOverride = await util.resource_group();
 
         if (source) {
-            // if source is being supplied then APIM is deployed. The ingredient is being used to deploy things like named values for specific API's
-            this.deployArm = false
-
             let bakeResource = util.parseResource(source)
             this.resource_group = bakeResource.resourceGroup || rgOverride
             this.resource_name = bakeResource.resource
@@ -95,19 +95,25 @@ export class ApimPlugin extends BaseIngredient {
         else {
             this.resource_group = rgOverride
 
-            let apimServiceName = this._ingredient.properties.parameters.get('apimServiceName')
+            let apimParam  = this._ingredient.properties.parameters.get('apimService')
 
-            if(apimServiceName){
-                this.resource_name = await apimServiceName.valueAsync(this._ctx)
+            if (apimParam) {
+                let apim :IApim = await apimParam.valueAsync(this._ctx)
+
+                if (apim){
+                    apim.apimServiceName = (await (new BakeVariable(apim.apimServiceName)).valueAsync(this._ctx)) 
+
+                    this.resource_name = apim.apimServiceName
+                }
             }
         }
 
         if (!this.resource_group) {
-            this._logger.log('APIM Plugin: resourceGroup can not be empty')
+            this._logger.error('APIM Plugin: resourceGroup can not be empty')
             return false
         }
         if (!this.resource_name) {
-            this._logger.log('APIM Plugin: resourceName can not be empty')
+            this._logger.error('APIM Plugin: resourceName can not be empty')
             return false
         }
 
@@ -115,35 +121,45 @@ export class ApimPlugin extends BaseIngredient {
         this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
-            this._logger.log('APIM Plugin: APIM client is null')
+            this._logger.error('APIM Plugin: APIM client is null')
             return false
         }
 
         return true
     }
 
-    private async DeployArmTemplate(): Promise<void> {
-        if(!this.deployArm)
+    private async BuildAPIM(): Promise<void>{
+        if (this.apim_client == undefined) return
+
+        let apimParam  = this._ingredient.properties.parameters.get('apimService')
+        if (!apimParam){
             return
+        }
 
-        const helper = new ARMHelper(this._ctx);
-        let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+        let apim :IApim = await apimParam.valueAsync(this._ctx)
+        if (!apim){
+            return
+        }
 
-        //delete properties not in the ARM template
-        delete params["options"]
-        delete params["namedValues"]
-        delete params["products"]
-        delete params["groups"]
-        delete params["users"]
-        delete params["loggers"]
-        delete params["authServers"]
-        delete params["identityProviders"]
+        this._logger.log('APIM Plugin: Add/Update APIM service ' + this.resource_name)
+        
+        if (apim.location) {
+            apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
+        }
+        else{
+            apim.location = this._ctx.Region.name
+        }
 
-        //Deploy primary ARM template
-        this._logger.log('APIM Plugin: Deploying ARM template')
+        var response = await this.apim_client.apiManagementService.createOrUpdate
+            (
+                this.resource_group,
+                this.resource_name,
+                apim
+            )
 
-        params = await helper.ConfigureDiagnostics(params);
-        await helper.DeployTemplate(this._name, ApimTemplate, params, this.resource_group)
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update APIM service " + this.resource_name)
+        }
     }
 
     private async BuildNamedValues(): Promise<void> {
@@ -374,7 +390,6 @@ export class ApimPlugin extends BaseIngredient {
         let currentLoggerCreds: any  
 
         if (logger.appInsightsName) {
-            
             logger.appInsightsName = (await (new BakeVariable(logger.appInsightsName)).valueAsync(this._ctx))            
         }
 

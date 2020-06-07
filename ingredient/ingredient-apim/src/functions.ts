@@ -8,7 +8,7 @@ export class ApimUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         const resourceNname = util.create_resource_name("apim", name, false);
 
-        this.context._logger.debug(`ApimUtils.get_resource_name() returned ${name}`);
+        this.context._logger.debug(`ApimUtils.get_resource_name() returned ${resourceNname}`);
 
         return resourceNname;
     }
