@@ -69,7 +69,7 @@ export class ApimPlugin extends BaseIngredient {
             await this.BuildLoggers()
             await this.BuildAuthServers()
         } catch(error){
-            this._logger.error('APIM Plugin Error: ' + error)
+            this._logger.error('APIM Plugin: ' + error)
             throw error
         }
     }
@@ -102,19 +102,19 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (!this.resource_group) {
-            this._logger.log('APIM resourceGroup can not be empty')
+            this._logger.log('APIM Plugin: resourceGroup can not be empty')
             return false
         }
         if (!this.resource_name) {
-            this._logger.log('APIM resourceName can not be empty')
+            this._logger.log('APIM Plugin: resourceName can not be empty')
             return false
         }
 
-        this._logger.log('Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
+        this._logger.log('APIM Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
         this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
-            this._logger.log('APIM client is null')
+            this._logger.log('APIM Plugin: APIM client is null')
             return false
         }
 
@@ -150,7 +150,7 @@ export class ApimPlugin extends BaseIngredient {
         delete params["authServers"]
 
         //Deploy primary ARM template
-        this._logger.log('APIM-Standup: Deploying ARM template')
+        this._logger.log('APIM Plugin: Deploying ARM template')
 
         params = await helper.ConfigureDiagnostics(params);
         await helper.DeployTemplate(this._name, ApimTemplate, params, this.resource_group)
@@ -177,7 +177,7 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildNamedValue(namedValue: IApimNamedValue) : Promise<void> { 
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM-Standup: Add/Update APIM named value: ' + namedValue.id)
+        this._logger.log('APIM Plugin: Add/Update APIM named value: ' + namedValue.id)
         
         var response = await this.apim_client.property.createOrUpdate
             (
@@ -189,7 +189,7 @@ export class ApimPlugin extends BaseIngredient {
             )
 
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM-Standup: Could not create/update named value " + namedValue.id)
+            this._logger.error("APIM Plugin: Could not create/update named value " + namedValue.id)
         }
     }
 
@@ -214,7 +214,7 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildGroup(group: IApimGroup): Promise<void> {
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM-Standup: Add/Update APIM group: ' + group.data.displayName)
+        this._logger.log('APIM Plugin: Add/Update APIM group: ' + group.data.displayName)
         
         let response = await this.apim_client.group.createOrUpdate(
             this.resource_group,
@@ -224,7 +224,7 @@ export class ApimPlugin extends BaseIngredient {
             <GroupCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM-Standup: Could not create/update group " +  group.id)
+            this._logger.error("APIM Plugin: Could not create/update group " +  group.id)
         }
     }
 
@@ -249,7 +249,7 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildUser(user: IApimUser): Promise<void> {
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM-Standup: Add/Update APIM user: ' + user.id)
+        this._logger.log('APIM Plugin: Add/Update APIM user: ' + user.id)
         
         let response = await this.apim_client.user.createOrUpdate(
             this.resource_group,
@@ -259,18 +259,18 @@ export class ApimPlugin extends BaseIngredient {
             <UserCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM-Standup: Could not create/update user " + user.id)
+            this._logger.error("APIM Plugin: Could not create/update user " + user.id)
         }
 
         if (user.groups) {
-            this._logger.log('APIM-Standup: Assigning Group ' + user.groups.toString() + " to user " + user.id)
+            this._logger.log('APIM Plugin: Assigning group ' + user.groups.toString() + " to user " + user.id)
             
             for(let i=0; i < user.groups.length; ++i){
                 let group = user.groups[i]
                 let apiResponse = await this.apim_client.groupUser.create(this.resource_group, this.resource_name, group, user.id)
                 
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.error("APIM-Standup: Could not bind Group " + group + "to user " + user.id)
+                    this._logger.error("APIM Plugin: Could not bind group " + group + "to user " + user.id)
                 }
             }
         }
@@ -297,7 +297,7 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildProduct(product: IApimProduct): Promise<void> {
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM-Standup: Add/Update APIM product: ' + product.id)
+        this._logger.log('APIM Plugin: Add/Update APIM product: ' + product.id)
         
         let response = await this.apim_client.product.createOrUpdate(
             this.resource_group,
@@ -307,37 +307,37 @@ export class ApimPlugin extends BaseIngredient {
             <ProductCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM-Standup: Could not create/update product " + product.id)
+            this._logger.error("APIM Plugin: Could not create/update product " + product.id)
         }
 
         if (product.apis) {
-            this._logger.log('APIM-Standup: Assigning APIs ' + product.apis.toString() + " to product " + product.id)
+            this._logger.log('APIM Plugin: Assigning APIs ' + product.apis.toString() + " to product " + product.id)
             
             for(let i=0; i < product.apis.length; ++i){
                 let api = product.apis[i]
                 let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, product.id, api)
                 
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.error("APIM-Standup: Could not bind API " + api + "to product " + product.id)
+                    this._logger.error("APIM Plugin: Could not bind API " + api + "to product " + product.id)
                 }
             }
         }
 
         if (product.groups) {
-            this._logger.log('APIM-Standup: Assigning Group ' + product.groups.toString() + " to product " + product.id)
+            this._logger.log('APIM Plugin: Assigning group ' + product.groups.toString() + " to product " + product.id)
             
             for(let i=0; i < product.groups.length; ++i){
                 let group = product.groups[i]
                 let apiResponse = await this.apim_client.productGroup.createOrUpdate(this.resource_group, this.resource_name, product.id, group)
                 
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.error("APIM-Standup: Could not bind Group " + group + "to product " + product.id)
+                    this._logger.error("APIM Plugin: Could not bind group " + group + "to product " + product.id)
                 }
             }
         }
 
         if (product.policy) {
-            this._logger.log('APIM-Standup: Add/Update APIM product policy: ' + product.id)
+            this._logger.log('APIM Plugin: Add/Update APIM product policy: ' + product.id)
             
             let policyData = await this.ResolvePolicy(product.policy)
             let policyResponse = await this.apim_client.productPolicy.createOrUpdate(
@@ -348,7 +348,7 @@ export class ApimPlugin extends BaseIngredient {
                 <ProductPolicyCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
             if (policyResponse._response.status != 200 && policyResponse._response.status != 201){
-                this._logger.error("APIM-Standup: Could not apply policies to product " + product.id)
+                this._logger.error("APIM Plugin: Could not apply policies to product " + product.id)
             }
         }
 
@@ -390,7 +390,7 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (logger.data.loggerType == "applicationInsights") {
-            this._logger.log('APIM-Standup: Add/Update APIM logger: ' + logger.appInsightsName)
+            this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.appInsightsName)
             
             var response = await this.apim_client.logger.createOrUpdate(
                 this.resource_group,
@@ -400,11 +400,11 @@ export class ApimPlugin extends BaseIngredient {
                 <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
             if (response._response.status != 200 && response._response.status != 201) {
-                this._logger.error(`APIM-Standup: Could not create/update logger for '+ logger.appInsightsName`)
+                this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.appInsightsName`)
             }
         }
         else if (logger.data.loggerType == "azureEventHub") {
-            this._logger.error(`APIM-Standup: Logger EventHub functionality is yet to be implemented`)
+            this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
         }
     }
 
@@ -430,7 +430,7 @@ export class ApimPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
-        this._logger.log('APIM-Standup: Add/Update APIM auth server: ' + authServer.id)
+        this._logger.log('APIM Plugin: Add/Update APIM auth server: ' + authServer.id)
 
         let response = await this.apim_client.authorizationServer.createOrUpdate(
             this.resource_group,
@@ -440,7 +440,7 @@ export class ApimPlugin extends BaseIngredient {
             <AuthorizationServerCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM-Standup: Could not create/update auth server " + authServer.id)
+            this._logger.error("APIM Plugin: Could not create/update auth server " + authServer.id)
         }
     }
 
@@ -465,8 +465,7 @@ export class ApimPlugin extends BaseIngredient {
             await this.Sleep(1000)
         }
 
-        throw new Error("APIM error => Could not resolve policy content at: " + policy.value)
-
+        throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
     }
 
     private async BuildSubscription(sub: IApimSubscription, productId: string): Promise<void> {
@@ -481,10 +480,10 @@ export class ApimPlugin extends BaseIngredient {
             ownerId: (await this.GetUserId(sub.user))
         }
 
-        this._logger.log('Add/Update APIM Subscription : ' + sub.id + " scoped to " + productId)
+        this._logger.log('APIM Plugin: Add/Update APIM Subscription : ' + sub.id + " scoped to " + productId)
         let response = await this.apim_client.subscription.createOrUpdate(this.resource_group, this.resource_name, sub.id,params, <SubscriptionCreateOrUpdateOptionalParams>{ifMatch:'*'})
         if (response._response.status != 200 && response._response.status != 201) {
-            throw new Error("APIM Error: Could not create/update subscription for product" + productId + " subId: " + sub.id)
+            this._logger.error("APIM Plugin: Could not create/update subscription for product" + productId + " subId: " + sub.id)
         }
     }
 

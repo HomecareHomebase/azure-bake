@@ -46,7 +46,7 @@ export class ApimApiPlugin extends BaseIngredient {
             await this.Setup()
             await this.BuildAPIs()
         } catch(error){
-            this._logger.error('APIM API Plugin Error: ' + error)
+            this._logger.error('APIM API Plugin: ' + error)
             throw error
         }
     }
@@ -60,7 +60,7 @@ export class ApimApiPlugin extends BaseIngredient {
         rgOverride = await util.resource_group();
 
         if (!source) {
-            this._logger.log('APIM Source can not be empty')
+            this._logger.log('APIM API Plugin: Source can not be empty')
             return false
         }
 
@@ -69,19 +69,19 @@ export class ApimApiPlugin extends BaseIngredient {
         this.resource_name = bakeResource.resource
 
         if (!this.resource_group) {
-            this._logger.log('APIM resourceGroup can not be empty')
+            this._logger.log('APIM API Plugin: resourceGroup can not be empty')
             return false
         }
         if (!this.resource_name) {
-            this._logger.log('APIM resourceName can not be empty')
+            this._logger.log('APIM API Plugin: resourceName can not be empty')
             return false
         }
 
-        this._logger.log('Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
+        this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
         this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
-            this._logger.log('APIM client is null')
+            this._logger.log('APIM API Plugin: APIM client is null')
             return false
         }
 
@@ -145,10 +145,10 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let apiContract = this.GetApi(api.id)
         if (apiContract) {
-            this._logger.log('Updating API ' + api.id + " " + api.version)
+            this._logger.log('APIM API Plugin: Updating API ' + api.id + " " + api.version)
         }
         else {
-            this._logger.log('Creating API ' + api.id + " " + api.version)
+            this._logger.log('APIM API Plugin: Creating API ' + api.id + " " + api.version)
 
         }
 
@@ -156,7 +156,7 @@ export class ApimApiPlugin extends BaseIngredient {
         let blockResult = await this.BlockForApi(api)
 
         if (!blockResult) {
-            throw new Error("APIM error: Could not fetch API source => " + api.data.value)
+            throw new Error("APIM API Plugin: Could not fetch API source => " + api.data.value)
         }
 
         let apiRevisionId : string
@@ -235,7 +235,7 @@ export class ApimApiPlugin extends BaseIngredient {
             diagnostics.data.loggerId = (await (new BakeVariable(diagnostics.data.loggerId)).valueAsync(this._ctx))            
         }
 
-        this._logger.log('Applying diagnostics ' + diagnostics.id + " to API " + apiId)
+        this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.id + " to API " + apiId)
 
         let apiResponse = await this.apim_client.diagnostic.createOrUpdate(
             this.resource_group,
@@ -245,7 +245,7 @@ export class ApimApiPlugin extends BaseIngredient {
             <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-            this._logger.log("APIM Error: Could not apply diagnostics " + diagnostics.id + "to API " + apiId)
+            this._logger.error("APIM API Plugin: Could not apply diagnostics " + diagnostics.id + "to API " + apiId)
         }
     }
 
@@ -255,19 +255,19 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let operation = policy.operation || "base"
 
-        this._logger.log("Applying API Policy for API: " + apiId + " operation: " + operation)
+        this._logger.log("APIM API Plugin: Applying API Policy for API: " + apiId + " operation: " + operation)
         let policyData = await this.ResolvePolicy(policy.data)
 
         if (operation == "base") {
             let response = await this.apim_client.apiPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, policyData, <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
             if (response._response.status != 200 && response._response.status != 201) {
-                throw new Error("APIM Error: Could not apply API Policy for API " + apiId)
+                this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId)
             }
         }
         else {
             let response = await this.apim_client.apiOperationPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, operation, policyData,<ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
             if (response._response.status != 200 && response._response.status != 201) {
-                throw new Error("APIM Error: Could not apply API Policy for API " + apiId + " operation: " + operation)
+                this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId + " operation: " + operation)
             }
         }
     }
@@ -276,11 +276,11 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
-        this._logger.log('Assigning APIs: ' + apiId + " to product " + productId)
+        this._logger.log('APIM API Plugin: Assigning APIs: ' + apiId + " to product " + productId)
 
         let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, productId, apiId)
         if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-            this._logger.log("APIM Error: Could not bind API " + apiId + "to product " + productId)
+            this._logger.error("APIM API Plugin: Could not bind API " + apiId + "to product " + productId)
         }
     }
 
@@ -332,8 +332,7 @@ export class ApimApiPlugin extends BaseIngredient {
             await this.Sleep(1000)
         }
 
-        throw new Error("APIM error => Could not resolve policy content at: " + policy.value)
-
+        throw new Error("APIM API Plugin: Could not resolve policy content at: " + policy.value)
     }
 
     private Sleep(ms: number) : Promise<void> {
