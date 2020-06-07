@@ -2,7 +2,7 @@ import {BaseUtility, IngredientManager} from '@azbake/core'
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { ApplicationInsightsManagementClient } from '@azure/arm-appinsights'
 
-export class ApimBaseUtil extends BaseUtility {
+export class ApimApiUtils extends BaseUtility {
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);

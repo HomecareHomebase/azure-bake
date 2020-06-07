@@ -3,10 +3,10 @@ import { ARMHelper } from "@azbake/arm-helper"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { ApplicationInsightsManagementClient } from '@azure/arm-appinsights'
 import ApimTemplate from "./api-management.json"
-import { ApimBaseUtil } from "./functions"
+import { ApimApiUtils } from "./functions"
 import * as idx from "./index"
 
-export class ApimBase extends BaseIngredient {
+export class ApimApi extends BaseIngredient {
     public async Execute(): Promise<void> {
         try {
             this._logger.log(`API Manamgement: Base Logging - ${this._ingredient.properties.source}`)
