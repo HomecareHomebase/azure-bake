@@ -12,14 +12,14 @@ name: apim-api-test
 shortName: apitest
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-api-management-base@0~"
+  - "@azbake/ingredient-apim-api@0~"
 resourceGroup: true
 rgOverride: test
 parallelRegions: false
 recipe:
   apim-test:
     properties:
-      type: "@azbake/ingredient-api-management-base"
+      type: "@azbake/ingredient-apim-api"
       parameters:
         apiManagementServiceName: charlietestapim
         publisherEmail: john.smith@contoso.com

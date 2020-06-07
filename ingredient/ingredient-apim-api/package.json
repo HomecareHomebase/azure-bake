@@ -1,5 +1,5 @@
 {
-  "name": "@azbake/ingredient-api-management-base",
+  "name": "@azbake/ingredient-apim-api",
   "description": "Ingredient for deploying an Azure API Management Instance.",
   "version": "0.1.108",
   "main": "dist/index.js",
