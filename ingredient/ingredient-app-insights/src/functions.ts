@@ -12,7 +12,7 @@ export class AppInsightsUtils extends BaseUtility {
         return appInsightsName;
     }
 
-    public async get_instrumentation_key(shortName: string, rgShortName: string | null = null): Promise<string> {
+    public async get_instrumentation_key(shortName: string, rgShortName: string | null = null, ignoreOverride: boolean = false): Promise<string> {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         
@@ -20,7 +20,7 @@ export class AppInsightsUtils extends BaseUtility {
         //Also, pass in shortname rather than using default.  The default is the package name being deployed but we want the App Insights resource name/group.
         const aiName = util.create_resource_name("ai", shortName, false);
         
-        const rgName: string = await util.resource_group(rgShortName, false);
+        const rgName: string = await util.resource_group(rgShortName, false, null, ignoreOverride);
 
         const client = new ApplicationInsightsManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
