@@ -23,6 +23,7 @@ interface IApimGroup{
 
 interface IApimLogger{
     appInsightsName: string
+    clean: boolean
     data: LoggerContract
 }
 
@@ -374,11 +375,14 @@ export class ApimPlugin extends BaseIngredient {
         for(let i =0; i < loggers.length; ++i) {
             let logger = loggers[i];
             await this.BuildLogger(logger)
-        }   
+        }  
     }
 
     private async BuildLogger(logger: IApimLogger): Promise<void>{
         if (this.apim_client == undefined) return
+
+        let aiKey: string = ""
+        let currentLoggerCreds: any  
 
         if (logger.appInsightsName) {
             
@@ -386,7 +390,9 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (logger.data.credentials) {
-            logger.data.credentials["instrumentationKey"] = (await (new BakeVariable(logger.data.credentials["instrumentationKey"])).valueAsync(this._ctx))            
+            aiKey = (await (new BakeVariable(logger.data.credentials["instrumentationKey"])).valueAsync(this._ctx))
+
+            logger.data.credentials["instrumentationKey"] = aiKey
         }
 
         if (logger.data.loggerType == "applicationInsights") {
@@ -402,9 +408,31 @@ export class ApimPlugin extends BaseIngredient {
             if (response._response.status != 200 && response._response.status != 201) {
                 this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.appInsightsName`)
             }
+
+            currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
         }
         else if (logger.data.loggerType == "azureEventHub") {
             this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
+        }
+
+        //Clean logger keys
+        if (logger.clean == undefined || logger.clean) {
+            let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
+            let propEtag = ""
+            for (let i = 0; i < result.length; i++) {
+                let id = result[i].name || ""
+                let displayName = result[i].displayName || ""
+                if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
+                    await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
+                    await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
+                        .then((result) => {
+                            this._logger.log(`APIM Plugin: : Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
+                        })
+                        .catch((failure) => {
+                            this._logger.error(`APIM Plugin: : Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
+                        })
+                }
+            }
         }
     }
 
