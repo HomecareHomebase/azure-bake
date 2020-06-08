@@ -168,7 +168,7 @@ export class ApimApiPlugin extends BaseIngredient {
             api.apiVersionSetId = apiVersion.id
             api.apiVersionSet = apiVersion
             let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api, {ifMatch : '*'})
-            this._logger.log("API " + result.displayName + " published")
+            this._logger.log("APIM API Plugin: API " + result.displayName + " published")
             apiRevisionId = result.apiRevision || ""
                 
         } catch (error) {
