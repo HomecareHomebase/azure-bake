@@ -4,7 +4,7 @@ import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, Api
 import { RestError } from "@azure/ms-rest-js"
 let request = require('async-request')
 
-interface IApimDiagnostics extends DiagnosticContract{
+interface IApimApiDiagnostics extends DiagnosticContract{
     id: string
 }
 
@@ -22,7 +22,7 @@ interface IApimApi extends ApiCreateOrUpdateParameter{
     version: string
     policies?: Array<IApimPolicy>
     products?: Array<string>
-    diagnostics?: Array<IApimDiagnostics>
+    diagnostics?: Array<IApimApiDiagnostics>
 }
 
 interface IApimOptions {
@@ -39,8 +39,10 @@ export class ApimApiPlugin extends BaseIngredient {
     public async Execute(): Promise<void> {
         try {
             
-            await this.Setup()
-            await this.BuildAPIs()
+            if(await this.Setup())
+            {
+                await this.BuildAPIs()
+            }
         } catch(error){
             this._logger.error('APIM API Plugin: ' + error)
             throw error
@@ -204,7 +206,7 @@ export class ApimApiPlugin extends BaseIngredient {
         if (api.diagnostics) {
             for(let i=0; i < api.diagnostics.length; ++i){
                 let diagnostics = api.diagnostics[i]
-                await this.ApplyDiagnostics(diagnostics, api.id)
+                await this.ApplyApiDiagnostics(diagnostics, api.id)
             }
         }
     }
@@ -231,7 +233,7 @@ export class ApimApiPlugin extends BaseIngredient {
         return false
     }
 
-	private async ApplyDiagnostics(diagnostics: IApimDiagnostics, apiId: string) : Promise<void> {
+	private async ApplyApiDiagnostics(diagnostics: IApimApiDiagnostics, apiId: string) : Promise<void> {
         if (this.apim_client == undefined) return
 
         if (diagnostics.loggerId) {
