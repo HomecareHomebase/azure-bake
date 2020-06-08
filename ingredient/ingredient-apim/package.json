@@ -26,9 +26,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.99",
     "@azure/arm-apimanagement": "^5.1.1",
-    "@azure/ms-rest-js": "^2.0.4",
     "async-request": "^1.2.0"
   },
   "publishConfig": {
