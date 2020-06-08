@@ -4,7 +4,7 @@
 
 ## Overview
 
-The APIM ingredient allows for easy registration & modification of APIs, Products, and Subscriptions within an Azure APIM resource.
+The APIM ingredient allows for easy standup of a [Windows API Management API](https://docs.microsoft.com/en-us/azure/api-management/api-management-key-concepts) instance including modification of Products, Subscriptions and more.
 
 ## Usage
 

@@ -4,7 +4,8 @@
 
 ## Overview
 
-The Azure API Management API is a plugin for bake. When included in a recipe, this will create an [Windows API Management API](https://docs.microsoft.com/en-us/azure/api-management/api-management-key-concepts)
+The APIM API ingredient allows for easy registration & modification of APIs within an Azure APIM resource.
+
 ## Usage
 
 ```yaml

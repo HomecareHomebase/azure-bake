@@ -2,6 +2,8 @@
 * [@azbake/core](./core/CHANGELOG.md)
 * [@azbake/system](./system/CHANGELOG.md)
 * [@azbake/ingredient-arm](./ingredient/ingredient-arm/CHANGELOG.md)
+* [@azbake/ingredient-apim](./ingredient/ingredient-apim/CHANGELOG.md)
+* [@azbake/ingredient-apim-api](./ingredient/ingredient-apim-api/CHANGELOG.md)
 * [@azbake/ingredient-script](./ingredient/ingredient-script/CHANGELOG.md)
 * [@azbake/ingredient-utils](./ingredient/ingredient-utils/CHANGELOG.md)
 * [@azbake/ingredient-webapp-container](./ingredient/ingredient-webapp-container/CHANGELOG.md)
@@ -154,6 +156,18 @@ Custom ingredients can be developed by following this [guide](./ingredient-templ
 Simple ingredient that allows deploying Azure ARM json templates. Parameters are supplied via native bake ingredient parameters
 
 [read more](./ingredient/ingredient-arm/README.md)
+
+### @azbake/ingredient-apim
+
+The APIM ingredient allows for easy standup of an APIM resource including modification of Products, Subscriptions and more.
+
+[read more](./ingredient/ingredient-apim/README.md)
+
+### @azbake/ingredient-apim-api
+
+The APIM API ingredient allows for easy registration & modification of APIs within an Azure APIM resource.
+
+[read more](./ingredient/ingredient-apim-api/README.md)
 
 ### @azbake/ingredient-script
 Simple ingredient that allows executing javascript/typescript functions. Parameters are avalible inside the function, as well as the full bake deployment context. Useful for implementing edge case deployment needs, or stop gap before an external ingredient supports.
