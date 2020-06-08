@@ -48,18 +48,13 @@ export class ApimUtils extends BaseUtility {
         return resource
     }
 
-    public async get_logger(name: string, rg: string, match: string): Promise<any> {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-        let resoureGroup = rg || util.resource_group()
-        let serviceName = name || this.get_resource_name()
-        let loggerReturn = await client.logger.listByService(resoureGroup, serviceName)
-        let loggers = loggerReturn.map(({ name }) => name);
-        for (let i = 0; i < loggers.length; i++) {
-            let logVal = loggers[i] || ""
-            if (logVal.search(match) > -1) { return logVal}
-            else { return "" }
-        }
+    public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<any> {
+        let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        let logger = await apim_client.logger.get(resourceGroup, apimName, loggerId)
+
+        this.context._logger.debug(`ApimUtils.get_logger() returned ${logger}`);
+
+        return logger
     }
 
     public async get_namedValue(name: string, rg: string, match: string): Promise<any> {
