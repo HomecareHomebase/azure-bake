@@ -1,5 +1,6 @@
 import {BaseUtility, IngredientManager, IBakeRegion} from '@azbake/core'
 import { ApiManagementClient, ApiPolicy, Subscription, } from "@azure/arm-apimanagement"
+import { ResourceManagementClient } from '@azure/arm-resources';
 import { SubscriptionGetResponse } from '@azure/arm-apimanagement/esm/models';
 
 export class ApimUtils extends BaseUtility {
@@ -29,6 +30,22 @@ export class ApimUtils extends BaseUtility {
         this.context._logger.debug(`ApimUtils.get_source() returned ${source}`);
 
         return source
+    }
+
+    public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string, apiVersion: string = "2020-05-01"): Promise<any> {
+        let resourceClient = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+        let resource = await resourceClient.resources.get(
+            resourceGroup, 
+            "Microsoft.Network",
+            `virtualNetworks/${ vnetName }`,
+            "subnets",
+            subnetName,
+            apiVersion)
+
+        this.context._logger.debug(`ApimUtils.get_vnet_resource() returned ${resource}`);
+
+        return resource
     }
 
     public async get_logger(name: string, rg: string, match: string): Promise<any> {

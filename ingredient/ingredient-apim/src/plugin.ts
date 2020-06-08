@@ -143,6 +143,13 @@ export class ApimPlugin extends BaseIngredient {
             apim.location = this._ctx.Region.name
         }
 
+        if(apim.virtualNetworkConfiguration)
+        {
+            if (apim.virtualNetworkConfiguration.subnetResourceId) {
+                apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
+            }
+        }
+
         var response = await this.apim_client.apiManagementService.createOrUpdate
             (
                 this.resource_group,
