@@ -1,127 +1,76 @@
+import { ResourceGroup } from '@azure/arm-resources/esm/models';
 import {BaseUtility, IngredientManager, IBakeRegion} from '@azbake/core'
 import { ApiManagementClient, ApiPolicy, Subscription, } from "@azure/arm-apimanagement"
-import { ResourceManagementClient } from '@azure/arm-resources';
+import { NetworkManagementClient } from '@azure/arm-network';
 import { SubscriptionGetResponse } from '@azure/arm-apimanagement/esm/models';
 
 export class ApimUtils extends BaseUtility {
 
     public get_resource_name(name: string | null = null): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const resourceNname = util.create_resource_name("apim", name, false);
-
-        this.context._logger.debug(`ApimUtils.get_resource_name() returned ${resourceNname}`);
-
-        return resourceNname;
-    }
-    
-    public async get_source(
-        shortName: string,
-        rgShortName: string | null = null, 
-        useRegionCode: boolean = true, 
-        ignoreOverride: boolean = false): Promise<string> {
-
-        let coreutil = IngredientManager.getIngredientFunction("coreutils", this.context);
-        var util = new ApimUtils(this.context)
-
-        let resourceGroup = await coreutil.resource_group(rgShortName, useRegionCode, null, ignoreOverride)
-        let resourceName = util.get_resource_name(shortName)
-        let source =  resourceGroup + "/" + resourceName
-
-        this.context._logger.debug(`ApimUtils.get_source() returned ${source}`);
-
-        return source
+        const resourceName = util.create_resource_name("apim", name, false);
+        return resourceName;
     }
 
-    public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string, apiVersion: string = "2020-05-01"): Promise<any> {
-        let resourceClient = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+    public get_resource_group(name: string = "apim"): string {
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        const resourceGroup = util.resource_group(name, true, null, true);
+        return resourceGroup;
+    }
 
-        let resource = await resourceClient.resources.get(
-            resourceGroup, 
-            "Microsoft.Network",
-            `virtualNetworks/${ vnetName }`,
-            "subnets",
-            subnetName,
-            apiVersion)
+    public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string): Promise<any> {
+        var client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        let subnet = await client.subnets.get(resourceGroup, vnetName, subnetName)
 
-        this.context._logger.debug(`ApimUtils.get_vnet_resource() returned ${resource}`);
-
-        return resource
+        return subnet
     }
 
     public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<any> {
-        let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
-        let logger = await apim_client.logger.get(resourceGroup, apimName, loggerId)
-
-        this.context._logger.debug(`ApimUtils.get_logger() returned ${logger}`);
+        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        let logger = await client.logger.get(resourceGroup, apimName, loggerId)
 
         return logger
     }
 
-    public async get_namedValue(name: string, rg: string, match: string): Promise<any> {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+    public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<any> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-        let resoureGroup = rg || util.resource_group()
-        let serviceName = name || this.get_resource_name()
-        let propReturn = await client.property.listByService(resoureGroup, serviceName)
-        let props = propReturn.map(({ name }) => name);
-        for (let i = 0; i < props.length; i++) {
-            let propVal = props[i] || ""
-            if (propVal.search(match) > -1) { 
-                await client.property.get(resoureGroup, serviceName, propVal)
-                .then((returnVal) => {
-                    return returnVal.value
-                }); 
-            }               
-            else { return "" }
-        }
+        let namedValue = await client.property.get(resourceGroup, apimName, namedValueId)
+
+        return namedValue
     }
 
-    public async get_api(name: string, rg: string, match: string): Promise<any> {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+    public async get_api(resourceGroup: string, apimName: string, apiId: string): Promise<any> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-        let resoureGroup = rg || util.resource_group()
-        let serviceName = name || this.get_resource_name()
-        let apiReturn = await client.api.listByService(resoureGroup, serviceName)
-        let apis = apiReturn.map(({ name }) => name);
-        for (let i = 0; i < apis.length; i++) {
-            let apiVal = apis[i] || ""
-            if (apiVal.search(match) > -1) { return apiVal}
-            else { return "" }
-        }
+        let api = await client.api.get(resourceGroup, apimName, apiId);
+        
+        return api;
     }
 
-    public async get_backend(name: string, rg: string, match: string): Promise<any> {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+    public async get_backend(resourceGroup: string, apimName: string, backendId: string): Promise<any> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-        let resoureGroup = rg || util.resource_group()
-        let serviceName = name || this.get_resource_name()
-        let backendReturn = await client.backend.listByService(resoureGroup, serviceName)
-        let backends = backendReturn.map(({ name }) => name);
-        for (let i = 0; i < backends.length; i++) {
-            let backendVal = backends[i] || ""
-            if (backendVal.search(match) > -1) { return backendVal}
-            else { return "" }
-        }
+        let backend = await client.backend.get(resourceGroup, apimName, backendId);
+        
+        return backend;
     }
 
     public async get_subscription(resourceGroup: string, resource: string, subscriptionId: string) : Promise<SubscriptionGetResponse> {
-
         let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
         let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
+
         return subscription
     }   
 
     public async get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-
         let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
         let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
+
         return subscription.primaryKey
     } 
 
     public async get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-
         let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
         let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
+
         return subscription.secondaryKey
     } 
 }
