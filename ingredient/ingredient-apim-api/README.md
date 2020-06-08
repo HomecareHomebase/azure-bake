@@ -1,6 +1,6 @@
 ## Changelogs
 
-* [@azbake/ingredient-api-management-api](./CHANGELOG.md)
+* [@azbake/ingredient-apim-api](./CHANGELOG.md)
 
 ## Overview
 
