@@ -45,48 +45,42 @@ Here is the documentation for all the supported paremeters for this ingredient.
 **apimService**
 
 ```yaml
-#follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
-apimService:
+apimService: #follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
   - apimServiceName: <apim name>
 ```
 
 **diagnostics**
 
 ```yaml
-#follows this azure spec for *DiagnosticSettingsResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L991
-diagnostics:
+diagnostics: #follows this azure spec for *DiagnosticSettingsResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L991
   - name: <diagnostics name>
 ```
 
 **namedValues**
 
 ```yaml
-#follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
-namedValues:
+namedValues: #follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
   - id: <named value id>
 ```
 
 **groups**
 
 ```yaml
-#follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
-groups:
+groups: #follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
   - id: <group id>
 ```
 
 **users**
 
 ```yaml
-#follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
-users:
+users: #follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
   - id: <user id>
 ```
 
 **products**
 
 ```yaml
-#follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
-products:
+products: #follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
   - id: <product id>
     apis: #optional array of api names to add to product
       - api1
@@ -99,8 +93,7 @@ products:
 
 **loggers**
 
-```yaml
-#follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3261
+```yaml #follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3261
 loggers:
   - appInsightsName: <app insights name>
     cleanKeys: true # clean the old subscription keys
@@ -109,16 +102,14 @@ loggers:
 **authServers**
 
 ```yaml
-#follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
-authServers:
+authServers: #follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
   - id: <auth servier id>
 ```
 
 **identityProviders**
 
 ```yaml
-#follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
-identityProviders:
+identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
   - id: <identity provider id>
 ```
 
@@ -159,3 +150,154 @@ variables:
 ```
 
 ## Sample
+
+```yaml
+name: apim
+shortName: apim
+owner: arch
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-apim@~0"
+  - "@azbake/ingredient-app-insights@~0" #use app insights ingredient to create ai resource for diagnostics
+resourceGroup: true
+parallelRegions: false
+rgOverride: "[apim.get_resource_group()]"
+variables:
+  aiName: "[appinsights.get_resource_name('apim-api')]"
+  aiKey: "[await appinsights.get_instrumentation_key('apim-api','appinsights', true)]"
+  aiResourceGroup: "[coreutils.resource_group('appinsights', false, null, true)]"
+  apimName: "[apim.get_resource_name('api')]"
+recipe:
+  apim-app-insights-deploy: 
+    properties:
+      type: "@azbake/ingredient-app-insights"
+      source: ""
+      condition: "[coreutils.current_region_primary()]"
+      parameters:
+        #App Insights resource name in the format env + resource type + resource short name.  ie devaiinterop
+        appInsightsName: "[coreutils.variable('aiName')]"
+        rgOverride: "[coreutils.variable('aiResourceGroup')]"
+  apim-deploy:
+    properties:
+      dependsOn: apim-app-insights-deploy
+      type: "@azbake/ingredient-apim"
+      condition: "[coreutils.primary_region()]"
+      parameters:
+        apimService:
+          apimServiceName: "[coreutils.variable('apimName')]"
+          location: "[coreutils.current_region().name]"
+          publisherEmail: joesmith@contoso.com
+          publisherName: Joe Smith
+          sku:
+            name: Developer
+            capacity: 1
+          enableClientCertificate: true
+          customProperties:
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30: "false"
+          virtualNetworkType: External
+          virtualNetworkConfiguration:
+            subnetResourceId: "[(await apim.get_subnet('RG_VNET_TEST', 'vnettest', 'default')).id]"
+        diagnostics:
+          name: diagSettings1
+          storageAccountId: "[(await apim.get_storageaccount('cloud-shell-storage-eastus', 'cs2100320009ae43da8')).id]"
+          metrics:
+            - timeGrain: PT1M
+              enabled: true
+              retentionPolicy:
+                days: 0
+                enabled: true
+          logs:
+            - category: GatewayLogs
+              enabled: true
+              retentionPolicy:
+                days: 0
+                enabled: true
+        namedValues:
+          - id: expression
+            displayName: expressionDisplay
+            value: "@(DateTime.Now.ToString())"
+            secret: false
+            tags:
+              - test
+              - test2
+          - id: expression2
+            displayName: expression2Display
+            value: "@(DateTime.Now.ToString())"
+            secret: false
+            tags:
+              - test
+              - test2
+        groups:
+          - id: "testGroup"
+            displayName: "test group"
+            description: "test group description"
+            type: "custom"
+        users:
+          - id: john
+            email: john@hotmail.com
+            firstName: john
+            lastName: smith
+            groups:
+              - testGroup
+        products:
+          - id: petstore-product
+            displayName: My Petstore
+            description: My Petstore Description
+            terms: My terms
+            subscriptionRequired: false
+            state: published
+            groups:
+              - Administrators
+              - Developers
+              - testGroup
+            policy:
+              format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+              value: <policies>
+                        <inbound /> 
+                        <backend>    
+                          <forward-request /> 
+                        </backend>  
+                        <outbound>
+                          <set-header name="X-Powered-By" exists-action="delete" />
+                          <set-header name="X-AspNet-Version" exists-action="delete" />
+                          <set-header name="CustomHeader" exists-action="override">
+                            <value>{{expressionDisplay}}</value>
+                          </set-header>
+                        </outbound>
+                      </policies>
+            subscriptions:
+              - id: petstore-subscription
+                user: Administrator
+        loggers:
+          - appInsightsName: "[coreutils.variable('aiName')]"
+            cleanKeys: true
+            description: apimlogger
+            loggerType: applicationInsights
+            credentials: 
+              instrumentationKey: "[coreutils.variable('aiKey')]"
+        authServers:
+          - id: auth
+            displayName: authDisplay
+            description: auth description
+            clientRegistrationEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/authorize"
+            authorizationEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/authorize"
+            tokenEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/token"
+            clientId: clientid
+            clientSecret: clientSecret
+            clientAuthenticationMethod:
+              - Body
+            authorizationMethods:
+              - GET
+            grantTypes:
+              - implicit
+        identityProviders:
+          - id: microsoft
+            clientId : testClientId
+            clientSecret: testClientSecret
+```
