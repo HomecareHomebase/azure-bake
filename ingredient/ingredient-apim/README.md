@@ -121,7 +121,7 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 
 | Function | Returns | Description |
 |----------|---------|-------------|
-| `get_resource_name(name: string | null = null)` | `string` | Gets a standard resource name for an APIM instance |
+| `get_resource_name(name: string)` | `string` | Gets a standard resource name for an APIM instance |
 | `get_resource_group(name: string = "apim")` | `string` | Gets a standard resource group for an APIM instance |
 | `get_subnet(resourceGroup: string, vnetName: string, subnetName: string)` | `Promise<SubnetsGetResponse>` | Returns the subnet for a given set of parameters. |
 | `get_logger(resourceGroup: string, apimName: string, loggerId: string)` | `Promise<LoggerGetResponse>` | Returns the logger for a given set of parameters. |
@@ -204,8 +204,8 @@ recipe:
           virtualNetworkConfiguration:
             subnetResourceId: "[(await apim.get_subnet('RG_VNET_TEST', 'vnettest', 'default')).id]"
         diagnostics:
-          name: diagSettings1
-          storageAccountId: "[(await apim.get_storageaccount('cloud-shell-storage-eastus', 'cs2100320009ae43da8')).id]"
+          name: diag1
+          storageAccountId: "[(await apim.get_storageaccount('RG_STORAGE_TEST', 'storagetest')).id]"
           metrics:
             - timeGrain: PT1M
               enabled: true
@@ -219,15 +219,8 @@ recipe:
                 days: 0
                 enabled: true
         namedValues:
-          - id: expression
-            displayName: expressionDisplay
-            value: "@(DateTime.Now.ToString())"
-            secret: false
-            tags:
-              - test
-              - test2
-          - id: expression2
-            displayName: expression2Display
+          - id: expression1
+            displayName: expression1Display
             value: "@(DateTime.Now.ToString())"
             secret: false
             tags:
@@ -246,9 +239,9 @@ recipe:
             groups:
               - testGroup
         products:
-          - id: petstore-product
-            displayName: My Petstore
-            description: My Petstore Description
+          - id: my-product
+            displayName: My Product
+            description: My Product Description
             terms: My terms
             subscriptionRequired: false
             state: published
@@ -267,12 +260,12 @@ recipe:
                           <set-header name="X-Powered-By" exists-action="delete" />
                           <set-header name="X-AspNet-Version" exists-action="delete" />
                           <set-header name="CustomHeader" exists-action="override">
-                            <value>{{expressionDisplay}}</value>
+                            <value>{{expression1Display}}</value>
                           </set-header>
                         </outbound>
                       </policies>
             subscriptions:
-              - id: petstore-subscription
+              - id: my-product-subscription
                 user: Administrator
         loggers:
           - appInsightsName: "[coreutils.variable('aiName')]"
@@ -285,9 +278,9 @@ recipe:
           - id: auth
             displayName: authDisplay
             description: auth description
-            clientRegistrationEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/authorize"
-            authorizationEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/authorize"
-            tokenEndpoint: "https://login.microsoftonline.com/65d8323f-dcda-47dc-9506-32a61106ec9f/oauth2/token"
+            clientRegistrationEndpoint: "endpoing"
+            authorizationEndpoint: "endpoint"
+            tokenEndpoint: "endpoint"
             clientId: clientid
             clientSecret: clientSecret
             clientAuthenticationMethod:
@@ -298,6 +291,6 @@ recipe:
               - implicit
         identityProviders:
           - id: microsoft
-            clientId : testClientId
-            clientSecret: testClientSecret
+            clientId : clientid
+            clientSecret: clientSecret
 ```
