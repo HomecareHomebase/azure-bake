@@ -46,7 +46,7 @@ Here is the documentation for all the supported paremeters for this ingredient.
 
 ```yaml
 apimService: #follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
-  - apimServiceName: <apim name>
+  - name: <apim name>
 ```
 
 **diagnostics**
@@ -60,28 +60,28 @@ diagnostics: #follows this azure spec for *DiagnosticSettingsResource* : https:/
 
 ```yaml
 namedValues: #follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
-  - id: <named value id>
+  - name: <named value id>
 ```
 
 **groups**
 
 ```yaml
 groups: #follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
-  - id: <group id>
+  - name: <group id>
 ```
 
 **users**
 
 ```yaml
 users: #follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
-  - id: <user id>
+  - name: <user id>
 ```
 
  **subscriptions**
 
 ```yaml
 subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4107
-  - id: <subscription id>
+  - name: <subscription id>
     user?: <user> #optional user, can also use ownerId on SubscriptionCreateParameters if the path is known
 ```
 
@@ -89,7 +89,7 @@ subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : ht
 
 ```yaml
 products: #follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
-  - id: <product id>
+  - name: <product id>
     apis: #optional array of api names to add to product
       - api1
     groups: #optional array of groups to assign to product
@@ -109,14 +109,13 @@ loggers:
 
 ```yaml
 authServers: #follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
-  - id: <auth servier id>
+  - name: <auth servier id>
 ```
 
 **identityProviders**
 
 ```yaml
 identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
-  - id: <identity provider id>
 ```
 
 ## Utility Functions
@@ -190,7 +189,7 @@ recipe:
       condition: "[coreutils.primary_region()]"
       parameters:
         apimService:
-          apimServiceName: "[coreutils.variable('apimName')]"
+          name: "[coreutils.variable('apimName')]"
           location: "[coreutils.current_region().name]"
           publisherEmail: joesmith@contoso.com
           publisherName: Joe Smith
@@ -225,7 +224,7 @@ recipe:
                 days: 0
                 enabled: true
         namedValues:
-          - id: expression1
+          - name: expression1
             displayName: expression1Display
             value: "@(DateTime.Now.ToString())"
             secret: false
@@ -233,25 +232,19 @@ recipe:
               - test
               - test2
         groups:
-          - id: "testGroup"
+          - name: "testGroup"
             displayName: "test group"
             description: "test group description"
             type: "custom"
         users:
-          - id: john
+          - name: john
             email: john@hotmail.com
             firstName: john
             lastName: smith
             groups:
               - testGroup
-        subscriptions:
-          - id: petstore-subscription
-            user: Administrator
-            displayName: petstore-subscription
-            state: active
-            allowTracing: true
         products:
-          - id: my-product
+          - name: my-product
             displayName: My Product
             description: My Product Description
             terms: My terms
@@ -276,8 +269,13 @@ recipe:
                           </set-header>
                         </outbound>
                       </policies>
-            subscriptions:
-              - petstore-subscription
+        subscriptions:
+          - name: petstore-subscription
+            user: Administrator
+            product: my-product
+            displayName: petstore-subscription
+            state: active
+            allowTracing: true
         loggers:
           - appInsightsName: "[coreutils.variable('aiName')]"
             cleanKeys: true
@@ -286,7 +284,7 @@ recipe:
             credentials: 
               instrumentationKey: "[coreutils.variable('aiKey')]"
         authServers:
-          - id: auth
+          - name: auth
             displayName: authDisplay
             description: auth description
             clientRegistrationEndpoint: "endpoing"
@@ -301,7 +299,7 @@ recipe:
             grantTypes:
               - implicit
         identityProviders:
-          - id: microsoft
+          - identityProviderContractType: microsoft
             clientId : clientid
             clientSecret: clientSecret
 ```

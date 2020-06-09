@@ -5,7 +5,7 @@ import { RestError } from "@azure/ms-rest-js"
 let request = require('async-request')
 
 interface IApimApiDiagnostics extends DiagnosticContract{
-    id: string
+    name: string
 }
 
 interface IApimPolicy extends PolicyContract{
@@ -13,12 +13,12 @@ interface IApimPolicy extends PolicyContract{
 }
 
 interface IApimApiVersion extends ApiVersionSetContract{
-    id: string
+    name: string
     versions: Array<IApimApi>
 }
 
 interface IApimApi extends ApiCreateOrUpdateParameter{
-    id : string
+    name : string
     version: string
     policies?: Array<IApimPolicy>
     products?: Array<string>
@@ -129,7 +129,7 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
-        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.id, api, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.name, api, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         for(let i=0; i< api.versions.length; ++i) {
             let version = api.versions[i]
@@ -141,12 +141,12 @@ export class ApimApiPlugin extends BaseIngredient {
         
         if (this.apim_client == undefined) return
 
-        let apiContract = this.GetApi(api.id)
+        let apiContract = this.GetApi(api.name)
         if (apiContract) {
-            this._logger.log('APIM API Plugin: Updating API ' + api.id + " " + api.version)
+            this._logger.log('APIM API Plugin: Updating API ' + api.name + " " + api.version)
         }
         else {
-            this._logger.log('APIM API Plugin: Creating API ' + api.id + " " + api.version)
+            this._logger.log('APIM API Plugin: Creating API ' + api.name + " " + api.version)
 
         }
 
@@ -167,9 +167,9 @@ export class ApimApiPlugin extends BaseIngredient {
         let apiRevisionId : string
         try {
             api.apiVersion = api.version
-            api.apiVersionSetId = apiVersion.id
+            api.apiVersionSetId = apiVersion.name
             api.apiVersionSet = apiVersion
-            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api, {ifMatch : '*'})
+            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
             this._logger.log("APIM API Plugin: API " + result.displayName + " published")
             apiRevisionId = result.apiRevision || ""
                 
@@ -193,20 +193,20 @@ export class ApimApiPlugin extends BaseIngredient {
         if (api.policies) {
             for(let i=0; i < api.policies.length; ++i){
                 let policy = api.policies[i]
-                await this.ApplyAPIPolicy(policy, api.id)
+                await this.ApplyAPIPolicy(policy, api.name)
             }
         }
         if (api.products) {
             for(let i=0; i < api.products.length; ++i){
                 let productId = api.products[i]
-                await this.ApplyProduct(productId, api.id)
+                await this.ApplyProduct(productId, api.name)
             }
         }
 
         if (api.diagnostics) {
             for(let i=0; i < api.diagnostics.length; ++i){
                 let diagnostics = api.diagnostics[i]
-                await this.ApplyApiDiagnostics(diagnostics, api.id)
+                await this.ApplyApiDiagnostics(diagnostics, api.name)
             }
         }
     }
@@ -240,18 +240,18 @@ export class ApimApiPlugin extends BaseIngredient {
             diagnostics.loggerId = (await (new BakeVariable(diagnostics.loggerId)).valueAsync(this._ctx))            
         }
 
-        this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.id + " to API " + apiId)
+        this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.name + " to API " + apiId)
 
         let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
             this.resource_group,
             this.resource_name,
             apiId,
-            diagnostics.id,
+            diagnostics.name,
             diagnostics,
             <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
         if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-            this._logger.error("APIM API Plugin: Could not apply diagnostics " + diagnostics.id + "to API " + apiId)
+            this._logger.error("APIM API Plugin: Could not apply diagnostics " + diagnostics.name + "to API " + apiId)
         }
     }
 

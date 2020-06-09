@@ -56,7 +56,7 @@ options:
 
 ```yaml
 apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1460
-  - id: <api-version-id> #unique id for the API (version set)
+  - name: <api-version-name> #unique id for the API (version set)
     versions:
       - versionSchema #See next section for version schema
 ```
@@ -65,7 +65,7 @@ apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/
 
 ```yaml
 versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1310
-  - id: <api-id> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to
+  - name: <api-name> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to
     version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema      
     products: #optional list of product names to assign API to
     policies: #see next section for policy schema
@@ -85,7 +85,7 @@ policies: #scheme follows this azure spec for *PolicyContract* : https://github.
 
 ```yaml
 diagnostics: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L727
-  - id: <type of diagnostic>
+  - name: <type of diagnostic>
 ```
 
 ## Sample
@@ -116,12 +116,12 @@ recipe:
         options:
           apiWaitTime: 60 #override to waiting up to 60s for the API to be ready
         apis:
-          - id: petstore #unique API version identifier across APIM
+          - name: petstore #unique API version identifier across APIM
             displayName: Pet Store API
             description: Pet Store API description
             versioningScheme: Segment
             versions:
-              - id: petstore-v1 # unique API identifer across APIM
+              - name: petstore-v1 # unique API identifer across APIM
                 version: v1
                 apiType: http
                 path: pets #base apim url for this api
@@ -151,12 +151,12 @@ recipe:
                     format: xml
                     value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"
                 diagnostics:
-                  - id: applicationinsights
+                  - name: applicationinsights
                     loggerId: "[(await apim.get_logger(await coreutils.variable('apimResourceGroup'), await coreutils.variable('apimName'), 'aiapim-api')).id]"
                     sampling:
                       samplingType: fixed
                       percentage: 50
-              - id: petstore-v2 # unique API identifer across APIM
+              - name: petstore-v2 # unique API identifer across APIM
                 version: v2
                 apiType: http #unless you're using soap
                 path: pets #base apim url for this api
