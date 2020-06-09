@@ -1,10 +1,11 @@
 import { create } from 'domain';
-import { ResourceGroup } from '@azure/arm-resources/esm/models';
 import {BaseUtility, IngredientManager, IBakeRegion} from '@azbake/core'
-import { ApiManagementClient, ApiPolicy, Subscription, } from "@azure/arm-apimanagement"
+import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { NetworkManagementClient } from '@azure/arm-network';
 import { StorageManagementClient } from '@azure/arm-storage';
-import { SubscriptionGetResponse } from '@azure/arm-apimanagement/esm/models';
+import { SubscriptionGetResponse, LoggerGetResponse, PropertyGetResponse, ApiGetResponse, BackendGetResponse } from '@azure/arm-apimanagement/esm/models';
+import { SubnetsGetResponse } from '@azure/arm-network/esm/models';
+import { StorageAccountsGetPropertiesResponse } from '@azure/arm-storage/esm/models';
 
 export class ApimUtils extends BaseUtility {
 
@@ -20,42 +21,42 @@ export class ApimUtils extends BaseUtility {
         return resourceGroup;
     }
 
-    public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string): Promise<any> {
+    public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string): Promise<SubnetsGetResponse> {
         var client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let subnet = await client.subnets.get(resourceGroup, vnetName, subnetName)
 
         return subnet
     }
 
-    public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<any> {
+    public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<LoggerGetResponse> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
         let logger = await client.logger.get(resourceGroup, apimName, loggerId)
 
         return logger
     }
 
-    public async get_storageaccount(resourceGroup: string, name: string): Promise<any> {
+    public async get_storageaccount(resourceGroup: string, name: string): Promise<StorageAccountsGetPropertiesResponse> {
         var client = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let storageAccount = await client.storageAccounts.getProperties(resourceGroup, name)
 
         return storageAccount
     }
 
-    public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<any> {
+    public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<PropertyGetResponse> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let namedValue = await client.property.get(resourceGroup, apimName, namedValueId)
 
         return namedValue
     }
 
-    public async get_api(resourceGroup: string, apimName: string, apiId: string): Promise<any> {
+    public async get_api(resourceGroup: string, apimName: string, apiId: string): Promise<ApiGetResponse> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let api = await client.api.get(resourceGroup, apimName, apiId);
         
         return api;
     }
 
-    public async get_backend(resourceGroup: string, apimName: string, backendId: string): Promise<any> {
+    public async get_backend(resourceGroup: string, apimName: string, backendId: string): Promise<BackendGetResponse> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let backend = await client.backend.get(resourceGroup, apimName, backendId);
         

@@ -4,7 +4,7 @@
 
 ## Overview
 
-The APIM ingredient allows for easy standup of a [Windows API Management API](https://docs.microsoft.com/en-us/azure/api-management/api-management-key-concepts) instance including modification of Products, Subscriptions and more.
+The APIM ingredient allows for easy standup of a [Windows API Management API](https://docs.microsoft.com/en-us/azure/api-management/api-management-key-concepts) instance including creation/modification of Products, Subscriptions and more.
 
 ## Usage
 
@@ -23,16 +23,16 @@ version: 0.0.1
 ingredients:
   - "@azbake/ingredient-apim@~0" #include the latest version of the ingredient at build time
 parallelRegions: false #typically we only want to deploy to the primary region, so can turn off parallel deploy
-resourceGroup: false #If the recipe only contains an apim api deployment, you don't need to create resource groups
+resourceGroup: true #Create a resource group for the APIM resource
 ```
 
 ### How to use as an ingredient instance
+
 ```yaml
 recipe:
-  pet-api-deploy:
+  apim-deploy:
     properties:
       type: "@azbake/ingredient-apim" #ingredient type
-      source: "<azure_resource_group_name>/<azure_apim_resource_name>" #identity the azure apim resource to register an API against
       condition: "[coreutils.primary_region()]" #make sure we only execute this against the primary region for multi-region configs
       parameters:
         ... #see documentation below on parameter documentation for how to use.
@@ -42,144 +42,120 @@ recipe:
 
 Here is the documentation for all the supported paremeters for this ingredient.
 
-**options**
+**apimService**
+
 ```yaml
-options:
-  apiWaitSeconds: <number> # Supply a number of seconds to wait for any xml-link/swagger-link urls to become availabile 
-                           # before creating the APIM api/policy/etc.
-                           # You might be deploying a new API in this recipe, which could take 30-120s to become online.
-                           # This setting lets us wait for new APIs to be online before APIM
+#follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
+apimService:
+  - apimServiceName: <apim name>
 ```
 
-**apis**
+**diagnostics**
+
 ```yaml
-apis: #apis is a list of ApiVersionSchemas
-  - id: <api-version-id> #unique id for the API (version set)
-    data: #data follows this azure spec for *ApiVersionSetContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1460
-    versions:
-      - versionSchema #See next section for version schema
+#follows this azure spec for *DiagnosticSettingsResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L991
+diagnostics:
+  - name: <diagnostics name>
 ```
 
-**api.versions**
-```yaml
-versions:
-  - id: <api-id> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to
-    version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema     
-    data: #scheme follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1310
-    policies: #see next section for policy schema
-```
-*Note: **ApiCreateOrUpdateParameter.serviceUrl** and **ApiCreateOrUpdateParameter.value** support being defined as BakeVariables. This allows you to set these two values as an expression to resolve endpoint/data dynamically during deployment*
+**namedValues**
 
-**api.versions.[n].policies**
 ```yaml
-policies:
-  - operation: <string> #optional, and if not set this will be the default policy set for the entire api. Otherwise, name of an operation within this api to apply the policy to.
-    data: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L797
+#follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
+namedValues:
+  - id: <named value id>
+```
+
+**groups**
+
+```yaml
+#follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
+groups:
+  - id: <group id>
+```
+
+**users**
+
+```yaml
+#follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
+users:
+  - id: <user id>
 ```
 
 **products**
+
 ```yaml
+#follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
 products:
- - id: <string> #unique product id
-   data: #schema follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
-   apis: <list of strings> # list of api-ids that should be assigned to the product (use individual versioned ids, not the version set)
-   groups: <list of strings> #list of group names that have access to the product
-   policy: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L797
-   subscriptions: #See below for schema
+  - id: <product id>
+    apis: #optional array of api names to add to product
+      - api1
+    groups: #optional array of groups to assign to product
+      - group1
+    policy: #optional policy for prduct.  follows asure spec for *PolicyContract*: https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L797
+    subscriptions: #optional array of subscriptions to add to product
+      - sub1
 ```
 
-**products.[n].subscriptions**
+**loggers**
+
 ```yaml
-subscriptions:
-  - id: <string> #unique subscription id for the entire apim resource
-    user: <string> #optional username that owns the subscription, defaults to Administrator
+#follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3261
+loggers:
+  - appInsightsName: <app insights name>
+    cleanKeys: true # clean the old subscription keys
 ```
 
-## Sample
+**authServers**
+
 ```yaml
-name: apim-test
-shortName: apimtest
-version: 1.0.0
-ingredients:
-  - "@azbake/ingredient-apim@~0"
-resourceGroup: false
-parallelRegions: false
-variables:  
-  url: http://petstore.swagger.io/v2/swagger.json
-recipe:
-  petstore-api:
-    properties:
-      type: "@azbake/ingredient-apim"
-      source: myRg/myApim
-      condition: "[coreutils.primary_region()]"
-      parameters:
-        options:
-          apiWaitSeconds: 60 #override to waiting up to 60s for the API to be ready
-        apis:
-          - id: petstore #unique API version identifier across APIM
-            data:
-              displayName: Pet Store API
-              versioningScheme: Segment
-            versions:
-              - id: petstore-v1 # unique API identifer across APIM
-                version: v1
-                data:
-                  apiType: http
-                  path: pets #base apim url for this api
-                  protocols: #array of http and/or https
-                    - https
-                  format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
-                  value: "[coreutils.variable('url')]" #value supports bake variables.
-                policies: 
-                  - data: #this policy does not set the operation, so will default to the entire API (operation: base does the same thing)
-                      format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
-                      value: "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>"
-                  - operation: addPet #override the addPet operation policy
-                    data:
-                      format: xml
-                      value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"
-              - id: petstore-v2 # unique API identifer across APIM
-                version: v2
-                data:
-                  apiType: http #unless you're using soap
-                  path: pets #base apim url for this api
-                  protocols: #array of http and/or https
-                    - https
-                  format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
-                  value: "[coreutils.variable('url')]" #value supports bake variables.
-                policies:
-                  - data: #this policy does not set the operation, so will default to the entire API (operation: base does the same thing)
-                      format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
-                      value: "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>"
-                  - operation: addPet #override the addPet operation policy
-                    data:
-                      format: xml
-                      value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"        
-        products:
-          - id: petstore-product
-            data:
-              displayName: My Petstore
-              description: My Petstore Description
-              terms: My terms
-              subscriptionRequired: true
-              approvalRequired: true
-              state: published
-            apis:
-              - petstore-v1
-              - petstore-v2
-            groups:
-              - Administrators
-              - Developers
-            subscriptions:
-              - id: petstore-subscription
-                user: Administrator
+#follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
+authServers:
+  - id: <auth servier id>
+```
+
+**identityProviders**
+
+```yaml
+#follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
+identityProviders:
+  - id: <identity provider id>
 ```
 
 ## Utility Functions
-This ingredient includes a utility helper for accessing subscriptions that have already been created
 
+Utility classes can be used inside of the bake.yaml file for parameter and source values.
+
+### ``apim`` class
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `get_resource_name(name: string | null = null)` | `string` | Gets a standard resource name for an APIM instance |
+| `get_resource_group(name: string = "apim")` | `string` | Gets a standard resource group for an APIM instance |
+| `get_subnet(resourceGroup: string, vnetName: string, subnetName: string)` | `Promise<SubnetsGetResponse>` | Returns the subnet for a given set of parameters. |
+| `get_logger(resourceGroup: string, apimName: string, loggerId: string)` | `Promise<LoggerGetResponse>` | Returns the logger for a given set of parameters. |
+| `get_storageaccount(resourceGroup: string, name: string)` | `Promise<StorageAccountGetPropertiesResponse>` | Returns the storage account for a given set of parameters. |
+| `get_namedValue(resourceGroup: string, apimName: string, namedValueId: string)` | `Promise<PropertyGetResponse>` | Returns the named value (property) for a given set of parameters. |
+| `get_api(resourceGroup: string, apimName: string, apiId: string)` | `Promise<ApiGetResponse>` | Returns the API for a given set of parameters. |
+| `get_backend(resourceGroup: string, apimName: string, backendId: string)` | `Promise<BackendGetResponse>` | Returns the back end for a given set of parameters. |
+| `get_subscription(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<SubscriptionGetResponse>` | Returns the subscription for a given set of parameters. |
+| `get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription key for a given set of parameters. |
+| `get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription secondary key for a given set of parameters. |
+
+### Utility function examples
 ```yaml
+rgOverride: "[apim.get_resource_group()]"
 variables:
-  primary_key:  "[apim.get_subscription_key('myRg', 'myApim', 'petstore-subscription')]"
-  secondary_key:  "[apim.get_subscription_keySecondary('myRg', 'myApim', 'petstore-subscription')]"
+  apimName: "[apim.get_resource_name(<name>)]"
+  subnetResource: "[await apim.get_subnet(<vnet resource Group>, <vnet name>, <subnet name>)]"
+  logger: "[await apim.get_logger(<apim resource group>, <apim name>, <logger name>)]"
+  storageAccount: "[await apim.get_storageaccount(<storage account resource group>, <storage account name>)]"
+  namedValue: "[await apim.get_namedValue(<apim resource group>, <apim name>, <named value id>)]"
+  api: "[await apim.get_api(<apim resource group>, <apim name>, <api id>)]"
+  backend: "[await apim.get_backend(<apim resource group>, <apim name>, <backend id>)]"
+  subscription: "[await apim.get_subscription(<apim resource group>, <apim name>, <subscription id>)]"
+  subscriptionKey: "[await apim.get_subscription_key(<apim resource group>, <apim name>, <subscription id>)]"
+  subscriptionKeySecondary: "[await apim.get_subscription_keySecondary(<apim resource group>, <apim name>, <subscription id>)]"
 ```
+
+## Sample
