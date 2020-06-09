@@ -1,11 +1,12 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
-import { SubscriptionCreateOrUpdateOptionalParams, SubscriptionCreateParameters, DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
+import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
 import { RestError } from "@azure/ms-rest-js"
 let request = require('async-request')
 
 interface IApimApiDiagnostics extends DiagnosticContract{
     name: string
+    loggerName?: string
 }
 
 interface IApimPolicy extends PolicyContract{
@@ -167,7 +168,7 @@ export class ApimApiPlugin extends BaseIngredient {
         let apiRevisionId : string
         try {
             api.apiVersion = api.version
-            api.apiVersionSetId = apiVersion.name
+            api.apiVersionSetId = apiVersion.id
             api.apiVersionSet = apiVersion
             let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
             this._logger.log("APIM API Plugin: API " + result.displayName + " published")
@@ -238,6 +239,13 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (diagnostics.loggerId) {
             diagnostics.loggerId = (await (new BakeVariable(diagnostics.loggerId)).valueAsync(this._ctx))            
+        }
+        else if (diagnostics.loggerName){
+            let logger = await this.apim_client.logger.get(this.resource_group, this.resource_name, diagnostics.loggerName);
+
+            if(logger.id){
+                diagnostics.loggerId = logger.id   
+            }
         }
 
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.name + " to API " + apiId)

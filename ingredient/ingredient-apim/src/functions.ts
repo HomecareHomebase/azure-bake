@@ -1,4 +1,3 @@
-import { create } from 'domain';
 import {BaseUtility, IngredientManager, IBakeRegion} from '@azbake/core'
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { NetworkManagementClient } from '@azure/arm-network';

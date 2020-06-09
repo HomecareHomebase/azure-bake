@@ -29,7 +29,7 @@ interface IApimGroup extends GroupCreateParameters{
 }
 
 interface IApimLogger extends LoggerContract{
-    appInsightsName: string
+    name: string
     cleanKeys: boolean
 }
 
@@ -481,8 +481,8 @@ export class ApimPlugin extends BaseIngredient {
         let aiKey: string = ""
         let currentLoggerCreds: any  
 
-        if (logger.appInsightsName) {
-            logger.appInsightsName = (await (new BakeVariable(logger.appInsightsName)).valueAsync(this._ctx))            
+        if (logger.name) {
+            logger.name = (await (new BakeVariable(logger.name)).valueAsync(this._ctx))            
         }
 
         if (logger.credentials) {
@@ -492,12 +492,12 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (logger.loggerType == "applicationInsights") {
-            this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.appInsightsName)
+            this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.name)
             
             var response = await this.apim_client.logger.createOrUpdate(
                 this.resource_group,
                 this.resource_name,
-                logger.appInsightsName,
+                logger.name,
                 logger,
                 <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
