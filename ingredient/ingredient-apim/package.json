@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@azure/arm-apimanagement": "^5.1.1",
+    "@azure/arm-monitor": "^5.4.0",
     "async-request": "^1.2.0"
   },
   "publishConfig": {
