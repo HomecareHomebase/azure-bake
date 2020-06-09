@@ -77,6 +77,14 @@ users: #follows this azure spec for *UserCreateParameters * : https://github.com
   - id: <user id>
 ```
 
+ **subscriptions**
+
+```yaml
+subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4107
+  - id: <subscription id>
+    user?: <user> #optional user, can also use ownerId on SubscriptionCreateParameters if the path is known
+```
+
 **products**
 
 ```yaml
@@ -87,8 +95,6 @@ products: #follows this azure spec for *ProductContract* : https://github.com/Az
     groups: #optional array of groups to assign to product
       - group1
     policy: #optional policy for prduct.  follows asure spec for *PolicyContract*: https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L797
-    subscriptions: #optional array of subscriptions to add to product
-      - sub1
 ```
 
 **loggers**
@@ -238,6 +244,12 @@ recipe:
             lastName: smith
             groups:
               - testGroup
+        subscriptions:
+          - id: petstore-subscription
+            user: Administrator
+            displayName: petstore-subscription
+            state: active
+            allowTracing: true
         products:
           - id: my-product
             displayName: My Product
@@ -265,8 +277,7 @@ recipe:
                         </outbound>
                       </policies>
             subscriptions:
-              - id: my-product-subscription
-                user: Administrator
+              - petstore-subscription
         loggers:
           - appInsightsName: "[coreutils.variable('aiName')]"
             cleanKeys: true

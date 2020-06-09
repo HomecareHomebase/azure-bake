@@ -43,12 +43,13 @@ interface IApimProduct extends ProductContract{
     apis?: Array<string>
     groups?: Array<string>
     policy?: PolicyContract
-    subscriptions?: Array<IApimSubscription>
 }
 
-interface IApimSubscription {
+interface IApimSubscription extends SubscriptionCreateParameters{
     id: string
     user?: string
+    product?: string
+    api?: string
 }
 
 export class ApimPlugin extends BaseIngredient {
@@ -68,6 +69,7 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildGroups()
                 await this.BuildUsers()
                 await this.BuildProducts()
+                await this.BuilSubscriptions()
                 await this.BuildLoggers()
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
@@ -329,6 +331,57 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuilSubscriptions(): Promise<void> {
+
+        let subscriptionsParam  = this._ingredient.properties.parameters.get('subscriptions')
+        if (!subscriptionsParam){
+            return
+        }
+
+        let subscriptions :IApimSubscription[] = await subscriptionsParam.valueAsync(this._ctx)
+        if (!subscriptions){
+            return
+        }
+
+        for(let i =0; i < subscriptions.length; ++i) {
+            let subscription = subscriptions[i];
+            await this.BuildSubscription(subscription)
+        }       
+    }
+
+    private async BuildSubscription(sub: IApimSubscription): Promise<void> {
+
+        if (this.apim_client == undefined) return
+
+        if(sub.user){
+            sub.ownerId = (await this.GetUserId(sub.user))
+        }
+
+        if (!sub.scope){
+            if(sub.product){
+                sub.scope = '/products/' + sub.product
+            }
+            else if(sub.api){
+                sub.scope = '/apis/' + sub.api
+            }
+            else{
+                sub.scope = '/apis'
+            }
+        }
+
+        this._logger.log('APIM Plugin: Add/Update APIM Subscription : ' + sub.id)
+        
+        let response = await this.apim_client.subscription.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            sub.id,
+            sub, <SubscriptionCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        
+        if (response._response.status != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update subscription: " + sub.id)
+        }
+    }
+
     private async BuildProducts(): Promise<void> {
 
         let productsParam  = this._ingredient.properties.parameters.get('products')
@@ -402,13 +455,6 @@ export class ApimPlugin extends BaseIngredient {
             
             if (policyResponse._response.status != 200 && policyResponse._response.status != 201){
                 this._logger.error("APIM Plugin: Could not apply policies to product " + product.id)
-            }
-        }
-
-        if (product.subscriptions) {
-            for(let i=0; i < product.subscriptions.length; ++i){
-                let sub = product.subscriptions[i]
-                await this.BuildSubscription(sub, product.id)
             }
         }
     }
@@ -574,39 +620,19 @@ export class ApimPlugin extends BaseIngredient {
 
         throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
     }
-
-    private async BuildSubscription(sub: IApimSubscription, productId: string): Promise<void> {
-
-        if (this.apim_client == undefined) return
-
-        let params = <SubscriptionCreateParameters> {
-            scope : '/products/' + productId,
-            displayName: sub.id,
-            state: 'active',
-            allowTracing: true,
-            ownerId: (await this.GetUserId(sub.user))
-        }
-
-        this._logger.log('APIM Plugin: Add/Update APIM Subscription : ' + sub.id + " scoped to " + productId)
-        let response = await this.apim_client.subscription.createOrUpdate(this.resource_group, this.resource_name, sub.id,params, <SubscriptionCreateOrUpdateOptionalParams>{ifMatch:'*'})
-        if (response._response.status != 200 && response._response.status != 201) {
-            this._logger.error("APIM Plugin: Could not create/update subscription for product" + productId + " subId: " + sub.id)
-        }
-    }
-
+    
     private async GetUserId(user?: string) : Promise<string | undefined> {
 
         if (this.apim_client == undefined) return undefined
         user = user || "Administrator"
 
+        // Administrator is created by default on APIM standup with a name of "1"
+        if(user == "Administrator"){
+            user = "1"
+        }
 
-        let userId: string | undefined
-        let result = await this.apim_client.user.listByService(this.resource_group, this.resource_name)
-        result.forEach(u=>{
-            u.name == user
-            userId = u.id
-        })
+        let userId = await this.apim_client.user.get(this.resource_group, this.resource_name, user)
 
-        return userId
+        return userId.id
     }
 }
