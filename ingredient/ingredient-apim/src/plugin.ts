@@ -1,9 +1,15 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
+import { MonitorManagementClient } from "@azure/arm-monitor"
 import { ApiManagementServiceResource, IdentityProviderType, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { DiagnosticSettingsResource, DiagnosticSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 
 interface IApim extends ApiManagementServiceResource{
     apimServiceName: string
+}
+
+interface IApimDiagnostics extends DiagnosticSettingsResource{
+    name: string
 }
 
 interface IApiIdentityProvider extends IdentityProviderContract{
@@ -57,6 +63,7 @@ export class ApimPlugin extends BaseIngredient {
             if(await this.Setup())
             {
                 await this.BuildAPIM()
+                await this.BuildDiagnostics()
                 await this.BuildNamedValues()
                 await this.BuildGroups()
                 await this.BuildUsers()
@@ -159,6 +166,46 @@ export class ApimPlugin extends BaseIngredient {
 
         if (response._response.status  != 200 && response._response.status != 201) {
             this._logger.error("APIM Plugin: Could not create/update APIM service " + this.resource_name)
+        }
+    }
+
+    private async BuildDiagnostics(): Promise<void>{
+        if (this.apim_client == undefined) return
+
+        let diagnosticsParam  = this._ingredient.properties.parameters.get('diagnostics')
+        if (!diagnosticsParam){
+            return
+        }
+
+        let apimDiagnostics :IApimDiagnostics = await diagnosticsParam.valueAsync(this._ctx)
+        if (!apimDiagnostics){
+            return
+        }
+
+        this._logger.log('APIM Plugin: Add/Update APIM diagnostics ' + apimDiagnostics.name)
+
+        let resourceUri = (await this.apim_client.apiManagementService.get(this.resource_group, this.resource_name)).id;
+
+        if(!resourceUri)
+        {
+            return
+        }
+
+        if (apimDiagnostics.storageAccountId) {
+            apimDiagnostics.storageAccountId = (await (new BakeVariable(apimDiagnostics.storageAccountId)).valueAsync(this._ctx))            
+        }
+
+        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+
+        var response = await monitorClient.diagnosticSettings.createOrUpdate
+            (
+                resourceUri,
+                apimDiagnostics,
+                apimDiagnostics.name
+            )
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name)
         }
     }
 

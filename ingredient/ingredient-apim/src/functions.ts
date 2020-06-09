@@ -1,7 +1,9 @@
+import { create } from 'domain';
 import { ResourceGroup } from '@azure/arm-resources/esm/models';
 import {BaseUtility, IngredientManager, IBakeRegion} from '@azbake/core'
 import { ApiManagementClient, ApiPolicy, Subscription, } from "@azure/arm-apimanagement"
 import { NetworkManagementClient } from '@azure/arm-network';
+import { StorageManagementClient } from '@azure/arm-storage';
 import { SubscriptionGetResponse } from '@azure/arm-apimanagement/esm/models';
 
 export class ApimUtils extends BaseUtility {
@@ -30,6 +32,13 @@ export class ApimUtils extends BaseUtility {
         let logger = await client.logger.get(resourceGroup, apimName, loggerId)
 
         return logger
+    }
+
+    public async get_storageaccount(resourceGroup: string, name: string): Promise<any> {
+        var client = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        let storageAccount = await client.storageAccounts.getProperties(resourceGroup, name)
+
+        return storageAccount
     }
 
     public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<any> {
