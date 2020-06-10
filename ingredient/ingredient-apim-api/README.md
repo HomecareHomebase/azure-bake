@@ -6,10 +6,6 @@
 
 The APIM API ingredient allows for easy registration & modification of APIs within an Azure APIM resource.
 
-## Usage
-
-Typical use-case for APIM is to have a single master resource and use secondary regions that sync against the master data. If you are using this use-case you should configure the ingredient instance with a condition of **"[coreutils.primary_region()]"** so that it only deploys into your primary bake region configuration. Otherwise, the same data will deploy into every apim instance if you have multiple regions.
-
 ### Ingredient Name
 
 *@azbake/ingredient-apim-api*
