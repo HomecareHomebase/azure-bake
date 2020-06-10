@@ -13,15 +13,6 @@ variables:
   aiKey: "[await appinsights.get_instrumentation_key('apimcontoso','appinsights', true)]"
   aiResourceGroup: "[coreutils.resource_group('appinsights', false, null, true)]"
   apimName: "[apim.get_resource_name('contoso')]"
-  #replace the following with your values
-  vnetResourceGroup: vnetResourceGroup
-  vnetName: vnetName
-  subnetName: subnetName
-  storageResourceGroup: storageResourceGroup
-  storageResourceName: storageResourceName
-  authClientRegistrationEndpoint: authClientRegistrationEndpoint
-  authAuthorizationEndpoint: authAuthorizationEndpoint
-  authTokenEndpoint: authTokenEndpoint
 recipe:
   apim-app-insights-deploy: 
     properties:
@@ -55,10 +46,12 @@ recipe:
             Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30: "false"
           virtualNetworkType: External
           virtualNetworkConfiguration:
-            subnetResourceId: "[(await apim.get_subnet([coreutils.variable('vnetResourceGroup')], [coreutils.variable('vnetName')], [coreutils.variable('subnetName')])).id]"
+            #replace the following with your values
+            subnetResourceId: "[(await apim.get_subnet('<vnet resource group>', '<vnet name>', '<subnet name>')).id]"
         diagnostics:
           name: diagnosticsName
-          storageAccountId: "[(await apim.get_storageaccount([coreutils.variable('storageResourceGroup')], [coreutils.variable('storageResourceName')])).id]"
+          #replace the following with your values
+          storageAccountId: "[(await apim.get_storageaccount('<storage resource group>', '<storage name>')).id]"
           metrics:
             - timeGrain: PT1M
               enabled: true
@@ -147,9 +140,10 @@ recipe:
           - name: authServer
             displayName: "Auth Server Display"
             description: "Auth Server Description"
-            clientRegistrationEndpoint: "[coreutils.variable('authClientRegistrationEndpoint')]"
-            authorizationEndpoint: "[coreutils.variable('authAuthorizationEndpoint')]"
-            tokenEndpoint: "[coreutils.variable('authTokenEndpoint')]"
+            #replace the following with your values
+            clientRegistrationEndpoint: "<endpoint>"
+            authorizationEndpoint: "<endpoint>"
+            tokenEndpoint: "<endpoint>"
             clientId: clientid
             clientSecret: clientSecret
             clientAuthenticationMethod:
