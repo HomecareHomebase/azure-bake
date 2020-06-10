@@ -46,50 +46,50 @@ Here is the documentation for all the supported paremeters for this ingredient.
 
 ```yaml
 apimService: #follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
-  - name: <apim name>
+  - name: <apim name> #required name of APIM service
 ```
 
 **diagnostics**
 
 ```yaml
 diagnostics: #follows this azure spec for *DiagnosticSettingsResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L991
-  - name: <diagnostics name>
+  - name: <diagnostics name> #required name of diagnostics settings
 ```
 
 **namedValues**
 
 ```yaml
 namedValues: #follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
-  - name: <named value id>
+  - name: <named value id> #required name of property (named value)
 ```
 
 **groups**
 
 ```yaml
 groups: #follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
-  - name: <group id>
+  - name: <group id> #required name of the group
 ```
 
 **users**
 
 ```yaml
 users: #follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
-  - name: <user id>
+  - name: <user id> #required name of the user
 ```
 
  **subscriptions**
 
 ```yaml
 subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4107
-  - name: <subscription id>
-    user?: <user> #optional user, can also use ownerId on SubscriptionCreateParameters if the path is known
+  - name: <subscription id> #required name of the subscription
+    user: <user> #optional user lookup, can also use ownerId on SubscriptionCreateParameters if the path is known
 ```
 
 **products**
 
 ```yaml
 products: #follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
-  - name: <product id>
+  - name: <product id> #required name of the product
     apis: #optional array of api names to add to product
       - api1
     groups: #optional array of groups to assign to product
@@ -101,7 +101,7 @@ products: #follows this azure spec for *ProductContract* : https://github.com/Az
 
 ```yaml #follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3261
 loggers:
-  - appInsightsName: <app insights name>
+  - name: <logger name> #required name of the logger
     cleanKeys: true # clean the old subscription keys
 ```
 
@@ -109,13 +109,14 @@ loggers:
 
 ```yaml
 authServers: #follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
-  - name: <auth servier id>
+  - name: <auth servier id> #required name of the auth server
 ```
 
 **identityProviders**
 
 ```yaml
 identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
+  - identityProviderContractType: microsoft #this is part of the IdentityProviderContract contract and is required
 ```
 
 ## Utility Functions
@@ -132,8 +133,6 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 | `get_logger(resourceGroup: string, apimName: string, loggerId: string)` | `Promise<LoggerGetResponse>` | Returns the logger for a given set of parameters. |
 | `get_storageaccount(resourceGroup: string, name: string)` | `Promise<StorageAccountGetPropertiesResponse>` | Returns the storage account for a given set of parameters. |
 | `get_namedValue(resourceGroup: string, apimName: string, namedValueId: string)` | `Promise<PropertyGetResponse>` | Returns the named value (property) for a given set of parameters. |
-| `get_api(resourceGroup: string, apimName: string, apiId: string)` | `Promise<ApiGetResponse>` | Returns the API for a given set of parameters. |
-| `get_backend(resourceGroup: string, apimName: string, backendId: string)` | `Promise<BackendGetResponse>` | Returns the back end for a given set of parameters. |
 | `get_subscription(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<SubscriptionGetResponse>` | Returns the subscription for a given set of parameters. |
 | `get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription key for a given set of parameters. |
 | `get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription secondary key for a given set of parameters. |
@@ -147,8 +146,6 @@ variables:
   logger: "[await apim.get_logger(<apim resource group>, <apim name>, <logger name>)]"
   storageAccount: "[await apim.get_storageaccount(<storage account resource group>, <storage account name>)]"
   namedValue: "[await apim.get_namedValue(<apim resource group>, <apim name>, <named value id>)]"
-  api: "[await apim.get_api(<apim resource group>, <apim name>, <api id>)]"
-  backend: "[await apim.get_backend(<apim resource group>, <apim name>, <backend id>)]"
   subscription: "[await apim.get_subscription(<apim resource group>, <apim name>, <subscription id>)]"
   subscriptionKey: "[await apim.get_subscription_key(<apim resource group>, <apim name>, <subscription id>)]"
   subscriptionKeySecondary: "[await apim.get_subscription_keySecondary(<apim resource group>, <apim name>, <subscription id>)]"
@@ -173,18 +170,18 @@ variables:
   aiResourceGroup: "[coreutils.resource_group('appinsights', false, null, true)]"
   apimName: "[apim.get_resource_name('api')]"
 recipe:
+  # deploy app insights first for logger configuration (optional)
   apim-app-insights-deploy: 
     properties:
       type: "@azbake/ingredient-app-insights"
       source: ""
       condition: "[coreutils.current_region_primary()]"
       parameters:
-        #App Insights resource name in the format env + resource type + resource short name.  ie devaiinterop
         appInsightsName: "[coreutils.variable('aiName')]"
         rgOverride: "[coreutils.variable('aiResourceGroup')]"
   apim-deploy:
-    properties:
-      dependsOn: apim-app-insights-deploy
+    dependsOn: apim-app-insights-deploy
+    properties:      
       type: "@azbake/ingredient-apim"
       condition: "[coreutils.primary_region()]"
       parameters:
@@ -244,9 +241,9 @@ recipe:
             groups:
               - testGroup
         products:
-          - name: my-product
-            displayName: My Product
-            description: My Product Description
+          - name: petstore-product
+            displayName: My Petstore
+            description: My Petstore Description
             terms: My terms
             subscriptionRequired: false
             state: published
@@ -272,12 +269,12 @@ recipe:
         subscriptions:
           - name: petstore-subscription
             user: Administrator
-            product: my-product
+            product: petstore-product
             displayName: petstore-subscription
             state: active
             allowTracing: true
         loggers:
-          - appInsightsName: "[coreutils.variable('aiName')]"
+          - name: apimLogger
             cleanKeys: true
             description: apimlogger
             loggerType: applicationInsights
@@ -287,9 +284,9 @@ recipe:
           - name: auth
             displayName: authDisplay
             description: auth description
-            clientRegistrationEndpoint: "endpoing"
-            authorizationEndpoint: "endpoint"
-            tokenEndpoint: "endpoint"
+            clientRegistrationEndpoint: "<endpoint>"
+            authorizationEndpoint: "<endpoint>"
+            tokenEndpoint: "<endpoint>"
             clientId: clientid
             clientSecret: clientSecret
             clientAuthenticationMethod:
