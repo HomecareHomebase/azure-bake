@@ -1,43 +1,54 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
-import { ApiManagementClient, ApiPolicy } from "@azure/arm-apimanagement"
-import { ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails } from "@azure/arm-apimanagement/esm/models";
-import { RestError, RequestOptionsBase } from "@azure/ms-rest-js"
-let request = require('async-request')
+import { ApiManagementClient } from "@azure/arm-apimanagement"
+import { MonitorManagementClient } from "@azure/arm-monitor"
+import { ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { DiagnosticSettingsResource } from "@azure/arm-monitor/esm/models";
 
-interface IApimPolicy {
-    operation?: string
-    data: PolicyContract
+interface IApim extends ApiManagementServiceResource{
+    name: string
 }
 
-interface IApimApiVersion {
-    id: string
-    data: ApiVersionSetContract
-    versions: Array<IApimApi>
+interface IApimDiagnostics extends DiagnosticSettingsResource{
+    name: string
 }
 
-interface IApimApi {
-    id : string
-    version: string
-    data: ApiCreateOrUpdateParameter
-    policies?: Array<IApimPolicy>
+interface IApiIdentityProvider extends IdentityProviderContract{
 }
 
-interface IApimOptions {
-    apiWaitTime: number
+interface IApimAuthServer extends AuthorizationServerContract{
+    name: string
 }
 
-interface IApimProduct {
-    id: string
-    data: ProductContract
+interface IApimUser extends UserCreateParameters{
+    name: string
+    groups?: Array<string>
+}
+
+interface IApimGroup extends GroupCreateParameters{
+    name: string
+}
+
+interface IApimLogger extends LoggerContract{
+    name: string
+    cleanKeys: boolean
+}
+
+interface IApimNamedValue extends PropertyContract{
+    name: string
+}
+
+interface IApimProduct extends ProductContract{
+    name: string
     apis?: Array<string>
     groups?: Array<string>
     policy?: PolicyContract
-    subscriptions?: Array<IApimSubscription>
 }
 
-interface IApimSubscription {
-    id: string
+interface IApimSubscription extends SubscriptionCreateParameters{
+    name: string
     user?: string
+    product?: string
+    api?: string
 }
 
 export class ApimPlugin extends BaseIngredient {
@@ -45,19 +56,328 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
-    private     apim_apis:          Array<ApiContract> | undefined
-    private     apim_options:       IApimOptions | undefined
 
     public async Execute(): Promise<void> {
         try {
             
-            await this.Setup()
-            await this.BuildAPIs()
-            await this.BuildProducts()
-
+            if(await this.Setup())
+            {
+                await this.BuildAPIM()
+                await this.BuildDiagnostics()
+                await this.BuildNamedValues()
+                await this.BuildGroups()
+                await this.BuildUsers()
+                await this.BuildProducts()
+                await this.BuilSubscriptions()
+                await this.BuildLoggers()
+                await this.BuildAuthServers()
+                await this.BuildIdentityProviders()
+            }
         } catch(error){
-            this._logger.error('APIM Plugin Error: ' + error)
+            this._logger.error('APIM Plugin: ' + error)
             throw error
+        }
+    }
+
+    private async Setup(): Promise<boolean> {
+
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
+
+        let source = await this._ingredient.properties.source.valueAsync(this._ctx)
+
+        let rgOverride : string
+        rgOverride = await util.resource_group();
+
+        if (source) {
+            let bakeResource = util.parseResource(source)
+            this.resource_group = bakeResource.resourceGroup || rgOverride
+            this.resource_name = bakeResource.resource
+        }
+        else {
+            this.resource_group = rgOverride
+
+            let apimParam  = this._ingredient.properties.parameters.get('apimService')
+
+            if (apimParam) {
+                let apim :IApim = await apimParam.valueAsync(this._ctx)
+
+                if (apim){
+                    apim.name = (await (new BakeVariable(apim.name)).valueAsync(this._ctx)) 
+
+                    this.resource_name = apim.name
+                }
+            }
+        }
+
+        if (!this.resource_group) {
+            this._logger.error('APIM Plugin: resourceGroup can not be empty')
+            return false
+        }
+        if (!this.resource_name) {
+            this._logger.error('APIM Plugin: resourceName can not be empty')
+            return false
+        }
+
+        this._logger.log('APIM Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
+        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+
+        if (this.apim_client == null) {
+            this._logger.error('APIM Plugin: APIM client is null')
+            return false
+        }
+
+        return true
+    }
+
+    private async BuildAPIM(): Promise<void>{
+        if (this.apim_client == undefined) return
+
+        let apimParam  = this._ingredient.properties.parameters.get('apimService')
+        if (!apimParam){
+            return
+        }
+
+        let apim :IApim = await apimParam.valueAsync(this._ctx)
+        if (!apim){
+            return
+        }
+
+        this._logger.log('APIM Plugin: Add/Update APIM service ' + this.resource_name)
+        
+        if (apim.location) {
+            apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
+        }
+        else{
+            apim.location = this._ctx.Region.name
+        }
+
+        if(apim.virtualNetworkConfiguration)
+        {
+            if (apim.virtualNetworkConfiguration.subnetResourceId) {
+                apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
+            }
+        }
+
+        var response = await this.apim_client.apiManagementService.createOrUpdate
+            (
+                this.resource_group,
+                this.resource_name,
+                apim
+            )
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update APIM service " + this.resource_name)
+        }
+    }
+
+    private async BuildDiagnostics(): Promise<void>{
+        if (this.apim_client == undefined) return
+
+        let diagnosticsParam  = this._ingredient.properties.parameters.get('diagnostics')
+        if (!diagnosticsParam){
+            return
+        }
+
+        let apimDiagnostics :IApimDiagnostics = await diagnosticsParam.valueAsync(this._ctx)
+        if (!apimDiagnostics){
+            return
+        }
+
+        this._logger.log('APIM Plugin: Add/Update APIM diagnostics ' + apimDiagnostics.name)
+
+        let resourceUri = (await this.apim_client.apiManagementService.get(this.resource_group, this.resource_name)).id;
+
+        if(!resourceUri)
+        {
+            return
+        }
+
+        if (apimDiagnostics.storageAccountId) {
+            apimDiagnostics.storageAccountId = (await (new BakeVariable(apimDiagnostics.storageAccountId)).valueAsync(this._ctx))            
+        }
+
+        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+
+        var response = await monitorClient.diagnosticSettings.createOrUpdate
+            (
+                resourceUri,
+                apimDiagnostics,
+                apimDiagnostics.name
+            )
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name)
+        }
+    }
+
+    private async BuildNamedValues(): Promise<void> {
+        let namedValuesParam  = this._ingredient.properties.parameters.get('namedValues')
+        if (!namedValuesParam){
+            return
+        }
+
+        let namedValues :IApimNamedValue[] = await namedValuesParam.valueAsync(this._ctx)
+        if (!namedValues){
+            return
+        }
+
+        for(let i =0; i < namedValues.length; ++i) {
+            let namedValue = namedValues[i];
+
+            await this.BuildNamedValue(namedValue)
+        }  
+    }
+
+    private async BuildNamedValue(namedValue: IApimNamedValue) : Promise<void> { 
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Add/Update APIM named value: ' + namedValue.name)
+        
+        var response = await this.apim_client.property.createOrUpdate
+            (
+                this.resource_group,
+                this.resource_name,
+                namedValue.name,
+                namedValue,
+                <PropertyCreateOrUpdateOptionalParams>{ifMatch:'*'}
+            )
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update named value " + namedValue.name)
+        }
+    }
+
+    private async BuildGroups(): Promise<void> {
+
+        let groupsParam  = this._ingredient.properties.parameters.get('groups')
+        if (!groupsParam){
+            return
+        }
+
+        let groups :IApimGroup[] = await groupsParam.valueAsync(this._ctx)
+        if (!groups){
+            return
+        }
+
+        for(let i =0; i < groups.length; ++i) {
+            let group = groups[i];
+            await this.BuildGroup(group)
+        }       
+    }
+
+    private async BuildGroup(group: IApimGroup): Promise<void> {
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Add/Update APIM group: ' + group.displayName)
+        
+        let response = await this.apim_client.group.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            group.name,
+            group,
+            <GroupCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update group " +  group.name)
+        }
+    }
+
+    private async BuildUsers(): Promise<void> {
+
+        let usersParam  = this._ingredient.properties.parameters.get('users')
+        if (!usersParam){
+            return
+        }
+
+        let users :IApimUser[] = await usersParam.valueAsync(this._ctx)
+        if (!users){
+            return
+        }
+
+        for(let i =0; i < users.length; ++i) {
+            let user = users[i];
+            await this.BuildUser(user)
+        }       
+    }
+
+    private async BuildUser(user: IApimUser): Promise<void> {
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Add/Update APIM user: ' + user.name)
+        
+        let response = await this.apim_client.user.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            user.name,
+            user,
+            <UserCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update user " + user.name)
+        }
+
+        if (user.groups) {
+            this._logger.log('APIM Plugin: Assigning group ' + user.groups.toString() + " to user " + user.name)
+            
+            for(let i=0; i < user.groups.length; ++i){
+                let group = user.groups[i]
+                let apiResponse = await this.apim_client.groupUser.create(this.resource_group, this.resource_name, group, user.name)
+                
+                if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
+                    this._logger.error("APIM Plugin: Could not bind group " + group + "to user " + user.name)
+                }
+            }
+        }
+    }
+
+    private async BuilSubscriptions(): Promise<void> {
+
+        let subscriptionsParam  = this._ingredient.properties.parameters.get('subscriptions')
+        if (!subscriptionsParam){
+            return
+        }
+
+        let subscriptions :IApimSubscription[] = await subscriptionsParam.valueAsync(this._ctx)
+        if (!subscriptions){
+            return
+        }
+
+        for(let i =0; i < subscriptions.length; ++i) {
+            let subscription = subscriptions[i];
+            await this.BuildSubscription(subscription)
+        }       
+    }
+
+    private async BuildSubscription(sub: IApimSubscription): Promise<void> {
+
+        if (this.apim_client == undefined) return
+
+        if(sub.user){
+            sub.ownerId = (await this.GetUserId(sub.user))
+        }
+
+        if (!sub.scope){
+            if(sub.product){
+                sub.scope = '/products/' + sub.product
+            }
+            else if(sub.api){
+                sub.scope = '/apis/' + sub.api
+            }
+            else{
+                sub.scope = '/apis'
+            }
+        }
+
+        this._logger.log('APIM Plugin: Add/Update APIM Subscription : ' + sub.name)
+        
+        let response = await this.apim_client.subscription.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            sub.name,
+            sub, <SubscriptionCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        
+        if (response._response.status != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update subscription: " + sub.name)
         }
     }
 
@@ -79,246 +399,215 @@ export class ApimPlugin extends BaseIngredient {
         }       
     }
 
-    private async BuildAPIs(): Promise<void> {
-       
-        let apisParam  = this._ingredient.properties.parameters.get('apis')
-        if (!apisParam){
-            return
-        }
-
-        let apis :IApimApiVersion[] = await apisParam.valueAsync(this._ctx)
-        if (!apis){
-            return
-        }
-
-        for(let i =0; i < apis.length; ++i) {
-            let api = apis[i];
-            await this.BuildAPiVersion(api)
-        }       
-    }
-
     private async BuildProduct(product: IApimProduct): Promise<void> {
-
         if (this.apim_client == undefined) return
 
-        this._logger.log('Add/Update APIM product: ' + product.id)
-        let response = await this.apim_client.product.createOrUpdate(this.resource_group, this.resource_name, product.id, product.data, <ProductCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        this._logger.log('APIM Plugin: Add/Update APIM product: ' + product.name)
+        
+        let response = await this.apim_client.product.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            product.name,
+            product,
+            <ProductCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
         if (response._response.status  != 200 && response._response.status != 201) {
-            throw Error('APIM Error : Could not create/update product ' + product.id)
+            this._logger.error("APIM Plugin: Could not create/update product " + product.name)
         }
 
         if (product.apis) {
-            this._logger.log('Assigning APIs: ' + product.apis.toString() + " to product " + product.id)
+            this._logger.log('APIM Plugin: Assigning APIs ' + product.apis.toString() + " to product " + product.name)
+            
             for(let i=0; i < product.apis.length; ++i){
                 let api = product.apis[i]
-                let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, product.id, api)
+                let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, product.name, api)
+                
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.log("APIM Error: Could not bind API " + api + "to product " + product.id)
+                    this._logger.error("APIM Plugin: Could not bind API " + api + "to product " + product.name)
                 }
             }
         }
 
         if (product.groups) {
-            this._logger.log('Assigning Groups: ' + product.groups.toString() + " to product " + product.id)
+            this._logger.log('APIM Plugin: Assigning group ' + product.groups.toString() + " to product " + product.name)
+            
             for(let i=0; i < product.groups.length; ++i){
                 let group = product.groups[i]
-                let apiResponse = await this.apim_client.productGroup.createOrUpdate(this.resource_group, this.resource_name, product.id, group)
+                let apiResponse = await this.apim_client.productGroup.createOrUpdate(this.resource_group, this.resource_name, product.name, group)
+                
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.log("APIM Error: Could not bind Group " + group + "to product " + product.id)
+                    this._logger.error("APIM Plugin: Could not bind group " + group + "to product " + product.name)
                 }
             }
         }
 
         if (product.policy) {
-            this._logger.log('Add/Update APIM producy policy: ' + product.id)
-            let policyData = await this.ResolvePolicy(product.policy)
-            let policyResponse = await this.apim_client.productPolicy.createOrUpdate(this.resource_group, this.resource_name, product.id, policyData, <ProductPolicyCreateOrUpdateOptionalParams>{ifMatch:'*'})
-        }
-
-        if (product.subscriptions) {
+            this._logger.log('APIM Plugin: Add/Update APIM product policy: ' + product.name)
             
-            for(let i=0; i < product.subscriptions.length; ++i){
-                let sub = product.subscriptions[i]
-                await this.BuildSubscription(sub, product.id)
+            let policyData = await this.ResolvePolicy(product.policy)
+            let policyResponse = await this.apim_client.productPolicy.createOrUpdate(
+                this.resource_group,
+                this.resource_name,
+                product.name,
+                policyData,
+                <ProductPolicyCreateOrUpdateOptionalParams>{ifMatch:'*'})
+            
+            if (policyResponse._response.status != 200 && policyResponse._response.status != 201){
+                this._logger.error("APIM Plugin: Could not apply policies to product " + product.name)
             }
         }
     }
-    private async BuildSubscription(sub: IApimSubscription, productId: string): Promise<void> {
 
-        if (this.apim_client == undefined) return
-
-        let params = <SubscriptionCreateParameters> {
-            scope : '/products/' + productId,
-            displayName: sub.id,
-            state: 'active',
-            allowTracing: true,
-            ownerId: (await this.GetUserId(sub.user))
+    private async BuildLoggers(): Promise<void> {
+        let loggersParam  = this._ingredient.properties.parameters.get('loggers')
+        if (!loggersParam){
+            return
         }
 
-        this._logger.log('Add/Update APIM Subscription : ' + sub.id + " scoped to " + productId)
-        let response = await this.apim_client.subscription.createOrUpdate(this.resource_group, this.resource_name, sub.id,params, <SubscriptionCreateOrUpdateOptionalParams>{ifMatch:'*'})
-        if (response._response.status != 200 && response._response.status != 201) {
-            throw new Error("APIM Error: Could not create/update subscription for product" + productId + " subId: " + sub.id)
+        let loggers :IApimLogger[] = await loggersParam.valueAsync(this._ctx)
+        if (!loggers){
+            return
         }
+
+        for(let i =0; i < loggers.length; ++i) {
+            let logger = loggers[i];
+            await this.BuildLogger(logger)
+        }  
     }
 
-    private async GetUserId(user?: string) : Promise<string | undefined> {
-
-        if (this.apim_client == undefined) return undefined
-        user = user || "Administrator"
-
-
-        let userId: string | undefined
-        let result = await this.apim_client.user.listByService(this.resource_group, this.resource_name)
-        result.forEach(u=>{
-            u.name == user
-            userId = u.id
-        })
-
-        return userId
-    }
-
-    private async BuildAPiVersion(api: IApimApiVersion) : Promise<void> { 
-
+    private async BuildLogger(logger: IApimLogger): Promise<void>{
         if (this.apim_client == undefined) return
 
-        let apiVersionResponse = await this.apim_client.apiVersionSet.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, <ApiVersionSetCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        let aiKey: string = ""
+        let currentLoggerCreds: any  
 
-        for(let i=0; i< api.versions.length; ++i) {
-            let version = api.versions[i]
-            await this.BuildAPI(version, apiVersionResponse)
+        if (logger.name) {
+            logger.name = (await (new BakeVariable(logger.name)).valueAsync(this._ctx))            
         }
 
-    }
-    
-    private async BuildAPI(api: IApimApi, apiVersion: ApiVersionSetContractDetails) : Promise<void> { 
-        
-        if (this.apim_client == undefined) return
+        if (logger.credentials) {
+            aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
 
-        let apiContract = this.GetApi(api.id)
-        if (apiContract) {
-            this._logger.log('Updating API ' + api.id + " " + api.version)
-        }
-        else {
-            this._logger.log('Creating API ' + api.id + " " + api.version)
-
+            logger.credentials["instrumentationKey"] = aiKey
         }
 
-        api.data = await this.ResolveApi(api.data)
-        let blockResult = await this.BlockForApi(api)
-
-        if (!blockResult) {
-            throw new Error("APIM error: Could not fetch API source => " + api.data.value)
-        }
-
-        let apiRevisionId : string
-        try {
-            api.data.apiVersion = api.version
-            api.data.apiVersionSetId = apiVersion.id
-            api.data.apiVersionSet = apiVersion
-            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.id, api.data, {ifMatch : '*'})
-            this._logger.log("API " + result.displayName + " published")
-            apiRevisionId = result.apiRevision || ""
-                
-        } catch (error) {
-
-            if (error instanceof RestError){
-
-                let re: RestError = error
-                let msg: string = re.message
-                let details: any[] = re.body.details
-                details.forEach(e => {
-                    msg += "\n" + e.message
-                })
-                throw msg    
-            }
-            else {
-                throw error
-            }
-        }
-
-        if (api.policies) {
-            for(let i=0; i < api.policies.length; ++i){
-                let policy = api.policies[i]
-                await this.ApplyAPIPolicy(policy, api.id)
-            }
-        }
-
-    }
-
-    private async ApplyAPIPolicy(policy: IApimPolicy, apiId: string) : Promise<void> {
-
-        if (this.apim_client == undefined) return
-
-        let operation = policy.operation || "base"
-
-        this._logger.log("Applying API Policy for API: " + apiId + " operation: " + operation)
-        let policyData = await this.ResolvePolicy(policy.data)
-
-        if (operation == "base") {
-            let response = await this.apim_client.apiPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, policyData, <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
+        if (logger.loggerType == "applicationInsights") {
+            this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.name)
+            
+            var response = await this.apim_client.logger.createOrUpdate(
+                this.resource_group,
+                this.resource_name,
+                logger.name,
+                logger,
+                <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
+            
             if (response._response.status != 200 && response._response.status != 201) {
-                throw new Error("APIM Error: Could not apply API Policy for API " + apiId)
+                this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.appInsightsName`)
+            }
+
+            currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
+        }
+        else if (logger.loggerType == "azureEventHub") {
+            this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
+        }
+
+        //Clean logger keys
+        if (logger.cleanKeys == undefined || logger.cleanKeys) {
+            let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
+            let propEtag = ""
+            for (let i = 0; i < result.length; i++) {
+                let id = result[i].name || ""
+                let displayName = result[i].displayName || ""
+                if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
+                    await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
+                    await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
+                        .then((result) => {
+                            this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
+                        })
+                        .catch((failure) => {
+                            this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
+                        })
+                }
             }
         }
-        else {
-            let response = await this.apim_client.apiOperationPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, operation, policyData,<ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
-            if (response._response.status != 200 && response._response.status != 201) {
-                throw new Error("APIM Error: Could not apply API Policy for API " + apiId + " operation: " + operation)
-            }
-        }
-
     }
 
-    private async BlockForApi(api: IApimApi): Promise<boolean> {
+    private async BuildAuthServers(): Promise<void> {
 
-        if (api.data.format != "openapi-link" &&
-            api.data.format != "swagger-link-json" &&
-            api.data.format != "wadl-link-json" &&
-            api.data.format != "wsdl-link") {
-            return true
+        let authServersParam  = this._ingredient.properties.parameters.get('authServers')
+        if (!authServersParam){
+            return
         }
 
-        let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
-
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(api.data.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                return true
-            }
-            await this.sleep(1000)
+        let authServers :IApimAuthServer[] = await authServersParam.valueAsync(this._ctx)
+        if (!authServers){
+            return
         }
 
-        return false
+        for(let i =0; i < authServers.length; ++i) {
+            let authServer = authServers[i];
+            await this.BuildAuthServer(authServer)
+        }       
     }
 
-    private GetApi(id: string): ApiContract | null {
+    private async BuildAuthServer(authServer: IApimAuthServer): Promise<void> {
 
-        if (this.apim_apis == undefined) return null
+        if (this.apim_client == undefined) return
 
-        let rApi : ApiContract | null = null
-        this.apim_apis.forEach(api => {
-            if (api.name == id) {
-                rApi = api
-            }
-        });
+        this._logger.log('APIM Plugin: Add/Update APIM auth server: ' + authServer.name)
 
-        return rApi
+        let response = await this.apim_client.authorizationServer.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            authServer.name,
+            authServer,
+            <AuthorizationServerCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update auth server " + authServer.name)
+        }
     }
 
-    private async ResolveApi(api: ApiCreateOrUpdateParameter) : Promise<ApiCreateOrUpdateParameter> {
+    private async BuildIdentityProviders(): Promise<void> {
 
-        if (api.serviceUrl) {
-            api.serviceUrl = (await (new BakeVariable(api.serviceUrl)).valueAsync(this._ctx))            
+        let identityProvidersParam  = this._ingredient.properties.parameters.get('identityProviders')
+        if (!identityProvidersParam){
+            return
         }
 
-        if (api.value) {
-            api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
+        let identityProviders :IApiIdentityProvider[] = await identityProvidersParam.valueAsync(this._ctx)
+        if (!identityProviders){
+            return
         }
 
-        return api
+        for(let i =0; i < identityProviders.length; ++i) {
+            let identityProvider = identityProviders[i];
+            await this.BuildIdentityProvider(identityProvider)
+        }       
     }
 
+    private async BuildIdentityProvider(identityProvider: IApiIdentityProvider): Promise<void> {
+
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderContractType)
+
+        if(!identityProvider.identityProviderContractType){
+            this._logger.error("APIM Plugin: identityProviderContractType is required")
+            return
+        }
+
+        let response = await this.apim_client.identityProvider.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            identityProvider.identityProviderContractType,
+            identityProvider,
+            <IdentityProviderCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update identity provider " + identityProvider.identityProviderContractType)
+        }
+    }
 
     private async ResolvePolicy(policy: PolicyContract): Promise<PolicyContract> {
 
@@ -331,83 +620,21 @@ export class ApimPlugin extends BaseIngredient {
                 return policy
         }
 
-        let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
-
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(policy.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                return policy
-            }
-            await this.sleep(1000)
-        }
-
-        throw new Error("APIM error => Could not resolve policy content at: " + policy.value)
-
+        throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
     }
+    
+    private async GetUserId(user?: string) : Promise<string | undefined> {
 
-    private async Setup(): Promise<boolean> {
+        if (this.apim_client == undefined) return undefined
+        user = user || "Administrator"
 
-        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
-
-        let source = await this._ingredient.properties.source.valueAsync(this._ctx)
-
-        let rgOverride : string
-        rgOverride = await util.resource_group();
-
-        if (!source) {
-            this._logger.log('APIM Source can not be empty')
-            return false
+        // Administrator is created by default on APIM standup with a name of "1"
+        if(user == "Administrator"){
+            user = "1"
         }
 
-        let bakeResource = util.parseResource(source)
-        this.resource_group = bakeResource.resourceGroup || rgOverride
-        this.resource_name = bakeResource.resource
+        let userId = await this.apim_client.user.get(this.resource_group, this.resource_name, user)
 
-        if (!this.resource_group) {
-            this._logger.log('APIM resourceGroup can not be empty')
-            return false
-        }
-        if (!this.resource_name) {
-            this._logger.log('APIM resourceName can not be empty')
-            return false
-        }
-
-        this._logger.log('Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
-        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
-
-        if (this.apim_client == null) {
-            this._logger.log('APIM client is null')
-            return false
-        }
-
-        let apis : Array<ApiContract> = new Array<ApiContract>()
-        let svcResponse = await this.apim_client.api.listByService(this.resource_group, this.resource_name)
-        apis = apis.concat(svcResponse)
-        while(svcResponse.nextLink) {
-            svcResponse = await this.apim_client.api.listByServiceNext(svcResponse.nextLink)
-            apis = apis.concat(svcResponse)
-        }
-        this.apim_apis = apis
-
-        let optionParam =this._ctx.Ingredient.properties.parameters.get('options') || undefined
-        if (optionParam){
-            this.apim_options = await optionParam.valueAsync(this._ctx) || <IApimOptions>{}
-        }
-        else{
-            this.apim_options = <IApimOptions>{}
-        }
-
-        if (this.apim_options){
-            this.apim_options.apiWaitTime = this.apim_options.apiWaitTime <= 0 || !this.apim_options.apiWaitTime ? 120 : this.apim_options.apiWaitTime
-        }
-
-        return true
+        return userId.id
     }
-
-    private sleep(ms: number) : Promise<void> {
-        return new Promise(resolve=>{
-            setTimeout(resolve,ms)
-        })
-    }
-
 }
