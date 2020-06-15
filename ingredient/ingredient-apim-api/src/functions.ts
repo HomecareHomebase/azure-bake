@@ -8,6 +8,8 @@ export class ApimApiUtils extends BaseUtility {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let api = await client.api.get(resourceGroup, apimName, apiId);
         
+        this.context._logger.debug(`ApimApiUtils.get_api() returned ${JSON.stringify(api)}`);
+
         return api;
     }
 
@@ -15,6 +17,8 @@ export class ApimApiUtils extends BaseUtility {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let backend = await client.backend.get(resourceGroup, apimName, backendId);
         
+        this.context._logger.debug(`ApimApiUtils.get_backend() returned ${JSON.stringify(backend)}`);
+
         return backend;
     }
 }

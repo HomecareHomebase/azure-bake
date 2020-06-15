@@ -29,7 +29,7 @@ export class EventHubNamespaceUtils extends BaseUtility {
         var client = new EventHubManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let authRule = await client.namespaces.getAuthorizationRule(resourceGroup, nameSpace, authorizationRuleName)
 
-        this.context._logger.debug(`EventHubNamespaceUtils.get_authorizationrule() returned ${authRule}`);
+        this.context._logger.debug(`EventHubNamespaceUtils.get_authorizationrule() returned ${JSON.stringify(authRule)}`);
 
         return authRule;
     }

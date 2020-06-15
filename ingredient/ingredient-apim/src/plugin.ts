@@ -142,7 +142,7 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        this._logger.log('APIM Plugin: Add/Update APIM service ' + this.resource_name)
+        this._logger.log('APIM Plugin: Add/Update APIM service: ' + this.resource_name)
         
         if (apim.location) {
             apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
@@ -183,7 +183,7 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        this._logger.log('APIM Plugin: Add/Update APIM diagnostics ' + apimDiagnostics.name)
+        this._logger.log('APIM Plugin: Add/Update APIM diagnostics: ' + apimDiagnostics.name)
 
         let resourceUri = (await this.apim_client.apiManagementService.get(this.resource_group, this.resource_name)).id;
 
@@ -321,7 +321,7 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (user.groups) {
-            this._logger.log('APIM Plugin: Assigning group ' + user.groups.toString() + " to user " + user.name)
+            this._logger.log('APIM Plugin: Assigning group `' + user.groups.toString() + "` to user `" + user.name + "`")
             
             for(let i=0; i < user.groups.length; ++i){
                 let group = user.groups[i]
@@ -372,7 +372,7 @@ export class ApimPlugin extends BaseIngredient {
             }
         }
 
-        this._logger.log('APIM Plugin: Add/Update APIM Subscription : ' + sub.name)
+        this._logger.log('APIM Plugin: Add/Update APIM Subscription: ' + sub.name)
         
         let response = await this.apim_client.subscription.createOrUpdate(
             this.resource_group,
@@ -420,7 +420,7 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (product.apis) {
-            this._logger.log('APIM Plugin: Assigning APIs ' + product.apis.toString() + " to product " + product.name)
+            this._logger.log('APIM Plugin: Assigning APIs `' + product.apis.toString() + "` to product `" + product.name + "`")
             
             for(let i=0; i < product.apis.length; ++i){
                 let api = product.apis[i]
@@ -433,7 +433,7 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (product.groups) {
-            this._logger.log('APIM Plugin: Assigning group ' + product.groups.toString() + " to product " + product.name)
+            this._logger.log('APIM Plugin: Assigning group `' + product.groups.toString() + "` to product `" + product.name + "`")
             
             for(let i=0; i < product.groups.length; ++i){
                 let group = product.groups[i]
