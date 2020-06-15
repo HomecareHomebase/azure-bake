@@ -192,6 +192,10 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
+        if (apimDiagnostics.eventHubAuthorizationRuleId) {
+            apimDiagnostics.eventHubAuthorizationRuleId = (await (new BakeVariable(apimDiagnostics.eventHubAuthorizationRuleId)).valueAsync(this._ctx))            
+        }
+
         if (apimDiagnostics.storageAccountId) {
             apimDiagnostics.storageAccountId = (await (new BakeVariable(apimDiagnostics.storageAccountId)).valueAsync(this._ctx))            
         }

@@ -1,5 +1,6 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 import { StorageManagementClient } from '@azure/arm-storage'
+import { StorageAccountsGetPropertiesResponse } from '@azure/arm-storage/esm/models';
 
 export class StorageUtils extends BaseUtility {
 
@@ -62,5 +63,12 @@ export class StorageUtils extends BaseUtility {
         let connectionString = `DefaultEndpointsProtocol=https;AccountName=${name};AccountKey=${key};`        
         
         return connectionString;        
+    }
+
+    public async get_storageaccount(resourceGroup: string, name: string): Promise<StorageAccountsGetPropertiesResponse> {
+        var client = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        let storageAccount = await client.storageAccounts.getProperties(resourceGroup, name)
+
+        return storageAccount
     }
 }
