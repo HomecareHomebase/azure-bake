@@ -151,6 +151,15 @@ export class ApimPlugin extends BaseIngredient {
             apim.location = this._ctx.Region.name
         }
 
+        if (apim.sku) {
+            if (apim.sku.name) {
+                apim.sku.name = (await (new BakeVariable(apim.sku.name)).valueAsync(this._ctx))            
+            }
+            if (apim.sku.capacity) {
+                apim.sku.capacity = (await (new BakeVariable(apim.sku.capacity.toString())).valueAsync(this._ctx))            
+            }
+        }
+
         if(apim.virtualNetworkConfiguration)
         {
             if (apim.virtualNetworkConfiguration.subnetResourceId) {
