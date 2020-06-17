@@ -12,7 +12,7 @@ interface IApimDiagnostics extends DiagnosticSettingsResource{
     name: string
 }
 
-interface IApiIdentityProvider extends IdentityProviderContract{
+interface IApimIdentityProvider extends IdentityProviderContract{
 }
 
 interface IApimAuthServer extends AuthorizationServerContract{
@@ -144,34 +144,13 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Add/Update APIM service: ' + this.resource_name)
         
-        if (apim.location) {
-            apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
-        }
-        else{
-            apim.location = this._ctx.Region.name
-        }
-
-        if (apim.sku) {
-            if (apim.sku.name) {
-                apim.sku.name = (await (new BakeVariable(apim.sku.name)).valueAsync(this._ctx))            
-            }
-            if (apim.sku.capacity) {
-                apim.sku.capacity = (await (new BakeVariable(apim.sku.capacity.toString())).valueAsync(this._ctx))            
-            }
-        }
-
-        if(apim.virtualNetworkConfiguration)
-        {
-            if (apim.virtualNetworkConfiguration.subnetResourceId) {
-                apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
-            }
-        }
+        let apimData = await this.ResolveApim(apim);
 
         var response = await this.apim_client.apiManagementService.createOrUpdate
             (
                 this.resource_group,
                 this.resource_name,
-                apim
+                apimData
             )
 
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -192,8 +171,6 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        this._logger.log('APIM Plugin: Add/Update APIM diagnostics: ' + apimDiagnostics.name)
-
         let resourceUri = (await this.apim_client.apiManagementService.get(this.resource_group, this.resource_name)).id;
 
         if(!resourceUri)
@@ -201,20 +178,16 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        if (apimDiagnostics.eventHubAuthorizationRuleId) {
-            apimDiagnostics.eventHubAuthorizationRuleId = (await (new BakeVariable(apimDiagnostics.eventHubAuthorizationRuleId)).valueAsync(this._ctx))            
-        }
-
-        if (apimDiagnostics.storageAccountId) {
-            apimDiagnostics.storageAccountId = (await (new BakeVariable(apimDiagnostics.storageAccountId)).valueAsync(this._ctx))            
-        }
-
         var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+
+        let diagnosticsData = await this.ResolveDiagnostics(apimDiagnostics);
+
+        this._logger.log('APIM Plugin: Add/Update APIM diagnostics: ' + apimDiagnostics.name)
 
         var response = await monitorClient.diagnosticSettings.createOrUpdate
             (
                 resourceUri,
-                apimDiagnostics,
+                diagnosticsData,
                 apimDiagnostics.name
             )
 
@@ -244,14 +217,16 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildNamedValue(namedValue: IApimNamedValue) : Promise<void> { 
         if (this.apim_client == undefined) return
 
+        let namedValueData = await this.ResolveNamedValue(namedValue);
+
         this._logger.log('APIM Plugin: Add/Update APIM named value: ' + namedValue.name)
-        
+
         var response = await this.apim_client.property.createOrUpdate
             (
                 this.resource_group,
                 this.resource_name,
                 namedValue.name,
-                namedValue,
+                namedValueData,
                 <PropertyCreateOrUpdateOptionalParams>{ifMatch:'*'}
             )
 
@@ -491,57 +466,48 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildLogger(logger: IApimLogger): Promise<void>{
         if (this.apim_client == undefined) return
 
-        let aiKey: string = ""
-        let currentLoggerCreds: any  
-
-        if (logger.name) {
-            logger.name = (await (new BakeVariable(logger.name)).valueAsync(this._ctx))            
-        }
-
-        if (logger.credentials) {
-            aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
-
-            logger.credentials["instrumentationKey"] = aiKey
-        }
-
         if (logger.loggerType == "applicationInsights") {
+            let loggerData = await this.ResolveLogger(logger);
+
             this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.name)
-            
+
+            let aiKey = logger.credentials["instrumentationKey"];
+
             var response = await this.apim_client.logger.createOrUpdate(
                 this.resource_group,
                 this.resource_name,
                 logger.name,
-                logger,
+                loggerData,
                 <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
             if (response._response.status != 200 && response._response.status != 201) {
                 this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.appInsightsName`)
             }
 
-            currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
+            let currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
+
+            //Clean logger keys
+            if (logger.cleanKeys == undefined || logger.cleanKeys) {
+                let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
+                let propEtag = ""
+                for (let i = 0; i < result.length; i++) {
+                    let id = result[i].name || ""
+                    let displayName = result[i].displayName || ""
+                    if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
+                        await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
+                        await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
+                            .then((result) => {
+                                this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
+                            })
+                            .catch((failure) => {
+                                this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
+                            })
+                    }
+                }
+            }
         }
         else if (logger.loggerType == "azureEventHub") {
             this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
-        }
-
-        //Clean logger keys
-        if (logger.cleanKeys == undefined || logger.cleanKeys) {
-            let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
-            let propEtag = ""
-            for (let i = 0; i < result.length; i++) {
-                let id = result[i].name || ""
-                let displayName = result[i].displayName || ""
-                if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
-                    await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
-                    await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
-                        .then((result) => {
-                            this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
-                        })
-                        .catch((failure) => {
-                            this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
-                        })
-                }
-            }
         }
     }
 
@@ -567,13 +533,15 @@ export class ApimPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
+        let authServerData = await this.ResolveAuthServer(authServer);
+
         this._logger.log('APIM Plugin: Add/Update APIM auth server: ' + authServer.name)
 
         let response = await this.apim_client.authorizationServer.createOrUpdate(
             this.resource_group,
             this.resource_name,
             authServer.name,
-            authServer,
+            authServerData,
             <AuthorizationServerCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -588,7 +556,7 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        let identityProviders :IApiIdentityProvider[] = await identityProvidersParam.valueAsync(this._ctx)
+        let identityProviders :IApimIdentityProvider[] = await identityProvidersParam.valueAsync(this._ctx)
         if (!identityProviders){
             return
         }
@@ -599,27 +567,138 @@ export class ApimPlugin extends BaseIngredient {
         }       
     }
 
-    private async BuildIdentityProvider(identityProvider: IApiIdentityProvider): Promise<void> {
+    private async BuildIdentityProvider(identityProvider: IApimIdentityProvider): Promise<void> {
 
         if (this.apim_client == undefined) return
-
-        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderContractType)
 
         if(!identityProvider.identityProviderContractType){
             this._logger.error("APIM Plugin: identityProviderContractType is required")
             return
         }
+        
+        let identityProviderData = await this.ResolveIdentityProvider(identityProvider);
+
+        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderContractType)
 
         let response = await this.apim_client.identityProvider.createOrUpdate(
             this.resource_group,
             this.resource_name,
             identityProvider.identityProviderContractType,
-            identityProvider,
+            identityProviderData,
             <IdentityProviderCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
             this._logger.error("APIM Plugin: Could not create/update identity provider " + identityProvider.identityProviderContractType)
         }
+    }
+
+    private async ResolveApim(apim: IApim) : Promise<ApiManagementServiceResource> {
+        if (apim.location) {
+            apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
+        }
+        else{
+            apim.location = this._ctx.Region.name
+        }
+
+        if (apim.sku) {
+            if (apim.sku.name) {
+                apim.sku.name = (await (new BakeVariable(apim.sku.name)).valueAsync(this._ctx))            
+            }
+            if (apim.sku.capacity) {
+                apim.sku.capacity = (await (new BakeVariable(apim.sku.capacity.toString())).valueAsync(this._ctx))            
+            }
+        }
+
+        if(apim.virtualNetworkConfiguration)
+        {
+            if (apim.virtualNetworkConfiguration.subnetResourceId) {
+                apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
+            }
+        }
+
+        return apim;
+    }
+
+    private async ResolveDiagnostics(apimDiagnostics: IApimDiagnostics) : Promise<DiagnosticSettingsResource> {
+        if (apimDiagnostics.eventHubAuthorizationRuleId) {
+            apimDiagnostics.eventHubAuthorizationRuleId = (await (new BakeVariable(apimDiagnostics.eventHubAuthorizationRuleId)).valueAsync(this._ctx))            
+        }
+
+        if (apimDiagnostics.storageAccountId) {
+            apimDiagnostics.storageAccountId = (await (new BakeVariable(apimDiagnostics.storageAccountId)).valueAsync(this._ctx))            
+        }
+
+        return apimDiagnostics;
+    }
+
+    private async ResolveNamedValue(namedValue: IApimNamedValue) : Promise<PropertyContract> {
+        if (namedValue.value) {
+            namedValue.value = (await (new BakeVariable(namedValue.value)).valueAsync(this._ctx))            
+        }
+
+        return namedValue;
+    }
+
+    private async ResolveLogger(logger: IApimLogger) : Promise<LoggerContract> { 
+        if (logger.name) {
+            logger.name = (await (new BakeVariable(logger.name)).valueAsync(this._ctx))            
+        }
+
+        if (logger.credentials) {
+            let aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
+
+            logger.credentials["instrumentationKey"] = aiKey
+        }
+
+        return logger;
+    }
+
+    private async ResolveAuthServer(authServer: IApimAuthServer) : Promise<AuthorizationServerContract> {
+        if (authServer.clientRegistrationEndpoint) {
+            authServer.clientRegistrationEndpoint = (await (new BakeVariable(authServer.clientRegistrationEndpoint)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.authorizationEndpoint) {
+            authServer.authorizationEndpoint = (await (new BakeVariable(authServer.authorizationEndpoint)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.tokenEndpoint) {
+            authServer.tokenEndpoint = (await (new BakeVariable(authServer.tokenEndpoint)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.clientId) {
+            authServer.clientId = (await (new BakeVariable(authServer.clientId)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.clientSecret) {
+            authServer.clientSecret = (await (new BakeVariable(authServer.clientSecret)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.resourceOwnerUsername) {
+            authServer.resourceOwnerUsername = (await (new BakeVariable(authServer.resourceOwnerUsername)).valueAsync(this._ctx))            
+        }
+
+        if (authServer.resourceOwnerPassword) {
+            authServer.resourceOwnerPassword = (await (new BakeVariable(authServer.resourceOwnerPassword)).valueAsync(this._ctx))            
+        }
+
+        return authServer;
+    }
+
+    private async ResolveIdentityProvider(identityProvider: IApimIdentityProvider) : Promise<IdentityProviderContract> {
+        if (identityProvider.authority) {
+            identityProvider.authority = (await (new BakeVariable(identityProvider.authority)).valueAsync(this._ctx))            
+        }
+
+        if (identityProvider.clientId) {
+            identityProvider.clientId = (await (new BakeVariable(identityProvider.clientId)).valueAsync(this._ctx))            
+        }
+
+        if (identityProvider.clientSecret) {
+            identityProvider.clientSecret = (await (new BakeVariable(identityProvider.clientSecret)).valueAsync(this._ctx))            
+        }
+
+        return identityProvider;
     }
 
     private async ResolvePolicy(policy: PolicyContract): Promise<PolicyContract> {
