@@ -644,6 +644,10 @@ export class ApimPlugin extends BaseIngredient {
     }
 
     private async ResolveDiagnostics(apimDiagnostics: IApimDiagnostics) : Promise<DiagnosticSettingsResource> {
+        if (apimDiagnostics.eventHubName) {
+            apimDiagnostics.eventHubName = (await (new BakeVariable(apimDiagnostics.eventHubName)).valueAsync(this._ctx))            
+        }
+
         if (apimDiagnostics.eventHubAuthorizationRuleId) {
             apimDiagnostics.eventHubAuthorizationRuleId = (await (new BakeVariable(apimDiagnostics.eventHubAuthorizationRuleId)).valueAsync(this._ctx))            
         }
