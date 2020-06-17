@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.7](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.6...azure-bake@0.5.7) (2020-06-17)
+
+
+### Bug Fixes
+
+* Upgrading kubectl to 1.15.6 (support 1.14.6 - 1.16.6 clusters) ([#163](https://github.com/HomecareHomebase/azure-bake/issues/163)) ([a73030e](https://github.com/HomecareHomebase/azure-bake/commit/a73030e))
+
+
+
+
+
 ## [0.5.6](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.5...azure-bake@0.5.6) (2020-06-09)
 
 **Note:** Version bump only for package azure-bake
