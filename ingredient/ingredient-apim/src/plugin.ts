@@ -1,7 +1,7 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
-import { ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
 import { DiagnosticSettingsResource } from "@azure/arm-monitor/esm/models";
 
 interface IApim extends ApiManagementServiceResource{
@@ -42,6 +42,7 @@ interface IApimProduct extends ProductContract{
     apis?: Array<string>
     groups?: Array<string>
     policy?: PolicyContract
+    delete?: boolean
 }
 
 interface IApimSubscription extends SubscriptionCreateParameters{
@@ -383,8 +384,31 @@ export class ApimPlugin extends BaseIngredient {
 
         for(let i =0; i < products.length; ++i) {
             let product = products[i];
-            await this.BuildProduct(product)
+
+            if(product.delete && product.delete == true) {
+                await this.DeleteProduct(product)
+            }
+            else {
+                await this.BuildProduct(product)
+            }
         }       
+    }
+
+    private async DeleteProduct(product: IApimProduct): Promise<void> {
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Deleting APIM product: ' + product.name)
+        
+        let response = await this.apim_client.product.deleteMethod(
+            this.resource_group,
+            this.resource_name,
+            product.name,
+            '*',
+            <ProductDeleteMethodOptionalParams>{ifMatch:'*', deleteSubscriptions:true})
+
+        if (response._response.status  != 200 && response._response.status != 201 && response._response.status != 204) {
+            this._logger.error("APIM Plugin: Could not delete product " + product.name)
+        }
     }
 
     private async BuildProduct(product: IApimProduct): Promise<void> {
@@ -575,7 +599,7 @@ export class ApimPlugin extends BaseIngredient {
             this._logger.error("APIM Plugin: identityProviderContractType is required")
             return
         }
-        
+
         let identityProviderData = await this.ResolveIdentityProvider(identityProvider);
 
         this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderContractType)
