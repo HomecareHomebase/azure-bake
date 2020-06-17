@@ -20,6 +20,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   * authServers
   * identityProviders
 
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.1.110...@azbake/ingredient-apim@0.1.111) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.1.109...@azbake/ingredient-apim@0.1.110) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
 
 
 
