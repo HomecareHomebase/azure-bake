@@ -2,9 +2,13 @@ import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
 import { ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
-import { DiagnosticSettingsResource } from "@azure/arm-monitor/esm/models";
+import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 
 interface IApim extends ApiManagementServiceResource{
+    name: string
+}
+
+interface IApimAutoscaleSettings extends AutoscaleSettingResource{
     name: string
 }
 
@@ -57,6 +61,7 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
+    private     apim:               IApim | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -73,6 +78,7 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildLoggers()
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
+                await this.BuildAutoscaleSettings()
             }
         } catch(error){
             this._logger.error('APIM Plugin: ' + error)
@@ -142,6 +148,8 @@ export class ApimPlugin extends BaseIngredient {
         if (!apim){
             return
         }
+
+        this.apim = apim;
 
         this._logger.log('APIM Plugin: Add/Update APIM service: ' + this.resource_name)
         
@@ -616,6 +624,49 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildAutoscaleSettings() : Promise<void> {
+        let autoScaleSettingsParam  = this._ingredient.properties.parameters.get('autoScaleSettings')
+        if (!this.apim || !autoScaleSettingsParam){
+            return
+        }
+
+        let autoScaleSettings :IApimAutoscaleSettings[] = await autoScaleSettingsParam.valueAsync(this._ctx)
+        if (!autoScaleSettings){
+            return
+        }
+
+        if (!['Premium', 'Standard'].includes(this.apim.sku.name))
+        {
+            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name)
+            return;
+        }
+        
+        for(let i =0; i < autoScaleSettings.length; ++i) {
+            let autoScaleSetting = autoScaleSettings[i];
+            await this.BuildAutoscaleSetting(autoScaleSetting)
+        }  
+    }
+
+    private async BuildAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<void> {
+        if (this.apim_client == undefined) return
+
+        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+
+        let autoscaleSettingsData = await this.ResolveAutoscaleSetting(autoscaleSettings);
+
+        this._logger.log('APIM Plugin: Add/Update APIM autoscale settings: ' + autoscaleSettings.name)
+
+        let response = await monitorClient.autoscaleSettings.createOrUpdate(
+            this.resource_group,
+            autoscaleSettings.name,
+            autoscaleSettingsData,
+            <AutoscaleSettingsCreateOrUpdateResponse>{})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update autoscale settings " + autoscaleSettings.name)
+        }
+    }
+
     private async ResolveApim(apim: IApim) : Promise<ApiManagementServiceResource> {
         if (apim.location) {
             apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
@@ -743,6 +794,10 @@ export class ApimPlugin extends BaseIngredient {
         throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
     }
     
+    private async ResolveAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<AutoscaleSettingResource> {
+        return autoscaleSettings;
+    }
+
     private async GetUserId(user?: string) : Promise<string | undefined> {
 
         if (this.apim_client == undefined) return undefined
