@@ -29,6 +29,7 @@ export class KubernetesPlugin extends BaseIngredient {
 
             await this.replaceTokens(k8sYamlPath);
             await this.addTagsAsMetadata(k8sYamlPath);
+            await this.debugLog(k8sYamlPath);
 
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
@@ -54,6 +55,28 @@ export class KubernetesPlugin extends BaseIngredient {
             throw error
         }
     }
+
+    private async debugLog(path: any): Promise<void> {
+
+        this._logger.debug("Dumping content of: " + path);
+        var fileList: string[] = []
+        if (await this.isDirectory(path)) {
+            fileList = this.getAllFiles(path, /\.yaml$/, fileList);
+        }
+        else {
+            fileList.push(path)
+        }
+
+        fileList.forEach( async (file)=> {
+
+            this._logger.debug("YAML [" + file +"] content before publish")
+            const fileData = fs.readFileSync(file, 'utf8');
+            this._logger.debug(fileData)
+        })
+        
+        this._logger.debug("Finished debug content dump");
+    }
+
     private async addTagsAsMetadata(path: any): Promise<void> {
 
         const tagGen = new TagGenerator(this._ctx);
@@ -87,6 +110,16 @@ export class KubernetesPlugin extends BaseIngredient {
             }
 
             this.addTagsToYamlDocument(doc, tags)
+
+            //check for doc errors
+            if (doc.errors.length > 0) {
+
+                doc.errors.forEach((error: any)=> {
+                    error.makePretty();
+                    this._logger.error("YAML error: " + error.message);
+                })
+            }
+
             const yamlContent = doc.toString();
             fileContent += yamlContent;
             fileContent += '\r\n---\r\n'
