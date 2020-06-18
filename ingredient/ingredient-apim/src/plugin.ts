@@ -637,7 +637,7 @@ export class ApimPlugin extends BaseIngredient {
 
         if (!['Premium', 'Standard'].includes(this.apim.sku.name))
         {
-            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name)
+            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name + '.  Continuing deployment.')
             return;
         }
         
@@ -684,11 +684,64 @@ export class ApimPlugin extends BaseIngredient {
             }
         }
 
-        if(apim.virtualNetworkConfiguration)
-        {
+        if(apim.virtualNetworkConfiguration) {
             if (apim.virtualNetworkConfiguration.subnetResourceId) {
                 apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
             }
+        }
+
+        if (apim.additionalLocations && !['Premium'].includes(apim.sku.name)) {
+            this._logger.warn('APIM Plugin: Cannot add additional locations for sku: ' + apim.sku.name + '.  Continuing deployment.')
+            apim.additionalLocations = undefined;
+        }
+
+        if (apim.additionalLocations) {
+            for(let i =0; i < apim.additionalLocations.length; ++i) {
+                let additionalLocation = apim.additionalLocations[i];
+
+                additionalLocation.location = (await (new BakeVariable(additionalLocation.location)).valueAsync(this._ctx)); 
+                additionalLocation.sku.name = (await (new BakeVariable(additionalLocation.sku.name)).valueAsync(this._ctx));
+
+                if (additionalLocation.sku.capacity) {
+                    additionalLocation.sku.capacity = parseInt(await (new BakeVariable(additionalLocation.sku.capacity.toString())).valueAsync(this._ctx))
+                }
+                
+                if (additionalLocation.virtualNetworkConfiguration) {
+                    additionalLocation.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(additionalLocation.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx));
+                }
+            } 
+        }
+
+        if (apim.hostnameConfigurations) {
+            for(let i =0; i < apim.hostnameConfigurations.length; ++i) {
+                let hostnameConfiguration = apim.hostnameConfigurations[i];
+
+                hostnameConfiguration.hostName = (await (new BakeVariable(hostnameConfiguration.hostName)).valueAsync(this._ctx));
+                hostnameConfiguration.encodedCertificate = (await (new BakeVariable(hostnameConfiguration.encodedCertificate)).valueAsync(this._ctx));
+                hostnameConfiguration.certificatePassword = (await (new BakeVariable(hostnameConfiguration.certificatePassword)).valueAsync(this._ctx));
+
+                if (hostnameConfiguration.certificate) {
+                    hostnameConfiguration.certificate.expiry = (await (new BakeVariable(hostnameConfiguration.certificate.expiry.toString())).valueAsync(this._ctx));
+                    hostnameConfiguration.certificate.thumbprint = (await (new BakeVariable(hostnameConfiguration.certificate.thumbprint)).valueAsync(this._ctx));
+                    hostnameConfiguration.certificate.subject = (await (new BakeVariable(hostnameConfiguration.certificate.subject)).valueAsync(this._ctx));
+                }
+            } 
+        }
+
+        if (apim.certificates) {
+            for(let i =0; i < apim.certificates.length; ++i) {
+                let certificate = apim.certificates[i];
+
+                certificate.encodedCertificate = (await (new BakeVariable(certificate.encodedCertificate)).valueAsync(this._ctx));
+                certificate.certificatePassword = (await (new BakeVariable(certificate.certificatePassword)).valueAsync(this._ctx));
+                certificate.storeName = (await (new BakeVariable(certificate.storeName)).valueAsync(this._ctx));
+
+                if (certificate.certificate) {
+                    certificate.certificate.expiry = (await (new BakeVariable(certificate.certificate.expiry.toString())).valueAsync(this._ctx));
+                    certificate.certificate.thumbprint = (await (new BakeVariable(certificate.certificate.thumbprint)).valueAsync(this._ctx));
+                    certificate.certificate.subject = (await (new BakeVariable(certificate.certificate.subject)).valueAsync(this._ctx));
+                }
+            } 
         }
 
         return apim;
