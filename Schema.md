@@ -80,6 +80,7 @@ An ingredient block describes an instance of an ingredient to deploy. It has a l
 properties:
     type: string
     condition: variable
+    ignoreErrors: bool
     source: string
     tokens: {string: variable}
     parameters: {string: variable}
@@ -90,6 +91,7 @@ dependsOn: [string]
 |----------|----------|------------|
 |type|yes|name of ingredient to deploy (check ingredient docs for name)|
 |condition|no|optional condition check that will skip this ingredient if it returns false|
+|ignoreErrors|no|If true, any errors from the ingredient will be logged, but not stop other ingredients from running. Will also not fail the deployment|
 |source|depends on ingredient|source file/option for some ingredients|
 |tokens|depends on ingredient|Token values typically used to update configuration files when deployed.  Check ingredient docs for token options|
 |parameters|depends on ingredient|check ingredient docs for parameter options|
@@ -115,6 +117,7 @@ recipe:
   custom-script:
     properties:
       type: "@azbake/ingredient-script"
+      ignoreErrors: true
       source: ./script.ts
       parameters:
         name: "[coreutils.create_storage_name('wpoctest1')]"

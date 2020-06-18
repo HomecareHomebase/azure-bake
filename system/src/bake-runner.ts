@@ -64,8 +64,15 @@ export class BakeRunner {
                         }
                     }
                     catch (e) {
-                        this._logger.error("Error running condition check for " + ingredientName + " => " + e);
-                        foundErrors = true;
+                        const shouldIgnoreErrors: boolean = ingredient.properties.ignoreErrors || false
+                        if (shouldIgnoreErrors) {
+                            this._logger.log(red("Error running condition check for " + ingredientName + " => " + e));
+                            this._logger.log("ignoring above error and continuing")
+                        } else {
+                            this._logger.error("Error running condition check for " + ingredientName + " => " + e);
+                            foundErrors = true
+                        }
+
                         finished.push(ingredientName)
                         continue
                     }
@@ -75,9 +82,19 @@ export class BakeRunner {
                 if (exec) {
 
                     let promise = exec.Execute().then(() => { return ingredientName }).catch((err) => {
-                        this._logger.error(err)
-                        foundErrors = true
-                        return ingredientName
+                        
+                        const shouldIgnoreErrors: boolean = ingredient.properties.ignoreErrors || false
+
+                        if (shouldIgnoreErrors) {
+                            this._logger.log(red(err))
+                            this._logger.log("ignoring above error and continuing")
+                        }
+                        else {
+                            this._logger.error(err)
+                            foundErrors = true
+                        }
+
+                        return ingredientName    
                     })
 
                     executing.push(promise)
