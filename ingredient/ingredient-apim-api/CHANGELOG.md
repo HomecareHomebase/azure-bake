@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.2.1 (2020-06-18)
+
+
+### Bug Fixes
+
+* APIM ingredients enhancements ([#161](https://github.com/HomecareHomebase/azure-bake/issues/161)) ([219f041](https://github.com/HomecareHomebase/azure-bake/commit/219f041))
+
+
+
+
+
 ## [0.2.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.109...@azbake/ingredient-apim-api@0.2.0) (2020-06-10)
 
 ### Enhancements
@@ -12,13 +23,38 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * added support for the following:
   * API diagnostics
 
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.110...@azbake/ingredient-apim-api@0.1.111) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+* renamed ingredient from `ingredient-apim`
+* moved APIM top level functionality to newly renamed `ingredient-apim` ingredient to avoid duplication.  recipe can pull in other ingredient to create groups, subs, etc.
+* added support for the following:
+  * API diagnostics
+
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.110...@azbake/ingredient-apim-api@0.1.111) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.109...@azbake/ingredient-apim-api@0.1.110) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.109...@azbake/ingredient-apim-api@0.1.110) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
 
 ## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.108...@azbake/ingredient-apim-api@0.1.109) (2020-06-09)
 
 **Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
+## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.108...@azbake/ingredient-apim-api@0.1.109) (2020-06-09)
 
+**Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
 ## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.107...@azbake/ingredient-apim-api@0.1.108) (2020-05-22)
@@ -26,7 +62,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 **Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
+## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.107...@azbake/ingredient-apim-api@0.1.108) (2020-05-22)
 
+**Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
 ## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.106...@azbake/ingredient-apim-api@0.1.107) (2020-05-21)
@@ -34,7 +72,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 **Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
+## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.106...@azbake/ingredient-apim-api@0.1.107) (2020-05-21)
 
+**Note:** Version bump only for package @azbake/ingredient-apim-api
 
 
 ## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.1.105...@azbake/ingredient-apim-api@0.1.106) (2020-05-12)

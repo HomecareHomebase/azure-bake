@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.101](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.99...@azbake/ingredient-event-hub-namespace@0.1.101) (2020-06-18)
+
+
+### Bug Fixes
+
+* APIM ingredients enhancements ([#161](https://github.com/HomecareHomebase/azure-bake/issues/161)) ([219f041](https://github.com/HomecareHomebase/azure-bake/commit/219f041))
+
+
+
+
+
+## [0.1.100](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.99...@azbake/ingredient-event-hub-namespace@0.1.100) (2020-06-17)
+
+### Enhancements
+
+* add get_authorizationrule helper function ([e66e6bf](https://github.com/HomecareHomebase/azure-bake/commit/e66e6bf))
+
+
+
+
+
 ## [0.1.99](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.98...@azbake/ingredient-event-hub-namespace@0.1.99) (2020-05-12)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub-namespace

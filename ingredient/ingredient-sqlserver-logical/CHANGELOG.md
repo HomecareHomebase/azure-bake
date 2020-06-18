@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.112](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.111...@azbake/ingredient-sqlserver-logical@0.1.112) (2020-06-18)
+
+**Note:** Version bump only for package @azbake/ingredient-sqlserver-logical
+
+
+
+
+
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.110...@azbake/ingredient-sqlserver-logical@0.1.111) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-sqlserver-logical
+
+
+
+
+
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.109...@azbake/ingredient-sqlserver-logical@0.1.110) (2020-06-17)
+
+**Note:** Version bump only for package @azbake/ingredient-sqlserver-logical
+
+
+
+
+
 ## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sqlserver-logical@0.1.108...@azbake/ingredient-sqlserver-logical@0.1.109) (2020-06-09)
 
 **Note:** Version bump only for package @azbake/ingredient-sqlserver-logical
