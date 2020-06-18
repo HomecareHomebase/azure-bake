@@ -27,6 +27,7 @@ export interface IIngredientProperties {
     type: string,
     source: BakeVariable,
     condition?: BakeVariable,
+    ignoreErrors?: boolean
     parameters: Map<string,BakeVariable>,
     tokens: Map<string,BakeVariable>,
     alerts: Map<string,BakeVariable>
