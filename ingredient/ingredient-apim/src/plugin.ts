@@ -637,7 +637,7 @@ export class ApimPlugin extends BaseIngredient {
 
         if (!['Premium', 'Standard'].includes(this.apim.sku.name))
         {
-            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name + '.  Continuing deployment.')
+            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name + '. Continuing deployment.')
             return;
         }
         
@@ -691,7 +691,7 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (apim.additionalLocations && !['Premium'].includes(apim.sku.name)) {
-            this._logger.warn('APIM Plugin: Cannot add additional locations for sku: ' + apim.sku.name + '.  Continuing deployment.')
+            this._logger.warn('APIM Plugin: Cannot add additional locations for sku: ' + apim.sku.name + '. Continuing deployment.')
             apim.additionalLocations = undefined;
         }
 
