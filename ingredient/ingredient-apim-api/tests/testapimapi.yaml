@@ -1,0 +1,120 @@
+name: petstore-api
+shortName: petstoreApi
+owner: arch
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-apim-api@*"
+  - "@azbake/ingredient-apim@*"
+  - "@azbake/ingredient-app-insights@*"
+  - "@azbake/ingredient-utils@*"
+resourceGroup: false
+parallelRegions: false
+variables:  
+  url: http://petstore.swagger.io/v2/swagger.json
+  apimName: "[apim.get_resource_name('contoso')]"
+  apimResourceGroup: "[apim.get_resource_group()]"
+  apimSource: "[apim.get_resource_group() + '/' + apim.get_resource_name('contoso')]"
+recipe:
+  apim-namedvalues-deploy:
+    properties:
+      type: "@azbake/ingredient-apim"
+      source: "[coreutils.variable('apimSource')]"
+      parameters:
+        namedValues:
+          - name: expressionApi
+            displayName: expressionApiDisplay
+            value: "@(DateTime.Now.ToString())"
+            secret: false
+            tags:
+              - test
+              - test2
+  petstore-api-deploy:
+    properties:
+      type: "@azbake/ingredient-apim-api"
+      source: "[coreutils.variable('apimSource')]"
+      condition: "[coreutils.primary_region()]"
+      parameters:
+        options:
+          apiWaitTime: 60 #override to waiting up to 60s for the API to be ready
+        apis:
+          - name: petstore #unique API version identifier across APIM
+            displayName: Pet Store API
+            description: Pet Store API description
+            versioningScheme: Segment
+            versions:
+              - name: petstore-v1 # unique API identifer across APIM
+                version: v1
+                apiType: http
+                path: pets #base apim url for this api
+                protocols: #array of http and/or https
+                  - https
+                format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
+                value: "[coreutils.variable('url')]" #value supports bake variables.
+                products:
+                  - petstore-product
+                  - starter
+                policies: 
+                  - format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+                    value: <policies>
+                              <inbound /> 
+                              <backend>    
+                                <forward-request /> 
+                              </backend>  
+                              <outbound>
+                                <set-header name="X-Powered-By" exists-action="delete" />
+                                <set-header name="X-AspNet-Version" exists-action="delete" />
+                                <set-header name="CustomHeader" exists-action="override">
+                                  <value>{{expressionApiDisplay}}</value>
+                                </set-header>
+                              </outbound>
+                            </policies>
+                  - operation: addPet #override the addPet operation policy
+                    format: xml
+                    value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"
+                diagnostics:
+                  - name: applicationinsights
+                    loggerName: logger
+                    sampling:
+                      samplingType: fixed
+                      percentage: 50
+              - name: petstore-v2 # unique API identifer across APIM
+                version: v2
+                apiType: http #unless you're using soap
+                path: pets #base apim url for this api
+                protocols: #array of http and/or https
+                  - https
+                format: swagger-link-json #using a swagger link the value needs to be a http based json document to download
+                value: "[coreutils.variable('url')]" #value supports bake variables.
+                products:
+                  - petstore-product
+                policies:
+                  - format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+                    value: <policies>
+                              <inbound /> 
+                              <backend>    
+                                <forward-request /> 
+                              </backend>  
+                              <outbound>
+                                <set-header name="X-Powered-By" exists-action="delete" />
+                                <set-header name="X-AspNet-Version" exists-action="delete" />
+                              </outbound>
+                            </policies>
+                  - operation: addPet #override the addPet operation policy
+                    format: xml
+                    value: "<policies> <inbound /> <backend>    </backend>  <outbound /></policies>"
+    dependsOn: 
+      - apim-namedvalues-deploy
+  apim-api-subscription-deploy:
+    properties:
+      type: "@azbake/ingredient-apim"
+      source: "[coreutils.variable('apimSource')]"
+      parameters:
+        subscriptions:
+          - name: petstore-subscription-api-only
+            user: Administrator
+            api: petstore-v1
+            displayName: "petstore-subscription-api-only display"
+            state: active
+            allowTracing: true
+    dependsOn: 
+      - petstore-api-deploy

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.1.109...@azbake/ingredient-apim@0.2.0) (2020-06-10)
+
+### Enhancements
+
+* renamed ingredient from `ingredient-api-managment-base`
+* removed ARM template in exchange for API to enable full customization without ingredient change
+* added support for the following:
+  * diagnostics
+  * named values
+  * groups
+  * users
+  * subscriptions
+  * products
+  * loggers
+  * authServers
+  * identityProviders
+
 ## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.1.110...@azbake/ingredient-apim@0.1.111) (2020-06-17)
 
 **Note:** Version bump only for package @azbake/ingredient-apim

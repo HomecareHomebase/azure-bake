@@ -1,4 +1,6 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
+import { EventHubManagementClient } from '@azure/arm-eventhub';
+import { NamespacesGetAuthorizationRuleResponse } from '@azure/arm-eventhub/esm/models';
 
 export class EventHubNamespaceUtils extends BaseUtility {
 
@@ -21,6 +23,15 @@ export class EventHubNamespaceUtils extends BaseUtility {
 
         this.context._logger.debug(`EventHubNamespaceUtils.get_resource_profile() returned ${profile}`);
         return profile
+    }
+
+    public async get_authorizationrule(resourceGroup: string, nameSpace: string, authorizationRuleName: string): Promise<NamespacesGetAuthorizationRuleResponse> {
+        var client = new EventHubManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        let authRule = await client.namespaces.getAuthorizationRule(resourceGroup, nameSpace, authorizationRuleName)
+
+        this.context._logger.debug(`EventHubNamespaceUtils.get_authorizationrule() returned ${JSON.stringify(authRule)}`);
+
+        return authRule;
     }
 }
 

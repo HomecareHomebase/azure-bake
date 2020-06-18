@@ -1,0 +1,160 @@
+name: contoso
+shortName: contoso
+owner: owner
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-apim@*"
+  - "@azbake/ingredient-app-insights@*"
+resourceGroup: true
+parallelRegions: false
+rgOverride: "[apim.get_resource_group()]"
+variables:
+  aiName: "[appinsights.get_resource_name('apimcontoso')]"
+  aiKey: "[await appinsights.get_instrumentation_key('apimcontoso','appinsights', true)]"
+  aiResourceGroup: "[coreutils.resource_group('appinsights', false, null, true)]"
+  apimName: "[apim.get_resource_name('contoso')]"
+recipe:
+  apim-app-insights-deploy: 
+    properties:
+      type: "@azbake/ingredient-app-insights"
+      source: ""
+      condition: "[coreutils.current_region_primary()]"
+      parameters:
+        appInsightsName: "[coreutils.variable('aiName')]"
+        rgOverride: "[coreutils.variable('aiResourceGroup')]"
+  apim-deploy:
+    properties:
+      type: "@azbake/ingredient-apim"
+      condition: "[coreutils.primary_region()]"
+      parameters:
+        apimService:
+          name: "[coreutils.variable('apimName')]"
+          location: "[coreutils.current_region().name]"
+          publisherEmail: admin@contoso.com
+          publisherName: Contoso Admin
+          sku:
+            name: Developer
+            capacity: 1
+          enableClientCertificate: true
+          customProperties:
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11: "false"
+            Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30: "false"
+          virtualNetworkType: External
+          virtualNetworkConfiguration:
+            #replace the following with your values
+            subnetResourceId: "[(await apim.get_subnet('<vnet resource group>', '<vnet name>', '<subnet name>')).id]"
+        diagnostics:
+          name: diagnosticsName
+          #replace the following with your values
+          storageAccountId: "[(await apim.get_storageaccount('<storage resource group>', '<storage name>')).id]"
+          metrics:
+            - timeGrain: PT1M
+              enabled: true
+              retentionPolicy:
+                days: 0
+                enabled: true
+          logs:
+            - category: GatewayLogs
+              enabled: true
+              retentionPolicy:
+                days: 0
+                enabled: true
+        namedValues:
+          - name: expression
+            displayName: expressionDisplay
+            value: "@(DateTime.Now.ToString())"
+            secret: false
+            tags:
+              - test
+              - test2
+          - name: expression2
+            displayName: expression2Display
+            value: "@(DateTime.Now.ToString())"
+            secret: false
+            tags:
+              - test
+              - test2
+        groups:
+          - name: "testGroup"
+            displayName: "Test group Display"
+            description: "Test group Description"
+            type: "custom"
+        users:
+          - name: john
+            email: john@contoso.com
+            firstName: John
+            lastName: Smith
+            groups:
+              - testGroup
+        products:
+          - name: petstore-product
+            displayName: My Petstore
+            description: My Petstore Description
+            terms: My terms
+            subscriptionRequired: false
+            state: published
+            groups:
+              - Administrators
+              - Developers
+              - testGroup
+            policy:
+              format: xml #we use a non-link format here to embed the policy, but this could have been xml-link and a http address
+              value: <policies>
+                        <inbound /> 
+                        <backend>    
+                          <forward-request /> 
+                        </backend>  
+                        <outbound>
+                          <set-header name="X-Powered-By" exists-action="delete" />
+                          <set-header name="X-AspNet-Version" exists-action="delete" />
+                          <set-header name="CustomHeader" exists-action="override">
+                            <value>{{expressionDisplay}}</value>
+                          </set-header>
+                        </outbound>
+                      </policies>
+        subscriptions:
+          - name: petstore-subscription-all #tie this subscription to all APIs
+            user: Administrator
+            displayName: "petstore-subscription-all Display"
+            state: active
+            allowTracing: true
+          - name: petstore-subscription
+            user: john
+            product: petstore-product # tie this subscription to just the petstore product
+            displayName: "petstore-subscription Display"
+            state: active
+            allowTracing: true
+        loggers:
+          - name: logger
+            cleanKeys: true
+            description: "Logger Description"
+            loggerType: applicationInsights
+            credentials: 
+              instrumentationKey: "[coreutils.variable('aiKey')]"
+        authServers:
+          - name: authServer
+            displayName: "Auth Server Display"
+            description: "Auth Server Description"
+            #replace the following with your values
+            clientRegistrationEndpoint: "<endpoint>"
+            authorizationEndpoint: "<endpoint>"
+            tokenEndpoint: "<endpoint>"
+            clientId: clientid
+            clientSecret: clientSecret
+            clientAuthenticationMethod:
+              - Body
+            authorizationMethods:
+              - GET
+            grantTypes:
+              - implicit
+        identityProviders:
+          - identityProviderContractType: microsoft
+            clientId : testClientId
+            clientSecret: testClientSecret
+    dependsOn:
+      - apim-app-insights-deploy
