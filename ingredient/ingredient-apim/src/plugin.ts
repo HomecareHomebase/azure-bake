@@ -61,7 +61,7 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
-    private     apim:               IApim | undefined
+    private     apim:               ApiManagementServiceResource | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -149,8 +149,6 @@ export class ApimPlugin extends BaseIngredient {
             return
         }
 
-        this.apim = apim;
-
         this._logger.log('APIM Plugin: Add/Update APIM service: ' + this.resource_name)
         
         let apimData = await this.ResolveApim(apim);
@@ -165,6 +163,8 @@ export class ApimPlugin extends BaseIngredient {
         if (response._response.status  != 200 && response._response.status != 201) {
             this._logger.error("APIM Plugin: Could not create/update APIM service " + this.resource_name)
         }
+
+        this.apim = response;
     }
 
     private async BuildDiagnostics(): Promise<void>{
@@ -795,6 +795,28 @@ export class ApimPlugin extends BaseIngredient {
     }
     
     private async ResolveAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<AutoscaleSettingResource> {
+        if (this.apim == undefined || this.apim.id == undefined) return autoscaleSettings
+
+        if(!autoscaleSettings.autoscaleSettingResourceName) {
+            autoscaleSettings.autoscaleSettingResourceName = autoscaleSettings.name;
+        }
+
+        if(!autoscaleSettings.location) {
+            autoscaleSettings.location = this.apim.location;
+        }
+
+        if(!autoscaleSettings.targetResourceUri) {
+            autoscaleSettings.targetResourceUri = this.apim.id;
+        }
+
+        for(let i =0; i < autoscaleSettings.profiles.length; ++i) {
+            let autoScaleSettingProfile = autoscaleSettings.profiles[i];
+            for(let j =0; j < autoScaleSettingProfile.rules.length; ++j) {
+                let autoScaleSettingProfileRule = autoScaleSettingProfile.rules[j];
+                autoScaleSettingProfileRule.metricTrigger.metricResourceUri = this.apim.id;
+            }
+        } 
+
         return autoscaleSettings;
     }
 
