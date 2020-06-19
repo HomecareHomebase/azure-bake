@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.8](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.7...azure-bake@0.5.8) (2020-06-18)
+
+
+### Bug Fixes
+
+* Adding ignore flag to ingredient - If set, failed ingredient will not fail a build ([#165](https://github.com/HomecareHomebase/azure-bake/issues/165)) ([ba2a616](https://github.com/HomecareHomebase/azure-bake/commit/ba2a616))
+
+
+
+
+
 ## [0.5.7](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.6...azure-bake@0.5.7) (2020-06-17)
 
 
