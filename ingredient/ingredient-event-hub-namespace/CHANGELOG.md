@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.102...@azbake/ingredient-event-hub-namespace@0.1.103) (2020-06-22)
+
+
+### Bug Fixes
+
+* add @azure/arm-eventhub dependency to ehn ingredient ([#166](https://github.com/HomecareHomebase/azure-bake/issues/166)) ([23dcc2a](https://github.com/HomecareHomebase/azure-bake/commit/23dcc2a))
+
+
+
+
+
 ## [0.1.102](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-event-hub-namespace@0.1.101...@azbake/ingredient-event-hub-namespace@0.1.102) (2020-06-18)
 
 **Note:** Version bump only for package @azbake/ingredient-event-hub-namespace
