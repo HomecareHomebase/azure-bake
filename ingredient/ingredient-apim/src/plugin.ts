@@ -1,7 +1,7 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
-import { ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
 import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 
 interface IApim extends ApiManagementServiceResource{
@@ -49,6 +49,11 @@ interface IApimProduct extends ProductContract{
     delete?: boolean
 }
 
+interface IApimApi {
+    name: string
+    delete?: boolean
+}
+
 interface IApimSubscription extends SubscriptionCreateParameters{
     name: string
     user?: string
@@ -73,6 +78,7 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildNamedValues()
                 await this.BuildGroups()
                 await this.BuildUsers()
+                await this.BuildAPIs();
                 await this.BuildProducts()
                 await this.BuilSubscriptions()
                 await this.BuildLoggers()
@@ -378,6 +384,27 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildAPIs(): Promise<void> {
+       
+        let apisParam  = this._ingredient.properties.parameters.get('apis')
+        if (!apisParam){
+            return
+        }
+
+        let apis :IApimApi[] = await apisParam.valueAsync(this._ctx)
+        if (!apis){
+            return
+        }
+
+        for(let i =0; i < apis.length; ++i) {
+            let api = apis[i];
+
+            if(api.delete && api.delete == true) {
+                await this.DeleteApi(api)
+            }
+        }       
+    }
+
     private async BuildProducts(): Promise<void> {
 
         let productsParam  = this._ingredient.properties.parameters.get('products')
@@ -400,6 +427,23 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildProduct(product)
             }
         }       
+    }
+
+    private async DeleteApi(api: IApimApi): Promise<void> {
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Deleting APIM API: ' + api.name)
+        
+        let response = await this.apim_client.api.deleteMethod(
+            this.resource_group,
+            this.resource_name,
+            api.name,
+            '*',
+            <ApiDeleteMethodOptionalParams>{ifMatch:'*', deleteRevisions:true})
+
+        if (response._response.status  != 200 && response._response.status != 201 && response._response.status != 204) {
+            this._logger.error("APIM Plugin: Could not delete API " + api.name)
+        }
     }
 
     private async DeleteProduct(product: IApimProduct): Promise<void> {
