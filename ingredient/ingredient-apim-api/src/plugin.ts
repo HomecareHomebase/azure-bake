@@ -328,6 +328,8 @@ export class ApimApiPlugin extends BaseIngredient {
         for(let i=0; i < blockTime; ++i){
             let response = await request(policy.value)
             if (response.statusCode >= 200 && response.statusCode < 400){
+                policy.format = "xml";
+                policy.value = response.body;
                 return policy
             }
             await this.Sleep(1000)
