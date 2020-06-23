@@ -1,10 +1,14 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
-import { ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
-import { DiagnosticSettingsResource } from "@azure/arm-monitor/esm/models";
+import { ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 
 interface IApim extends ApiManagementServiceResource{
+    name: string
+}
+
+interface IApimAutoscaleSettings extends AutoscaleSettingResource{
     name: string
 }
 
@@ -45,6 +49,11 @@ interface IApimProduct extends ProductContract{
     delete?: boolean
 }
 
+interface IApimApi {
+    name: string
+    delete?: boolean
+}
+
 interface IApimSubscription extends SubscriptionCreateParameters{
     name: string
     user?: string
@@ -57,6 +66,7 @@ export class ApimPlugin extends BaseIngredient {
     private     resource_group:     string      = ""
     private     resource_name:      string      = ""
     private     apim_client:        ApiManagementClient | undefined
+    private     apim:               ApiManagementServiceResource | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -68,11 +78,13 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildNamedValues()
                 await this.BuildGroups()
                 await this.BuildUsers()
+                await this.BuildAPIs();
                 await this.BuildProducts()
                 await this.BuilSubscriptions()
                 await this.BuildLoggers()
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
+                await this.BuildAutoscaleSettings()
             }
         } catch(error){
             this._logger.error('APIM Plugin: ' + error)
@@ -157,6 +169,8 @@ export class ApimPlugin extends BaseIngredient {
         if (response._response.status  != 200 && response._response.status != 201) {
             this._logger.error("APIM Plugin: Could not create/update APIM service " + this.resource_name)
         }
+
+        this.apim = response;
     }
 
     private async BuildDiagnostics(): Promise<void>{
@@ -370,6 +384,27 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildAPIs(): Promise<void> {
+       
+        let apisParam  = this._ingredient.properties.parameters.get('apis')
+        if (!apisParam){
+            return
+        }
+
+        let apis :IApimApi[] = await apisParam.valueAsync(this._ctx)
+        if (!apis){
+            return
+        }
+
+        for(let i =0; i < apis.length; ++i) {
+            let api = apis[i];
+
+            if(api.delete && api.delete == true) {
+                await this.DeleteApi(api)
+            }
+        }       
+    }
+
     private async BuildProducts(): Promise<void> {
 
         let productsParam  = this._ingredient.properties.parameters.get('products')
@@ -392,6 +427,23 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildProduct(product)
             }
         }       
+    }
+
+    private async DeleteApi(api: IApimApi): Promise<void> {
+        if (this.apim_client == undefined) return
+
+        this._logger.log('APIM Plugin: Deleting APIM API: ' + api.name)
+        
+        let response = await this.apim_client.api.deleteMethod(
+            this.resource_group,
+            this.resource_name,
+            api.name,
+            '*',
+            <ApiDeleteMethodOptionalParams>{ifMatch:'*', deleteRevisions:true})
+
+        if (response._response.status  != 200 && response._response.status != 201 && response._response.status != 204) {
+            this._logger.error("APIM Plugin: Could not delete API " + api.name)
+        }
     }
 
     private async DeleteProduct(product: IApimProduct): Promise<void> {
@@ -616,6 +668,49 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildAutoscaleSettings() : Promise<void> {
+        let autoScaleSettingsParam  = this._ingredient.properties.parameters.get('autoScaleSettings')
+        if (!this.apim || !autoScaleSettingsParam){
+            return
+        }
+
+        let autoScaleSettings :IApimAutoscaleSettings[] = await autoScaleSettingsParam.valueAsync(this._ctx)
+        if (!autoScaleSettings){
+            return
+        }
+
+        if (!['Premium', 'Standard'].includes(this.apim.sku.name))
+        {
+            this._logger.warn('APIM Plugin: Cannot add autoscale settings for sku: ' + this.apim.sku.name + '. Continuing deployment.')
+            return;
+        }
+        
+        for(let i =0; i < autoScaleSettings.length; ++i) {
+            let autoScaleSetting = autoScaleSettings[i];
+            await this.BuildAutoscaleSetting(autoScaleSetting)
+        }  
+    }
+
+    private async BuildAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<void> {
+        if (this.apim_client == undefined) return
+
+        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+
+        let autoscaleSettingsData = await this.ResolveAutoscaleSetting(autoscaleSettings);
+
+        this._logger.log('APIM Plugin: Add/Update APIM autoscale settings: ' + autoscaleSettings.name)
+
+        let response = await monitorClient.autoscaleSettings.createOrUpdate(
+            this.resource_group,
+            autoscaleSettings.name,
+            autoscaleSettingsData,
+            <AutoscaleSettingsCreateOrUpdateResponse>{})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update autoscale settings " + autoscaleSettings.name)
+        }
+    }
+
     private async ResolveApim(apim: IApim) : Promise<ApiManagementServiceResource> {
         if (apim.location) {
             apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
@@ -633,11 +728,64 @@ export class ApimPlugin extends BaseIngredient {
             }
         }
 
-        if(apim.virtualNetworkConfiguration)
-        {
+        if(apim.virtualNetworkConfiguration) {
             if (apim.virtualNetworkConfiguration.subnetResourceId) {
                 apim.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(apim.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx))            
             }
+        }
+
+        if (apim.additionalLocations && !['Premium'].includes(apim.sku.name)) {
+            this._logger.warn('APIM Plugin: Cannot add additional locations for sku: ' + apim.sku.name + '. Continuing deployment.')
+            apim.additionalLocations = undefined;
+        }
+
+        if (apim.additionalLocations) {
+            for(let i =0; i < apim.additionalLocations.length; ++i) {
+                let additionalLocation = apim.additionalLocations[i];
+
+                additionalLocation.location = (await (new BakeVariable(additionalLocation.location)).valueAsync(this._ctx)); 
+                additionalLocation.sku.name = (await (new BakeVariable(additionalLocation.sku.name)).valueAsync(this._ctx));
+
+                if (additionalLocation.sku.capacity) {
+                    additionalLocation.sku.capacity = parseInt(await (new BakeVariable(additionalLocation.sku.capacity.toString())).valueAsync(this._ctx))
+                }
+                
+                if (additionalLocation.virtualNetworkConfiguration) {
+                    additionalLocation.virtualNetworkConfiguration.subnetResourceId = (await (new BakeVariable(additionalLocation.virtualNetworkConfiguration.subnetResourceId)).valueAsync(this._ctx));
+                }
+            } 
+        }
+
+        if (apim.hostnameConfigurations) {
+            for(let i =0; i < apim.hostnameConfigurations.length; ++i) {
+                let hostnameConfiguration = apim.hostnameConfigurations[i];
+
+                hostnameConfiguration.hostName = (await (new BakeVariable(hostnameConfiguration.hostName)).valueAsync(this._ctx));
+                hostnameConfiguration.encodedCertificate = (await (new BakeVariable(hostnameConfiguration.encodedCertificate)).valueAsync(this._ctx));
+                hostnameConfiguration.certificatePassword = (await (new BakeVariable(hostnameConfiguration.certificatePassword)).valueAsync(this._ctx));
+
+                if (hostnameConfiguration.certificate) {
+                    hostnameConfiguration.certificate.expiry = (await (new BakeVariable(hostnameConfiguration.certificate.expiry.toString())).valueAsync(this._ctx));
+                    hostnameConfiguration.certificate.thumbprint = (await (new BakeVariable(hostnameConfiguration.certificate.thumbprint)).valueAsync(this._ctx));
+                    hostnameConfiguration.certificate.subject = (await (new BakeVariable(hostnameConfiguration.certificate.subject)).valueAsync(this._ctx));
+                }
+            } 
+        }
+
+        if (apim.certificates) {
+            for(let i =0; i < apim.certificates.length; ++i) {
+                let certificate = apim.certificates[i];
+
+                certificate.encodedCertificate = (await (new BakeVariable(certificate.encodedCertificate)).valueAsync(this._ctx));
+                certificate.certificatePassword = (await (new BakeVariable(certificate.certificatePassword)).valueAsync(this._ctx));
+                certificate.storeName = (await (new BakeVariable(certificate.storeName)).valueAsync(this._ctx));
+
+                if (certificate.certificate) {
+                    certificate.certificate.expiry = (await (new BakeVariable(certificate.certificate.expiry.toString())).valueAsync(this._ctx));
+                    certificate.certificate.thumbprint = (await (new BakeVariable(certificate.certificate.thumbprint)).valueAsync(this._ctx));
+                    certificate.certificate.subject = (await (new BakeVariable(certificate.certificate.subject)).valueAsync(this._ctx));
+                }
+            } 
         }
 
         return apim;
@@ -743,6 +891,32 @@ export class ApimPlugin extends BaseIngredient {
         throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
     }
     
+    private async ResolveAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<AutoscaleSettingResource> {
+        if (this.apim == undefined || this.apim.id == undefined) return autoscaleSettings
+
+        if(!autoscaleSettings.autoscaleSettingResourceName) {
+            autoscaleSettings.autoscaleSettingResourceName = autoscaleSettings.name;
+        }
+
+        if(!autoscaleSettings.location) {
+            autoscaleSettings.location = this.apim.location;
+        }
+
+        if(!autoscaleSettings.targetResourceUri) {
+            autoscaleSettings.targetResourceUri = this.apim.id;
+        }
+
+        for(let i =0; i < autoscaleSettings.profiles.length; ++i) {
+            let autoScaleSettingProfile = autoscaleSettings.profiles[i];
+            for(let j =0; j < autoScaleSettingProfile.rules.length; ++j) {
+                let autoScaleSettingProfileRule = autoScaleSettingProfile.rules[j];
+                autoScaleSettingProfileRule.metricTrigger.metricResourceUri = this.apim.id;
+            }
+        } 
+
+        return autoscaleSettings;
+    }
+
     private async GetUserId(user?: string) : Promise<string | undefined> {
 
         if (this.apim_client == undefined) return undefined

@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-apim",
   "description": "Ingredient for deploying and configuring APIs against an APIM instance",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -28,6 +28,7 @@
   "dependencies": {
     "@azure/arm-apimanagement": "^5.1.1",
     "@azure/arm-monitor": "^5.4.0",
+    "@azure/arm-network": "^14.0.0",
     "async-request": "^1.2.0"
   },
   "publishConfig": {

@@ -84,6 +84,14 @@ subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : ht
   - name: <subscription id> #required name of the subscription
     user: <user> #optional user lookup, can also use ownerId on SubscriptionCreateParameters if the path is known
 ```
+**apis**
+
+```yaml
+#Does not allow for full API buildout (see apim-api ingredient). But allows to delete any api in an APIM instance.
+apis:
+  - name: <api id> #required name of the api
+    delete: boolean # determines whether to delete the API.
+```
 
 **products**
 
@@ -117,6 +125,13 @@ authServers: #follows this azure spec for *AuthorizationServerContract* : https:
 ```yaml
 identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
   - identityProviderContractType: microsoft #this is part of the IdentityProviderContract contract and is required
+```
+
+**autoScaleSettings**
+
+```yaml
+autoScaleSettings: #follows this azure spec for *AutoscaleSettingResource * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L347
+  - name: <auto scale setting name>
 ```
 
 ## Utility Functions
@@ -240,6 +255,9 @@ recipe:
             lastName: smith
             groups:
               - testGroup
+        apis:
+          - name: echo-api #delete the default echo api
+            delete: true
         products:
           - name: petstore-product
             displayName: My Petstore
@@ -299,4 +317,44 @@ recipe:
           - identityProviderContractType: microsoft
             clientId : clientid
             clientSecret: clientSecret
+      	autoScaleSettings:
+              - name: apim-autoscale
+                enabled: true
+                profiles:
+                  - name: default
+                    capacity:
+                      minimum: "1"
+                      maximum: "2"
+                      default: "1"
+                    rules: 
+                      - metricTrigger: 
+                          metricName: Capacity
+                          timeGrain: PT1M
+                          statistic: Average
+                          timeWindow: PT10M
+                          timeAggregation: Average
+                          operator: GreaterThan
+                          threshold: 80
+                        scaleAction:
+                          direction: Increase
+                          type: ChangeCount
+                          value: "1"
+                          cooldown: PT60M
+                      - metricTrigger: 
+                          metricName: Capacity
+                          timeGrain: PT1M
+                          statistic: Average
+                          timeWindow: PT10M
+                          timeAggregation: Average
+                          operator: LessThan
+                          threshold: 35
+                        scaleAction:
+                          direction: Decrease
+                          type: ChangeCount
+                          value: "1"
+                          cooldown: PT90M
+                notifications:
+                  - email:
+                      sendToSubscriptionAdministrator: true
+                      sendToSubscriptionCoAdministrators: true
 ```
