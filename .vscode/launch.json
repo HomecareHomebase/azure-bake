@@ -8,7 +8,7 @@
       "program": "${workspaceFolder}/system/dist/index.js",
       "args": [
         "serve",
-        "C:/Users/jlynch/Repo/azure-bake/ingredient/ingredient-property-service/tests/test.yaml"
+        "C:/git/azure-bake/system/package/test.yaml"
       ],
       "envFile": "${workspaceFolder}/.env",
       "env": {

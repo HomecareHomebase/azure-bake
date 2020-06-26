@@ -2,16 +2,16 @@ name: kv-test
 shortName: kv
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-key-vault@~0"
+  - "@azbake/ingredient-storage@~0"
+  - "@azbake/ingredient-null@~0"
 resourceGroup: true
 rgOverride: "whilke-poc"
 parallelRegions: false
+variables:
+  container: "[storage.get_storageaccount('whilke-poc','whilkepocdiag')]"
 recipe:
   keyvault:
     properties:
-      type: "@azbake/ingredient-key-vault"
-      source: ./k8
+      type: "@azbake/ingredient-null"
       parameters:
-        name: "[keyvaultutils.create_resource_name()]"              
-        parameters:
-          kubeconfig: "[coreutils.variable('k8s_config')]"
+        name: "[storage.get_container(await coreutils.variable('container'), 'whilke')]"              
