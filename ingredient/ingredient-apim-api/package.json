@@ -34,7 +34,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azure/arm-apimanagement": "^5.1.1"
+    "@azure/arm-apimanagement": "^5.1.1",
+    "async-request": "^1.2.0"
   },
   "publishConfig": {
     "access": "public"
