@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.4...@azbake/ingredient-apim-api@0.2.5) (2020-06-26)
+
+
+### Bug Fixes
+
+* allow for policy xml files and add missing dependency to async-request ([#168](https://github.com/HomecareHomebase/azure-bake/issues/168)) ([3aefd72](https://github.com/HomecareHomebase/azure-bake/commit/3aefd72))
+
+
+
+
+
 ## [0.2.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.3...@azbake/ingredient-apim-api@0.2.4) (2020-06-23)
 
 
