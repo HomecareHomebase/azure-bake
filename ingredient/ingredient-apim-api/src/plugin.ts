@@ -2,6 +2,7 @@ import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
 import { RestError } from "@azure/ms-rest-js"
+import * as fs from 'fs';
 let request = require('async-request')
 
 interface IApimApiDiagnostics extends DiagnosticContract{
@@ -312,7 +313,7 @@ export class ApimApiPlugin extends BaseIngredient {
         return rApi
     }
 
-    private async ResolvePolicy(policy: PolicyContract): Promise<PolicyContract> {
+    private async ResolvePolicy(policy: IApimPolicy): Promise<PolicyContract> {
 
         if (policy.value) {
             policy.value = (await (new BakeVariable(policy.value)).valueAsync(this._ctx))            
@@ -324,6 +325,14 @@ export class ApimApiPlugin extends BaseIngredient {
         }
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
+
+        if (policy.value.startsWith("file:///")) {
+
+            let content = fs.readFileSync(policy.value.replace("file:///", "")).toString('utf-8')
+            policy.format = "xml";
+            policy.value = content;
+            return policy;
+        }
 
         for(let i=0; i < blockTime; ++i){
             let response = await request(policy.value)
