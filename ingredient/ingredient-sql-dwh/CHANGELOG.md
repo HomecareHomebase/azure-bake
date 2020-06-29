@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.117](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.116...@azbake/ingredient-sql-dwh@0.1.117) (2020-06-26)
+
+
+### Bug Fixes
+
+* Added storage account helpers to create/update containers directly. ([#169](https://github.com/HomecareHomebase/azure-bake/issues/169)) ([973084e](https://github.com/HomecareHomebase/azure-bake/commit/973084e))
+
+
+
+
+
+## [0.1.116](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.115...@azbake/ingredient-sql-dwh@0.1.116) (2020-06-26)
+
+**Note:** Version bump only for package @azbake/ingredient-sql-dwh
+
+
+
+
+
+## [0.1.115](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.114...@azbake/ingredient-sql-dwh@0.1.115) (2020-06-23)
+
+**Note:** Version bump only for package @azbake/ingredient-sql-dwh
+
+
+
+
+
 ## [0.1.114](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.113...@azbake/ingredient-sql-dwh@0.1.114) (2020-06-22)
 
 **Note:** Version bump only for package @azbake/ingredient-sql-dwh

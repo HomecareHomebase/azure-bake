@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.6](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.5...@azbake/ingredient-apim@0.2.6) (2020-06-26)
+
+
+### Bug Fixes
+
+* Added storage account helpers to create/update containers directly. ([#169](https://github.com/HomecareHomebase/azure-bake/issues/169)) ([973084e](https://github.com/HomecareHomebase/azure-bake/commit/973084e))
+
+
+
+
+
+## [0.2.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.4...@azbake/ingredient-apim@0.2.5) (2020-06-26)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.2.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.3...@azbake/ingredient-apim@0.2.4) (2020-06-23)
+
+
+### Bug Fixes
+
+* Add Autoscale Settings for APIM ([#167](https://github.com/HomecareHomebase/azure-bake/issues/167)) ([7ff0af9](https://github.com/HomecareHomebase/azure-bake/commit/7ff0af9))
+
+
+
+
+
 ## [0.2.3](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.2...@azbake/ingredient-apim@0.2.3) (2020-06-22)
 
 **Note:** Version bump only for package @azbake/ingredient-apim

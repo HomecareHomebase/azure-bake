@@ -1,6 +1,19 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 import { StorageManagementClient } from '@azure/arm-storage'
-import { StorageAccountsGetPropertiesResponse } from '@azure/arm-storage/esm/models';
+import { StorageAccountsGetPropertiesResponse, StorageAccount, Endpoints } from '@azure/arm-storage/esm/models'
+import {BlobServiceClient, StorageSharedKeyCredential, SignedIdentifier} from '@azure/storage-blob'
+
+export class BakeStorageAccount {
+    public endpoints?: Endpoints
+    public name: string = ""
+    public rg: string = ""
+    public key: string = ""
+}
+
+export class BakeStorageContainer {
+    public account?: BakeStorageAccount
+    public container?: string
+}
 
 export class StorageUtils extends BaseUtility {
 
@@ -65,10 +78,35 @@ export class StorageUtils extends BaseUtility {
         return connectionString;        
     }
 
-    public async get_storageaccount(resourceGroup: string, name: string): Promise<StorageAccountsGetPropertiesResponse> {
+    public async get_storageaccount(resourceGroup: string, name: string): Promise<BakeStorageAccount> {
         var client = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
         let storageAccount = await client.storageAccounts.getProperties(resourceGroup, name)
 
-        return storageAccount
+        const account = new BakeStorageAccount();
+        account.endpoints = storageAccount.primaryEndpoints
+        account.key = await this.get_primary_key(name, resourceGroup)
+        account.name = name
+        account.rg = resourceGroup
+        return account;
+
+    }
+
+    public async get_container(account: BakeStorageAccount, container: string, accessLevel?: "container" | "blob" | undefined): Promise<BakeStorageContainer | null>{
+        const endpoints = account.endpoints
+        if (endpoints == undefined) return null
+        if (endpoints.blob == undefined) return null
+
+        const sharedKeyCredential = new StorageSharedKeyCredential(account.name, account.key);
+        const blobClient = new BlobServiceClient(endpoints.blob, sharedKeyCredential);
+        const containerClient = blobClient.getContainerClient(container)
+        if (!( await containerClient.exists())) {
+            const resp = await containerClient.create()
+        }
+        await containerClient.setAccessPolicy(accessLevel)
+        const bakeContainer : BakeStorageContainer =  {
+            account : account,
+            container: container
+        }
+        return bakeContainer
     }
 }

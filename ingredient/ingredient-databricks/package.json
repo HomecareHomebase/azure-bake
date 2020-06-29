@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-databricks",
   "description": "Ingredient for deploying an instance of DataBricks.",
-  "version": "0.1.114",
+  "version": "0.1.117",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
