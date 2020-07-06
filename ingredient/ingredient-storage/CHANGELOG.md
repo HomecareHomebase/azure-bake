@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.104...@azbake/ingredient-storage@0.1.105) (2020-06-26)
+
+
+### Bug Fixes
+
+* Added storage account helpers to create/update containers directly. ([#169](https://github.com/HomecareHomebase/azure-bake/issues/169)) ([973084e](https://github.com/HomecareHomebase/azure-bake/commit/973084e))
+
+
+
+
+
 ## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.103...@azbake/ingredient-storage@0.1.104) (2020-06-18)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
