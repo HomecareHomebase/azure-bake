@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-functions",
   "description": "Ingredient for deploying a function app from a docker image.",
-  "version": "0.1.120",
+  "version": "0.1.121",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
