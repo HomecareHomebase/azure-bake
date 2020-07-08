@@ -7,6 +7,7 @@ import { StorageUtils } from "./functions.js";
 import { StorageManagementClient } from "@azure/arm-storage"
 import { StorageSharedKeyCredential, BlobServiceClient } from "@azure/storage-blob"
 import ARMTemplateNetwork from "./storageNetwork.json"
+import ARMTemplateDataLake from "./storageDatalake.json"
 
 export class StoragePlugIn extends BaseIngredient {
     public async Execute(): Promise<void> {
@@ -23,9 +24,17 @@ export class StoragePlugIn extends BaseIngredient {
                 await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, await util.resource_group())
                 //there is a limitation around the copy function in the current architecture
 
-            }else{
+            }else if(params['IsHNSEnabled'])
+            {
+                await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, await util.resource_group())
+            }
+            else
+            {
                 await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             }
+
+
+
 
             await this.ConfigureDiagnosticSettings(params, util);
 

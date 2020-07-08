@@ -52,7 +52,7 @@
                 "description": "Allows https traffic only to storage service if sets to true."
             }
         },
-        "IsHierarchicalNamespace": {
+        "IsHnsEnabled": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
@@ -77,7 +77,7 @@
             "kind": "[parameters('storageKind')]",
           "properties": {
             "accessTier": "[parameters('storageAccessTier')]",
-            "isHnsEnabled" : "[parameters('IsHierarchicalNamespace')]",
+            "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
             "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",            
             "networkAcls": {
                             "bypass": "[parameters('NetworkAcls').bypass]",
