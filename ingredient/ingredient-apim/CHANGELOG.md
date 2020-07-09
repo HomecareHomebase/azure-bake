@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.11](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.10...@azbake/ingredient-apim@0.2.11) (2020-07-09)
+
+
+### Bug Fixes
+
+* allow bake variable for token body params and enable xml-link for product level policies ([#174](https://github.com/HomecareHomebase/azure-bake/issues/174)) ([76061f8](https://github.com/HomecareHomebase/azure-bake/commit/76061f8))
+
+
+
+
+
 ## [0.2.10](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.9...@azbake/ingredient-apim@0.2.10) (2020-07-08)
 
 **Note:** Version bump only for package @azbake/ingredient-apim

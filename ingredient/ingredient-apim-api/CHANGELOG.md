@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.11](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.10...@azbake/ingredient-apim-api@0.2.11) (2020-07-09)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+
+
+
 ## [0.2.10](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.9...@azbake/ingredient-apim-api@0.2.10) (2020-07-08)
 
 **Note:** Version bump only for package @azbake/ingredient-apim-api
