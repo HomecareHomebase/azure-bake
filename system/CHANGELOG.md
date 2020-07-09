@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.9](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.8...azure-bake@0.5.9) (2020-07-08)
+
+
+### Bug Fixes
+
+* Added storage account helpers to create/update containers directly. ([#169](https://github.com/HomecareHomebase/azure-bake/issues/169)) ([973084e](https://github.com/HomecareHomebase/azure-bake/commit/973084e))
+
+
+
+
+
 ## [0.5.8](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.7...azure-bake@0.5.8) (2020-06-18)
 
 

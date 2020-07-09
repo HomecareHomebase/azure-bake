@@ -51,8 +51,14 @@
             "defaultValue": false,
             "metadata": {
                 "description": "Allows https traffic only to storage service if sets to true."
+            },
+        "IsHnsEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enables Hierchael namespace for Datalake"
             }
-        
+        }
         }
     },
     "resources": [
@@ -68,8 +74,8 @@
             "kind": "[parameters('storageKind')]",
           "properties": {
             "accessTier": "[parameters('storageAccessTier')]",
-            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" 
-            
+            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
+            "isHnsEnabled" : "[parameters('IsHnsEnabled')]"
           },
           "tags": {
             "Metrics": "*"
