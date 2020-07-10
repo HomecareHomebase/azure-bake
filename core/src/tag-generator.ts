@@ -22,6 +22,11 @@ export class TagGenerator {
         tags.package_version = this._ctx.Config.version
         tags.bake_version = this._ctx.Environment.toolVersion
         tags.owner = this._ctx.Config.owner || ""
+        tags.costcenter = this._ctx.Config.costcenter || ""
+        tags.businessunit = this._ctx.Config.businessunit || ""
+        tags.product = this._ctx.Config.product || ""
+        tags.application = this._ctx.Config.application || ""
+        tags.supportteam = this._ctx.Config.supportteam || ""        
 
         //check against pluginVersion be seting, since Ingredient is always set as a default object
         if (this._ctx.Ingredient.pluginVersion){

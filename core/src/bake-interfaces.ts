@@ -56,7 +56,12 @@ export interface IBakeConfig {
     ingredients?: Array<string>,
     resourceGroup: boolean,
     rgOverride?: BakeVariable,
-    parallelRegions?: boolean
+    parallelRegions?: boolean,
+    costcenter?: string,
+    businessunit?: string,
+    product?: string,
+    application?: string,
+    supportteam?: string
 
     variables?: Map<string,BakeVariable>
     recipe: Map<string, IIngredient>
