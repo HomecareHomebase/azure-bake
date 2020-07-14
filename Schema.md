@@ -26,6 +26,11 @@ name: string
 shortName: string
 version: string
 owner: string
+costcenter: string
+businessunit: string
+product: string
+application: string
+supportteam: string
 ingredients: [ ingredientTag ]
 resourceGroup: bool
 rgOverride: string | expression
@@ -40,6 +45,11 @@ recipe: {string: ingredient block}
 |shortName|yes|code use for resource naming [a-z][A-Z][0-9], 8 chars max|
 |version|yes|version should match the docker tag|
 |owner|no|Owner of package as either a team name, email, person, etc.|
+|costcenter|no|financial number code assigned to a company
+|businessunit|no|specific name assigned to a business unit|
+|product|no|Name of the product the resource will be supporting|
+|application|no|describes the function of a particular resource (e.g. web server, message broker, database)|
+|supportteam|no|team that will be supporting the provisioned resource|
 |ingredients|yes|List of bake ingredients to use in the recipe|
 |resourceGroup|no (default true)|Create a resource group for the recipe deployment |
 |rgOverride|no (default blank)|Name of the resource group to create, if set. Otherwise standard format will be used|
