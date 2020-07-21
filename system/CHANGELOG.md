@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.11](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.10...azure-bake@0.5.11) (2020-07-21)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
 ## [0.5.10](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.9...azure-bake@0.5.10) (2020-07-14)
 
 **Note:** Version bump only for package azure-bake
