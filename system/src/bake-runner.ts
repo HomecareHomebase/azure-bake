@@ -192,6 +192,8 @@ export class BakeRunner {
 
     public async login(): Promise<boolean> {
 
+        this._loadBuiltIns()
+
         this._logger.log("logging into azure...")
         var result = await this._package.Authenticate(async (auth) => {
 
@@ -231,7 +233,6 @@ export class BakeRunner {
 
     public async bake(regions: Array<IBakeRegion>): Promise<void> {
 
-        this._loadBuiltIns()
 
         if (this._package.Config.parallelRegions) {
             let tasks: Array<Promise<boolean>> = []

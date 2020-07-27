@@ -3,7 +3,7 @@ import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
 import { ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
 import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
-
+import * as fs from 'fs';
 interface IApim extends ApiManagementServiceResource{
     name: string
 }
@@ -850,6 +850,15 @@ export class ApimPlugin extends BaseIngredient {
             authServer.clientSecret = (await (new BakeVariable(authServer.clientSecret)).valueAsync(this._ctx))            
         }
 
+        if (authServer.tokenBodyParameters) {
+            for(let i =0; i < authServer.tokenBodyParameters.length; ++i) {
+                let tokenBodyParameter = authServer.tokenBodyParameters[i];
+
+                tokenBodyParameter.name = (await (new BakeVariable(tokenBodyParameter.name)).valueAsync(this._ctx));
+                tokenBodyParameter.value = (await (new BakeVariable(tokenBodyParameter.value)).valueAsync(this._ctx));
+            } 
+        }
+        
         if (authServer.resourceOwnerUsername) {
             authServer.resourceOwnerUsername = (await (new BakeVariable(authServer.resourceOwnerUsername)).valueAsync(this._ctx))            
         }
@@ -886,6 +895,13 @@ export class ApimPlugin extends BaseIngredient {
         if (policy.format != "rawxml-link" &&
             policy.format != "xml-link") {
                 return policy
+        }
+
+        if (policy.value.startsWith("file:///")) {
+            let content = fs.readFileSync(policy.value.replace("file:///", "")).toString('utf-8')
+            policy.format = "xml";
+            policy.value = content;
+            return policy;
         }
 
         throw new Error("APIM Plugin: Could not resolve policy content at: " + policy.value)
