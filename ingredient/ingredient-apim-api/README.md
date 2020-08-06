@@ -94,6 +94,8 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 |----------|---------|-------------|
 | `get_api(resourceGroup: string, apimName: string, apiId: string)` | `Promise<ApiGetResponse>` | Returns the API for a given set of parameters. |
 | `get_backend(resourceGroup: string, apimName: string, backendId: string)` | `Promise<BackendGetResponse>` | Returns the back end for a given set of parameters. |
+| `get_hostheader(namespace: string, k8sHostname: string)`| `string` | Returns host header for API |
+| `get_swaggerUrl(namespace: string, k8sHostname: string, version: string, protocol: string | null = 'http')`| `string` | Returns swagger url page for the API |
 
 ### Utility function examples
 ```yaml
