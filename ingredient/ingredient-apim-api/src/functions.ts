@@ -30,7 +30,7 @@ export class ApimApiUtils extends BaseUtility {
         return hostHeader;
     }
 
-    public get_swaggerUrl(protocol: string | null = 'http', namespace: string, k8sHostname: string, version: string): string {
+    public get_swaggerUrl(namespace: string, k8sHostname: string, version: string, protocol: string | null = 'http'): string {
         var swaggerUrl = `${protocol}://${this.get_hostheader(namespace, k8sHostname)}/swagger/${version}/swagger.json`;
 
         this.context._logger.debug(`ApimApiUtils.get_swaggerUrl() returned ${swaggerUrl}`);
