@@ -21,4 +21,20 @@ export class ApimApiUtils extends BaseUtility {
 
         return backend;
     }
+
+    public get_hostheader(namespace: string, k8sHostname: string, serviceName: string | null = null): string {
+        var hostHeader = `${serviceName || this.context.Config.shortName}-${namespace}.${k8sHostname}`;
+
+        this.context._logger.debug(`ApimApiUtils.get_hostheader() returned ${hostHeader}`);
+
+        return hostHeader;
+    }
+
+    public get_swaggerUrl(namespace: string, k8sHostname: string, version: string, serviceName: string | null = null, protocol: string | null = 'http'): string {
+        var swaggerUrl = `${protocol}://${this.get_hostheader(namespace, k8sHostname, serviceName)}/swagger/${version}/swagger.json`;
+
+        this.context._logger.debug(`ApimApiUtils.get_swaggerUrl() returned ${swaggerUrl}`);
+
+        return swaggerUrl;
+    }
 }

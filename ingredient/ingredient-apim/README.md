@@ -151,6 +151,7 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 | `get_subscription(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<SubscriptionGetResponse>` | Returns the subscription for a given set of parameters. |
 | `get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription key for a given set of parameters. |
 | `get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string)` | `Promise<string>` | Returns the subscription secondary key for a given set of parameters. |
+| `get_source(name: string | null = null)` | `Promise<string>` | Returns full resource group and resource name path for bake source values. |
 
 ### Utility function examples
 ```yaml
