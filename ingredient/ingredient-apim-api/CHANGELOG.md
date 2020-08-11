@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.17](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.16...@azbake/ingredient-apim-api@0.2.17) (2020-08-11)
+
+
+### Bug Fixes
+
+* add forceWait option to apimoptions ([#180](https://github.com/HomecareHomebase/azure-bake/issues/180)) ([b156715](https://github.com/HomecareHomebase/azure-bake/commit/b156715))
+
+
+
+
+
 ## [0.2.16](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.15...@azbake/ingredient-apim-api@0.2.16) (2020-08-11)
 
 
