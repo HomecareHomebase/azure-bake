@@ -226,17 +226,26 @@ export class ApimApiPlugin extends BaseIngredient {
 
         this._logger.debug('APIM API Plugin: Waiting for API for ' + blockTime + ' seconds.');
 
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(api.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                this._logger.debug('APIM API Plugin: API found at: ' + api.value);
-                return true
+        for(let i=0; i < blockTime; ++i) {
+            let response: any | undefined;
+
+            try {
+                response = await request(api.value);
+            } catch(error) {
+                this._logger.error('APIM API Plugin: Error waiting for API: ' + error)
             }
-            this._logger.debug('APIM API Plugin: API not found with response code ' + response.statusCode + '. Sleeping for 1s.');
-            await this.Sleep(1000)
+
+            if(response && (response.statusCode >= 200 && response.statusCode < 400)) {
+                this._logger.debug('APIM API Plugin: API found with response code ' + response.statusCode + ' at: ' + api.value);
+                return true;
+            }
+            else {
+                this._logger.debug('APIM API Plugin: API not found with response code ' + response.statusCode + '. Sleeping for 1s.');
+                await this.Sleep(1000);
+            }
         }
 
-        return false
+        return false;
     }
 
 	private async ApplyApiDiagnostics(diagnostics: IApimApiDiagnostics, apiId: string) : Promise<void> {
