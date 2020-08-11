@@ -29,6 +29,7 @@ interface IApimApi extends ApiCreateOrUpdateParameter{
 
 interface IApimOptions {
     apiWaitTime: number
+    forceWait: boolean
     apiRetries: number
     apiRetryWaitTime: number
 }
@@ -164,16 +165,15 @@ export class ApimApiPlugin extends BaseIngredient {
             api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
         }
         
-        let blockResult = await this.BlockForApi(api)
+        let apimOptions = (this.apim_options || <IApimOptions>{});
+
+        let blockResult = await this.BlockForApi(api, apimOptions)
 
         if (!blockResult) {
             throw new Error("APIM API Plugin: Could not fetch API source => " + api.value)
         }
 
-        let apiRetries = (this.apim_options || <IApimOptions>{}).apiRetries
-        let apiRetryWaitTime = (this.apim_options || <IApimOptions>{}).apiRetryWaitTime
-
-        for(let i=0; i <= apiRetries; ++i) {
+        for(let i=0; i <= apimOptions.apiRetries; ++i) {
             let apiRevisionId : string
             try {
                 api.apiVersion = api.version
@@ -185,7 +185,7 @@ export class ApimApiPlugin extends BaseIngredient {
 
                 break; 
             } catch (error) {
-                if (i == apiRetries) {
+                if (i == apimOptions.apiRetries) {
                     if (error instanceof RestError){
                         let re: RestError = error
                         let msg: string = re.message
@@ -200,7 +200,7 @@ export class ApimApiPlugin extends BaseIngredient {
                     }
                 }
                 else {
-                    await this.Sleep(apiRetryWaitTime * 1000);
+                    await this.Sleep(apimOptions.apiRetryWaitTime * 1000);
                 }
             }
         }
@@ -226,7 +226,7 @@ export class ApimApiPlugin extends BaseIngredient {
         }
     }
 
-    private async BlockForApi(api: IApimApi): Promise<boolean> {
+    private async BlockForApi(api: IApimApi, apiOptions: IApimOptions): Promise<boolean> {
 
         if (api.format != "openapi-link" &&
             api.format != "swagger-link-json" &&
@@ -238,6 +238,13 @@ export class ApimApiPlugin extends BaseIngredient {
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
         this._logger.debug('APIM API Plugin: Waiting for API for ' + blockTime + ' seconds.');
+
+        // if we are forcing wait time, then just wait the entire time up front. Useful for changing API for
+        // same version on services that are already deployed. ie (overriding v1 for development)
+        if (apiOptions.forceWait){
+            this._logger.debug('Force wait for ' + apiOptions.apiWaitTime + ' seconds.');
+            await this.Sleep(apiOptions.apiWaitTime * 1000);
+        }
 
         for(let i=0; i < blockTime; ++i) {
             let response: any | undefined;
