@@ -200,6 +200,7 @@ export class ApimApiPlugin extends BaseIngredient {
                     }
                 }
                 else {
+                    this._logger.debug('APIM API Plugin: Error updating API - retrying.');
                     await this.Sleep(apimOptions.apiRetryWaitTime * 1000);
                 }
             }
