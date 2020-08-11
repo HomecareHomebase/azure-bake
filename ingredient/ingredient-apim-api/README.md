@@ -46,6 +46,8 @@ options:
                              # before creating the APIM api/policy/etc.
                              # You might be deploying a new API in this recipe, which could take 30-120s to become online.
                              # This setting lets us wait for new APIs to be online
+  forceWait: <boolean>       # forces bake to wait the `apiWaitSeconds` value even if the API exists. Useful for allowing a
+                             # k8s service deployment to update when using the same version.
   apiRetries: <number>       # number of times the ingredient will retry to add the API
   apiRetryWaitTime: <number> # seconds between retries      
 ```
@@ -135,7 +137,8 @@ recipe:
       condition: "[coreutils.primary_region()]"
       parameters:
         options:
-          apiWaitTime: 60 #override to waiting up to 60s for the API to be ready
+          apiWaitTime: 60 # override to waiting up to 60s for the API to be ready
+          forceWait: true # force wait 60s before updating the API in APIM
           apiRetries: 2 # retry adding the API this number of times
           apiRetryWaitTime: 5 # number of seconds between retries
         apis:
