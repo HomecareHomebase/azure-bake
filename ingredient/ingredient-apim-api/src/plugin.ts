@@ -224,11 +224,15 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
+        this._logger.debug('APIM API Plugin: Waiting for API for ' + blockTime + ' seconds.');
+
         for(let i=0; i < blockTime; ++i){
             let response = await request(api.value)
             if (response.statusCode >= 200 && response.statusCode < 400){
+                this._logger.debug('APIM API Plugin: API found at: ' + api.value);
                 return true
             }
+            this._logger.debug('APIM API Plugin: API not found with response code ' + response.statusCode + '. Sleeping for 1s.');
             await this.Sleep(1000)
         }
 
