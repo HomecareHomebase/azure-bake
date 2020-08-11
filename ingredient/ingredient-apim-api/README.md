@@ -42,10 +42,12 @@ Here is the documentation for all the supported paremeters for this ingredient.
 
 ```yaml
 options:
-  apiWaitSeconds: <number> # Supply a number of seconds to wait for any xml-link/swagger-link urls to become availabile 
-                           # before creating the APIM api/policy/etc.
-                           # You might be deploying a new API in this recipe, which could take 30-120s to become online.
-                           # This setting lets us wait for new APIs to be online
+  apiWaitSeconds: <number>   # Supply a number of seconds to wait for any xml-link/swagger-link urls to become availabile 
+                             # before creating the APIM api/policy/etc.
+                             # You might be deploying a new API in this recipe, which could take 30-120s to become online.
+                             # This setting lets us wait for new APIs to be online
+  apiRetries: <number>       # number of times the ingredient will retry to add the API
+  apiRetryWaitTime: <number> # seconds between retries      
 ```
 
 **apis**
@@ -94,8 +96,8 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 |----------|---------|-------------|
 | `get_api(resourceGroup: string, apimName: string, apiId: string)` | `Promise<ApiGetResponse>` | Returns the API for a given set of parameters. |
 | `get_backend(resourceGroup: string, apimName: string, backendId: string)` | `Promise<BackendGetResponse>` | Returns the back end for a given set of parameters. |
-| `get_hostheader(namespace: string, k8sHostname: string, serviceName: string | null = null)`| `string` | Returns host header for API |
-| `get_swaggerUrl(namespace: string, k8sHostname: string, version: string, serviceName: string | null = null, protocol: string | null = 'http')`| `string` | Returns swagger url page for the API |
+| `get_hostheader(namespace: string, k8sHostname: string, serviceName: string)`| `string` | Returns host header for API |
+| `get_swaggerUrl(namespace: string, k8sHostname: string, version: string, serviceName: string, protocol: string)`| `string` | Returns swagger url page for the API |
 
 ### Utility function examples
 ```yaml
@@ -134,6 +136,8 @@ recipe:
       parameters:
         options:
           apiWaitTime: 60 #override to waiting up to 60s for the API to be ready
+          apiRetries: 2 # retry adding the API this number of times
+          apiRetryWaitTime: 5 # number of seconds between retries
         apis:
           - name: petstore #unique API version identifier across APIM
             displayName: Pet Store API

@@ -29,6 +29,8 @@ interface IApimApi extends ApiCreateOrUpdateParameter{
 
 interface IApimOptions {
     apiWaitTime: number
+    apiRetries: number
+    apiRetryWaitTime: number
 }
 
 export class ApimApiPlugin extends BaseIngredient {
@@ -104,6 +106,8 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_options){
             this.apim_options.apiWaitTime = this.apim_options.apiWaitTime <= 0 || !this.apim_options.apiWaitTime ? 120 : this.apim_options.apiWaitTime
+            this.apim_options.apiRetries = this.apim_options.apiRetries <= 0 || !this.apim_options.apiRetries ? 1 : this.apim_options.apiRetries
+            this.apim_options.apiRetryWaitTime = this.apim_options.apiRetryWaitTime <= 0 || !this.apim_options.apiRetryWaitTime ? 5 : this.apim_options.apiRetryWaitTime
         }
 
         return true
@@ -166,29 +170,38 @@ export class ApimApiPlugin extends BaseIngredient {
             throw new Error("APIM API Plugin: Could not fetch API source => " + api.value)
         }
 
-        let apiRevisionId : string
-        try {
-            api.apiVersion = api.version
-            api.apiVersionSetId = apiVersion.id
-            api.apiVersionSet = apiVersion
-            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
-            this._logger.log("APIM API Plugin: API " + result.displayName + " published")
-            apiRevisionId = result.apiRevision || ""
-                
-        } catch (error) {
+        let apiRetries = (this.apim_options || <IApimOptions>{}).apiRetries
+        let apiRetryWaitTime = (this.apim_options || <IApimOptions>{}).apiRetryWaitTime
 
-            if (error instanceof RestError){
+        for(let i=0; i <= apiRetries; ++i) {
+            let apiRevisionId : string
+            try {
+                api.apiVersion = api.version
+                api.apiVersionSetId = apiVersion.id
+                api.apiVersionSet = apiVersion
+                let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
+                this._logger.log("APIM API Plugin: API " + result.displayName + " published")
+                apiRevisionId = result.apiRevision || ""
 
-                let re: RestError = error
-                let msg: string = re.message
-                let details: any[] = re.body.details
-                details.forEach(e => {
-                    msg += "\n" + e.message
-                })
-                throw msg    
-            }
-            else {
-                throw error
+                break; 
+            } catch (error) {
+                if (i == apiRetries) {
+                    if (error instanceof RestError){
+                        let re: RestError = error
+                        let msg: string = re.message
+                        let details: any[] = re.body.details
+                        details.forEach(e => {
+                            msg += "\n" + e.message
+                        })
+                        throw msg    
+                    }
+                    else {
+                        throw error
+                    }
+                }
+                else {
+                    await this.Sleep(apiRetryWaitTime * 1000);
+                }
             }
         }
 
@@ -224,15 +237,28 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(api.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                return true
+        this._logger.debug('APIM API Plugin: Waiting for API for ' + blockTime + ' seconds.');
+
+        for(let i=0; i < blockTime; ++i) {
+            let response: any | undefined;
+
+            try {
+                response = await request(api.value);
+            } catch(error) {
+                this._logger.error('APIM API Plugin: Error waiting for API: ' + error)
             }
-            await this.Sleep(1000)
+
+            if(response && (response.statusCode >= 200 && response.statusCode < 400)) {
+                this._logger.debug('APIM API Plugin: API found with response code ' + response.statusCode + ' at: ' + api.value);
+                return true;
+            }
+            else {
+                this._logger.debug('APIM API Plugin: API not found with response code ' + response.statusCode + '. Sleeping for 1s.');
+                await this.Sleep(1000);
+            }
         }
 
-        return false
+        return false;
     }
 
 	private async ApplyApiDiagnostics(diagnostics: IApimApiDiagnostics, apiId: string) : Promise<void> {
