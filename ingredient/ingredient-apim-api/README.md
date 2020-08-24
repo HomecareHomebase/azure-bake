@@ -67,6 +67,7 @@ apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/
 versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1310
   - name: <api-name> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to - required
     version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema      
+    stockDiagnosticSamplingRate: <number> #option value for the sampling rate of the stock app insights diagnostics.
     products: #optional list of product names to assign API to
     policies: #see next section for policy schema
     diagnostics: #see next section for diagnostic schema

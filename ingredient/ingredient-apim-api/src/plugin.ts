@@ -3,6 +3,8 @@ import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
 import { RestError } from "@azure/ms-rest-js"
 import * as fs from 'fs';
+import stockDiagnostics from "./stockDiagnostics.json"
+
 let request = require('async-request')
 
 interface IApimApiDiagnostics extends DiagnosticContract{
@@ -22,6 +24,7 @@ interface IApimApiVersion extends ApiVersionSetContract{
 interface IApimApi extends ApiCreateOrUpdateParameter{
     name : string
     version: string
+    stockDiagnosticSamplingRate?: number,
     policies?: Array<IApimPolicy>
     products?: Array<string>
     diagnostics?: Array<IApimApiDiagnostics>
@@ -164,6 +167,10 @@ export class ApimApiPlugin extends BaseIngredient {
         if (api.value) {
             api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
         }
+
+        if (api.stockDiagnosticSamplingRate) {
+            api.stockDiagnosticSamplingRate = parseInt((await (new BakeVariable(api.stockDiagnosticSamplingRate.toString())).valueAsync(this._ctx)))
+        }
         
         let apimOptions = (this.apim_options || <IApimOptions>{});
 
@@ -221,8 +228,20 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (api.diagnostics) {
             for(let i=0; i < api.diagnostics.length; ++i){
-                let diagnostics = api.diagnostics[i]
-                await this.ApplyApiDiagnostics(diagnostics, api.name)
+                let diagnostic = api.diagnostics[i]
+                await this.ApplyApiDiagnostics(diagnostic, api.name)
+            }
+        }
+        else {
+            let aiDiag = stockDiagnostics.appInsights as IApimApiDiagnostics;
+
+            if (aiDiag && aiDiag.sampling) {
+
+                if(api.stockDiagnosticSamplingRate) {
+                    aiDiag.sampling.percentage = api.stockDiagnosticSamplingRate;
+                }
+                    
+                await this.ApplyApiDiagnostics(aiDiag, api.name)
             }
         }
     }
