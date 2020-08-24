@@ -3,6 +3,8 @@ import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
 import { RestError } from "@azure/ms-rest-js"
 import * as fs from 'fs';
+import stockDiagnostics from "./stockDiagnostics.json"
+
 let request = require('async-request')
 
 interface IApimApiDiagnostics extends DiagnosticContract{
@@ -221,8 +223,20 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (api.diagnostics) {
             for(let i=0; i < api.diagnostics.length; ++i){
-                let diagnostics = api.diagnostics[i]
-                await this.ApplyApiDiagnostics(diagnostics, api.name)
+                let diagnostic = api.diagnostics[i]
+                await this.ApplyApiDiagnostics(diagnostic, api.name)
+            }
+        }
+        else {
+            let aiDiag = stockDiagnostics.appInsights as IApimApiDiagnostics;
+
+            if (aiDiag && aiDiag.sampling) {
+
+                if (this._ctx.Environment.environmentCode == stockDiagnostics.appInsights.prodOverrides.envCode) {
+                    aiDiag.sampling.percentage = stockDiagnostics.appInsights.prodOverrides.sampling.percentage;
+                }
+                    
+                await this.ApplyApiDiagnostics(aiDiag, api.name)
             }
         }
     }
