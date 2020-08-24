@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.18](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.17...@azbake/ingredient-apim-api@0.2.18) (2020-08-24)
+
+
+### Bug Fixes
+
+* add stock diagnostics for all API deployed to APIM ([#181](https://github.com/HomecareHomebase/azure-bake/issues/181)) ([37108ad](https://github.com/HomecareHomebase/azure-bake/commit/37108ad))
+
+
+
+
+
 ## [0.2.17](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.16...@azbake/ingredient-apim-api@0.2.17) (2020-08-11)
 
 

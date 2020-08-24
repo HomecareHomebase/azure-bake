@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.24](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.23...@azbake/ingredient-property-service@0.1.24) (2020-08-24)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
 ## [0.1.23](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.22...@azbake/ingredient-property-service@0.1.23) (2020-08-11)
 
 **Note:** Version bump only for package @azbake/ingredient-property-service
