@@ -6,6 +6,12 @@
     "sampling": {
       "samplingType": "fixed",
       "percentage": 100
+    },
+    "prodOverrides": {
+      "envCode": "PRD",
+      "sampling": {
+        "percentage": 10
+      }
     }
   }
 }

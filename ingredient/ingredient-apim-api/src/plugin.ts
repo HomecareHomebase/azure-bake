@@ -24,7 +24,6 @@ interface IApimApiVersion extends ApiVersionSetContract{
 interface IApimApi extends ApiCreateOrUpdateParameter{
     name : string
     version: string
-    stockDiagnosticSamplingRate?: number,
     policies?: Array<IApimPolicy>
     products?: Array<string>
     diagnostics?: Array<IApimApiDiagnostics>
@@ -167,10 +166,6 @@ export class ApimApiPlugin extends BaseIngredient {
         if (api.value) {
             api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
         }
-
-        if (api.stockDiagnosticSamplingRate) {
-            api.stockDiagnosticSamplingRate = parseInt((await (new BakeVariable(api.stockDiagnosticSamplingRate.toString())).valueAsync(this._ctx)))
-        }
         
         let apimOptions = (this.apim_options || <IApimOptions>{});
 
@@ -237,8 +232,8 @@ export class ApimApiPlugin extends BaseIngredient {
 
             if (aiDiag && aiDiag.sampling) {
 
-                if(api.stockDiagnosticSamplingRate) {
-                    aiDiag.sampling.percentage = api.stockDiagnosticSamplingRate;
+                if (this._ctx.Environment.environmentCode == stockDiagnostics.appInsights.prodOverrides.envCode) {
+                    aiDiag.sampling.percentage = stockDiagnostics.appInsights.prodOverrides.sampling.percentage;
                 }
                     
                 await this.ApplyApiDiagnostics(aiDiag, api.name)
