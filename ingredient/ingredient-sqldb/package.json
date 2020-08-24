@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-sqldb",
   "description": "Ingredient for deploying an instance of SQL Database.",
-  "version": "0.1.129",
+  "version": "0.1.130",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
