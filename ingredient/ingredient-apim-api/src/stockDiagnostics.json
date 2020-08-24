@@ -1,7 +1,7 @@
 {
   "appInsights": {
     "name": "applicationinsights",
-    "loggerId": "[(await apim.get_logger(await apim.get_resource_group(), await apim.get_resource_name(), await appinsights.get_resource_name('apimhchbapi'))).id]",
+    "loggerId": "[(await apim.get_logger(await apim.get_resource_group(), await apim.get_resource_name('hchbapi'), await appinsights.get_resource_name('apimhchbapi'))).id]",
     "alwaysLog": "allErrors",
     "sampling": {
       "samplingType": "fixed",
