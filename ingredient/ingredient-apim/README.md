@@ -134,6 +134,13 @@ autoScaleSettings: #follows this azure spec for *AutoscaleSettingResource * : ht
   - name: <auto scale setting name>
 ```
 
+**backends**
+
+```yaml
+backends: #follows this azure spec for *BackendContract*  : https://github.com/Azure/azure-sdk-for-js/blob/0f358041f43f3414be37c9bd44492acb6f461f61/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1932
+  - name: <back end name>
+```
+
 ## Utility Functions
 
 Utility classes can be used inside of the bake.yaml file for parameter and source values.
