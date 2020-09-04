@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-property-service",
   "description": "Ingredient for managing peoperty service.",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
