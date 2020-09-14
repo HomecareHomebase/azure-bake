@@ -24,7 +24,9 @@ export class CoreUtils extends BaseUtility {
         return (str == "true" || str == "1");
     }
 
-    
+    public toJsonString(v: any): string {
+        return JSON.stringify(v);
+    }
 
     public current_region() {
         return this.context.Region
