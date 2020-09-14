@@ -1,17 +1,18 @@
-name: kv-test
-shortName: kv
-version: 1.0.0
+name: Kados
+shortName: kados
+owner: Architecture
+version: 0.0.1
 ingredients:
-  - "@azbake/ingredient-storage@~0"
-  - "@azbake/ingredient-null@~0"
-resourceGroup: true
-rgOverride: "whilke-poc"
+  - "@azbake/ingredient-kubernetes@~0"
 parallelRegions: false
+resourceGroup: false
 variables:
-  container: "[storage.get_storageaccount('whilke-poc','whilkepocdiag')]"
+  blah: "[coreutils.toJsonString(await coreutils.variable('json'))]"
 recipe:
-  keyvault:
+  kados-service-deploy:
     properties:
-      type: "@azbake/ingredient-null"
+      type: "@azbake/ingredient-kubernetes"
+      source: ./k8
+      tokens:
       parameters:
-        name: "[storage.get_container(await coreutils.variable('container'), 'whilke')]"              
+        kubeconfig: "[coreutils.variable('k8s_config')]"
