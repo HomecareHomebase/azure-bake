@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.1.102...@azbake/ingredient-utils@0.1.103) (2020-09-14)
+
+
+### Bug Fixes
+
+* Adding toJsonString() util to convert an object into a json string ([#188](https://github.com/HomecareHomebase/azure-bake/issues/188)) ([c73ec17](https://github.com/HomecareHomebase/azure-bake/commit/c73ec17))
+
+
+
+
+
 ## [0.1.102](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.1.101...@azbake/ingredient-utils@0.1.102) (2020-07-21)
 
 **Note:** Version bump only for package @azbake/ingredient-utils

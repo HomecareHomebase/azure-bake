@@ -5,6 +5,13 @@ import { SubscriptionGetResponse, LoggerGetResponse, PropertyGetResponse } from 
 import { SubnetsGetResponse } from '@azure/arm-network/esm/models';
 
 export class ApimUtils extends BaseUtility {
+    public async get_source(name: string | null = null): Promise<string> {
+        var sourceName = (await this.get_resource_group()) + '/' + this.get_resource_name(name);
+
+        this.context._logger.debug(`ApimUtils.get_source() returned ${sourceName}`);
+
+        return sourceName;
+    }
 
     public get_resource_name(name: string | null = null): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
@@ -76,6 +83,6 @@ export class ApimUtils extends BaseUtility {
         this.context._logger.debug(`ApimUtils.get_subscription_keySecondary() returned ${subscription.secondaryKey}`);
 
         return subscription.secondaryKey
-    } 
+    }
 }
 
