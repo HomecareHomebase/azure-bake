@@ -68,7 +68,7 @@
         "evaluationFrequency": "PT15M",
         "alertType": "Static",
         "threshold": "4500",
-        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+        "actionGroups": [{"actionGroupShortName": "opsgenieInfraAlert"}]        
     },
     "DeadletteredMessages": {
         "alertDescription": "static count of dead-lettered messages in a Queue/Topic. ",
@@ -95,7 +95,7 @@
         "evaluationFrequency": "PT15M",
         "alertType": "Static",
         "threshold": "77309411328",
-        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+        "actionGroups": [{"actionGroupShortName": "opsgenieInfraAlert"}]        
     },
     "CPUXNS": {
         "alertDescription": "The CPU metric's average value has exceeded 95% for longer than the duration allowed.",

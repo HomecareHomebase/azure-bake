@@ -17,6 +17,6 @@
                 "minFailingPeriodsToAlert": "6"
             }
         },
-        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+        "actionGroups": [{"actionGroupShortName": "opsgenieAppAlert"}]        
     }    
 }
