@@ -35,7 +35,7 @@
             ],
             "properties": {
               "name": "slowpageloadtime",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -50,7 +50,7 @@
             ],
             "properties": {
               "name": "slowserverresponsetime",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -65,7 +65,7 @@
             ],
             "properties": {
               "name": "longdependencyduration",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -80,7 +80,7 @@
             ],
             "properties": {
               "name": "degradationinserverresponsetime",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -95,7 +95,7 @@
             ],
             "properties": {
               "name": "degradationindependencyduration",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -110,7 +110,7 @@
             ],
             "properties": {
               "name": "extension_traceseveritydetector",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -125,7 +125,7 @@
             ],
             "properties": {
               "name": "extension_exceptionchangeextension",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -140,7 +140,7 @@
             ],
             "properties": {
               "name": "extension_memoryleakextension",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -155,7 +155,7 @@
             ],
             "properties": {
               "name": "extension_securityextensionspackage",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
@@ -170,7 +170,7 @@
             ],
             "properties": {
               "name": "extension_billingdatavolumedailyspikeextension",
-              "sendEmailsToSubscriptionOwners": true,
+              "sendEmailsToSubscriptionOwners": false,
               "customEmails": [],
               "enabled": true
             }
