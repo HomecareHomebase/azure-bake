@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.110...@azbake/ingredient-storage@0.1.111) (2020-09-17)
+
+
+### Bug Fixes
+
+* disable smart detection notifications, more ([#190](https://github.com/HomecareHomebase/azure-bake/issues/190)) ([73e4375](https://github.com/HomecareHomebase/azure-bake/commit/73e4375))
+
+
+
+
+
 ## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.109...@azbake/ingredient-storage@0.1.110) (2020-07-21)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
