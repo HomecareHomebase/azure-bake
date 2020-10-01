@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-apim-api",
   "description": "Ingredient for deploying an Azure API Management Instance.",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
