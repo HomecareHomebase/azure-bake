@@ -91,7 +91,7 @@ export class ApimApiPlugin extends BaseIngredient {
             return false
         }
 
-        let pemFile = "C:/Users/joshbrown/Desktop/public.certs.pem"; // TODO
+        let pemFile = process.env.NODE_EXTRA_CA_CERTS || "";
         let chk = fs.existsSync(pemFile)
         if (!chk) {
             this._logger.error('could not locate CA file: ' + pemFile)
