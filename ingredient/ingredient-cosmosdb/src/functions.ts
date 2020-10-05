@@ -1,13 +1,15 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 
-export class MyUtils extends BaseUtility {
+export class CosmosUtility extends BaseUtility {
 
  
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
 
-        const name = util.create_resource_name("cosmosdb", null, true);
+        const name = util.create_resource_name("cosms", null, true);
         return name;
     }
+
+
 }
 

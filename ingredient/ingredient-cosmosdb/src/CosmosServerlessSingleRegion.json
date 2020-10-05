@@ -1,5 +1,5 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"$schema": "https://schema.management.azure.com/schemas/2020-06-01-preview/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"accountName": {
@@ -21,12 +21,6 @@
 			"metadata": {
 				"description": "The primary replica region for the Cosmos DB account."
 			}
-		},
-		"secondaryRegion":{
-			"type":"string",
-			"metadata": {
-			  "description": "The secondary replica region for the Cosmos DB account."
-		  }
 		},
 		"defaultConsistencyLevel": {
 			"type": "string",
@@ -62,29 +56,16 @@
 				"description": "Enable automatic failover for regions"
 			}
 		},
-		"databaseName": {
-			"type": "string",
-			"defaultValue": "myDatabase",
-			"metadata": {
-				"description": "The name for the database"
-			}
-		},
-		"containerName": {
-			"type": "string",
-			"defaultValue": "myContainer",
-			"metadata": {
-				"description": "The name for the container"
-			}
-		},
-		"throughput": {
-			"type": "int",
-			"defaultValue": 400,
-			"minValue": 400,
-			"maxValue": 1000000,
-			"metadata": {
-				"description": "The throughput for the container"
-			}			
-		}
+        "capabilities" :
+        {
+            "type":"array",
+            "defaultValue": [ {
+                "name" : "EnableServerless"
+                }
+            ]
+            
+        }
+
 	},
 	"variables": {
 		"accountName": "[toLower(parameters('accountName'))]",
@@ -113,11 +94,6 @@
 				"locationName": "[parameters('primaryRegion')]",
 				"failoverPriority": 0,
 				"isZoneRedundant": false
-			}, 
-			{
-				"locationName": "[parameters('secondaryRegion')]",
-				"failoverPriority": 1,
-				"isZoneRedundant": false
 			}
 		]
 	},
@@ -133,82 +109,10 @@
 				"consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
 				"locations": "[variables('locations')]",
 				"databaseAccountOfferType": "Standard",
-				"enableAutomaticFailover": "[parameters('automaticFailover')]"
+				"enableAutomaticFailover": "[parameters('automaticFailover')]",
+                "capabilities": "[parameters('capabilities')]"
 			}
-		},
-		{
-			"type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-			"name": "[concat(variables('accountName'), '/', parameters('databaseName'))]",
-			"apiVersion": "2020-03-01",
-			"dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]" ],
-			"properties":{
-				"resource":{
-					"id": "[parameters('databaseName')]"
-				}
-			}
-		},
-		{
-			"type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-			"name": "[concat(variables('accountName'), '/', parameters('databaseName'), '/', parameters('containerName'))]",
-			"apiVersion": "2020-03-01",
-			"dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('accountName'), parameters('databaseName'))]" ],
-			"properties":
-			{
-				"resource":{
-					"id":  "[parameters('containerName')]",
-					"partitionKey": {
-						"paths": [
-						"/myPartitionKey"
-						],
-						"kind": "Hash"
-					},
-					"indexingPolicy": {
-						"indexingMode": "consistent",
-						"includedPaths": [{
-								"path": "/*"
-							}
-						],
-						"excludedPaths": [{
-								"path": "/myPathToNotIndex/*"
-							}
-						],
-						"compositeIndexes":[  
-						[
-							{
-								"path":"/name",
-								"order":"ascending"
-							},
-							{
-								"path":"/age",
-								"order":"descending"
-							}
-						]
-					],
-					"spatialIndexes": [
-							{
-								"path": "/path/to/geojson/property/?",
-								"types": [
-									"Point",
-									"Polygon",
-									"MultiPolygon",
-									"LineString"
-								]
-							}
-						]
-					},
-					"defaultTtl": 86400,
-					"uniqueKeyPolicy": {
-						"uniqueKeys": [
-						{
-							"paths": [
-							"/phoneNumber"
-							]
-						}
-						]
-					}
-				},
-				"options": { "throughput": "[parameters('throughput')]" }
-			}
+		
 		}
 	]
 }
