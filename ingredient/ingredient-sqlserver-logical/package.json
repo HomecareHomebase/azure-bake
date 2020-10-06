@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-sqlserver-logical",
   "description": "Ingredient for deploying an instance of SQL Server logical.",
-  "version": "0.1.137",
+  "version": "0.1.138",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
