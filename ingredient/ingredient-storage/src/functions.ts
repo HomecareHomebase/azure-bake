@@ -1,6 +1,6 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
-import { StorageManagementClient } from '@azure/arm-storage'
-import { StorageAccountsGetPropertiesResponse, StorageAccount, Endpoints } from '@azure/arm-storage/esm/models'
+import { StorageManagementClient, ManagementPolicies } from '@azure/arm-storage'
+import { StorageAccountsGetPropertiesResponse, StorageAccount, Endpoints, ManagementPolicySchema, ManagementPolicyRule, ManagementPolicyDefinition, ManagementPolicyFilter, ManagementPolicyAction, ManagementPolicyBaseBlob, DateAfterModification } from '@azure/arm-storage/esm/models'
 import {BlobServiceClient, StorageSharedKeyCredential, SignedIdentifier} from '@azure/storage-blob'
 
 export class BakeStorageAccount {
@@ -91,7 +91,35 @@ export class StorageUtils extends BaseUtility {
 
     }
 
-    public async get_container(account: BakeStorageAccount, container: string, accessLevel?: "container" | "blob" | undefined): Promise<BakeStorageContainer | null>{
+    public add_delete_policy(name: string, enabled: boolean, daysAfter: number) : ManagementPolicyRule{
+        const rule = <ManagementPolicyRule>{
+            name: name,
+            enabled: enabled,
+        };
+
+        rule.definition = <ManagementPolicyDefinition>{
+            filters : <ManagementPolicyFilter>{
+                blobTypes : ["blockBlob"]
+            },
+            actions: <ManagementPolicyAction>{
+                baseBlob : <ManagementPolicyBaseBlob>{
+                    deleteProperty: <DateAfterModification>{
+                        daysAfterModificationGreaterThan : daysAfter
+                    }
+                }
+            }
+        };
+        return rule;
+    }
+
+    public create_policy(... rules : ManagementPolicyRule[]): ManagementPolicySchema {
+        const policy = <ManagementPolicySchema>{
+            rules: rules
+        };
+        return policy;
+    }
+
+    public async get_container(account: BakeStorageAccount, container: string, accessLevel?: "container" | "blob" | undefined, policy?: ManagementPolicySchema | undefined): Promise<BakeStorageContainer | null>{
         const endpoints = account.endpoints
         if (endpoints == undefined) return null
         if (endpoints.blob == undefined) return null
@@ -103,6 +131,14 @@ export class StorageUtils extends BaseUtility {
             const resp = await containerClient.create()
         }
         await containerClient.setAccessPolicy(accessLevel)
+
+        if (policy)
+        {
+            var mgmtClient = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+            var responese = await mgmtClient.managementPolicies.createOrUpdate(account.rg, account.name, policy);    
+        }
+
+
         const bakeContainer : BakeStorageContainer =  {
             account : account,
             container: container
