@@ -1,10 +1,10 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2020-06-01-preview/deploymentTemplate.json#",
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"accountName": {
 			"type": "string",
-			"defaultValue": "[concat('sql-', uniqueString(resourceGroup().id))]",
+			"defaultValue": "[concat('cdb-', uniqueString(resourceGroup().id))]",
 			"metadata": {
 				"description": "Cosmos DB account name, max length 44 characters"
 			}
@@ -113,10 +113,11 @@
 		{
 			"type": "Microsoft.DocumentDB/databaseAccounts",
 			"name": "[variables('accountName')]",
-			"apiVersion": "2020-03-01",
+			"apiVersion": "2020-06-01-preview",
 			"kind": "GlobalDocumentDB",
 			"location": "[parameters('location')]",
 			"properties": {
+				"createMode": "Default",
 				"consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
 				"locations": "[variables('locations')]",
 				"databaseAccountOfferType": "Standard",

@@ -1,5 +1,5 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2020-06-01-preview/deploymentTemplate.json#",
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"accountName": {
@@ -91,7 +91,7 @@
 		"locations": 
 		[ 
 			{
-				"locationName": "[parameters('primaryRegion')]",
+				"locationName": "[parameters('location')]",
 				"failoverPriority": 0,
 				"isZoneRedundant": false
 			}
@@ -102,10 +102,11 @@
 		{
 			"type": "Microsoft.DocumentDB/databaseAccounts",
 			"name": "[variables('accountName')]",
-			"apiVersion": "2020-03-01",
+			"apiVersion": "2020-06-01-preview",
 			"kind": "GlobalDocumentDB",
 			"location": "[parameters('location')]",
 			"properties": {
+				"createMode": "Default",
 				"consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
 				"locations": "[variables('locations')]",
 				"databaseAccountOfferType": "Standard",

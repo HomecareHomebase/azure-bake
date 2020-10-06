@@ -3,14 +3,18 @@ shortName: cosmosdb
 version: 1.0.0
 ingredients:
    - "@azbake/ingredient-cosmosdb@~0"
+   - "@azbake/ingredient-event-hub-namespace@~0"
 rgOverride: "larry-poc"
 resourceGroup: true
 variables:
   dbResourceName: "[coreutils.create_resource_name('cd', 'cosmos', false)]"
+  capabilities: "[JSON.parse('[{\"name\" : \"EnableServerless\" }]')]"
 recipe:
   cosmosdb-create:
     properties:
       type: "@azbake/ingredient-cosmosdb"
+      condition: "[coreutils.current_region_primary()]" 
       parameters:
-        accountName: "[coreutils.variable('cosmosdbAccountName')]"
-        primaryRegion : 
+        accountName: "[coreutils.variable('dbResourceName')]"
+        primaryRegion: "[coreutils.current_region().name]"
+        capabilities : "[coreutils.variable('capabilities')]"

@@ -15,7 +15,7 @@ export class CosmosDb extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
             //build the properties as a standard object.
             let armParameters = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            armParameters = await helper.ConfigureDiagnostics(armParameters);
+           // armParameters = await helper.ConfigureDiagnostics(armParameters); TODO 
             if(armParameters["secondaryRegion"])
             {
                 await helper.DeployTemplate(this._name, ARMTemplate, armParameters, await util.resource_group());
