@@ -24,7 +24,7 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.102"
+    "@azbake/arm-helper": "^0.1.101"
   },
   "publishConfig": {
     "access": "public"
