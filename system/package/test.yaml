@@ -1,17 +1,16 @@
-name: kv-test
-shortName: kv
+name: cosmosdatabase
+shortName: cosmosdb
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-storage@~0"
-  - "@azbake/ingredient-null@~0"
+   - "@azbake/ingredient-cosmosdb@~0"
+rgOverride: "larry-poc"
 resourceGroup: true
-rgOverride: "whilke-poc"
-parallelRegions: false
 variables:
-  container: "[storage.get_storageaccount('whilke-poc','whilkepocdiag')]"
+  dbResourceName: "[coreutils.create_resource_name('cd', 'cosmos', false)]"
 recipe:
-  keyvault:
+  cosmosdb-create:
     properties:
-      type: "@azbake/ingredient-null"
+      type: "@azbake/ingredient-cosmosdb"
       parameters:
-        name: "[storage.get_container(await coreutils.variable('container'), 'whilke')]"              
+        accountName: "[coreutils.variable('cosmosdbAccountName')]"
+        primaryRegion : 
