@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.34](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.33...@azbake/ingredient-property-service@0.1.34) (2020-10-07)
+
+
+### Bug Fixes
+
+* Property service source sub props now support BakeVariables ([#194](https://github.com/HomecareHomebase/azure-bake/issues/194)) ([fdaae99](https://github.com/HomecareHomebase/azure-bake/commit/fdaae99))
+
+
+
+
+
 ## [0.1.33](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.32...@azbake/ingredient-property-service@0.1.33) (2020-10-06)
 
 **Note:** Version bump only for package @azbake/ingredient-property-service
