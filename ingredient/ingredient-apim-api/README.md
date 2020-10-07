@@ -42,10 +42,14 @@ Here is the documentation for all the supported paremeters for this ingredient.
 
 ```yaml
 options:
-  apiWaitSeconds: <number> # Supply a number of seconds to wait for any xml-link/swagger-link urls to become availabile 
-                           # before creating the APIM api/policy/etc.
-                           # You might be deploying a new API in this recipe, which could take 30-120s to become online.
-                           # This setting lets us wait for new APIs to be online
+  apiWaitSeconds: <number>   # Supply a number of seconds to wait for any xml-link/swagger-link urls to become availabile 
+                             # before creating the APIM api/policy/etc.
+                             # You might be deploying a new API in this recipe, which could take 30-120s to become online.
+                             # This setting lets us wait for new APIs to be online
+  forceWait: <boolean>       # forces bake to wait the `apiWaitSeconds` value even if the API exists. Useful for allowing a
+                             # k8s service deployment to update when using the same version.
+  apiRetries: <number>       # number of times the ingredient will retry to add the API
+  apiRetryWaitTime: <number> # seconds between retries      
 ```
 
 **apis**
@@ -62,7 +66,7 @@ apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/
 ```yaml
 versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1310
   - name: <api-name> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to - required
-    version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema      
+    version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema
     products: #optional list of product names to assign API to
     policies: #see next section for policy schema
     diagnostics: #see next section for diagnostic schema
@@ -94,12 +98,16 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 |----------|---------|-------------|
 | `get_api(resourceGroup: string, apimName: string, apiId: string)` | `Promise<ApiGetResponse>` | Returns the API for a given set of parameters. |
 | `get_backend(resourceGroup: string, apimName: string, backendId: string)` | `Promise<BackendGetResponse>` | Returns the back end for a given set of parameters. |
+| `get_hostheader(namespace: string, k8sHostname: string, serviceName: string)`| `string` | Returns host header for API |
+| `get_swaggerUrl(namespace: string, k8sHostname: string, version: string, serviceName: string, protocol: string)`| `string` | Returns swagger url page for the API |
 
 ### Utility function examples
 ```yaml
 variables:
   api: "[await apimapi.get_api(<apim resource group>, <apim name>, <api id>)]"
   backend: "[await apimapi.get_backend(<apim resource group>, <apim name>, <backend id>)]"
+  hostHeader: "[await apimapi.get_hostheader(<api namespace>, <k8sHostName>)]"
+  swaggerUrl: "[await apimapi.get_swaggerUrl(<api namespace>, <k8sHostName>), <api version>]"
 ```
 
 ## Sample
@@ -129,7 +137,10 @@ recipe:
       condition: "[coreutils.primary_region()]"
       parameters:
         options:
-          apiWaitTime: 60 #override to waiting up to 60s for the API to be ready
+          apiWaitTime: 60 # override to waiting up to 60s for the API to be ready
+          forceWait: true # force wait 60s before updating the API in APIM
+          apiRetries: 2 # retry adding the API this number of times
+          apiRetryWaitTime: 5 # number of seconds between retries
         apis:
           - name: petstore #unique API version identifier across APIM
             displayName: Pet Store API

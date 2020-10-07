@@ -1,7 +1,7 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
-import { ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { BackendContract, BackendCreateOrUpdateOptionalParams, ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
 import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 import * as fs from 'fs';
 interface IApim extends ApiManagementServiceResource{
@@ -61,6 +61,10 @@ interface IApimSubscription extends SubscriptionCreateParameters{
     api?: string
 }
 
+interface IApimBackend extends BackendContract{
+    name: string
+}
+
 export class ApimPlugin extends BaseIngredient {
 
     private     resource_group:     string      = ""
@@ -85,6 +89,7 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
                 await this.BuildAutoscaleSettings()
+                await this.BuildBackends()
             }
         } catch(error){
             this._logger.error('APIM Plugin: ' + error)
@@ -711,6 +716,42 @@ export class ApimPlugin extends BaseIngredient {
         }
     }
 
+    private async BuildBackends() : Promise<void> {
+        let backendsParam  = this._ingredient.properties.parameters.get('backends')
+        if (!this.apim || !backendsParam){
+            return
+        }
+
+        let apimBackends :IApimBackend[] = await backendsParam.valueAsync(this._ctx)
+        if (!apimBackends){
+            return
+        }
+        
+        for(let i =0; i < apimBackends.length; ++i) {
+            let apimBackend = apimBackends[i];
+            await this.BuildBackend(apimBackend)
+        }  
+    }
+
+    private async BuildBackend(backend: IApimBackend) : Promise<void> {
+        if (this.apim_client == undefined) return
+
+        let backendData = await this.ResolveBackend(backend);
+
+        this._logger.log('APIM Plugin: Add/Update APIM backend: ' + backendData.name)
+
+        let response = await this.apim_client.backend.createOrUpdate(
+            this.resource_group,
+            this.resource_name,
+            backendData.name,
+            backendData,
+            <BackendCreateOrUpdateOptionalParams>{ifMatch:'*'})
+
+        if (response._response.status  != 200 && response._response.status != 201) {
+            this._logger.error("APIM Plugin: Could not create/update backend " + backendData.name)
+        }
+    }
+
     private async ResolveApim(apim: IApim) : Promise<ApiManagementServiceResource> {
         if (apim.location) {
             apim.location = (await (new BakeVariable(apim.location)).valueAsync(this._ctx))            
@@ -805,6 +846,18 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         return apimDiagnostics;
+    }
+
+    private async ResolveBackend(backend: IApimBackend) : Promise<IApimBackend> { 
+        if (backend.name) {
+            backend.name = (await (new BakeVariable(backend.name)).valueAsync(this._ctx))            
+        }
+
+        if (backend.url) {
+            backend.url = (await (new BakeVariable(backend.url)).valueAsync(this._ctx)) 
+        }
+
+        return backend;
     }
 
     private async ResolveNamedValue(namedValue: IApimNamedValue) : Promise<PropertyContract> {

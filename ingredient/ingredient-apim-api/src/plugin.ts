@@ -3,7 +3,9 @@ import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
 import { RestError } from "@azure/ms-rest-js"
 import * as fs from 'fs';
-let request = require('async-request')
+import stockDiagnostics from "./stockDiagnostics.json"
+
+const got = require('got');
 
 interface IApimApiDiagnostics extends DiagnosticContract{
     name: string
@@ -29,6 +31,9 @@ interface IApimApi extends ApiCreateOrUpdateParameter{
 
 interface IApimOptions {
     apiWaitTime: number
+    forceWait: boolean
+    apiRetries: number
+    apiRetryWaitTime: number
 }
 
 export class ApimApiPlugin extends BaseIngredient {
@@ -37,6 +42,7 @@ export class ApimApiPlugin extends BaseIngredient {
     private     apim_client:        ApiManagementClient | undefined
     private     apim_apis:          Array<ApiContract> | undefined
     private     apim_options:       IApimOptions | undefined
+    private     ca_file:            Buffer | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -76,13 +82,22 @@ export class ApimApiPlugin extends BaseIngredient {
             this._logger.log('APIM API Plugin: resourceName can not be empty')
             return false
         }
-
+        
         this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
         this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.log('APIM API Plugin: APIM client is null')
             return false
+        }
+
+        let pemFile = process.env.NODE_EXTRA_CA_CERTS || "";
+        let chk = fs.existsSync(pemFile)
+        if (!chk) {
+            this._logger.error('could not locate CA file: ' + pemFile)
+        }
+        else{
+            this.ca_file = fs.readFileSync(pemFile)
         }
 
         let apis : Array<ApiContract> = new Array<ApiContract>()
@@ -104,6 +119,8 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_options){
             this.apim_options.apiWaitTime = this.apim_options.apiWaitTime <= 0 || !this.apim_options.apiWaitTime ? 120 : this.apim_options.apiWaitTime
+            this.apim_options.apiRetries = this.apim_options.apiRetries <= 0 || !this.apim_options.apiRetries ? 1 : this.apim_options.apiRetries
+            this.apim_options.apiRetryWaitTime = this.apim_options.apiRetryWaitTime <= 0 || !this.apim_options.apiRetryWaitTime ? 5 : this.apim_options.apiRetryWaitTime
         }
 
         return true
@@ -160,35 +177,44 @@ export class ApimApiPlugin extends BaseIngredient {
             api.value = (await (new BakeVariable(api.value)).valueAsync(this._ctx))
         }
         
-        let blockResult = await this.BlockForApi(api)
+        let apimOptions = (this.apim_options || <IApimOptions>{});
+
+        let blockResult = await this.BlockForApi(api, apimOptions)
 
         if (!blockResult) {
             throw new Error("APIM API Plugin: Could not fetch API source => " + api.value)
         }
 
-        let apiRevisionId : string
-        try {
-            api.apiVersion = api.version
-            api.apiVersionSetId = apiVersion.id
-            api.apiVersionSet = apiVersion
-            let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
-            this._logger.log("APIM API Plugin: API " + result.displayName + " published")
-            apiRevisionId = result.apiRevision || ""
-                
-        } catch (error) {
+        for(let i=0; i <= apimOptions.apiRetries; ++i) {
+            let apiRevisionId : string
+            try {
+                api.apiVersion = api.version
+                api.apiVersionSetId = apiVersion.id
+                api.apiVersionSet = apiVersion
+                let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
+                this._logger.log("APIM API Plugin: API " + result.displayName + " published")
+                apiRevisionId = result.apiRevision || ""
 
-            if (error instanceof RestError){
-
-                let re: RestError = error
-                let msg: string = re.message
-                let details: any[] = re.body.details
-                details.forEach(e => {
-                    msg += "\n" + e.message
-                })
-                throw msg    
-            }
-            else {
-                throw error
+                break; 
+            } catch (error) {
+                if (i == apimOptions.apiRetries) {
+                    if (error instanceof RestError){
+                        let re: RestError = error
+                        let msg: string = re.message
+                        let details: any[] = re.body.details
+                        details.forEach(e => {
+                            msg += "\n" + e.message
+                        })
+                        throw msg    
+                    }
+                    else {
+                        throw error
+                    }
+                }
+                else {
+                    this._logger.debug('APIM API Plugin: Error updating API - retrying.');
+                    await this.Sleep(apimOptions.apiRetryWaitTime * 1000);
+                }
             }
         }
 
@@ -207,13 +233,25 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (api.diagnostics) {
             for(let i=0; i < api.diagnostics.length; ++i){
-                let diagnostics = api.diagnostics[i]
-                await this.ApplyApiDiagnostics(diagnostics, api.name)
+                let diagnostic = api.diagnostics[i]
+                await this.ApplyApiDiagnostics(diagnostic, api.name)
+            }
+        }
+        else {
+            let aiDiag = stockDiagnostics.appInsights as IApimApiDiagnostics;
+
+            if (aiDiag && aiDiag.sampling) {
+
+                if (this._ctx.Environment.environmentCode == stockDiagnostics.appInsights.prodOverrides.envCode) {
+                    aiDiag.sampling.percentage = stockDiagnostics.appInsights.prodOverrides.sampling.percentage;
+                }
+                    
+                await this.ApplyApiDiagnostics(aiDiag, api.name)
             }
         }
     }
 
-    private async BlockForApi(api: IApimApi): Promise<boolean> {
+    private async BlockForApi(api: IApimApi, apiOptions: IApimOptions): Promise<boolean> {
 
         if (api.format != "openapi-link" &&
             api.format != "swagger-link-json" &&
@@ -224,15 +262,52 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
-        for(let i=0; i < blockTime; ++i){
-            let response = await request(api.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
-                return true
-            }
-            await this.Sleep(1000)
+        this._logger.debug('APIM API Plugin: Waiting for API for ' + blockTime + ' seconds.');
+
+        // if we are forcing wait time, then just wait the entire time up front. Useful for changing API for
+        // same version on services that are already deployed. ie (overriding v1 for development)
+        if (apiOptions.forceWait){
+            this._logger.debug('Force wait for ' + apiOptions.apiWaitTime + ' seconds.');
+            await this.Sleep(apiOptions.apiWaitTime * 1000);
         }
 
-        return false
+        for(let i=0; i < blockTime; ++i) {
+            let response: any | undefined;
+
+            try {
+                response = await got(api.value, {
+                    https: {
+                        certificateAuthority: this.ca_file
+                    }
+                });
+
+                if(api.format == "openapi-link") {
+                    api.format="openapi"
+                }
+                else if(api.format == "swagger-link-json") {
+                    api.format="swagger-json"
+                }
+                else {
+                    throw new Error("Unsupported api format")
+                }               
+
+                api.value = response.body
+            } catch (error) {
+                this._logger.error('APIM API Plugin: Error waiting for API: ' + error)
+                return false;
+            }
+
+            if(response && (response.statusCode >= 200 && response.statusCode < 400)) {
+                this._logger.debug('APIM API Plugin: API found with response code ' + response.statusCode + ' at: ' + api.value);
+                return true;
+            }
+            else {
+                this._logger.debug('APIM API Plugin: API not found with response code ' + response.statusCode + '. Sleeping for 1s.');
+                await this.Sleep(1000);
+            }
+        }
+
+        return false;
     }
 
 	private async ApplyApiDiagnostics(diagnostics: IApimApiDiagnostics, apiId: string) : Promise<void> {
@@ -335,8 +410,13 @@ export class ApimApiPlugin extends BaseIngredient {
         }
 
         for(let i=0; i < blockTime; ++i){
-            let response = await request(policy.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
+            let response = await got(policy.value, {
+                https: {
+                    certificateAuthority: this.ca_file
+                }
+            });
+
+            if (response && response.statusCode >= 200 && response.statusCode < 400){
                 policy.format = "xml";
                 policy.value = response.body;
                 return policy

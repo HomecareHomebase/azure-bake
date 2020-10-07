@@ -16,15 +16,17 @@ export class CoreUtils extends BaseUtility {
     }
 
     public toString(v: any): string {
-        return v.ToString()
+        return v.toString()
     }
 
     public toBoolean(v: any): boolean {
-        let str = v.ToString().toLocaleLowerCase();
+        let str = v.toString().toLocaleLowerCase();
         return (str == "true" || str == "1");
     }
 
-    
+    public toJsonString(v: any): string {
+        return JSON.stringify(v);
+    }
 
     public current_region() {
         return this.context.Region

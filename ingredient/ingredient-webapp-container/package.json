@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-webapp-container",
   "description": "Ingredient for deploying an instance of an Azure WebApp for Container",
-  "version": "0.1.101",
+  "version": "0.1.104",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -28,13 +28,13 @@
     "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.100",
-    "@azbake/ingredient-utils": "^0.1.100",
+    "@azbake/core": "^0.1.101",
+    "@azbake/ingredient-utils": "^0.1.103",
     "@azure/ms-rest-nodeauth": "0.9.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.101"
+    "@azbake/arm-helper": "^0.1.102"
   },
   "publishConfig": {
     "access": "public"

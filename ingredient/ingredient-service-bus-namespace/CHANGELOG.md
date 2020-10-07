@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.104...@azbake/ingredient-service-bus-namespace@0.1.105) (2020-09-17)
+
+
+### Bug Fixes
+
+* disable smart detection notifications, more ([#190](https://github.com/HomecareHomebase/azure-bake/issues/190)) ([73e4375](https://github.com/HomecareHomebase/azure-bake/commit/73e4375))
+
+
+
+
+
+## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.103...@azbake/ingredient-service-bus-namespace@0.1.104) (2020-09-14)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.102...@azbake/ingredient-service-bus-namespace@0.1.103) (2020-07-21)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
+## [0.1.102](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.101...@azbake/ingredient-service-bus-namespace@0.1.102) (2020-07-21)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
 ## [0.1.101](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.100...@azbake/ingredient-service-bus-namespace@0.1.101) (2020-07-14)
 
 **Note:** Version bump only for package @azbake/ingredient-service-bus-namespace

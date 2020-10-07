@@ -3,6 +3,137 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.34](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.33...@azbake/ingredient-property-service@0.1.34) (2020-10-07)
+
+
+### Bug Fixes
+
+* Property service source sub props now support BakeVariables ([#194](https://github.com/HomecareHomebase/azure-bake/issues/194)) ([fdaae99](https://github.com/HomecareHomebase/azure-bake/commit/fdaae99))
+
+
+
+
+
+## [0.1.33](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.32...@azbake/ingredient-property-service@0.1.33) (2020-10-06)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.32](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.31...@azbake/ingredient-property-service@0.1.32) (2020-10-01)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.31](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.30...@azbake/ingredient-property-service@0.1.31) (2020-09-17)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.30](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.29...@azbake/ingredient-property-service@0.1.30) (2020-09-17)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.29](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.28...@azbake/ingredient-property-service@0.1.29) (2020-09-14)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.28](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.27...@azbake/ingredient-property-service@0.1.28) (2020-09-14)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.27](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.26...@azbake/ingredient-property-service@0.1.27) (2020-09-04)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.26](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.25...@azbake/ingredient-property-service@0.1.26) (2020-08-27)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.25](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.24...@azbake/ingredient-property-service@0.1.25) (2020-08-24)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.24](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.23...@azbake/ingredient-property-service@0.1.24) (2020-08-24)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.23](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.22...@azbake/ingredient-property-service@0.1.23) (2020-08-11)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.22](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.21...@azbake/ingredient-property-service@0.1.22) (2020-08-11)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.21](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.20...@azbake/ingredient-property-service@0.1.21) (2020-08-10)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.20](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.19...@azbake/ingredient-property-service@0.1.20) (2020-07-21)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
+## [0.1.19](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.18...@azbake/ingredient-property-service@0.1.19) (2020-07-21)
+
+**Note:** Version bump only for package @azbake/ingredient-property-service
+
+
+
+
+
 ## [0.1.18](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.17...@azbake/ingredient-property-service@0.1.18) (2020-07-14)
 
 **Note:** Version bump only for package @azbake/ingredient-property-service

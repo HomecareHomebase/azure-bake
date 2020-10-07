@@ -68,6 +68,6 @@
         "evaluationFrequency": "PT15M",
         "alertType": "Static",
         "threshold": "4500",
-        "actionGroups": [{"actionGroupShortName": "opsgenie"}]        
+        "actionGroups": [{"actionGroupShortName": "opsgenieInfraAlert"}]        
     }
 }
