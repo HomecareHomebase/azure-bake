@@ -15,6 +15,8 @@
 * [@azbake/ingredient-sql-dwh](./ingredient/ingredient-sql-dwh/CHANGELOG.md)
 * [@azbake/ingredient-sqldb](./ingredient/ingredient-sqldb/CHANGELOG.md)
 * [@azbake/ingredient-sqlserver-logical](./ingredient/ingredient-sqlserver-logical/CHANGELOG.md)
+* [@azbake/ingredient-cosmosdb](./ingredient/ingredient-cosmosdb/CHANGELOG.md)
+
 
 ## Tools
 
