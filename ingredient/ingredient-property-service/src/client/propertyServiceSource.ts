@@ -1,4 +1,9 @@
-import { DeploymentContext } from "@azbake/core"
+import { DeploymentContext, BakeVariable, objToVariableMap } from "@azbake/core"
+
+interface PropertySourceContext {
+    baseUrl: BakeVariable;
+    resourceUrl: BakeVariable;
+};
 
 export class PropertyServiceSource {
 
@@ -19,19 +24,20 @@ export class PropertyServiceSource {
 
     public static async Parse(context: DeploymentContext): Promise<PropertyServiceSource> {
 
-        const sourceValue: { [key: string]: string } = await context.Ingredient.properties.source.valueAsync(context);
-        if (!sourceValue) {
-            return Promise.reject('The ingredients properties.source is null, missing, or not an array. Please verify that the properties.source is set to the property services baseUrl and resourceUrl in your yaml file.');
+        const sourceContext: PropertySourceContext = await context.Ingredient.properties.source.valueAsync(context);
+        if (!sourceContext) {
+            return Promise.reject('The ingredients properties.source is null, or missing. Please verify that the properties.source is set to the property services baseUrl and resourceUrl in your yaml file.');
         }
+        const sourceMap: Map<string,BakeVariable> = objToVariableMap(sourceContext);
 
-        const baseUrl: string | undefined = sourceValue['baseUrl'];
+        const baseUrl: string | undefined = await sourceMap.get('baseUrl')?.valueAsync(context);
         if (!baseUrl || baseUrl.length == 0) {
             return Promise.reject('The ingredients properties.source does not contain a baseUrl element. Please verify that the properties.source is set to the property services baseUrl and resourceUrl in your yaml file.');
         }
 
         context._logger.log('The baseurl was parased successfully.')
 
-        const resourceUrl: string | undefined = sourceValue['resourceUrl'];
+        const resourceUrl: string | undefined = await sourceMap.get('resourceUrl')?.valueAsync(context);
         if (!resourceUrl || resourceUrl.length == 0) {
             return Promise.reject('The ingredients properties.source does not contain a resourceUrl element. Please verify that the properties.source is set to the property services baseUrl and resourceUrl in your yaml file.');
         }
