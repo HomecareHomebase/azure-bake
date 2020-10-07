@@ -8,7 +8,7 @@ rgOverride: "larry-poc"
 resourceGroup: true
 variables:
   dbResourceName: "[cosmosdbutils.create_resource_name()]"
-  capabilities: "[JSON.parse('[{\"name\" : \"EnableServerless\" }]')]"
+  capabilities: "[JSON.parse('[]')]"
 recipe:
   cosmosdb-create:
     properties:
@@ -17,4 +17,5 @@ recipe:
       parameters:
         accountName: "[coreutils.variable('dbResourceName')]"
         primaryRegion: "[coreutils.current_region().name]"
+        secondaryRegion: "West US"
         capabilities : "[coreutils.variable('capabilities')]"
