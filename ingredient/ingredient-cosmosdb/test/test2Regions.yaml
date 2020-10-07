@@ -7,7 +7,7 @@ ingredients:
 rgOverride: "larry-poc"
 resourceGroup: true
 variables:
-  dbResourceName: "[coreutils.create_resource_name('cd2', 'cosmos', false)]"
+  dbResourceName: "[coreutils.create_resource_name('cd', 'cosmos', false)]"
   capabilities: "[JSON.parse('[]')]"
 recipe:
   cosmosdb-create:
