@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.15](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.14...azure-bake@0.5.15) (2020-10-08)
+
+
+### Bug Fixes
+
+* Fixing custom auth in ingredients ([#196](https://github.com/HomecareHomebase/azure-bake/issues/196)) ([d8a93cd](https://github.com/HomecareHomebase/azure-bake/commit/d8a93cd))
+* resolving build error ([#189](https://github.com/HomecareHomebase/azure-bake/issues/189)) ([b601060](https://github.com/HomecareHomebase/azure-bake/commit/b601060))
+* update test.yaml ([#198](https://github.com/HomecareHomebase/azure-bake/issues/198)) ([3028e6e](https://github.com/HomecareHomebase/azure-bake/commit/3028e6e))
+
+
+
+
+
 ## [0.5.14](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.13...azure-bake@0.5.14) (2020-09-14)
 
 **Note:** Version bump only for package azure-bake
