@@ -52,4 +52,7 @@ export class DeploymentContext {
     public get CustomAuthToken(): string | null {
         return this._authToken
     }
+    public set CustomAuthToken(token: string | null) {
+        this._authToken = token;
+    }
 }
