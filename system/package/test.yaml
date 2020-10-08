@@ -1,20 +1,23 @@
-name: cosmosdatabase
-shortName: cosmosdb
-version: 1.0.0
+name: Kados
+shortName: kados
+owner: Architecture
+version: 0.0.1
+parallelRegions: false
+resourceGroup: false
 ingredients:
-   - "@azbake/ingredient-cosmosdb@~0"
-   - "@azbake/ingredient-event-hub-namespace@~0"
-rgOverride: "larry-poc"
-resourceGroup: true
+  - "@azbake/ingredient-property-service@~0"
 variables:
-  dbResourceName: "[cosmosdbutils.create_resource_name()]"
-  capabilities: "[JSON.parse('[{\"name\" : \"EnableServerless\" }]')]"
+  property-service-url: "http://property.hchb-shared.svc.cluster.local/"
+  property-service-resource: "https://hchbazure.onmicrosoft.com/7a697051-cf99-42a7-9c6c-34ae6d27048f"
 recipe:
-  cosmosdb-create:
+  property-service:
     properties:
-      type: "@azbake/ingredient-cosmosdb"
-      condition: "[coreutils.current_region_primary()]" 
+      type: "@azbake/ingredient-property-service"
+      source:
+        baseUrl: "[coreutils.variable('property-service-url')]"
+        resourceUrl: "[coreutils.variable('property-service-resource')]"
       parameters:
-        accountName: "[coreutils.variable('dbResourceName')]"
-        primaryRegion: "[coreutils.current_region().name]"
-        capabilities : "[coreutils.variable('capabilities')]"
+        properties:
+          create:
+            - name: "whilke"
+              value: "whilke"
