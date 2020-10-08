@@ -78,7 +78,7 @@ export class BakeRunner {
                     }
                 }
 
-                ctx.CustomAuthToken = this._customAuthToken.get(ingredientName) ?? null; // just pass through as Build will create a local ctx instance
+                ctx.CustomAuthToken = this._customAuthToken.get(ingredientName) || null // just pass through as Build will create a local ctx instance
                 let exec = IngredientFactory.Build(ingredientName, ingredient, ctx)
                 if (exec) {
 
