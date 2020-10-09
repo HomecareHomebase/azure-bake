@@ -1,7 +1,7 @@
 import { BaseUtility, IngredientManager } from '@azbake/core'
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { NetworkManagementClient } from '@azure/arm-network';
-import { SubscriptionGetResponse, LoggerGetResponse, PropertyGetResponse } from '@azure/arm-apimanagement/esm/models';
+import { SubscriptionGetResponse, LoggerGetResponse, NamedValueGetResponse } from '@azure/arm-apimanagement/esm/models';
 import { SubnetsGetResponse } from '@azure/arm-network/esm/models';
 
 export class ApimUtils extends BaseUtility {
@@ -49,9 +49,9 @@ export class ApimUtils extends BaseUtility {
         return logger
     }
 
-    public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<PropertyGetResponse> {
+    public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<NamedValueGetResponse> {
         let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-        let namedValue = await client.property.get(resourceGroup, apimName, namedValueId)
+        let namedValue = await client.namedValue.get(resourceGroup, apimName, namedValueId);
 
         this.context._logger.debug(`ApimUtils.get_namedValue() returned ${JSON.stringify(namedValue)}`);
 
@@ -69,20 +69,20 @@ export class ApimUtils extends BaseUtility {
 
     public async get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
         let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
-        let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
+        let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
 
-        this.context._logger.debug(`ApimUtils.get_subscription_key() returned ${subscription.primaryKey}`);
+        this.context._logger.debug(`ApimUtils.get_subscription_key() returned ${secrets.primaryKey}`);
 
-        return subscription.primaryKey
+        return secrets.primaryKey || ""
     } 
 
     public async get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
         let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
-        let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
+        let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
 
-        this.context._logger.debug(`ApimUtils.get_subscription_keySecondary() returned ${subscription.secondaryKey}`);
+        this.context._logger.debug(`ApimUtils.get_subscription_keySecondary() returned ${secrets.secondaryKey}`);
 
-        return subscription.secondaryKey
+        return secrets.secondaryKey || ""
     }
 }
 

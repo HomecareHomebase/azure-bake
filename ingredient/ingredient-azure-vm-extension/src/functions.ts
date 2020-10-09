@@ -34,7 +34,8 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         return response;
     }   
 
-    public async delete(rg: string, vmName: string, vmExtensionName: string) {
+    /*
+    public async blah(rg: string, vmName: string, vmExtensionName: string) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
@@ -44,7 +45,7 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let response = await vm.deleteMethod(rg, vmName, vmExtensionName) ;                     
         return response;
     }
-
+*/
     public async update(rg: string, vmName: string, vmExtensionName: string, extensionParameters: VirtualMachineExtensionUpdate) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);

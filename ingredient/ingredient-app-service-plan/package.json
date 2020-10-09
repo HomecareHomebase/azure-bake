@@ -34,7 +34,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.103"
+    "@azbake/arm-helper": "^0.1.102"
   },
   "publishConfig": {
     "access": "public"

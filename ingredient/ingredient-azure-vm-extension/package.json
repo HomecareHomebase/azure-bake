@@ -24,10 +24,10 @@
 		"@types/node": "^10.12.18"
 	},
 	"dependencies": {
-		"@azbake/arm-helper": "^0.1.103",
+		"@azbake/arm-helper": "^0.1.102",
 		"@azure/arm-compute": "^15.0.0",
 		"@azure/arm-eventhub": "3.2.0",
-		"@azure/ms-rest-js" : "^2.0.8"
+		"@azure/ms-rest-js": "^2.0.8"
 	},
 	"publishConfig": {
 		"access": "public"

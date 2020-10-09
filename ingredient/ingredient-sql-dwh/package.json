@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.102",
-    "@azure/arm-sql": "^5.7.0"
+    "@azure/arm-sql": "^7.0.2"
   },
   "publishConfig": {
     "access": "public"
