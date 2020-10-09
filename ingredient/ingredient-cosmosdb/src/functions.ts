@@ -1,5 +1,11 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 import { CosmosDBManagementClient, CosmosDBManagementModels, CosmosDBManagementMappers } from "@azure/arm-cosmosdb";
+import { ApplicationTokenCredentials } from '@azure/ms-rest-nodeauth';
+import { HttpHeaders }  from "@azure/ms-rest-js"
+import { request } from 'http';
+import { ClientHttp2Session, Http2ServerRequest } from 'http2';
+import { Credentials } from 'crypto';
+
 
 export class CosmosUtility extends BaseUtility {
 
@@ -52,7 +58,9 @@ export class CosmosUtility extends BaseUtility {
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""
-        response.connectionStrings?.forEach( cs => 
+        if(response.connectionStrings)
+        {
+            response.connectionStrings.forEach( function (cs)
             {
                 if (cs.description == "PRIMARY CONNECTION STRING")
                 {
@@ -60,6 +68,8 @@ export class CosmosUtility extends BaseUtility {
                 }
                
             })
+        }
+
 
         return connectionString;
     }
@@ -72,7 +82,9 @@ export class CosmosUtility extends BaseUtility {
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""
-        response.connectionStrings?.forEach( cs => 
+        if(response.connectionStrings)
+        {
+            response.connectionStrings.forEach( function(cs)
             {
                 if (cs.description == "SECONDARY CONNECTION STRING")
                 {
@@ -80,8 +92,12 @@ export class CosmosUtility extends BaseUtility {
                 }
                
             })
+        }
+
 
         return connectionString;
     }
+
+
 }
 
