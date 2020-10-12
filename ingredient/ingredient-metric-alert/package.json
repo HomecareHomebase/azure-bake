@@ -20,7 +20,11 @@
   },
   "devDependencies": {
     "@azbake/core": "^0.1.102",
+<<<<<<< HEAD
     "@azure/ms-rest-nodeauth": "^3.0.0",
+=======
+    "@azure/ms-rest-nodeauth": "0.9.2",
+>>>>>>> master
     "@types/node": "^10.12.18"
   },
   "dependencies": {

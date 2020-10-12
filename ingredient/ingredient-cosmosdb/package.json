@@ -19,7 +19,7 @@
     "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.100",
+    "@azbake/core": "^0.1.102",
     "@types/node": "^10.12.18",
     "@azure/ms-rest-nodeauth": "^3.0.0"
   },
