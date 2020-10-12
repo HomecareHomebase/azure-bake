@@ -1,7 +1,7 @@
 {
-  "name": "@azbake/ingredient-function-app",
-  "description": "Ingredient for deploying Function Apps",
-  "version": "0.1.103",
+  "name": "@azbake/ingredient-apim",
+  "description": "Ingredient for deploying and configuring APIs against an APIM instance",
+  "version": "0.2.31",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -16,16 +16,20 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azbake/ingredient-utils": "0.*",
+    "@azure/ms-rest-nodeauth": "0.9.2"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.102",
-    "@azure/ms-rest-nodeauth": "0.9.2",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@azbake/ingredient-utils": "^0.1.104",
+    "@azure/ms-rest-nodeauth": "^2.0.2",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.103"
+    "@azure/arm-apimanagement": "^5.1.1",
+    "@azure/arm-monitor": "^5.4.0",
+    "@azure/arm-network": "^14.0.0",
+    "got": "^11.7.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,9 +1,12 @@
 {
-  "name": "@azbake/ingredient-datafactoryv2",
-  "description": "Ingredient for deploying an Data Factory v2.",
-  "version": "0.1.142",
-  "main": "dist/index.js",
-  "typings": "src/index.ts",
+  "name": "@azbake/arm-helper",
+  "description": "Helper class for installing ARM templates through Bake.",
+  "version": "0.1.103",
+  "main": "dist/arm-helper.js",
+  "typings": "src/arm-helper.ts",
+  "directories": {
+    "lib": "dist"
+  },
   "author": "HCHB",
   "license": "MIT",
   "repository": {
@@ -19,25 +22,17 @@
     "compile": "tsc -p .",
     "watch": "tsc -w -p ."
   },
-  "directories": {
-    "lib": "dist"
-  },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azure/arm-resources": "1.*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.101",
-    "@azbake/ingredient-utils": "^0.1.103",
-     "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@azbake/core": "^0.1.102",
+    "@azure/arm-resources": "1.*",
     "@types/node": "^10.12.18"
-  },
-  "dependencies": {
-    "@azbake/arm-helper": "^0.1.103",
-    "@azure/arm-sql": "^5.7.0"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "dfddb0fc587d47c1d9aad2ff6ef877ef73260ef4"
 }
