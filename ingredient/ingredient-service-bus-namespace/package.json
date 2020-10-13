@@ -34,8 +34,8 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azure/arm-servicebus": "^4.0.0"
-    "@azbake/arm-helper": "^0.1.103",
+    "@azure/arm-servicebus": "^4.0.0",
+    "@azbake/arm-helper": "^0.1.103"
   },
   "publishConfig": {
     "access": "public"
