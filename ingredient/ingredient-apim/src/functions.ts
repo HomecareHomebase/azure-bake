@@ -32,7 +32,9 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string): Promise<SubnetsGetResponse> {
-        var client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+
+        var client = new NetworkManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let subnet = await client.subnets.get(resourceGroup, vnetName, subnetName)
 
         this.context._logger.debug(`ApimUtils.get_subnet() returned ${JSON.stringify(subnet)}`);
@@ -41,7 +43,9 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<LoggerGetResponse> {
-        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        const token: any = this.context.AuthToken
+
+        let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let logger = await client.logger.get(resourceGroup, apimName, loggerId)
 
         this.context._logger.debug(`ApimUtils.get_logger() returned ${JSON.stringify(logger)}`);
@@ -50,7 +54,9 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<NamedValueGetResponse> {
-        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+
+        let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let namedValue = await client.namedValue.get(resourceGroup, apimName, namedValueId);
 
         this.context._logger.debug(`ApimUtils.get_namedValue() returned ${JSON.stringify(namedValue)}`);
@@ -59,7 +65,9 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_subscription(resourceGroup: string, resource: string, subscriptionId: string) : Promise<SubscriptionGetResponse> {
-        let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        const token: any = this.context.AuthToken
+
+        let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
 
         this.context._logger.debug(`ApimUtils.get_subscription() returned ${JSON.stringify(subscription)}`);
@@ -68,7 +76,9 @@ export class ApimUtils extends BaseUtility {
     }   
 
     public async get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-        let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        const token: any = this.context.AuthToken
+
+        let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
 
         this.context._logger.debug(`ApimUtils.get_subscription_key() returned ${secrets.primaryKey}`);
@@ -77,7 +87,9 @@ export class ApimUtils extends BaseUtility {
     } 
 
     public async get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-        let apim_client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId)
+        const token: any = this.context.AuthToken
+
+        let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
 
         this.context._logger.debug(`ApimUtils.get_subscription_keySecondary() returned ${secrets.secondaryKey}`);

@@ -5,7 +5,9 @@ import { ApiGetResponse, BackendGetResponse } from '@azure/arm-apimanagement/esm
 export class ApimApiUtils extends BaseUtility {
 
     public async get_api(resourceGroup: string, apimName: string, apiId: string): Promise<ApiGetResponse> {
-        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+
+        let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let api = await client.api.get(resourceGroup, apimName, apiId);
         
         this.context._logger.debug(`ApimApiUtils.get_api() returned ${JSON.stringify(api)}`);
@@ -14,7 +16,9 @@ export class ApimApiUtils extends BaseUtility {
     }
 
     public async get_backend(resourceGroup: string, apimName: string, backendId: string): Promise<BackendGetResponse> {
-        let client = new ApiManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+
+        let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let backend = await client.backend.get(resourceGroup, apimName, backendId);
         
         this.context._logger.debug(`ApimApiUtils.get_backend() returned ${JSON.stringify(backend)}`);
