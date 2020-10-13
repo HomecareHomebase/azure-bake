@@ -25,7 +25,7 @@
   "peerDependencies": {
     "@azbake/core": "0.*",
     "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "0.9.2"
+    "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.102",
