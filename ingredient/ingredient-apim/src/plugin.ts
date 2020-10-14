@@ -140,7 +140,9 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         this._logger.log('APIM Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
-        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+        const token: any = this._ctx.AuthToken
+
+        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.error('APIM Plugin: APIM client is null')
@@ -200,8 +202,9 @@ export class ApimPlugin extends BaseIngredient {
         {
             return
         }
+        const token: any = this._ctx.AuthToken
 
-        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
 
         let diagnosticsData = await this.ResolveDiagnostics(apimDiagnostics);
 
@@ -702,7 +705,8 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<void> {
         if (this.apim_client == undefined) return
 
-        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+        const token: any = this._ctx.AuthToken
+        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
 
         let autoscaleSettingsData = await this.ResolveAutoscaleSetting(autoscaleSettings);
 

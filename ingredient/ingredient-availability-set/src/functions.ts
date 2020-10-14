@@ -13,7 +13,9 @@ export class AvailabilitySetUtils extends BaseUtility {
     public async get_fault_domain_count(): Promise<number> {
         
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        let client = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+
+        let client = new ResourceManagementClient(token, this.context.Environment.authentication.subscriptionId);
 
         let availResource = await client.resources.get(await util.resource_group(), "Microsoft.Compute", "", "availabilitySets", name, "2018-06-01");
 
@@ -23,7 +25,9 @@ export class AvailabilitySetUtils extends BaseUtility {
     public async get_update_domain_count(): Promise<number> {
         
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        let client = new ResourceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken
+        
+        let client = new ResourceManagementClient(token, this.context.Environment.authentication.subscriptionId);
 
         let availResource = await client.resources.get(await util.resource_group(), "Microsoft.Compute", "", "availabilitySets", name, "2018-06-01");
 

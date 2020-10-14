@@ -84,7 +84,10 @@ export class ApimApiPlugin extends BaseIngredient {
         }
         
         this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
-        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+
+        const token: any = this._ctx.AuthToken
+
+        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.log('APIM API Plugin: APIM client is null')
