@@ -25,17 +25,17 @@
   "peerDependencies": {
     "@azbake/core": "0.*",
     "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "0.9.2"
+    "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.102",
     "@azbake/ingredient-utils": "^0.1.104",
-    "@azure/ms-rest-nodeauth": "0.9.2",
+    "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.103",
-    "@azure/arm-servicebus": "^3.2.0"
+    "@azure/arm-servicebus": "^4.0.0",
+    "@azbake/arm-helper": "^0.1.103"
   },
   "publishConfig": {
     "access": "public"

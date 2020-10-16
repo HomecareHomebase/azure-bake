@@ -26,7 +26,9 @@ export class EventHubNamespaceUtils extends BaseUtility {
     }
 
     public async get_authorizationrule(resourceGroup: string, nameSpace: string, authorizationRuleName: string): Promise<NamespacesGetAuthorizationRuleResponse> {
-        var client = new EventHubManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+        let token: any = this.context.AuthToken;
+        var client = new EventHubManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let authRule = await client.namespaces.getAuthorizationRule(resourceGroup, nameSpace, authorizationRuleName)
 
         this.context._logger.debug(`EventHubNamespaceUtils.get_authorizationrule() returned ${JSON.stringify(authRule)}`);

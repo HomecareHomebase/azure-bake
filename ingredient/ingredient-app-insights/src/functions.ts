@@ -22,7 +22,8 @@ export class AppInsightsUtils extends BaseUtility {
         
         const rgName: string = await util.resource_group(rgShortName, false, null, ignoreOverride);
 
-        const client = new ApplicationInsightsManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token: any = this.context.AuthToken; //TODO: We need to revisit this once the appinsight package updates to use the latest ms-auth-node package v3.
+        const client = new ApplicationInsightsManagementClient(token, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.components.get(rgName, aiName);
 

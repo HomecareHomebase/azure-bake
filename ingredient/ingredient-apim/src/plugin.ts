@@ -1,7 +1,10 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
-import { ApiManagementClient } from "@azure/arm-apimanagement"
+import { ApiManagementClient, NamedValue } from "@azure/arm-apimanagement"
 import { MonitorManagementClient } from "@azure/arm-monitor"
-import { BackendContract, BackendCreateOrUpdateOptionalParams, ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract, IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams, PropertyCreateOrUpdateOptionalParams, PropertyContract, LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract, ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams } from "@azure/arm-apimanagement/esm/models";
+import { BackendContract, BackendCreateOrUpdateOptionalParams, ApiDeleteMethodOptionalParams, ProductDeleteMethodOptionalParams, ApiManagementServiceResource, IdentityProviderContract,
+    IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams,
+    LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract,
+    ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, NamedValueCreateOrUpdateOptionalParams, NamedValueContract, NamedValueCreateContract, IdentityProviderCreateContract } from "@azure/arm-apimanagement/esm/models";
 import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
 import * as fs from 'fs';
 interface IApim extends ApiManagementServiceResource{
@@ -16,7 +19,7 @@ interface IApimDiagnostics extends DiagnosticSettingsResource{
     name: string
 }
 
-interface IApimIdentityProvider extends IdentityProviderContract{
+interface IApimIdentityProvider extends IdentityProviderCreateContract{
 }
 
 interface IApimAuthServer extends AuthorizationServerContract{
@@ -37,7 +40,7 @@ interface IApimLogger extends LoggerContract{
     cleanKeys: boolean
 }
 
-interface IApimNamedValue extends PropertyContract{
+interface IApimNamedValue extends NamedValueCreateContract{
     name: string
 }
 
@@ -137,7 +140,9 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         this._logger.log('APIM Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
-        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+        const token: any = this._ctx.AuthToken
+
+        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.error('APIM Plugin: APIM client is null')
@@ -197,8 +202,9 @@ export class ApimPlugin extends BaseIngredient {
         {
             return
         }
+        const token: any = this._ctx.AuthToken
 
-        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
 
         let diagnosticsData = await this.ResolveDiagnostics(apimDiagnostics);
 
@@ -241,13 +247,13 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Add/Update APIM named value: ' + namedValue.name)
 
-        var response = await this.apim_client.property.createOrUpdate
+        var response = await this.apim_client.namedValue.createOrUpdate
             (
                 this.resource_group,
                 this.resource_name,
                 namedValue.name,
                 namedValueData,
-                <PropertyCreateOrUpdateOptionalParams>{ifMatch:'*'}
+                <NamedValueCreateOrUpdateOptionalParams>{ifMatch:'*'}
             )
 
         if (response._response.status  != 200 && response._response.status != 201) {
@@ -569,14 +575,14 @@ export class ApimPlugin extends BaseIngredient {
 
             //Clean logger keys
             if (logger.cleanKeys == undefined || logger.cleanKeys) {
-                let result = await this.apim_client.property.listByService(this.resource_group, this.resource_name) || ""
+                let result = await this.apim_client.namedValue.listByService(this.resource_group, this.resource_name) || ""
                 let propEtag = ""
                 for (let i = 0; i < result.length; i++) {
                     let id = result[i].name || ""
                     let displayName = result[i].displayName || ""
                     if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
-                        await this.apim_client.property.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
-                        await this.apim_client.property.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
+                        await this.apim_client.namedValue.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
+                        await this.apim_client.namedValue.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
                             .then((result) => {
                                 this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
                             })
@@ -652,24 +658,24 @@ export class ApimPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
-        if(!identityProvider.identityProviderContractType){
+        if(!identityProvider.identityProviderCreateContractType){
             this._logger.error("APIM Plugin: identityProviderContractType is required")
             return
         }
 
         let identityProviderData = await this.ResolveIdentityProvider(identityProvider);
 
-        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderContractType)
+        this._logger.log('APIM Plugin: Add/Update APIM identity provider: ' + identityProvider.identityProviderCreateContractType)
 
         let response = await this.apim_client.identityProvider.createOrUpdate(
             this.resource_group,
             this.resource_name,
-            identityProvider.identityProviderContractType,
+            identityProvider.identityProviderCreateContractType,
             identityProviderData,
             <IdentityProviderCreateOrUpdateOptionalParams>{ifMatch:'*'})
 
         if (response._response.status  != 200 && response._response.status != 201) {
-            this._logger.error("APIM Plugin: Could not create/update identity provider " + identityProvider.identityProviderContractType)
+            this._logger.error("APIM Plugin: Could not create/update identity provider " + identityProvider.identityProviderCreateContractType)
         }
     }
 
@@ -699,7 +705,8 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<void> {
         if (this.apim_client == undefined) return
 
-        var monitorClient = new MonitorManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+        const token: any = this._ctx.AuthToken
+        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
 
         let autoscaleSettingsData = await this.ResolveAutoscaleSetting(autoscaleSettings);
 
@@ -860,7 +867,7 @@ export class ApimPlugin extends BaseIngredient {
         return backend;
     }
 
-    private async ResolveNamedValue(namedValue: IApimNamedValue) : Promise<PropertyContract> {
+    private async ResolveNamedValue(namedValue: IApimNamedValue) : Promise<NamedValueCreateContract> {
         if (namedValue.value) {
             namedValue.value = (await (new BakeVariable(namedValue.value)).valueAsync(this._ctx))            
         }
@@ -923,7 +930,7 @@ export class ApimPlugin extends BaseIngredient {
         return authServer;
     }
 
-    private async ResolveIdentityProvider(identityProvider: IApimIdentityProvider) : Promise<IdentityProviderContract> {
+    private async ResolveIdentityProvider(identityProvider: IApimIdentityProvider) : Promise<IdentityProviderCreateContract> {
         if (identityProvider.authority) {
             identityProvider.authority = (await (new BakeVariable(identityProvider.authority)).valueAsync(this._ctx))            
         }

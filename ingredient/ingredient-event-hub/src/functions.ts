@@ -58,7 +58,8 @@ export class EventHubUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new EventHubManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const token : any = this.context.AuthToken // TODO: need to update arm-eventhub once they update to use v3 auth
+        const client = new EventHubManagementClient(token, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.eventHubs.listKeys(resource_group, eventHubNamespaceName, eventHubName, policyName)
 
