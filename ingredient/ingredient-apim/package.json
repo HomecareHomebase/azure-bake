@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-apim",
   "description": "Ingredient for deploying and configuring APIs against an APIM instance",
-  "version": "0.2.31",
+  "version": "0.2.32",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -20,8 +20,8 @@
     "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.102",
-    "@azbake/ingredient-utils": "^0.1.104",
+    "@azbake/core": "^0.1.103",
+    "@azbake/ingredient-utils": "^0.1.105",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },

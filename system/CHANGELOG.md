@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.16](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.15...azure-bake@0.5.16) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
 ## [0.5.15](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.14...azure-bake@0.5.15) (2020-10-08)
 
 

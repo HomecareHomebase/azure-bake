@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.103...@azbake/arm-helper@0.1.104) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
 ## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.102...@azbake/arm-helper@0.1.103) (2020-10-08)
 
 **Note:** Version bump only for package @azbake/arm-helper
