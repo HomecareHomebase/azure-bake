@@ -1,6 +1,7 @@
 FROM mhart/alpine-node:11.2.0
 ENV NODE_ENV production
 
+
 # Install kubectl
 # Note: Latest version may be found on:
 # https://aur.archlinux.org/packages/kubectl-bin/
