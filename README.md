@@ -17,7 +17,6 @@
 * [@azbake/ingredient-sqlserver-logical](./ingredient/ingredient-sqlserver-logical/CHANGELOG.md)
 * [@azbake/ingredient-cosmosdb](./ingredient/ingredient-cosmosdb/CHANGELOG.md)
 
-
 ## Tools
 
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
