@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.106...@azbake/ingredient-network-interface@0.1.107) (2020-10-16)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
 ## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.105...@azbake/ingredient-network-interface@0.1.106) (2020-10-16)
 
 
