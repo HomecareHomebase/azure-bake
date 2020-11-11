@@ -62,15 +62,12 @@ export class CosmosUtility extends BaseUtility {
         {
             response.connectionStrings.forEach( function (cs)
             {
-                if (cs.description == "Primary SQL Connection String")
+                if (cs.description == "Primary SQL Connection String" && cs.connectionString)
                 {
-                    return  cs.connectionString
-                    
-                }
-               
+                    connectionString = cs.connectionString
+                }      
             })
         }
-
 
         return connectionString;
     }
@@ -87,18 +84,13 @@ export class CosmosUtility extends BaseUtility {
         {
             response.connectionStrings.forEach( function(cs)
             {
-                if (cs.description == "Secondary SQL Connection String")
+                if (cs.description == "Secondary SQL Connection String" && cs.connectionString)
                 {
-                    return  cs.connectionString
+                    connectionString = cs.connectionString
                 }
-               
             })
         }
 
-
         return connectionString;
     }
-
-
 }
-
