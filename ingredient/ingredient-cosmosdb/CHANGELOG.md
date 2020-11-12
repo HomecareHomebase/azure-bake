@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.4...@azbake/ingredient-cosmosdb@0.0.5) (2020-11-12)
+
+
+### Bug Fixes
+
+* fix conn string functions ([#204](https://github.com/HomecareHomebase/azure-bake/issues/204)) ([bed0ee8](https://github.com/HomecareHomebase/azure-bake/commit/bed0ee8))
+
+
+
+
+
 ## [0.0.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.3...@azbake/ingredient-cosmosdb@0.0.4) (2020-10-16)
 
 

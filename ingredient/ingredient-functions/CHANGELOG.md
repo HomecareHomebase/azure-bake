@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.145](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.144...@azbake/ingredient-functions@0.1.145) (2020-11-12)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
 ## [0.1.144](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.143...@azbake/ingredient-functions@0.1.144) (2020-10-16)
 
 **Note:** Version bump only for package @azbake/ingredient-functions
