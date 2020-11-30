@@ -33,10 +33,12 @@ export class StoragePlugIn extends BaseIngredient {
                 await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             }
 
-
-
-
-            await this.ConfigureDiagnosticSettings(params, util);
+            try {
+                await this.ConfigureDiagnosticSettings(params, util);                
+            }
+            catch (diagError){
+                this._logger.debug('diag error: ' + diagError) //some storage types don't support diag settings
+            }
 
             let alertTarget = params["storageAccountName"].value
             let alertOverrides = this._ingredient.properties.alerts
