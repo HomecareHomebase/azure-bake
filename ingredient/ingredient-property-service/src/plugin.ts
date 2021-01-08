@@ -96,7 +96,12 @@ export class PropertyServicePlugIn extends BaseIngredient {
         for (let index = 0; index < operations.length; index++) {
             this._logger.log(`Begin executing ${operations[index].TypeName.toLowerCase()} operations`);
 
-            await operations[index].Execute();
+            try {
+                await operations[index].Execute();
+            }
+            catch(error) {
+                this._logger.error(error);
+            }
 
             this._logger.log(`End executing ${operations[index].TypeName.toLowerCase()} operations`);
         }
