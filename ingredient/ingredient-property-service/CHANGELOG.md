@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.43](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.42...@azbake/ingredient-property-service@0.1.43) (2021-01-08)
+
+
+### Bug Fixes
+
+* Adding some error handling to prop svc ing ([1c36289](https://github.com/HomecareHomebase/azure-bake/commit/1c36289))
+
+
+
+
+
 ## [0.1.42](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.41...@azbake/ingredient-property-service@0.1.42) (2020-11-30)
 
 **Note:** Version bump only for package @azbake/ingredient-property-service
