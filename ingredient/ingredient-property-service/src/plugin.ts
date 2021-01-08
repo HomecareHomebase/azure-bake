@@ -101,6 +101,7 @@ export class PropertyServicePlugIn extends BaseIngredient {
             }
             catch(error) {
                 this._logger.error(error);
+                throw error;
             }
 
             this._logger.log(`End executing ${operations[index].TypeName.toLowerCase()} operations`);
