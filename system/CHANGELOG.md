@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.22](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.21...azure-bake@0.5.22) (2021-02-04)
+
+
+### Bug Fixes
+
+* updated kubectl to 1.17.17 ([#209](https://github.com/HomecareHomebase/azure-bake/issues/209)) ([3cc3d4e](https://github.com/HomecareHomebase/azure-bake/commit/3cc3d4e))
+
+
+
+
+
 ## [0.5.21](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.20...azure-bake@0.5.21) (2021-01-08)
 
 
