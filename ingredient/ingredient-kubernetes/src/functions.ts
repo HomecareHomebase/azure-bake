@@ -14,7 +14,7 @@ export class K8sUtils extends BaseUtility {
         const configParam = `--kubeconfig=${kubeconfigFilename}`;
         
         try {
-            const stdout = execSync(`kubectl configmap ${configParam} ${name} --from-file=${path} --namespace ${namespace}`);
+            const stdout = execSync(`kubectl create configmap ${configParam} ${name} --from-file=${path} --namespace ${namespace} -o yaml --dry-run | kubectl apply -f -`);
             this.context._logger.log(`${stdout}`);
         } catch (error) {
             this.context._logger.error('deployment failed: ' + error)
