@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.150](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.149...@azbake/ingredient-sql-dwh@0.1.150) (2021-03-21)
+
+
+### Bug Fixes
+
+* Adding configmap function to k8s ingredient ([#210](https://github.com/HomecareHomebase/azure-bake/issues/210)) ([be9305f](https://github.com/HomecareHomebase/azure-bake/commit/be9305f))
+
+
+
+
+
 ## [0.1.149](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.148...@azbake/ingredient-sql-dwh@0.1.149) (2021-02-04)
 
 **Note:** Version bump only for package @azbake/ingredient-sql-dwh

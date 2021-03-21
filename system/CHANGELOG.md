@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.23](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.22...azure-bake@0.5.23) (2021-03-21)
+
+
+### Bug Fixes
+
+* Adding configmap function to k8s ingredient ([#210](https://github.com/HomecareHomebase/azure-bake/issues/210)) ([be9305f](https://github.com/HomecareHomebase/azure-bake/commit/be9305f))
+
+
+
+
+
 ## [0.5.22](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.21...azure-bake@0.5.22) (2021-02-04)
 
 
