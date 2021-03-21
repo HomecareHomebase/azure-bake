@@ -5,31 +5,14 @@ version: 0.0.1
 parallelRegions: false
 resourceGroup: false
 ingredients:
-   - "@azbake/ingredient-cosmosdb@~0"
-   - "@azbake/ingredient-event-hub-namespace@~0"
-   - "@azbake/ingredient-null@~0"
-rgOverride: "larry-poc"
-resourceGroup: true
-variables:
-  property-service-url: "http://property.hchb-shared.svc.cluster.local/"
-  property-service-resource: "https://hchbazure.onmicrosoft.com/7a697051-cf99-42a7-9c6c-34ae6d27048f"
+   - "@azbake/ingredient-kubernetes@~0"
+rgOverride: "whilke-poc"
+resourceGroup: false
 recipe:
-  property-service:
+  k8s:
     properties:
-      type: "@azbake/ingredient-property-service"
-      source:
-        baseUrl: "[coreutils.variable('property-service-url')]"
-        resourceUrl: "[coreutils.variable('property-service-resource')]"
+      type: "@azbake/ingredient-kubernetes"
+      source: "./k8"
       parameters:
-        accountName: "[coreutils.variable('dbResourceName')]"
-        primaryRegion: "[coreutils.current_region().name]"
-        capabilities : "[coreutils.variable('capabilities')]"
-  cosmosdb-strings:
-    properties: 
-      type: "@azbake/ingredient-null"
-      condition: "[coreutils.current_region_primary()]"
-      parameters:         
-        primaryConnectionString: "[cosmosdbutils.get_primary_connectionstring(await coreutils.variable('dbResourceName'), await coreutils.resource_group())]"
-        secondaryConnectionString: "[cosmosdbutils.get_secondary_connectionstring(await coreutils.variable('dbResourceName'), await coreutils.resource_group())]"                
-    dependsOn: 
-      - cosmosdb-create         
+        kubeconfig: "[corutils.variable('')]"
+        configmap: "[k8s.configmap('./k8-configmap', 'testmap', 'hchb-shared')]"

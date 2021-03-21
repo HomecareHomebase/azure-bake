@@ -22,17 +22,22 @@ export class KubernetesPlugin extends BaseIngredient {
 
         const kubeconfigFilename = Math.random().toString(36).substring(7) + '.yaml'
         try {
+
+            //store the config file as an env var so that it can be used by utils
+            process.env.BAKE_KCONFIG = kubeconfigFilename;
+
             let k8sYamlPath = await this._ingredient.properties.source.valueAsync(this._ctx);
             if (!await promisify(fs.exists)(k8sYamlPath)) {
                 throw "file/path not found: " + k8sYamlPath
             }
 
+            let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
+            let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
+
             await this.replaceTokens(k8sYamlPath);
             await this.addTagsAsMetadata(k8sYamlPath);
             await this.debugLog(k8sYamlPath);
 
-            let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
-            let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
             try {
 
                 const stdout = execSync(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
