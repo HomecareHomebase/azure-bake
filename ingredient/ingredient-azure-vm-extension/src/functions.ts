@@ -17,7 +17,9 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
         
-        let client = new ComputeManagementClientContext(this.context.AuthToken,this.context.Environment.authentication.subscriptionId);        
+        const token: any = this.context.AuthToken
+
+        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
         const vm = new VirtualMachineExtensions(client);                
         let response = await vm.get(rg, vmName, vmExtensionName) ;                     
         return response;
@@ -28,13 +30,16 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        let client = new ComputeManagementClientContext(this.context.AuthToken,this.context.Environment.authentication.subscriptionId);        
+        const token: any = this.context.AuthToken
+
+        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
         const vm = new VirtualMachineExtensions(client);                
         let response = await vm.list(rg, vmName) ;                     
         return response;
     }   
 
-    public async delete(rg: string, vmName: string, vmExtensionName: string) {
+    /*
+    public async blah(rg: string, vmName: string, vmExtensionName: string) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
@@ -44,13 +49,15 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let response = await vm.deleteMethod(rg, vmName, vmExtensionName) ;                     
         return response;
     }
-
+*/
     public async update(rg: string, vmName: string, vmExtensionName: string, extensionParameters: VirtualMachineExtensionUpdate) {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        let client = new ComputeManagementClientContext(this.context.AuthToken,this.context.Environment.authentication.subscriptionId);        
+        const token: any = this.context.AuthToken
+
+        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
         const vm = new VirtualMachineExtensions(client);                          
         let response = await vm.update(rg, vmName, vmExtensionName, extensionParameters) ;                     
         return response;

@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.1.103...@azbake/ingredient-script@0.1.104) (2021-01-08)
+
+
+### Bug Fixes
+
+* updating typescript ([534609e](https://github.com/HomecareHomebase/azure-bake/commit/534609e))
+
+
+
+
+
+## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.1.102...@azbake/ingredient-script@0.1.103) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
+## [0.1.102](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.1.101...@azbake/ingredient-script@0.1.102) (2020-10-08)
+
+**Note:** Version bump only for package @azbake/ingredient-script
+
+
+
+
+
 ## [0.1.101](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-script@0.1.100...@azbake/ingredient-script@0.1.101) (2020-07-21)
 
 **Note:** Version bump only for package @azbake/ingredient-script

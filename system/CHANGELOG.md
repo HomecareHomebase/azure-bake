@@ -3,6 +3,98 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.23](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.22...azure-bake@0.5.23) (2021-03-21)
+
+
+### Bug Fixes
+
+* Adding configmap function to k8s ingredient ([#210](https://github.com/HomecareHomebase/azure-bake/issues/210)) ([be9305f](https://github.com/HomecareHomebase/azure-bake/commit/be9305f))
+
+
+
+
+
+## [0.5.22](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.21...azure-bake@0.5.22) (2021-02-04)
+
+
+### Bug Fixes
+
+* updated kubectl to 1.17.17 ([#209](https://github.com/HomecareHomebase/azure-bake/issues/209)) ([3cc3d4e](https://github.com/HomecareHomebase/azure-bake/commit/3cc3d4e))
+
+
+
+
+
+## [0.5.21](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.20...azure-bake@0.5.21) (2021-01-08)
+
+
+### Bug Fixes
+
+* updating typescript ([534609e](https://github.com/HomecareHomebase/azure-bake/commit/534609e))
+
+
+
+
+
+## [0.5.20](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.19...azure-bake@0.5.20) (2020-11-30)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.19](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.18...azure-bake@0.5.19) (2020-11-30)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.18](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.17...azure-bake@0.5.18) (2020-11-12)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.17](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.16...azure-bake@0.5.17) (2020-10-16)
+
+
+### Bug Fixes
+
+* forcing build ([6e6bba2](https://github.com/HomecareHomebase/azure-bake/commit/6e6bba2))
+
+
+
+
+
+## [0.5.16](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.15...azure-bake@0.5.16) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
+## [0.5.15](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.14...azure-bake@0.5.15) (2020-10-08)
+
+
+### Bug Fixes
+
+* Fixing custom auth in ingredients ([#196](https://github.com/HomecareHomebase/azure-bake/issues/196)) ([d8a93cd](https://github.com/HomecareHomebase/azure-bake/commit/d8a93cd))
+* resolving build error ([#189](https://github.com/HomecareHomebase/azure-bake/issues/189)) ([b601060](https://github.com/HomecareHomebase/azure-bake/commit/b601060))
+* update test.yaml ([#198](https://github.com/HomecareHomebase/azure-bake/issues/198)) ([3028e6e](https://github.com/HomecareHomebase/azure-bake/commit/3028e6e))
+
+
+
+
+
 ## [0.5.14](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.13...azure-bake@0.5.14) (2020-09-14)
 
 **Note:** Version bump only for package azure-bake

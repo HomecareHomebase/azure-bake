@@ -15,9 +15,9 @@
 * [@azbake/ingredient-sql-dwh](./ingredient/ingredient-sql-dwh/CHANGELOG.md)
 * [@azbake/ingredient-sqldb](./ingredient/ingredient-sqldb/CHANGELOG.md)
 * [@azbake/ingredient-sqlserver-logical](./ingredient/ingredient-sqlserver-logical/CHANGELOG.md)
+* [@azbake/ingredient-cosmosdb](./ingredient/ingredient-cosmosdb/CHANGELOG.md)
 
 ## Tools
-
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 [![Generic badge](https://img.shields.io/badge/Azure-Cloud-Blue.svg)](https://shields.io/)

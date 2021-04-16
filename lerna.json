@@ -14,8 +14,8 @@
     }
   },
   "packages": [
-    "arm-helper",
     "core",
+    "arm-helper",
     "ingredient/*",
     "system"
   ]

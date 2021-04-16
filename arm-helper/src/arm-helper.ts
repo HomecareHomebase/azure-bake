@@ -41,7 +41,9 @@ export class ARMHelper {
             logger.debug('template:\n' + JSON.stringify(template, null, 3));
             logger.debug('input params:\n' + JSON.stringify(params, null, 3));
 
-            let client = new ResourceManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+            const token: any = this._ctx.AuthToken
+
+            let client = new ResourceManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
 
             logger.log('validating deployment...');
             let validate = await client.deployments.validate(resourceGroup, deploymentName, deployment);

@@ -76,7 +76,7 @@ spec:
         bake.tag/owner: ""
         bake.tag/ing_version: 0.1.98
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: '{{BLAH}}'
+        bake.tag/deployment_ts: '{{CONFIGMAP}}'
     spec:
       containers:
         - name: nginx

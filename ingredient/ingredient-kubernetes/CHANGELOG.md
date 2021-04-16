@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.106...@azbake/ingredient-kubernetes@0.1.107) (2021-03-21)
+
+
+### Bug Fixes
+
+* Adding configmap function to k8s ingredient ([#210](https://github.com/HomecareHomebase/azure-bake/issues/210)) ([be9305f](https://github.com/HomecareHomebase/azure-bake/commit/be9305f))
+
+
+
+
+
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.105...@azbake/ingredient-kubernetes@0.1.106) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.104...@azbake/ingredient-kubernetes@0.1.105) (2020-10-08)
+
+**Note:** Version bump only for package @azbake/ingredient-kubernetes
+
+
+
+
+
 ## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.103...@azbake/ingredient-kubernetes@0.1.104) (2020-07-21)
 
 **Note:** Version bump only for package @azbake/ingredient-kubernetes

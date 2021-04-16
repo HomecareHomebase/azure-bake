@@ -1,4 +1,4 @@
-import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager, TagGenerator } from "@azbake/core";
+import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager, TagGenerator, BaseIngredient } from "@azbake/core";
 import { IngredientFactory } from './ingredients'
 import { red, cyan } from 'colors'
 import { DeploymentContext, Logger } from "@azbake/core"
@@ -17,7 +17,7 @@ export class BakeRunner {
     _package: IBakePackage
     _logger: Logger
     _AuthCreds: msRestNodeAuth.ApplicationTokenCredentials
-    _customAuthToken: string | null | undefined;
+    _customAuthToken: Map<string, string | null> = new Map<string, string | null>();
 
     private _loadBuiltIns() {
 
@@ -78,6 +78,7 @@ export class BakeRunner {
                     }
                 }
 
+                ctx.CustomAuthToken = this._customAuthToken.get(ingredientName) || null // just pass through as Build will create a local ctx instance
                 let exec = IngredientFactory.Build(ingredientName, ingredient, ctx)
                 if (exec) {
 
@@ -222,7 +223,8 @@ export class BakeRunner {
                 let ingredient = iterator[1];
 
                 let exec = IngredientFactory.Build(name, ingredient, ctx)
-                this._customAuthToken = exec ? (await exec.Auth(auth)) : null
+                const token = exec ? (await exec.Auth(auth)) : null
+                this._customAuthToken.set(name, token);
             }
 
             return true;
@@ -239,7 +241,7 @@ export class BakeRunner {
 
             regions.forEach(region => {
                 let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
-                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, this._customAuthToken)
+                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, null)
                 let task = this._bakeRegion(ctx)
                 tasks.push(task)
             })
@@ -261,7 +263,7 @@ export class BakeRunner {
             for (let i = 0; i < count; ++i) {
                 let region = regions[i]
                 let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
-                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, this._customAuthToken)
+                    new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, null)
 
                 try {
                     let r = await this._bakeRegion(ctx)

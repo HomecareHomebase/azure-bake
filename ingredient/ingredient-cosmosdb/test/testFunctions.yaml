@@ -1,0 +1,30 @@
+name: cosmosdatabase
+shortName: cosmosdb
+version: 1.0.0
+ingredients:
+   - "@azbake/ingredient-cosmosdb@~0"
+   - "@azbake/ingredient-event-hub-namespace@~0"
+   - "@azbake/ingredient-null@~0"
+rgOverride: "larry-poc"
+resourceGroup: true
+variables:
+  dbResourceName: "[cosmosdbutils.create_resource_name()]"
+  capabilities: "[JSON.parse('[{\"name\" : \"EnableServerless\" }]')]"
+recipe:
+  cosmosdb-create:
+    properties:
+      type: "@azbake/ingredient-cosmosdb"
+      condition: "[coreutils.current_region_primary()]" 
+      parameters:
+        accountName: "[coreutils.variable('dbResourceName')]"
+        primaryRegion: "[coreutils.current_region().name]"
+        capabilities : "[coreutils.variable('capabilities')]"
+  cosmosdb-strings:
+    properties: 
+      type: "@azbake/ingredient-null"
+      condition: "[coreutils.current_region_primary()]"
+      parameters:         
+        primaryConnectionString: "[cosmosdbutils.get_primary_connectionstring(await coreutils.variable('dbResourceName'), await coreutils.resource_group())]"
+        secondaryConnectionString: "[cosmosdbutils.get_secondary_connectionstring(await coreutils.variable('dbResourceName'), await coreutils.resource_group())]"                
+    dependsOn: 
+      - cosmosdb-create         

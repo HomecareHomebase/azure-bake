@@ -4,7 +4,7 @@
   "devDependencies": {
     "@types/node": "^10.12.18",
     "lerna": "^3.13.0",
-    "typescript": "^3.3.3"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "clean:build": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile",
@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "@azbake/ingredient-azure-vm-extension": "^0.1.97",
+    "@azbake/ingredient-cosmosdb": "0.0.3",
+    "@azbake/ingredient-event-hub-namespace": "^0.1.107",
+    "@azbake/ingredient-null": "0.0.4",
     "@azure/arm-compute": "^10.0.0",
     "@azure/arm-network": "^14.0.0",
     "azure-arm-compute": "^10.0.0",

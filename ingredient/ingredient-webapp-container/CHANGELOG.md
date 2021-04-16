@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-webapp-container@0.1.105...@azbake/ingredient-webapp-container@0.1.106) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-webapp-container@0.1.104...@azbake/ingredient-webapp-container@0.1.105) (2020-10-08)
+
+**Note:** Version bump only for package @azbake/ingredient-webapp-container
+
+
+
+
+
 ## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-webapp-container@0.1.103...@azbake/ingredient-webapp-container@0.1.104) (2020-09-14)
 
 **Note:** Version bump only for package @azbake/ingredient-webapp-container

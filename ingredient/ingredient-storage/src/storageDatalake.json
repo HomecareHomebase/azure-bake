@@ -51,7 +51,8 @@
             "defaultValue": false,
             "metadata": {
                 "description": "Allows https traffic only to storage service if sets to true."
-            },
+            }
+        },
         "IsHnsEnabled": {
             "type": "bool",
             "defaultValue": false,
@@ -59,7 +60,7 @@
                 "description": "Enables Hierchael namespace for Datalake"
             }
         }
-        }
+        
     },
     "resources": [
         {

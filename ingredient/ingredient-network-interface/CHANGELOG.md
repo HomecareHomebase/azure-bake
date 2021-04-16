@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.113](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.112...@azbake/ingredient-network-interface@0.1.113) (2021-03-21)
+
+
+### Bug Fixes
+
+* Adding configmap function to k8s ingredient ([#210](https://github.com/HomecareHomebase/azure-bake/issues/210)) ([be9305f](https://github.com/HomecareHomebase/azure-bake/commit/be9305f))
+
+
+
+
+
+## [0.1.112](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.111...@azbake/ingredient-network-interface@0.1.112) (2021-02-04)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.110...@azbake/ingredient-network-interface@0.1.111) (2021-01-08)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.109...@azbake/ingredient-network-interface@0.1.110) (2020-11-30)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.108...@azbake/ingredient-network-interface@0.1.109) (2020-11-30)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.107...@azbake/ingredient-network-interface@0.1.108) (2020-11-12)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.106...@azbake/ingredient-network-interface@0.1.107) (2020-10-16)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.105...@azbake/ingredient-network-interface@0.1.106) (2020-10-16)
+
+
+### Bug Fixes
+
+* upgrade all azure arm packages ([7e56704](https://github.com/HomecareHomebase/azure-bake/commit/7e56704))
+
+
+
+
+
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.104...@azbake/ingredient-network-interface@0.1.105) (2020-10-08)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
 ## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.103...@azbake/ingredient-network-interface@0.1.104) (2020-09-14)
 
 **Note:** Version bump only for package @azbake/ingredient-network-interface

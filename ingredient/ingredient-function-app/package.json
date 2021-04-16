@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-function-app",
   "description": "Ingredient for deploying Function Apps",
-  "version": "0.1.102",
+  "version": "0.1.104",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -16,15 +16,15 @@
   },
   "peerDependencies": {
     "@azbake/core": "0.*",
-    "@azure/ms-rest-nodeauth": "0.9.2"
+    "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.101",
-    "@azure/ms-rest-nodeauth": "0.9.2",
+    "@azbake/core": "^0.1.103",
+    "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.102"
+    "@azbake/arm-helper": "^0.1.104"
   },
   "publishConfig": {
     "access": "public"

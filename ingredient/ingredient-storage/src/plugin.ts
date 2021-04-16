@@ -24,7 +24,7 @@ export class StoragePlugIn extends BaseIngredient {
                 await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, await util.resource_group())
                 //there is a limitation around the copy function in the current architecture
 
-            }else if(params['IsHNSEnabled'])
+            }else if(params['IsHnsEnabled'])
             {
                 await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, await util.resource_group())
             }
@@ -33,10 +33,12 @@ export class StoragePlugIn extends BaseIngredient {
                 await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
             }
 
-
-
-
-            await this.ConfigureDiagnosticSettings(params, util);
+            try {
+                await this.ConfigureDiagnosticSettings(params, util);                
+            }
+            catch (diagError){
+                this._logger.debug('diag error: ' + diagError) //some storage types don't support diag settings
+            }
 
             let alertTarget = params["storageAccountName"].value
             let alertOverrides = this._ingredient.properties.alerts

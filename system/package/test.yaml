@@ -2,17 +2,17 @@ name: Kados
 shortName: kados
 owner: Architecture
 version: 0.0.1
-ingredients:
-  - "@azbake/ingredient-kubernetes@~0"
 parallelRegions: false
 resourceGroup: false
-variables:
-  blah: "[coreutils.toJsonString(await coreutils.variable('json'))]"
+ingredients:
+   - "@azbake/ingredient-kubernetes@~0"
+rgOverride: "whilke-poc"
+resourceGroup: false
 recipe:
-  kados-service-deploy:
+  k8s:
     properties:
       type: "@azbake/ingredient-kubernetes"
-      source: ./k8
-      tokens:
+      source: "./k8"
       parameters:
-        kubeconfig: "[coreutils.variable('k8s_config')]"
+        kubeconfig: "[corutils.variable('')]"
+        configmap: "[k8s.configmap('./k8-configmap', 'testmap', 'hchb-shared')]"

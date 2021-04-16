@@ -1,10 +1,11 @@
 FROM mhart/alpine-node:11.2.0
 ENV NODE_ENV production
 
+
 # Install kubectl
 # Note: Latest version may be found on:
 # https://aur.archlinux.org/packages/kubectl-bin/
-ADD https://storage.googleapis.com/kubernetes-release/release/v1.16.14/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.17.17/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
 RUN set -x \
     && apk add --no-cache bash \

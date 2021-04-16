@@ -5,7 +5,7 @@ import { RestError } from "@azure/ms-rest-js"
 import * as fs from 'fs';
 import stockDiagnostics from "./stockDiagnostics.json"
 
-let request = require('async-request')
+const got = require('got');
 
 interface IApimApiDiagnostics extends DiagnosticContract{
     name: string
@@ -42,6 +42,7 @@ export class ApimApiPlugin extends BaseIngredient {
     private     apim_client:        ApiManagementClient | undefined
     private     apim_apis:          Array<ApiContract> | undefined
     private     apim_options:       IApimOptions | undefined
+    private     ca_file:            Buffer | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -81,13 +82,25 @@ export class ApimApiPlugin extends BaseIngredient {
             this._logger.log('APIM API Plugin: resourceName can not be empty')
             return false
         }
-
+        
         this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
-        this.apim_client = new ApiManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId)
+
+        const token: any = this._ctx.AuthToken
+
+        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.log('APIM API Plugin: APIM client is null')
             return false
+        }
+
+        let pemFile = process.env.NODE_EXTRA_CA_CERTS || "";
+        let chk = fs.existsSync(pemFile)
+        if (!chk) {
+            this._logger.error('could not locate CA file: ' + pemFile)
+        }
+        else{
+            this.ca_file = fs.readFileSync(pemFile)
         }
 
         let apis : Array<ApiContract> = new Array<ApiContract>()
@@ -265,9 +278,26 @@ export class ApimApiPlugin extends BaseIngredient {
             let response: any | undefined;
 
             try {
-                response = await request(api.value);
-            } catch(error) {
+                response = await got(api.value, {
+                    https: {
+                        certificateAuthority: this.ca_file
+                    }
+                });
+
+                if(api.format == "openapi-link") {
+                    api.format="openapi"
+                }
+                else if(api.format == "swagger-link-json") {
+                    api.format="swagger-json"
+                }
+                else {
+                    throw new Error("Unsupported api format")
+                }               
+
+                api.value = response.body
+            } catch (error) {
                 this._logger.error('APIM API Plugin: Error waiting for API: ' + error)
+                return false;
             }
 
             if(response && (response.statusCode >= 200 && response.statusCode < 400)) {
@@ -383,8 +413,13 @@ export class ApimApiPlugin extends BaseIngredient {
         }
 
         for(let i=0; i < blockTime; ++i){
-            let response = await request(policy.value)
-            if (response.statusCode >= 200 && response.statusCode < 400){
+            let response = await got(policy.value, {
+                https: {
+                    certificateAuthority: this.ca_file
+                }
+            });
+
+            if (response && response.statusCode >= 200 && response.statusCode < 400){
                 policy.format = "xml";
                 policy.value = response.body;
                 return policy
