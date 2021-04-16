@@ -39,7 +39,7 @@ export class CustomScriptIngredient extends BaseIngredient {
             })
 
             let script = contents + "\n onExecute(this._ctx, this._logger, params)"
-            eval(script)
+            await eval(script)
         }
         catch(err){
             this._logger.error('script execution failed: ' + err)
