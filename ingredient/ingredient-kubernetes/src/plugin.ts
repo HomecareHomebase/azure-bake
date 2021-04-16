@@ -46,6 +46,20 @@ export class KubernetesPlugin extends BaseIngredient {
                     const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
                     this._logger.log(`${stdout}`);
                 }
+
+                let delaymsParam = this._ingredient.properties.parameters.get("delayms") || undefined;
+
+                if (delaymsParam)
+                {
+                    let delayms: number = await delaymsParam.valueAsync(this._ctx);
+                    if (delayms > 0 )
+                    {
+                        this._logger.log('Waiting for a delay of ' + delayms + "ms");
+                        await this.Sleep(delayms);
+                    }
+                        
+                }
+
             } finally {
                 if (kubeConfigParam) {
                     try {
@@ -293,5 +307,11 @@ export class KubernetesPlugin extends BaseIngredient {
     }
     private async isDirectory(path: any): Promise<boolean> {
         return (await promisify(fs.lstat)(path)).isDirectory()
+    }
+
+    private Sleep(ms: number) : Promise<void> {
+        return new Promise(resolve=>{
+            setTimeout(resolve,ms)
+        })
     }
 }
