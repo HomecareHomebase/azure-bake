@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.108...@azbake/ingredient-kubernetes@0.1.109) (2021-05-21)
+
+
+### Bug Fixes
+
+* Delete option for k8s ingredient ([#212](https://github.com/HomecareHomebase/azure-bake/issues/212)) ([4d0ee69](https://github.com/HomecareHomebase/azure-bake/commit/4d0ee69))
+
+
+
+
+
 ## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.107...@azbake/ingredient-kubernetes@0.1.108) (2021-04-16)
 
 
