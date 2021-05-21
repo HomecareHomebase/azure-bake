@@ -32,6 +32,7 @@ export class KubernetesPlugin extends BaseIngredient {
             }
 
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
+            let deleteDeployment = this._ingredient.properties.parameters.get("deleteDeployment");
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
 
             await this.replaceTokens(k8sYamlPath);
@@ -40,7 +41,12 @@ export class KubernetesPlugin extends BaseIngredient {
 
             try {
 
-                const stdout = execSync(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
+                let execString = `kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`;
+                if (deleteDeployment && await deleteDeployment.valueAsync(this._ctx)){
+                    execString = `kubectl delete ${kubeConfigParam} -f ${k8sYamlPath} --ignore-not-found=true`;
+                }
+
+                const stdout = execSync(execString);
                 this._logger.log(`${stdout}`);
                 if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
                     const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
