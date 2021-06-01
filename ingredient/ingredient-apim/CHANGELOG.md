@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.33](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.32...@azbake/ingredient-apim@0.2.33) (2021-06-01)
+
+
+### Bug Fixes
+
+* Allow API's to move products and fix AppInsights Logger Key cleanup ([#214](https://github.com/HomecareHomebase/azure-bake/issues/214)) ([9aa0275](https://github.com/HomecareHomebase/azure-bake/commit/9aa0275))
+
+
+
+
+
 ## [0.2.32](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.31...@azbake/ingredient-apim@0.2.32) (2020-10-16)
 
 
