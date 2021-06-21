@@ -82,12 +82,12 @@ export class StoragePlugIn extends BaseIngredient {
         if(source.startsWith("file:///")) {
             var filePath = source.replace("file:///", "");
 
-            await this.UploadSingleBlob(containerClient, filePath, params);
+            await this.UploadFile(containerClient, filePath, params);
         }
         // upload directory
         else {
             for (const fileName of fs.readdirSync(source)) {
-                await this.UploadSingleBlob(containerClient, `${source}/${fileName}`, params); 
+                await this.UploadFile(containerClient, `${source}/${fileName}`, params); 
             }
         }    
     }
@@ -181,19 +181,36 @@ export class StoragePlugIn extends BaseIngredient {
         return new BlobServiceClient(blobPrimaryURL, credentials);
     }
 
-    private async UploadSingleBlob(containerClient: ContainerClient, filePath: string, params: any) {
+    private async UploadFile(containerClient: ContainerClient, filePath: string, params: any) {
         const path = require("path");
         const mime = require('mime-types');
+        var AdmZip = require("adm-zip");
 
-        let fileName = path.basename(filePath);
-        const blobName = `${params['uploadPath'].value}/${fileName}`;
+        if(params['unzip'] != undefined && params['unzip'].value && mime.lookup(filePath) == "application/zip") {
+            var zip = new AdmZip(filePath);
+            var zipEntries = zip.getEntries();
+    
+            for (const zipEntry of zipEntries) {
+                this._logger.debug(zipEntry.toString());
 
-        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-        const uploadBlobResponse = await blockBlobClient.uploadFile(filePath, {
-            blobHTTPHeaders: {
-              blobContentType: mime.lookup(filePath) || 'application/octet-stream'
+                await this.UploadBlob(containerClient, zipEntry.name, zipEntry.getData(), params);
             }
-          });
+        }
+        else {
+            await this.UploadBlob(containerClient, path.basename(filePath), fs.readFileSync(filePath), params);
+        }
+    }
+
+    private async UploadBlob(containerClient: ContainerClient, fileName: string, buffer: Buffer, params: any) {
+        const mime = require('mime-types');
+
+        const blobName = `${params['uploadPath'].value}/${fileName}`;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const uploadBlobResponse = await blockBlobClient.uploadData(buffer, {
+             blobHTTPHeaders: {
+               blobContentType: mime.lookup(fileName) || 'application/octet-stream'
+             }
+           });
 
         this._logger.log(`Upload blob "${fileName}" successfully`, uploadBlobResponse.requestId)
     }
