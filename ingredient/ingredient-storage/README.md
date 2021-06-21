@@ -51,8 +51,8 @@ recipe:
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
 | container | yes (when `source` is populated) |  | Container to upload the specific `source` to. Only used when `source` is specified. |
 | uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
-| deploy | no |  | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
-| unzip | no |  | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
+| deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
+| unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
