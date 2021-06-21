@@ -183,13 +183,18 @@ export class StoragePlugIn extends BaseIngredient {
 
     private async UploadSingleBlob(containerClient: ContainerClient, filePath: string, params: any) {
         var path = require("path");
+        const mime = require('mime-types');
 
         let fileName = path.basename(filePath);
         const blobName = `${params['uploadPath'].value}/${fileName}`;
 
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const uploadBlobResponse = await blockBlobClient.uploadFile(filePath, {
+            blobHTTPHeaders: {
+              blobContentType: mime.lookup(filePath) || 'application/octet-stream'
+            }
+          });
 
-        const uploadBlobResponse = await blockBlobClient.uploadFile(filePath);
         this._logger.log(`Upload blob "${fileName}" successfully`, uploadBlobResponse.requestId)
     }
 }
