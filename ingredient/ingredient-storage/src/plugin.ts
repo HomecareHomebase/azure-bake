@@ -182,7 +182,7 @@ export class StoragePlugIn extends BaseIngredient {
     }
 
     private async UploadSingleBlob(containerClient: ContainerClient, filePath: string, params: any) {
-        var path = require("path");
+        const path = require("path");
         const mime = require('mime-types');
 
         let fileName = path.basename(filePath);
