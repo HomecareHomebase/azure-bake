@@ -35,14 +35,9 @@ recipe:
   mypkg-storage:
     properties:
       type: "@azbake/ingredient-storage"
-      source: "" # optional - when set to either file or a path, those files will be updated to the specified container
+      source: ""
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
-        # The following parameters are only used when the source is set and the ingredient will be uploading files to the storage account
-        # container: myContainer
-        # uploadPath: test/__build_buildNumber__
-        # deploy: true/false
-        # unzip: true/false
 ```
 
 
@@ -69,6 +64,33 @@ recipe:
 | blobDiagnosticLoggingRetentionDays | 10 | "true" | Data retention of diagnostic logs in Storage Analytics |
 
 *** Please note that the only value required for creation of this resource is the `storageAccountName`
+
+## Uploading Files to Blob Storage
+
+Files can be uploaded to a blob container during deployment by specifying the `source` property within the recipe. The source property supports pointing to a direct file via `file:///` syntax or pointing to a directory using relative pathing.
+
+NOTE: only blob storage is supported at this time.
+
+```yaml
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-storage@~0"
+parallelRegions: false
+resourceGroup: false
+recipe:
+  mypkg-storage:
+    properties:
+      type: "@azbake/ingredient-storage"
+      source: "file:///./deploy/deploy.zip" # "./deploy"
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        container: myContainer
+        uploadPath: mypkg/__build_buildNumber__
+        deploy: false
+        unzip: true
+```
 
 ## Utilities
 
