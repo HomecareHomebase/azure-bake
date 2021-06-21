@@ -35,9 +35,14 @@ recipe:
   mypkg-storage:
     properties:
       type: "@azbake/ingredient-storage"
-      source: ""
+      source: "" # optional - when set to either file or a path, those files will be updated to the specified container
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
+        # The following parameters are only used when the source is set and the ingredient will be uploading files to the storage account
+        # container: myContainer
+        # uploadPath: test/__build_buildNumber__
+        # deploy: true/false
+        # unzip: true/false
 ```
 
 
@@ -49,6 +54,10 @@ recipe:
 | location | no | Parent resource group geographic location | The location for this resource |
 | storageAccountType | no | | The type for the storage account See [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/2018-11-01/storageaccounts) |
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
+| container | yes (when `source` is populated) |  | Container to upload the specific `source` to. Only used when `source` is specified. |
+| uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
+| deploy | no |  | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
+| unzip | no |  | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
