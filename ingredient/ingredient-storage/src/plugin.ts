@@ -59,39 +59,6 @@ export class StoragePlugIn extends BaseIngredient {
         }
     }
 
-    private async DeploySource(source: any, params: any, util: any) {
-        
-        this._logger.log(`Beginning source upload to storage`);
-
-        if(params['container'] == undefined)
-        {
-            this._logger.error(`Container parameter not specified`);
-            return;
-        }
-
-        if(params['uploadPath'] == undefined)
-        {
-            this._logger.error(`Upload Path parameter not specified`);
-            return;
-        }
-
-        const blobClient = await this.GetBlobServiceClient(params, util);
-        const containerClient = blobClient.getContainerClient(params['container'].value);
-
-        // upload single file
-        if(source.startsWith("file:///")) {
-            var filePath = source.replace("file:///", "");
-
-            await this.UploadFile(containerClient, filePath, params);
-        }
-        // upload directory
-        else {
-            for (const fileName of fs.readdirSync(source)) {
-                await this.UploadFile(containerClient, `${source}/${fileName}`, params); 
-            }
-        }    
-    }
-
     private async ConfigureDiagnosticSettings(params: any, util: any) {
         const blobClient = await this.GetBlobServiceClient(params, util);
         const serviceProperties = await blobClient.getProperties()
@@ -166,6 +133,39 @@ export class StoragePlugIn extends BaseIngredient {
 
         //Post blob service properties back to Azure
         await blobClient.setProperties(serviceProperties)
+    }
+
+    private async DeploySource(source: any, params: any, util: any) {
+        
+        this._logger.log(`Beginning source upload to storage`);
+
+        if(params['container'] == undefined)
+        {
+            this._logger.error(`Container parameter not specified`);
+            return;
+        }
+
+        if(params['uploadPath'] == undefined)
+        {
+            this._logger.error(`Upload Path parameter not specified`);
+            return;
+        }
+
+        const blobClient = await this.GetBlobServiceClient(params, util);
+        const containerClient = blobClient.getContainerClient(params['container'].value);
+
+        // upload single file
+        if(source.startsWith("file:///")) {
+            var filePath = source.replace("file:///", "");
+
+            await this.UploadFile(containerClient, filePath, params);
+        }
+        // upload directory
+        else {
+            for (const fileName of fs.readdirSync(source)) {
+                await this.UploadFile(containerClient, `${source}/${fileName}`, params); 
+            }
+        }    
     }
 
     private async GetBlobServiceClient(params: any, util: any): Promise<BlobServiceClient> {
