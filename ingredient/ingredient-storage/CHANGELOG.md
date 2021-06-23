@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.118](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.117...@azbake/ingredient-storage@0.1.118) (2021-06-23)
+
+
+### Bug Fixes
+
+* Storage Ingredient: allow file upload to blob container ([#215](https://github.com/HomecareHomebase/azure-bake/issues/215)) ([b2dcb28](https://github.com/HomecareHomebase/azure-bake/commit/b2dcb28))
+
+
+
+
+
 ## [0.1.117](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.116...@azbake/ingredient-storage@0.1.117) (2020-11-30)
 
 
