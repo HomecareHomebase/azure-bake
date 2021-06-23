@@ -40,6 +40,7 @@ recipe:
         kubeconfig : ["coreutils.variable('b64KubeConfigContent')"]
         testDeployment: true #set this to true and after the source has been applied, it will get deleted (good for deployment testing)
         deleteDeployment: false # not required, and if set to true it will execute a kubectl delete instead of a kubectl apply on the subdir (ignoring anything not found)
+        kubectlFlags: "--server-side --force-conflicts" # optionally specify additional flags for kubectl command
 ~~~
 # Limitations
 * Token replacement will not happen against URLs specified as the `source` of the ingredient.
