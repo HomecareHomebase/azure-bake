@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.109...@azbake/ingredient-kubernetes@0.1.110) (2021-06-23)
+
+
+### Bug Fixes
+
+* Add kubectlFlags Parameter to Kubernetes Ingredient ([#216](https://github.com/HomecareHomebase/azure-bake/issues/216)) ([a2a437b](https://github.com/HomecareHomebase/azure-bake/commit/a2a437b))
+
+
+
+
+
 ## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.108...@azbake/ingredient-kubernetes@0.1.109) (2021-05-21)
 
 
