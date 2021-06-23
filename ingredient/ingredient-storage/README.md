@@ -49,6 +49,10 @@ recipe:
 | location | no | Parent resource group geographic location | The location for this resource |
 | storageAccountType | no | | The type for the storage account See [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/2018-11-01/storageaccounts) |
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
+| container | yes (when `source` is populated) |  | Container to upload the specific `source` to. Only used when `source` is specified. |
+| uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
+| deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
+| unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
@@ -60,6 +64,33 @@ recipe:
 | blobDiagnosticLoggingRetentionDays | 10 | "true" | Data retention of diagnostic logs in Storage Analytics |
 
 *** Please note that the only value required for creation of this resource is the `storageAccountName`
+
+## Uploading Files to Blob Storage
+
+Files can be uploaded to a blob container during deployment by specifying the `source` property within the recipe. The source property supports pointing to a direct file via `file:///` syntax or pointing to a directory using relative pathing.
+
+NOTE: only blob storage is supported at this time.
+
+```yaml
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-storage@~0"
+parallelRegions: false
+resourceGroup: false
+recipe:
+  mypkg-storage:
+    properties:
+      type: "@azbake/ingredient-storage"
+      source: "file:///./deploy/deploy.zip" # "./deploy"
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        container: myContainer
+        uploadPath: mypkg/__build_buildNumber__
+        deploy: false
+        unzip: true
+```
 
 ## Utilities
 
