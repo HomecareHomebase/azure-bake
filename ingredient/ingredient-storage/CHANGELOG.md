@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.119](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.118...@azbake/ingredient-storage@0.1.119) (2021-06-24)
+
+
+### Bug Fixes
+
+* enhancement: add rgOverride parameter ([#217](https://github.com/HomecareHomebase/azure-bake/issues/217)) ([ee85fbd](https://github.com/HomecareHomebase/azure-bake/commit/ee85fbd))
+
+
+
+
+
 ## [0.1.118](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.117...@azbake/ingredient-storage@0.1.118) (2021-06-23)
 
 
