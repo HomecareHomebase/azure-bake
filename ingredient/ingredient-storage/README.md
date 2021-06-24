@@ -53,6 +53,7 @@ recipe:
 | uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
 | unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
+| rgOverride | no | | Specifics a resource group override for the storage account if different from the main resource group of the bake recipe. |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|

@@ -19,25 +19,34 @@ export class StoragePlugIn extends BaseIngredient {
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             
+            let resourceGroup = await util.resource_group()
+
+            let rgOverrideParam  = this._ingredient.properties.parameters.get('rgOverride')
+            if (rgOverrideParam){
+                resourceGroup = await rgOverrideParam.valueAsync(this._ctx)
+                // remove rgOverride if it exists since its not in the ARM template
+                delete params["rgOverride"]
+            }
+
             if(params['deploy'] == undefined || params['deploy'].value) 
             {
                 if(params['NetworkAcls'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, await util.resource_group())
+                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, resourceGroup)
                     //there is a limitation around the copy function in the current architecture
                 }
                 else if(params['IsHnsEnabled'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, await util.resource_group())
+                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, resourceGroup)
                 }
                 else
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+                    await helper.DeployTemplate(this._name, ARMTemplate, params, resourceGroup)
                 }
     
                 try 
                 {
-                    await this.ConfigureDiagnosticSettings(params, util);                
+                    await this.ConfigureDiagnosticSettings(params, util, resourceGroup);                
                 }
                 catch (diagError) {
                     this._logger.debug('diag error: ' + diagError) //some storage types don't support diag settings
@@ -45,13 +54,13 @@ export class StoragePlugIn extends BaseIngredient {
     
                 let alertTarget = params["storageAccountName"].value
                 let alertOverrides = this._ingredient.properties.alerts
-                await helper.DeployAlerts(this._name, await util.resource_group(), alertTarget, stockAlerts, alertOverrides)
+                await helper.DeployAlerts(this._name, resourceGroup, alertTarget, stockAlerts, alertOverrides)
             }
 
             let source = await this._ingredient.properties.source.valueAsync(this._ctx);
 
             if (source) {
-                await this.DeploySource(source, params, util);
+                await this.DeploySource(source, params, resourceGroup);
             }
         } catch(error){
             this._logger.error('deployment failed: ' + error)
@@ -59,8 +68,8 @@ export class StoragePlugIn extends BaseIngredient {
         }
     }
 
-    private async ConfigureDiagnosticSettings(params: any, util: any) {
-        const blobClient = await this.GetBlobServiceClient(params, util);
+    private async ConfigureDiagnosticSettings(params: any, util: any, resourceGroup: any) {
+        const blobClient = await this.GetBlobServiceClient(params, resourceGroup);
         const serviceProperties = await blobClient.getProperties()
 
         //Get Bake variables for diagnostic settings.  Default to "true" (enabled) and 10 days data retention.
@@ -135,7 +144,7 @@ export class StoragePlugIn extends BaseIngredient {
         await blobClient.setProperties(serviceProperties)
     }
 
-    private async DeploySource(source: any, params: any, util: any) {
+    private async DeploySource(source: any, params: any, resourceGroup: any) {
         
         this._logger.log(`Beginning source upload to storage`);
 
@@ -151,7 +160,7 @@ export class StoragePlugIn extends BaseIngredient {
             return;
         }
 
-        const blobClient = await this.GetBlobServiceClient(params, util);
+        const blobClient = await this.GetBlobServiceClient(params, resourceGroup);
         const containerClient = blobClient.getContainerClient(params['container'].value);
 
         // upload single file
@@ -168,13 +177,13 @@ export class StoragePlugIn extends BaseIngredient {
         }    
     }
 
-    private async GetBlobServiceClient(params: any, util: any): Promise<BlobServiceClient> {
+    private async GetBlobServiceClient(params: any, resourceGroup: any): Promise<BlobServiceClient> {
         let accountName: string;
         let accountKey: string;
 
         accountName = params["storageAccountName"].value;
         const storageUtils = new StorageUtils(this._ctx);
-        accountKey = await storageUtils.get_primary_key(accountName, await util.resource_group())
+        accountKey = await storageUtils.get_primary_key(accountName, resourceGroup)
         const credentials = new StorageSharedKeyCredential(accountName, accountKey);
         const blobPrimaryURL = `https://${accountName}.blob.core.windows.net/`;
 
