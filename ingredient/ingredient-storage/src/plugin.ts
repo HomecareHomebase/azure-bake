@@ -10,6 +10,9 @@ import ARMTemplateDataLake from "./storageDatalake.json"
 import * as fs from 'fs';
 
 export class StoragePlugIn extends BaseIngredient {
+    
+    private resourceGroup: string = ""
+
     public async Execute(): Promise<void> {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
@@ -19,34 +22,48 @@ export class StoragePlugIn extends BaseIngredient {
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             
-            let resourceGroup = await util.resource_group()
-
+            // define resource group
             let rgOverrideParam  = this._ingredient.properties.parameters.get('rgOverride')
-            if (rgOverrideParam){
-                resourceGroup = await rgOverrideParam.valueAsync(this._ctx)
+            if (rgOverrideParam) {
+                this.resourceGroup = await rgOverrideParam.valueAsync(this._ctx)
                 // remove rgOverride if it exists since its not in the ARM template
                 delete params["rgOverride"]
             }
+            else {
+                this.resourceGroup = await util.resource_group();
+            }
 
-            if(params['deploy'] == undefined || params['deploy'].value) 
+            // pull out variables for uploading to storage account and remove from params collection since not present in the ARM template
+            let deploy = params['deploy'] === undefined ? true : params['deploy'].value; 
+            let container = params['container'] === undefined ? "" : params['container'].value;
+            let uploadPath = params['uploadPath'] === undefined ? "" : params['uploadPath'].value;
+            let unzip = params['unzip'] === undefined ? false : params['unzip'].value; 
+
+            delete params["deploy"]
+            delete params["container"]
+            delete params["uploadPath"]
+            delete params["unzip"]
+
+            // begin deployment
+            if(deploy) 
             {
                 if(params['NetworkAcls'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, resourceGroup)
+                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, this.resourceGroup)
                     //there is a limitation around the copy function in the current architecture
                 }
                 else if(params['IsHnsEnabled'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, resourceGroup)
+                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, this.resourceGroup)
                 }
                 else
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplate, params, resourceGroup)
+                    await helper.DeployTemplate(this._name, ARMTemplate, params, this.resourceGroup)
                 }
     
                 try 
                 {
-                    await this.ConfigureDiagnosticSettings(params, util, resourceGroup);                
+                    await this.ConfigureDiagnosticSettings(params, util);                
                 }
                 catch (diagError) {
                     this._logger.debug('diag error: ' + diagError) //some storage types don't support diag settings
@@ -54,13 +71,13 @@ export class StoragePlugIn extends BaseIngredient {
     
                 let alertTarget = params["storageAccountName"].value
                 let alertOverrides = this._ingredient.properties.alerts
-                await helper.DeployAlerts(this._name, resourceGroup, alertTarget, stockAlerts, alertOverrides)
+                await helper.DeployAlerts(this._name, this.resourceGroup, alertTarget, stockAlerts, alertOverrides)
             }
 
             let source = await this._ingredient.properties.source.valueAsync(this._ctx);
 
             if (source) {
-                await this.DeploySource(source, params, resourceGroup);
+                await this.DeploySource(source, container, uploadPath, unzip, params);
             }
         } catch(error){
             this._logger.error('deployment failed: ' + error)
@@ -68,8 +85,8 @@ export class StoragePlugIn extends BaseIngredient {
         }
     }
 
-    private async ConfigureDiagnosticSettings(params: any, util: any, resourceGroup: any) {
-        const blobClient = await this.GetBlobServiceClient(params, resourceGroup);
+    private async ConfigureDiagnosticSettings(params: any, util: any) {
+        const blobClient = await this.GetBlobServiceClient(params);
         const serviceProperties = await blobClient.getProperties()
 
         //Get Bake variables for diagnostic settings.  Default to "true" (enabled) and 10 days data retention.
@@ -144,76 +161,88 @@ export class StoragePlugIn extends BaseIngredient {
         await blobClient.setProperties(serviceProperties)
     }
 
-    private async DeploySource(source: any, params: any, resourceGroup: any) {
+    private async DeploySource(source: any, container: string, uploadPath: string, unzip: boolean, params: any) {
         
         this._logger.log(`Beginning source upload to storage`);
 
-        if(params['container'] == undefined)
+        if(source == null)
         {
-            this._logger.error(`Container parameter not specified`);
+            this._logger.error(`source parameter not specified`);
             return;
         }
 
-        if(params['uploadPath'] == undefined)
+        if(container == null)
         {
-            this._logger.error(`Upload Path parameter not specified`);
+            this._logger.error(`container parameter not specified`);
             return;
         }
 
-        const blobClient = await this.GetBlobServiceClient(params, resourceGroup);
-        const containerClient = blobClient.getContainerClient(params['container'].value);
+        if(uploadPath == null)
+        {
+            this._logger.error(`uploadPath parameter not specified`);
+            return;
+        }
+
+        if(unzip == null)
+        {
+            this._logger.error(`unzip parameter not specified`);
+            return;
+        }
+
+        const blobClient = await this.GetBlobServiceClient(params);
+        const containerClient = blobClient.getContainerClient(container);
 
         // upload single file
         if(source.startsWith("file:///")) {
             var filePath = source.replace("file:///", "");
 
-            await this.UploadFile(containerClient, filePath, params);
+            await this.UploadFile(containerClient, filePath, uploadPath, unzip);
         }
         // upload directory
         else {
             for (const fileName of fs.readdirSync(source)) {
-                await this.UploadFile(containerClient, `${source}/${fileName}`, params); 
+                await this.UploadFile(containerClient, `${source}/${fileName}`, uploadPath, unzip); 
             }
         }    
     }
 
-    private async GetBlobServiceClient(params: any, resourceGroup: any): Promise<BlobServiceClient> {
+    private async GetBlobServiceClient(params: any): Promise<BlobServiceClient> {
         let accountName: string;
         let accountKey: string;
 
         accountName = params["storageAccountName"].value;
         const storageUtils = new StorageUtils(this._ctx);
-        accountKey = await storageUtils.get_primary_key(accountName, resourceGroup)
+        accountKey = await storageUtils.get_primary_key(accountName, this.resourceGroup)
         const credentials = new StorageSharedKeyCredential(accountName, accountKey);
         const blobPrimaryURL = `https://${accountName}.blob.core.windows.net/`;
 
         return new BlobServiceClient(blobPrimaryURL, credentials);
     }
 
-    private async UploadFile(containerClient: ContainerClient, filePath: string, params: any) {
+    private async UploadFile(containerClient: ContainerClient, filePath: string, uploadPath: string, unzip: boolean) {
         const path = require("path");
         const mime = require('mime-types');
         var AdmZip = require("adm-zip");
 
-        if(params['unzip'] != undefined && params['unzip'].value && mime.lookup(filePath) == "application/zip") {
+        if(unzip && mime.lookup(filePath) == "application/zip") {
             var zip = new AdmZip(filePath);
             var zipEntries = zip.getEntries();
     
             for (const zipEntry of zipEntries) {
                 this._logger.debug(zipEntry.toString());
 
-                await this.UploadBlob(containerClient, zipEntry.name, zipEntry.getData(), params);
+                await this.UploadBlob(containerClient, zipEntry.name, zipEntry.getData(), uploadPath);
             }
         }
         else {
-            await this.UploadBlob(containerClient, path.basename(filePath), fs.readFileSync(filePath), params);
+            await this.UploadBlob(containerClient, path.basename(filePath), fs.readFileSync(filePath), uploadPath);
         }
     }
 
-    private async UploadBlob(containerClient: ContainerClient, fileName: string, buffer: Buffer, params: any) {
+    private async UploadBlob(containerClient: ContainerClient, fileName: string, buffer: Buffer, uploadPath: string) {
         const mime = require('mime-types');
 
-        const blobName = `${params['uploadPath'].value}/${fileName}`;
+        const blobName = `${uploadPath}/${fileName}`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
         const uploadBlobResponse = await blockBlobClient.uploadData(buffer, {
              blobHTTPHeaders: {
