@@ -9,6 +9,8 @@ import ARMTemplateNetwork from "./storageNetwork.json"
 import ARMTemplateDataLake from "./storageDatalake.json"
 import * as fs from 'fs';
 
+const path = require("path")
+
 export class StoragePlugIn extends BaseIngredient {
     
     private resourceGroup: string = ""
@@ -200,8 +202,10 @@ export class StoragePlugIn extends BaseIngredient {
         }
         // upload directory
         else {
-            for (const fileName of fs.readdirSync(source)) {
-                await this.UploadFile(containerClient, `${source}/${fileName}`, uploadPath, unzip); 
+            for (const fileName of walkFilesSync(source)) {
+                let normalizedUploadPath = path.join(uploadPath, path.dirname(fileName).replace(path.normalize(source), ''));
+
+                await this.UploadFile(containerClient, fileName, normalizedUploadPath, unzip); 
             }
         }    
     }
@@ -252,4 +256,15 @@ export class StoragePlugIn extends BaseIngredient {
 
         this._logger.log(`Upload blob "${fileName}" successfully`, uploadBlobResponse.requestId)
     }
+}
+
+const walkFilesSync = (dir: fs.PathLike, filelist = []) => {
+    fs.readdirSync(dir).forEach(file => {
+  
+      filelist = fs.statSync(path.join(dir, file)).isDirectory()
+        ? walkFilesSync(path.join(dir, file), filelist)
+        : filelist.concat(path.join(dir, file));
+  
+    });
+  return filelist;
 }
