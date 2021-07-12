@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.121](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.120...@azbake/ingredient-storage@0.1.121) (2021-07-12)
+
+
+### Bug Fixes
+
+* allow recursive directory upload ([#219](https://github.com/HomecareHomebase/azure-bake/issues/219)) ([f6c0a74](https://github.com/HomecareHomebase/azure-bake/commit/f6c0a74))
+
+
+
+
+
 ## [0.1.120](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.119...@azbake/ingredient-storage@0.1.120) (2021-07-02)
 
 
