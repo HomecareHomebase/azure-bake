@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.109...@azbake/ingredient-kubernetes@0.1.110) (2021-06-23)
+
+
+### Bug Fixes
+
+* Add kubectlFlags Parameter to Kubernetes Ingredient ([#216](https://github.com/HomecareHomebase/azure-bake/issues/216)) ([a2a437b](https://github.com/HomecareHomebase/azure-bake/commit/a2a437b))
+
+
+
+
+
+## [0.1.109](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.108...@azbake/ingredient-kubernetes@0.1.109) (2021-05-21)
+
+
+### Bug Fixes
+
+* Delete option for k8s ingredient ([#212](https://github.com/HomecareHomebase/azure-bake/issues/212)) ([4d0ee69](https://github.com/HomecareHomebase/azure-bake/commit/4d0ee69))
+
+
+
+
+
+## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.107...@azbake/ingredient-kubernetes@0.1.108) (2021-04-16)
+
+
+### Bug Fixes
+
+* sleep for k8s and allow for custom scripts ([#211](https://github.com/HomecareHomebase/azure-bake/issues/211)) ([8cf221c](https://github.com/HomecareHomebase/azure-bake/commit/8cf221c))
+
+
+
+
+
 ## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.106...@azbake/ingredient-kubernetes@0.1.107) (2021-03-21)
 
 

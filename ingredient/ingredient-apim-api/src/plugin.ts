@@ -369,6 +369,20 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (this.apim_client == undefined) return
 
+        //Clean existing products if different than the one you are assigning to
+        var existingProducts = await this.apim_client.apiProduct.listByApis(this.resource_group, this.resource_name, apiId);
+
+        for (let i = 0; i < existingProducts.length; i++) {
+            let oldProductId = existingProducts[i].name || ""
+
+            if(oldProductId != productId)
+            {
+                await this.apim_client.productApi.deleteMethod(this.resource_group, this.resource_name, oldProductId, apiId)
+                .then((result) => { this._logger.log('APIM API Plugin: Deleting API: ' + apiId + " from product " + oldProductId)})
+                .catch((failure) => {this._logger.error("APIM API Plugin: Could not delete API " + apiId + "from product " + oldProductId) })
+            }
+        }
+        
         this._logger.log('APIM API Plugin: Assigning APIs: ' + apiId + " to product " + productId)
 
         let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, productId, apiId)

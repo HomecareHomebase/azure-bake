@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.158](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.157...@azbake/ingredient-functions@0.1.158) (2021-07-12)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.157](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.156...@azbake/ingredient-functions@0.1.157) (2021-07-02)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.156](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.155...@azbake/ingredient-functions@0.1.156) (2021-06-24)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.155](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.154...@azbake/ingredient-functions@0.1.155) (2021-06-23)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.154](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.153...@azbake/ingredient-functions@0.1.154) (2021-06-23)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.153](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.152...@azbake/ingredient-functions@0.1.153) (2021-06-01)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.152](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.151...@azbake/ingredient-functions@0.1.152) (2021-05-21)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
+## [0.1.151](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.150...@azbake/ingredient-functions@0.1.151) (2021-04-16)
+
+**Note:** Version bump only for package @azbake/ingredient-functions
+
+
+
+
+
 ## [0.1.150](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.149...@azbake/ingredient-functions@0.1.150) (2021-03-21)
 
 

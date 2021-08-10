@@ -580,7 +580,7 @@ export class ApimPlugin extends BaseIngredient {
                 for (let i = 0; i < result.length; i++) {
                     let id = result[i].name || ""
                     let displayName = result[i].displayName || ""
-                    if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].value == aiKey) {
+                    if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].secret) {
                         await this.apim_client.namedValue.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
                         await this.apim_client.namedValue.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
                             .then((result) => {

@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.31](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.30...azure-bake@0.5.31) (2021-07-12)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.30](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.29...azure-bake@0.5.30) (2021-07-02)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.29](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.28...azure-bake@0.5.29) (2021-06-24)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.28](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.27...azure-bake@0.5.28) (2021-06-23)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.27](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.26...azure-bake@0.5.27) (2021-06-23)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.26](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.25...azure-bake@0.5.26) (2021-06-01)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.25](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.24...azure-bake@0.5.25) (2021-05-21)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.24](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.23...azure-bake@0.5.24) (2021-04-16)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
 ## [0.5.23](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.22...azure-bake@0.5.23) (2021-03-21)
 
 

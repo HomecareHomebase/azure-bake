@@ -32,6 +32,8 @@ export class KubernetesPlugin extends BaseIngredient {
             }
 
             let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
+            let deleteDeployment = this._ingredient.properties.parameters.get("deleteDeployment");
+            let kubectlFlags = this._ingredient.properties.parameters.get("kubectlFlags");
             let kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
 
             await this.replaceTokens(k8sYamlPath);
@@ -40,12 +42,33 @@ export class KubernetesPlugin extends BaseIngredient {
 
             try {
 
-                const stdout = execSync(`kubectl apply ${kubeConfigParam} -f ${k8sYamlPath}`);
+                let flags = kubectlFlags ? await kubectlFlags.valueAsync(this._ctx) : "";
+
+                let execString = `kubectl apply ${kubeConfigParam} -f ${k8sYamlPath} ${flags}`;
+                if (deleteDeployment && await deleteDeployment.valueAsync(this._ctx)){
+                    execString = `kubectl delete ${kubeConfigParam} -f ${k8sYamlPath} --ignore-not-found=true ${flags}`;
+                }
+
+                const stdout = execSync(execString);
                 this._logger.log(`${stdout}`);
                 if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
                     const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
                     this._logger.log(`${stdout}`);
                 }
+
+                let delaymsParam = this._ingredient.properties.parameters.get("delayms") || undefined;
+
+                if (delaymsParam)
+                {
+                    let delayms: number = await delaymsParam.valueAsync(this._ctx);
+                    if (delayms > 0 )
+                    {
+                        this._logger.log('Waiting for a delay of ' + delayms + "ms");
+                        await this.Sleep(delayms);
+                    }
+                        
+                }
+
             } finally {
                 if (kubeConfigParam) {
                     try {
@@ -293,5 +316,11 @@ export class KubernetesPlugin extends BaseIngredient {
     }
     private async isDirectory(path: any): Promise<boolean> {
         return (await promisify(fs.lstat)(path)).isDirectory()
+    }
+
+    private Sleep(ms: number) : Promise<void> {
+        return new Promise(resolve=>{
+            setTimeout(resolve,ms)
+        })
     }
 }

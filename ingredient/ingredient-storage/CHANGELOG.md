@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.121](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.120...@azbake/ingredient-storage@0.1.121) (2021-07-12)
+
+
+### Bug Fixes
+
+* allow recursive directory upload ([#219](https://github.com/HomecareHomebase/azure-bake/issues/219)) ([f6c0a74](https://github.com/HomecareHomebase/azure-bake/commit/f6c0a74))
+
+
+
+
+
+## [0.1.120](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.119...@azbake/ingredient-storage@0.1.120) (2021-07-02)
+
+
+### Bug Fixes
+
+* allow concurrent deploy and file upload ([#218](https://github.com/HomecareHomebase/azure-bake/issues/218)) ([d56541c](https://github.com/HomecareHomebase/azure-bake/commit/d56541c))
+
+
+
+
+
+## [0.1.119](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.118...@azbake/ingredient-storage@0.1.119) (2021-06-24)
+
+
+### Bug Fixes
+
+* enhancement: add rgOverride parameter ([#217](https://github.com/HomecareHomebase/azure-bake/issues/217)) ([ee85fbd](https://github.com/HomecareHomebase/azure-bake/commit/ee85fbd))
+
+
+
+
+
+## [0.1.118](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.117...@azbake/ingredient-storage@0.1.118) (2021-06-23)
+
+
+### Bug Fixes
+
+* Storage Ingredient: allow file upload to blob container ([#215](https://github.com/HomecareHomebase/azure-bake/issues/215)) ([b2dcb28](https://github.com/HomecareHomebase/azure-bake/commit/b2dcb28))
+
+
+
+
+
 ## [0.1.117](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.116...@azbake/ingredient-storage@0.1.117) (2020-11-30)
 
 
