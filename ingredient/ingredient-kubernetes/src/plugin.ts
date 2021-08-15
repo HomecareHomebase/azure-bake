@@ -34,9 +34,6 @@ export class KubernetesPlugin extends BaseIngredient {
                 throw "file/path not found: " + k8sYamlPath
             }
 
-            let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
-            let deleteDeployment = this._ingredient.properties.parameters.get("deleteDeployment");
-            let kubectlFlags = this._ingredient.properties.parameters.get("kubectlFlags");
             kubeConfigParam = await this.getKubeConfigParameter(kubeconfigFilename);
             let retryDelay = baseRetryDelay;
 
@@ -46,55 +43,38 @@ export class KubernetesPlugin extends BaseIngredient {
 
             let currentRetry = 0;
 
-            for (;;)
+            let retryErrors = this._ingredient.properties.parameters.get("retryErrors") || false;
+
+            if (retryErrors)
             {
-                try {
-                    
-                    let flags = kubectlFlags ? await kubectlFlags.valueAsync(this._ctx) : "";
-
-                    let execString = `kubectl apply ${kubeConfigParam} -f ${k8sYamlPath} ${flags}`;
-                    if (deleteDeployment && await deleteDeployment.valueAsync(this._ctx)){
-                        execString = `kubectl delete ${kubeConfigParam} -f ${k8sYamlPath} --ignore-not-found=true ${flags}`;
-                    }
-
-                    const stdout = execSync(execString);
-                    this._logger.log(`${stdout}`);
-                    if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
-                        const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
-                        this._logger.log(`${stdout}`);
-                    }
-
-                    let delaymsParam = this._ingredient.properties.parameters.get("delayms") || undefined;
-
-                    if (delaymsParam)
-                    {
-                        let delayms: number = await delaymsParam.valueAsync(this._ctx);
-                        if (delayms > 0 )
-                        {
-                            this._logger.log('Waiting for a delay of ' + delayms + "ms");
-                            await this.Sleep(delayms);
-                        }
-                            
-                    }
-
-                    break;                                    
-                } 
-                catch (error)
+                for (;;)
                 {
-                    currentRetry++;
-                    this._logger.warn('retrying in ' + retryDelay / 1000 + ' seconds due to: ' + error)
-
-                    if (currentRetry > retryCount )
+                    try {                        
+                        await this.ExecuteKubeCtl(k8sYamlPath, kubeConfigParam);
+    
+                        break;                                    
+                    } 
+                    catch (error)
                     {
-                        throw error;
-                    }
-
-                    await this.Sleep(retryDelay)
-
-                    //Back off 10s, 30s, 70s
-                    retryDelay = retryDelay * 2 + baseRetryDelay
-                }                
+                        currentRetry++;
+                        this._logger.warn('retrying in ' + retryDelay / 1000 + ' seconds due to: ' + error)
+    
+                        if (currentRetry > retryCount )
+                        {
+                            throw error;
+                        }
+    
+                        await this.Sleep(retryDelay)
+    
+                        //Back off 10s, 30s, 70s
+                        retryDelay = retryDelay * 2 + baseRetryDelay
+                    }                
+                }
             }
+            else
+            {
+                await this.ExecuteKubeCtl(k8sYamlPath, kubeConfigParam);
+            }            
         } catch (error) {
             this._logger.error('deployment failed: ' + error)
             throw error
@@ -108,6 +88,39 @@ export class KubernetesPlugin extends BaseIngredient {
                 }
             }
         }        
+    }
+
+    private async ExecuteKubeCtl(k8sYamlPath: any, kubeConfigParam: any): Promise<void> {
+        let testDeployment = this._ingredient.properties.parameters.get("testDeployment");
+        let deleteDeployment = this._ingredient.properties.parameters.get("deleteDeployment");
+        let kubectlFlags = this._ingredient.properties.parameters.get("kubectlFlags");
+
+        let flags = kubectlFlags ? await kubectlFlags.valueAsync(this._ctx) : "";
+
+        let execString = `kubectl apply ${kubeConfigParam} -f ${k8sYamlPath} ${flags}`;
+        if (deleteDeployment && await deleteDeployment.valueAsync(this._ctx)){
+            execString = `kubectl delete ${kubeConfigParam} -f ${k8sYamlPath} --ignore-not-found=true ${flags}`;
+        }
+
+        const stdout = execSync(execString);
+        this._logger.log(`${stdout}`);
+        if (testDeployment && await testDeployment.valueAsync(this._ctx)) {
+            const stdout = execSync(`kubectl.exe delete ${kubeConfigParam} -f ${k8sYamlPath}`);
+            this._logger.log(`${stdout}`);
+        }
+
+        let delaymsParam = this._ingredient.properties.parameters.get("delayms") || undefined;
+
+        if (delaymsParam)
+        {
+            let delayms: number = await delaymsParam.valueAsync(this._ctx);
+            if (delayms > 0 )
+            {
+                this._logger.log('Waiting for a delay of ' + delayms + "ms");
+                await this.Sleep(delayms);
+            }
+                
+        }
     }
 
     private async debugLog(path: any): Promise<void> {
