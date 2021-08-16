@@ -15,6 +15,11 @@ Note: The `current-context` field in the kubeconfig file must be set, as this is
 ## Token Replacement
 The Kubernetes Configurations specified will undergo token replacement. To embed a token in a file, surround it with double curly braces and uppercase it (e.g., "{{MYTOKEN}}"). As long as "myToken" (in any combination of upper or lower case) is the key of a Bake Variable (with ingredient-level _tokens_ taking precedence over recipe-level _variables_, and environment-level _BAKE_VARIABLES64_ taking precedence over both), then the token will be substituted for that variable's value. Note that the value can be a Bake Expression which will be evaluated immediately before substitution.
 
+## Delay and Retry
+Deployment of some K8s resources may benefit from introducing a delay between ingredients while post-deployment startup routines are performed.  A ```delayms``` parameter is available to introduce a delay between deployments of ingredients.
+
+Additionally, certain transient error conditions or errors received when post-deployment startup routines aren't complete before dependent K8s resources are deployed can be handled through the use of a ```retryErrors``` parameter.
+
 ### Notes
 This happens on-disk. This means it is ineffective against URL-specified configurations. It also means that it can only happen once during a serve. The original, non-token replaced versions of the files are not kept. The easiest way to use different values for a token in different scenarios is to make multiple calls to Bake Serve from ADO. This will ensure the container serving the recipe is destroyed and started anew for each set of token values.
 
@@ -41,6 +46,8 @@ recipe:
         testDeployment: true #set this to true and after the source has been applied, it will get deleted (good for deployment testing)
         deleteDeployment: false # not required, and if set to true it will execute a kubectl delete instead of a kubectl apply on the subdir (ignoring anything not found)
         kubectlFlags: "--server-side --force-conflicts" # optionally specify additional flags for kubectl command
+        delayms: 10000 # not required, and if set then it will delay for the specified number of milliseconds after deploying the ingredient
+        retryErrors: true # not required, and if set will retry errors with expoential backoff (10s, 30s, 70s) before failing.  Defaults to false if not set.
 ~~~
 # Limitations
 * Token replacement will not happen against URLs specified as the `source` of the ingredient.
