@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.110...@azbake/ingredient-kubernetes@0.1.111) (2021-08-16)
+
+
+### Bug Fixes
+
+* k8s retry with "exponential" backoff ([#220](https://github.com/HomecareHomebase/azure-bake/issues/220)) ([34b227b](https://github.com/HomecareHomebase/azure-bake/commit/34b227b))
+
+
+
+
+
 ## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-kubernetes@0.1.109...@azbake/ingredient-kubernetes@0.1.110) (2021-06-23)
 
 
