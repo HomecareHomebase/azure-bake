@@ -85,10 +85,10 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildNamedValues()
                 await this.BuildGroups()
                 await this.BuildUsers()
+                await this.BuildLoggers()
                 await this.BuildAPIs();
                 await this.BuildProducts()
                 await this.BuilSubscriptions()
-                await this.BuildLoggers()
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
                 await this.BuildAutoscaleSettings()
