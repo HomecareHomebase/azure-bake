@@ -85,10 +85,10 @@ export class ApimPlugin extends BaseIngredient {
                 await this.BuildNamedValues()
                 await this.BuildGroups()
                 await this.BuildUsers()
+                await this.BuildLoggers()
                 await this.BuildAPIs();
                 await this.BuildProducts()
                 await this.BuilSubscriptions()
-                await this.BuildLoggers()
                 await this.BuildAuthServers()
                 await this.BuildIdentityProviders()
                 await this.BuildAutoscaleSettings()
@@ -553,12 +553,10 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildLogger(logger: IApimLogger): Promise<void>{
         if (this.apim_client == undefined) return
 
-        if (logger.loggerType == "applicationInsights") {
+        if (logger.loggerType == "applicationInsights" || logger.loggerType == "azureEventHub") {
             let loggerData = await this.ResolveLogger(logger);
 
             this._logger.log('APIM Plugin: Add/Update APIM logger: ' + logger.name)
-
-            let aiKey = logger.credentials["instrumentationKey"];
 
             var response = await this.apim_client.logger.createOrUpdate(
                 this.resource_group,
@@ -568,10 +566,20 @@ export class ApimPlugin extends BaseIngredient {
                 <LoggerCreateOrUpdateOptionalParams>{ifMatch:'*'})
             
             if (response._response.status != 200 && response._response.status != 201) {
-                this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.appInsightsName`)
+                this._logger.error(`APIM Plugin: Could not create/update logger for '+ logger.name`)
             }
 
-            let currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
+            var currentLoggerCreds;
+            var loggerValue;
+            
+            if (logger.loggerType == "applicationInsights") {
+                currentLoggerCreds = response.credentials.instrumentationKey.replace(/{{|}}/ig, "")
+                loggerValue = loggerData.credentials.instrumentationKey
+            }
+            else if (logger.loggerType == "azureEventHub") {
+                currentLoggerCreds = response.credentials.connectionString.replace(/{{|}}/ig, "")
+                loggerValue = loggerData.credentials.connectionString
+            }
 
             //Clean logger keys
             if (logger.cleanKeys == undefined || logger.cleanKeys) {
@@ -581,20 +589,25 @@ export class ApimPlugin extends BaseIngredient {
                     let id = result[i].name || ""
                     let displayName = result[i].displayName || ""
                     if (displayName != currentLoggerCreds && displayName.match(/Logger.Credentials-.*/) && result[i].secret) {
-                        await this.apim_client.namedValue.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
-                        await this.apim_client.namedValue.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
-                            .then((result) => {
-                                this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
-                            })
-                            .catch((failure) => {
-                                this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove AppInsights key: ${displayName}`)
-                            })
+                        let secretResult = await this.apim_client.namedValue.listValue(this.resource_group, this.resource_name, id)
+                        
+                        // only cleanup logger keys with the same value (aikey or eventhub namespace). Otherwise you will delete keys for other loggers
+                        if (loggerValue == secretResult.value) {
+                            await this.apim_client.namedValue.getEntityTag(this.resource_group, this.resource_name, id).then((result) => { propEtag = result.eTag })
+                            await this.apim_client.namedValue.deleteMethod(this.resource_group, this.resource_name, id, propEtag)
+                                .then((result) => {
+                                    this._logger.log(`APIM Plugin: Logger Cleanup - Removed old key - ${displayName}: ${result._response.status == 200}`)
+                                })
+                                .catch((failure) => {
+                                    this._logger.error(`APIM Plugin: Logger Cleanup - failed to remove Logger key: ${displayName}`)
+                                })
+                        }
                     }
                 }
             }
         }
-        else if (logger.loggerType == "azureEventHub") {
-            this._logger.error(`APIM Plugin: Logger EventHub functionality is yet to be implemented`)
+        else {
+            this._logger.error(`APIM Plugin: Specified Logger functionality is yet to be implemented`)
         }
     }
 
@@ -881,9 +894,17 @@ export class ApimPlugin extends BaseIngredient {
         }
 
         if (logger.credentials) {
-            let aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
+            if (logger.loggerType == "applicationInsights") {
+                let aiKey = (await (new BakeVariable(logger.credentials["instrumentationKey"])).valueAsync(this._ctx))
+                logger.credentials["instrumentationKey"] = aiKey
+            }
+            else if (logger.loggerType == "azureEventHub") {
+                let name = (await (new BakeVariable(logger.credentials["name"])).valueAsync(this._ctx))
+                let connectionString = (await (new BakeVariable(logger.credentials["connectionString"])).valueAsync(this._ctx))
 
-            logger.credentials["instrumentationKey"] = aiKey
+                logger.credentials["name"] = name
+                logger.credentials["connectionString"] = connectionString
+            }
         }
 
         return logger;
