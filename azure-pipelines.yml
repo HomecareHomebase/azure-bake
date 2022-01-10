@@ -71,10 +71,7 @@ steps:
     containerRegistry: HCHBDockerHub
 
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'sudo npm install -g npm@latest'
+
 
 
 - task: Npm@1
@@ -123,6 +120,17 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'npm config set cache=/home/vsts/.npm'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'npm config list'
+
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'sudo npm install -g npm@latest'
 
 - task: gulp@1
   displayName: GULP List Environment
