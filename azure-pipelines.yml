@@ -74,12 +74,7 @@ steps:
 
 
 
-- task: Npm@1
-  displayName: NPM Install
-  inputs:    
-    command: 'install'
-    workingDir: '$(System.DefaultWorkingDirectory)'
-    verbose: true
+
 
 # - task: Bash@3
 #   inputs:
@@ -131,6 +126,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'sudo npm install -g npm@latest'
+
+- task: Npm@1
+  displayName: NPM Install
+  inputs:    
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    verbose: true
 
 - task: gulp@1
   displayName: GULP List Environment
