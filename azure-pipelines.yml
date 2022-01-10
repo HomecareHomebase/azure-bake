@@ -109,12 +109,12 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'mkdir ~/.npm'
+    script: 'mkdir ~/mynpmcache'
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'npm config set cache=/home/vsts/.npm'
+    script: 'npm config set cache=/home/vsts/mynpmcache'
 
 - task: Bash@3
   inputs:
