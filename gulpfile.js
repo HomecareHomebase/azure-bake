@@ -94,7 +94,7 @@ function inlineCoverageSource() {
 }
 
 function lernaBuild(done) {
-    var gitScript = `sudo npm run clean:build`;
+    var gitScript = `npm run clean:build`;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);
 }
