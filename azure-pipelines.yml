@@ -44,7 +44,7 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
-  
+
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
@@ -53,6 +53,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'sudo chown -R $(whoami):$(whoami) "/root/.npm"'
+
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'whoami"'
 
 - task: Docker@2
   displayName: Login to DockerHub
@@ -67,7 +73,7 @@ steps:
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 
-- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
+- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN \n cache=./npm-cache > .npmrc
   displayName: "NPM Token Export"
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   env:
