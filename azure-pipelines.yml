@@ -44,7 +44,9 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
-
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
 - task: Docker@2
   displayName: Login to DockerHub
   inputs:
