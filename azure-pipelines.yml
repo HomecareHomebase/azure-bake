@@ -49,14 +49,14 @@ steps:
   persistCredentials: true
   clean: true
 
-- task: NodeTool@0
-  inputs:
-    versionSpec: '16.x'
+# - task: NodeTool@0
+#   inputs:
+#     versionSpec: '16.x'
     
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'sudo chown -R $(whoami):$(whoami) /root/.npm'
+# - task: Bash@3
+#   inputs:
+#     targetType: 'inline'
+#     script: 'sudo chown -R $(whoami):$(whoami) /root/.npm'
 
 
 - task: Bash@3
@@ -69,6 +69,13 @@ steps:
   inputs:
     command: Login
     containerRegistry: HCHBDockerHub
+
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'npm install -g npm@latest'
+
 
 - task: Npm@1
   displayName: NPM Install
@@ -87,10 +94,10 @@ steps:
 #     targetType: 'inline'
 #     script: 'sudo chown -R $(whoami):$(whoami) /root/.npm'
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}'
+# - task: Bash@3
+#   inputs:
+#     targetType: 'inline'
+#     script: 'sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}'
 
 - task: Bash@3
   inputs:
