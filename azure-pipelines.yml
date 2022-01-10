@@ -106,11 +106,23 @@ steps:
 
 
 
+
+
 - bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
   displayName: "NPM Token Export"
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   env:
     NPM_AUTH_TOKEN: $(Npm_Auth_Token)
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'mkdir ~/.npm'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'npm config set cache=/home/vsts/.npm'
 
 - task: gulp@1
   displayName: GULP List Environment
