@@ -44,6 +44,7 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
+  
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
@@ -59,12 +60,12 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
-# - task: Npm@1
-#   displayName: NPM Install
-#   inputs:    
-#     command: 'install'
-#     workingDir: '$(System.DefaultWorkingDirectory)'
-#     verbose: true
+- task: Npm@1
+  displayName: NPM Install
+  inputs:    
+    command: 'install'
+    workingDir: '$(System.DefaultWorkingDirectory)'
+    verbose: true
 
 - bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
   displayName: "NPM Token Export"
