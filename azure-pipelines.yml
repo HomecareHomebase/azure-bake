@@ -92,6 +92,11 @@ steps:
     targetType: 'inline'
     script: 'sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}'
 
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'npm config get prefix'
+
 
 
 - bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
