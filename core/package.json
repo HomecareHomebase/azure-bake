@@ -27,12 +27,12 @@
   },
   "peerDependencies": {
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "colors": "^1.3.3"
+    "colors": "1.4.0"
   },
   "devDependencies": {
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18",
-    "colors": "^1.3.3",
+    "colors": "1.4.0",
     "standard-version": "^4.4.0"
   },
   "publishConfig": {
