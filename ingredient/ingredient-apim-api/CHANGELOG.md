@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.34](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.33...@azbake/ingredient-apim-api@0.2.34) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.2.33](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.32...@azbake/ingredient-apim-api@0.2.33) (2021-06-01)
 
 

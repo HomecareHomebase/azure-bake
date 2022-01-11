@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.144](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-datafactoryv2@0.1.143...@azbake/ingredient-datafactoryv2@0.1.144) (2022-01-11)
+
+**Note:** Version bump only for package @azbake/ingredient-datafactoryv2
+
+
+
+
+
 ## [0.1.143](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-datafactoryv2@0.1.142...@azbake/ingredient-datafactoryv2@0.1.143) (2020-10-16)
 
 

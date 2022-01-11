@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.163](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.162...@azbake/ingredient-sql-dwh@0.1.163) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.1.162](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.161...@azbake/ingredient-sql-dwh@0.1.162) (2021-09-28)
 
 **Note:** Version bump only for package @azbake/ingredient-sql-dwh
