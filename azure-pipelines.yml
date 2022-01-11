@@ -7,7 +7,7 @@ trigger:
   branches:
     include:
     - master
-    - release/*
+    - release/*    
   paths:
     include:
     - arm-helper/*
@@ -37,10 +37,6 @@ pr:
     - build/parameters.js
     - azure-pipelines.yml
 
-variables:
-  - name: system.debug
-    value: true
-
 pool:
   vmImage: 'Ubuntu-20.04'
 
@@ -49,83 +45,11 @@ steps:
   persistCredentials: true
   clean: true
 
-# - task: NodeTool@0
-#   inputs:
-#     versionSpec: '16.x'
-    
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: 'sudo chown -R $(whoami):$(whoami) /root/.npm'
-
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'whoami'
-
 - task: Docker@2
   displayName: Login to DockerHub
   inputs:
     command: Login
     containerRegistry: HCHBDockerHub
-
-
-
-
-
-
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: 'sudo ls /root/.npm'
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: 'sudo chown -R $(whoami):$(whoami) /root/.npm'
-
-# - task: Bash@3
-#   inputs:
-#     targetType: 'inline'
-#     script: 'sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}'
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'npm config get prefix'
-
-
-
-
-
-- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
-  displayName: "NPM Token Export"
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  env:
-    NPM_AUTH_TOKEN: $(Npm_Auth_Token)
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'mkdir ~/mynpmcache'
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'npm config set cache=/home/vsts/mynpmcache'
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'npm config list'
-
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'sudo npm install -g npm@latest'
 
 - task: Npm@1
   displayName: NPM Install
@@ -133,6 +57,12 @@ steps:
     command: 'install'
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
+
+- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
+  displayName: "NPM Token Export"
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  env:
+    NPM_AUTH_TOKEN: $(Npm_Auth_Token)
 
 - task: gulp@1
   displayName: GULP List Environment
