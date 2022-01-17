@@ -15,7 +15,7 @@ export class BatchPlugin extends BaseIngredient {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
             
-            this._logger.log('DataBricks Logging: ' + this._ctx.Ingredient.properties.source)
+            this._logger.log('Batch Logging: ' + this._ctx.Ingredient.properties.source)
 
             let params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters)
             

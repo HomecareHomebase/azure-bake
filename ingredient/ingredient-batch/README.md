@@ -37,13 +37,13 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 ### ``BatchUtils`` class
 
 | function | description |
-| `create_resource_name()` | Returns the name created for the **** Namespace when deployed |
+| `create_resource_name()` | Returns the name created for the Batch Account when deployed |
 
 ### Function Details
 
 #### create_resource_name()
 
-Gets the name created for the App Service Plan when deployed.
+Gets the name created for the Batch Account when deployed.
 
 ```yaml
 ...
