@@ -1,0 +1,15 @@
+name: batch-test
+shortName: btest
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-batch@0.0.1"
+  - "@azbake/ingredient-event-hub-namespace"
+resourceGroup: true
+rgOverride: "autobot-test-rg"
+parallelRegions: false
+recipe:
+  batch:
+    properties:
+      type: "@azbake/ingredient-batch"
+      parameters:
+        batchAccountName: "[batchutils.create_resource_name()]"                
