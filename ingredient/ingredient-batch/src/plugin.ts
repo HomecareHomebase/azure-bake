@@ -17,9 +17,7 @@ export class BatchPlugin extends BaseIngredient {
             
             this._logger.log('Batch Logging: ' + this._ctx.Ingredient.properties.source)
 
-            let params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters)
-            
-            params = await this._helper.ConfigureDiagnostics(params);
+            let params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters)             
             
             await this._helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())            
                         

@@ -5,11 +5,11 @@ ingredients:
   - "@azbake/ingredient-batch@0.0.1"
   - "@azbake/ingredient-event-hub-namespace"
 resourceGroup: true
-rgOverride: "test-rg"
+rgOverride: "autobot-test-rg"
 parallelRegions: false
 recipe:
   batch:
     properties:
       type: "@azbake/ingredient-batch"
       parameters:
-        batchAccountName: "[batchutil.create_resourcename()]"                
+        batchAccountName: "[batchutils.create_resource_name()]"                
