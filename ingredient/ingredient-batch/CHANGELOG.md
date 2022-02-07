@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-batch@0.0.6...@azbake/ingredient-batch@0.0.7) (2022-02-07)
+
+
+### Bug Fixes
+
+* update publish config for ingredient-batch ([51991fb](https://github.com/HomecareHomebase/azure-bake/commit/51991fba39d019c9443e43ffd0cecfc42c57ed30))
+
+
+
+
+
 ## [0.0.6](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-batch@0.0.5...@azbake/ingredient-batch@0.0.6) (2022-02-07)
 
 
