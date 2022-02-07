@@ -58,10 +58,10 @@ steps:
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 
-- task: npmAuthenticate@0
-  inputs:
-    workingFile: '.npmrc'
-    customEndpoint: 'hchb-npm-public-registry'
+# - task: npmAuthenticate@0
+#   inputs:
+#     workingFile: '.npmrc'
+#     customEndpoint: 'hchb-npm-public-registry'
 
 # - bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
 #   displayName: "NPM Token Export"
@@ -72,17 +72,19 @@ steps:
 - task: gulp@1
   displayName: GULP List Environment
   inputs:
-    gulpFile: 'gulpfile.js' 
+    gulpFile: 'gulpfile.js'
     targets: 'listenvironment'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: gulp@1
   displayName: GULP Build and Release
   inputs:
-    gulpFile: 'gulpfile.js' 
-    targets: 'build'    
-    workingDirectory: '$(System.DefaultWorkingDirectory)'    
+    gulpFile: 'gulpfile.js'
+    targets: 'build'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
     arguments: --sonarToken '$(SonarQubeToken)'
+  env:
+    NPM_TOKEN: $(NPM_TOKEN)
   condition: not(contains(variables['Build.SourceVersionMessage'], '[skip ci]'))
 
 - task: Docker@2
