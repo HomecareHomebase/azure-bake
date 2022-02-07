@@ -8,7 +8,5 @@ export class BatchUtils extends BaseUtility {
         const name = util.create_resource_name("batch", null, true);
         return name;
     }
-    //bump
-    //bump
 }
 
