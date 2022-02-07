@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-batch",
   "description": "Ingredient for deploying a batch account",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
