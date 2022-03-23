@@ -2,11 +2,10 @@ import {BaseUtility, IngredientManager} from '@azbake/core'
 
 export class PostgreSQLDBUtils extends BaseUtility {
 
-    public my_function() {
-
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        let region = util.current_region()
-        this.context.Logger.log("Executing my_function for " + region)
-    }   
+    public create_resource_name(): string {
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
+        const name = util.create_resource_name("postgresqldb", null, true);
+        return name;
+    }
 }
 
