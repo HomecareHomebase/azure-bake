@@ -7,4 +7,4 @@ exports.pluginNS = "@azbake/ingredient-postgresql" //name of the ingredient to r
 
 /* comment out these entries if you are not including a set of expression functions*/
 exports.functions = PostgreSQLDBUtils
-exports.functionsNS = "PostgreSQLDB" //bake.yaml expressions can access your functions via "myutils.my_function()"
+exports.functionsNS = "postgresqldbutils" //bake.yaml expressions can access your functions via "myutils.my_function()"

@@ -4,7 +4,7 @@ export class PostgreSQLDBUtils extends BaseUtility {
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const name = util.create_resource_name("postgresqldb", null, true);
+        const name = util.create_resource_name("pgsql", null, true);
         return name;
     }
 }
