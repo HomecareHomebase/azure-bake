@@ -20,13 +20,15 @@ ingredients:
 resourceGroup: true
 variables:
   dbServerName: "[postgresqldbutils.create_resource_name()]"
+  adminLogin: "testadmin"
+  adminPass: "dontusethis"
 recipe:
   mypostgres-db:
     properties:
       type: "@azbake/ingredient-postgresql"
       parameters:
-        administratorLogin: "testadmin"
-        administratorLoginPassword: "testbadpass"
+        administratorLogin: "[coreutils.variable('adminLogin')]"
+        administratorLoginPassword: "[coreutils.variable('adminPass')]"
         location: "[coreutils.current_region().name]"
         serverName: "[coreutils.variable('dbServerName')]"
         serverEdition: "Burstable" 
