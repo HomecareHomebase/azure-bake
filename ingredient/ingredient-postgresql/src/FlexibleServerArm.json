@@ -1,109 +1,109 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-      "parameters": {
-          "administratorLogin": {
-              "type": "String"
-          },
-          "administratorLoginPassword": {
-              "type": "SecureString"
-          },
-          "location": {
-              "defaultValue": "[resourceGroup().location]",
-              "type": "String"
-          },
-          "serverName": {
-              "type": "String"
-          },
-          "serverEdition": {
-              "defaultValue": "GeneralPurpose",
-              "type": "String"
-          },
-          "skuSizeGB": {
-              "defaultValue": 128,
-              "type": "Int"
-          },
-          "dbInstanceType": {
-              "defaultValue": "Standard_D4ds_v4",
-              "type": "String"
-          },
-          "haMode": {
-              "defaultValue": "ZoneRedundant",
-              "type": "string"
-          },
-          "availabilityZone": {
-              "defaultValue": "1",
-              "type": "String"
-          },
-          "version": {
-              "defaultValue": "12",
-              "type": "String"
-          },
-          "tags": {
-              "defaultValue": {},
-              "type": "Object"
-          },
-          "firewallRules": {
-              "defaultValue": {},
-              "type": "Object"
-          },
-          "backupRetentionDays": {
-              "defaultValue": 14,
-              "type": "Int"
-          },
-          "geoRedundantBackup": {
-              "defaultValue": "Disabled",
-              "type": "String"
-          },
-          "virtualNetworkExternalId": {
-              "defaultValue": "",
-              "type": "String"
-          },
-          "subnetName": {
-              "defaultValue": "",
-              "type": "String"
-          },
-          "privateDnsZoneArmResourceId": {
-              "defaultValue": "",
-              "type": "String"
-          }
-      },
-      "variables": {
-          "api": "2021-06-01",
-          "publicNetworkAccess": "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]"
-      },
+    "parameters": {
+        "administratorLogin": {
+            "type": "String"
+        },
+        "administratorLoginPassword": {
+            "type": "SecureString"
+        },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "String"
+        },
+        "serverName": {
+            "type": "String"
+        },
+        "serverEdition": {
+            "defaultValue": "GeneralPurpose",
+            "type": "String"
+        },
+        "skuSizeGB": {
+            "defaultValue": 128,
+            "type": "Int"
+        },
+        "dbInstanceType": {
+            "defaultValue": "Standard_D4ds_v4",
+            "type": "String"
+        },
+        "haMode": {
+            "defaultValue": "ZoneRedundant",
+            "type": "string"
+        },
+        "availabilityZone": {
+            "defaultValue": "",
+            "type": "String"
+        },
+        "version": {
+            "defaultValue": "12",
+            "type": "String"
+        },
+        "tags": {
+            "defaultValue": {},
+            "type": "Object"
+        },
+        "firewallRules": {
+            "defaultValue": {},
+            "type": "Object"
+        },
+        "backupRetentionDays": {
+            "defaultValue": 14,
+            "type": "Int"
+        },
+        "geoRedundantBackup": {
+            "defaultValue": "Disabled",
+            "type": "String"
+        },
+        "virtualNetworkExternalId": {
+            "defaultValue": "",
+            "type": "String"
+        },
+        "subnetName": {
+            "defaultValue": "",
+            "type": "String"
+        },
+        "privateDnsZoneArmResourceId": {
+            "defaultValue": "",
+            "type": "String"
+        }
+    },
+    "variables": {
+        "api": "2021-06-01",
+        "publicNetworkAccess": "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]"
+    },
     "resources": [
-      {
-        "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-        "apiVersion": "[variables('api')]",
-        "name": "[parameters('serverName')]",
-        "location": "[parameters('location')]",
-          "sku": {
-              "name": "[parameters('dbInstanceType')]",
-              "tier": "[parameters('serverEdition')]"
-          },
-        "tags": "[parameters('tags')]",
-          "properties": {
-              "version": "[parameters('version')]",
-              "administratorLogin": "[parameters('administratorLogin')]",
-              "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-              "network": {
-                  "publicNetworkAccess": "[variables('publicNetworkAccess')]",
-                  "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(concat(parameters('virtualNetworkExternalId'), '/subnets/' , parameters('subnetName'))))]",
-                  "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
-              },
-              "highAvailability": {
-                  "mode": "[parameters('haMode')]"
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+            "apiVersion": "[variables('api')]",
+            "name": "[parameters('serverName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('dbInstanceType')]",
+                "tier": "[parameters('serverEdition')]"
+            },
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "version": "[parameters('version')]",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "network": {
+                    "publicNetworkAccess": "[variables('publicNetworkAccess')]",
+                    "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(concat(parameters('virtualNetworkExternalId'), '/subnets/' , parameters('subnetName'))))]",
+                    "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
                 },
-              "storage": {
-                  "storageSizeGB": "[parameters('skuSizeGB')]"
-              },
-              "backup": {
-                  "backupRetentionDays": 7,
-                  "geoRedundantBackup": "Disabled"
-              },
-              "availabilityZone": "[parameters('availabilityZone')]"
-          }
-      }
+                "highAvailability": {
+                    "mode": "[parameters('haMode')]"
+                },
+                "storage": {
+                    "storageSizeGB": "[parameters('skuSizeGB')]"
+                },
+                "backup": {
+                    "backupRetentionDays": "[parameters('backupRetentionDays')]",
+                    "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+                },
+                "availabilityZone": "[parameters('availabilityZone')]"
+            }
+        }
     ]
-  }
+}

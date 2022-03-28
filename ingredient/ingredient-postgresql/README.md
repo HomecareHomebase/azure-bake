@@ -5,7 +5,7 @@
 ## Overview
 
 The PostgreSQL ingredient is a plugin for bake. When included in a recipe, this will create an [Azure Database for PostgreSQL server](https://docs.microsoft.com/en-us/azure/postgresql/).
-This only creates the core account. Individual applications are responsible for creating and maintaining Containers / Databases / Collections.
+This only creates the server resource and admin account. Individual applications are responsible for creating and maintaining Containers / Databases / Collections.
 
 Currently this is only able to create a Flexible server. Azure is pushing users away from Single server, but if this is needed, the plugin can be enhanced with a new template based on [this](https://docs.microsoft.com/en-us/azure/postgresql/quickstart-create-postgresql-server-database-using-arm-template?tabs=azure-portal).
 
@@ -21,7 +21,7 @@ resourceGroup: true
 variables:
   dbServerName: "[postgresqldbutils.create_resource_name()]"
 recipe:
-  backstage-db:
+  mypostgres-db:
     properties:
       type: "@azbake/ingredient-postgresql"
       parameters:
@@ -29,14 +29,21 @@ recipe:
         administratorLoginPassword: "testbadpass"
         location: "[coreutils.current_region().name]"
         serverName: "[coreutils.variable('dbServerName')]"
-        serverEdition: "Burstable" # "GeneralPurpose"
-        skuSizeGB: 32 # 32 is apparently the minimum but it's only $0.115/GB/mo
+        serverEdition: "Burstable" 
+        skuSizeGB: 32 
         dbInstanceType: "Standard_B1ms"
         haMode: "Disabled"
         availabilityZone: ""
         version: "13"
         tags:
+          value:
+            app: "myapp"
+            tag2: "a value"
         firewallRules:
+          rules:
+            - name: "testrule"
+              startIPAddress: "192.168.0.0"
+              endIPAddress: "192.168.0.1"
         backupRetentionDays: 14
         geoRedundantBackup: "Disabled"
         virtualNetworkExternalId: ""
@@ -56,11 +63,11 @@ recipe:
 | haMode | No | High Availability mode. ex `Disabled` or `ZoneRedundant` |
 | availabilityZone | No | Preferred availability zone. ex `1` or `2` |
 | version | No | Postgres version ex `12` or `13` |
-| tags | No |  |
-| firewallRules | No | |
-| backupRetentionDays | No | |
-| geoRedundantBackup | No | |
-| virtualNetworkExternalId | No | |
+| tags | No | key-value pairs in the form of an object |
+| firewallRules | No | a "rules" object with an array of rules. By default, no public IP addresses are allowed. |
+| backupRetentionDays | No | Default 14 |
+| geoRedundantBackup | No | Default `Disabled` |
+| virtualNetworkExternalId | No | Default empty string.  |
 | subnetName | No | |
 | privateDnsZoneArmResourceId | No | |
 
