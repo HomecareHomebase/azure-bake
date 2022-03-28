@@ -7,7 +7,7 @@
 The PostgreSQL ingredient is a plugin for bake. When included in a recipe, this will create an [Azure Database for PostgreSQL server](https://docs.microsoft.com/en-us/azure/postgresql/).
 This only creates the core account. Individual applications are responsible for creating and maintaining Containers / Databases / Collections.
 
-Currently this is only able to create a Flexible server. Azure is pushing users away from Single server, but if this is needed, the plugin can be enhanced to use the `src/SingleServerArm.json` template.
+Currently this is only able to create a Flexible server. Azure is pushing users away from Single server, but if this is needed, the plugin can be enhanced with a new template based on [this](https://docs.microsoft.com/en-us/azure/postgresql/quickstart-create-postgresql-server-database-using-arm-template?tabs=azure-portal).
 
 ## Usage
 
