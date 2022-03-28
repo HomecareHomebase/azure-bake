@@ -67,7 +67,7 @@ recipe:
 | firewallRules | No | a "rules" object with an array of rules. By default, no public IP addresses are allowed. |
 | backupRetentionDays | No | Default 14 |
 | geoRedundantBackup | No | Default `Disabled` |
-| virtualNetworkExternalId | No | Default empty string.  |
+| virtualNetworkExternalId | No | Default empty string, which is treated as "Enabled". |
 | subnetName | No | |
 | privateDnsZoneArmResourceId | No | |
 
