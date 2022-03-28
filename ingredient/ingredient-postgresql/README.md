@@ -1,6 +1,6 @@
 ## Changelogs
 
-* [@azbake/ingredient-postgresql]
+* [@azbake/ingredient-postgresql](./CHANGELOG.md)
 
 ## Overview
 
