@@ -8,14 +8,7 @@
  
     a. If an offical HCHB ingredient, should be under the @azbake/ moniker
 
-3. Run npm install, and then for each peerDependecy run: npm i "package" --no-save. The --no-save is important as you don't want the peerDependecy to get added as a normal dependency.
-
-    a. The following peerDeps are used:
-
-```js
-    npm i "@azbake/core@0.1.*" --no-save
-    npm i "@azure/ms-rest-nodeauth@0.8.*" --no-save
-```
+3. Run `npm install` in the new ingredient folder.
 
 4. Modify src/index.ts and set the NS properties for the types you are developing.
 
@@ -25,9 +18,9 @@
 
     c. You can define one, or both.
 
-5. Define either your plugin or function code and then run: npm run compile, to make sure everything compiles.
+5. Define either your plugin or function code and then run `npm run compile`, to make sure everything compiles.
 
-6. When you are ready to publish to an NPM repository, you can run: npm run upload. This will compile, package, version, and publish. You must be logged into the npm repo before executing this for the publish to work.
+6. When you are ready to publish to an NPM repository, you can run `npm run upload`. This will compile, package, version, and publish. You must be logged into the npm repo before executing this for the publish to work.
 
     a. If developing for our mono-repo offical ingredients. You can not self publish. Instead submit a Pull Request with just your ingredient changes. If accepted it will get auto versioned and published.
 
