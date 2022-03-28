@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-cosmosdb",
   "description": "Deploys a Cosmos Db account",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.105",
+    "@azbake/arm-helper": "^0.1.106",
     "@azure/arm-cosmosdb": "^9.1.0"
   },
   "publishConfig": {

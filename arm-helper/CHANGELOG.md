@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.105...@azbake/arm-helper@0.1.106) (2022-03-28)
+
+
+### Bug Fixes
+
+* get more specific details from ARM RestError ([#237](https://github.com/HomecareHomebase/azure-bake/issues/237)) ([a909141](https://github.com/HomecareHomebase/azure-bake/commit/a9091417430ad7edbd563cbcb9fb414d593c3a70))
+
+
+
+
+
 ## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.104...@azbake/arm-helper@0.1.105) (2022-01-11)
 
 
