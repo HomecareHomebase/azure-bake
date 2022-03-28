@@ -1,6 +1,6 @@
 import { BaseIngredient, IngredientManager,IIngredient,DeploymentContext } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
-import ARMTemplate from "./FlexibleServerArm.json" // TODO? enable Single Server
+import ARMTemplate from "./FlexibleServerArm.json" 
 
 export class PostgreSQLDB extends BaseIngredient {
 
