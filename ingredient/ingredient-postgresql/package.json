@@ -28,5 +28,9 @@
   "dependencies": {
     "@azbake/arm-helper": "^0.1.106",
     "@azure/arm-sql": "^5.7.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
