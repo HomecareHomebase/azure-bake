@@ -169,41 +169,10 @@ The APIM API ingredient allows for easy registration & modification of APIs with
 
 [read more](./ingredient/ingredient-apim-api/README.md)
 
-### @azbake/ingredient-script
-Simple ingredient that allows executing javascript/typescript functions. Parameters are avalible inside the function, as well as the full bake deployment context. Useful for implementing edge case deployment needs, or stop gap before an external ingredient supports.
-
-[read more](./ingredient/ingredient-arm/README.md)
-
-### @azbake/ingredient-utils
-Ingredient provides all core expression methods, and helpers for current bake context, azure resources. For example:
-   * Get current region object - useful inside an ingredient param to know current location
-   * Create resource name: Generate a proper resource name for the current context (region, subscription, env, etc.)
-   * [read more](./ingredient/ingredient-arm/README.md)
-
-### @azbake/ingredient-webapp-container
-Ingredient that allows deploying Azure Web Apps for Containers.  Parameters are supplied via native bake ingredient parameters.
-
-[read more](./ingredient/ingredient-webapp-container/README.md)
-
-### @azbake/ingredient-traffic-manager
-Ingredient that allows deploying Azure Traffic Manager profile and endpoints for each region.  Parameters are supplied via native bake ingredient parameters.
-
-[read more](./ingredient/ingredient-traffic-manager/README.md)
-
-### @azbake/ingredient-host-names
-Ingredient that allows deploying custom host names and ssl certificates to Azure Web Sites.  Parameters are supplied via native bake ingredient parameters.
-
-[read more](./ingredient/ingredient-host-names/README.md)
-
 ### @azbake/ingredient-app-service-plan
 Ingredient that allows deploying App Service Plan. Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-app-service-plan/README.md)
-
-### @azbake/ingredient-service-bus-namespace
-Ingredient that allows deploying Service Bus Namespace. Parameters are supplied via native bake ingredient parameters.
-
-[read more](./ingredient/ingredient-service-bus-namespace/README.md)
 
 ### @azbake/ingredient-databricks
 Ingredient that allows deploying Databricks. Parameters are supplied via native bake ingredient parameters.
@@ -214,6 +183,26 @@ Ingredient that allows deploying Databricks. Parameters are supplied via native 
 Ingredient that allows deploying Azure Data Factory. Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-datafactoryv2/README.md)
+
+### @azbake/ingredient-host-names
+Ingredient that allows deploying custom host names and ssl certificates to Azure Web Sites.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-host-names/README.md)
+
+### @azbake/ingredient-postgresql
+Ingredient that allows deploying Azure Database for PostgreSQL servers. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-postgresql/README.md)
+
+### @azbake/ingredient-script
+Simple ingredient that allows executing javascript/typescript functions. Parameters are avalible inside the function, as well as the full bake deployment context. Useful for implementing edge case deployment needs, or stop gap before an external ingredient supports.
+
+[read more](./ingredient/ingredient-arm/README.md)
+
+### @azbake/ingredient-service-bus-namespace
+Ingredient that allows deploying Service Bus Namespace. Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-service-bus-namespace/README.md)
 
 ### @azbake/ingredient-sql-dwh
 Ingredient that allows deploying SQL Data Warehouse. Parameters are supplied via native bake ingredient parameters.
@@ -229,3 +218,19 @@ Ingredient that allows deploying SQL Database. Parameters are supplied via nativ
 Ingredient that allows deploying SQL Server Logical. Parameters are supplied via native bake ingredient parameters.
 
 [read more](./ingredient/ingredient-sqlserver-logical/README.md)
+
+### @azbake/ingredient-traffic-manager
+Ingredient that allows deploying Azure Traffic Manager profile and endpoints for each region.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-traffic-manager/README.md)
+
+### @azbake/ingredient-utils
+Ingredient provides all core expression methods, and helpers for current bake context, azure resources. For example:
+   * Get current region object - useful inside an ingredient param to know current location
+   * Create resource name: Generate a proper resource name for the current context (region, subscription, env, etc.)
+   * [read more](./ingredient/ingredient-arm/README.md)
+
+### @azbake/ingredient-webapp-container
+Ingredient that allows deploying Azure Web Apps for Containers.  Parameters are supplied via native bake ingredient parameters.
+
+[read more](./ingredient/ingredient-webapp-container/README.md)
