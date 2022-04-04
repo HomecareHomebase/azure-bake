@@ -23,8 +23,8 @@
     "watch": "tsc -w -p ."
   },
   "peerDependencies": {
-    "@azbake/core": "0.*",
-    "@azure/arm-resources": "1.*"
+    "@azbake/core": "*",
+    "@azure/arm-resources": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.104",
