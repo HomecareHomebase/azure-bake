@@ -37,10 +37,6 @@ recipe:
         haMode: "Disabled"
         availabilityZone: ""
         version: "13"
-        tags:
-          value:
-            app: "myapp"
-            tag2: "a value"
         firewallRules:
           rules:
             - name: "testrule"
@@ -65,7 +61,6 @@ recipe:
 | haMode | No | High Availability mode. ex `Disabled` or `ZoneRedundant` |
 | availabilityZone | No | Preferred availability zone. ex `1` or `2` |
 | version | No | Postgres version ex `12` or `13` |
-| tags | No | key-value pairs in the form of an object |
 | firewallRules | No | a "rules" object with an array of rules. By default, no public IP addresses are allowed. |
 | backupRetentionDays | No | Default 14 |
 | geoRedundantBackup | No | Default `Disabled` |

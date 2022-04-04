@@ -39,10 +39,6 @@
             "defaultValue": "12",
             "type": "String"
         },
-        "tags": {
-            "defaultValue": {},
-            "type": "Object"
-        },
         "firewallRules": {
             "defaultValue": {},
             "type": "Object"
@@ -82,7 +78,7 @@
                 "name": "[parameters('dbInstanceType')]",
                 "tier": "[parameters('serverEdition')]"
             },
-            "tags": "[parameters('tags')]",
+            "tags": {},
             "properties": {
                 "version": "[parameters('version')]",
                 "administratorLogin": "[parameters('administratorLogin')]",
