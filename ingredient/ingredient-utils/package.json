@@ -23,7 +23,7 @@
     "watch": "tsc -w -p ."
   },
   "peerDependencies": {
-    "@azbake/core": "0.*"
+    "@azbake/core": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.104",

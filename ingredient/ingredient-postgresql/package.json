@@ -15,9 +15,9 @@
     "lib": "dist"
   },
   "peerDependencies": {
-    "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azbake/core": "*",
+    "@azbake/ingredient-utils": "*",
+    "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.104",
