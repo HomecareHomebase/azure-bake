@@ -150,7 +150,7 @@ export class BakePackage {
             if (!skipNpm){
                 logger.log('- ' + ingredientsType)
                 var npm = new ShellRunner(cmd).start()
-                npm.arg("install").arg(ingredientsType)
+                npm.arg("install").arg(ingredientsType).arg("--force")
                 let er = npm.exec()
                 if (er.code != 0){
                     console.log(er)

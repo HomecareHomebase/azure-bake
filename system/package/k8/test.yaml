@@ -6,13 +6,13 @@ metadata:
     bake.tag/envcode: BDE0
     bake.tag/environment: Bill Dev Env
     bake.tag/region: East US
-    bake.tag/recipe: kv-test
-    bake.tag/package_version: 1.0.0
-    bake.tag/bake_version: 0.5.3
-    bake.tag/owner: ""
-    bake.tag/ing_version: 0.1.98
+    bake.tag/recipe: Kados
+    bake.tag/package_version: 0.0.1
+    bake.tag/bake_version: 0.5.36
+    bake.tag/owner: "Architecture"
+    bake.tag/ing_version: 0.1.112
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
+    bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
 spec:
   selector:
     matchLabels:
@@ -26,13 +26,13 @@ spec:
         bake.tag/envcode: BDE0
         bake.tag/environment: Bill Dev Env
         bake.tag/region: East US
-        bake.tag/recipe: kv-test
-        bake.tag/package_version: 1.0.0
-        bake.tag/bake_version: 0.5.3
-        bake.tag/owner: ""
-        bake.tag/ing_version: 0.1.98
+        bake.tag/recipe: Kados
+        bake.tag/package_version: 0.0.1
+        bake.tag/bake_version: 0.5.36
+        bake.tag/owner: "Architecture"
+        bake.tag/ing_version: 0.1.112
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
+        bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
     spec:
       containers:
         - name: nginx
@@ -50,13 +50,13 @@ metadata:
     bake.tag/envcode: BDE0
     bake.tag/environment: Bill Dev Env
     bake.tag/region: East US
-    bake.tag/recipe: kv-test
-    bake.tag/package_version: 1.0.0
-    bake.tag/bake_version: 0.5.3
-    bake.tag/owner: ""
-    bake.tag/ing_version: 0.1.98
+    bake.tag/recipe: Kados
+    bake.tag/package_version: 0.0.1
+    bake.tag/bake_version: 0.5.36
+    bake.tag/owner: "Architecture"
+    bake.tag/ing_version: 0.1.112
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2020-04-22T20:24:09.193Z
+    bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
 spec:
   selector:
     matchLabels:
@@ -70,13 +70,13 @@ spec:
         bake.tag/envcode: BDE0
         bake.tag/environment: Bill Dev Env
         bake.tag/region: East US
-        bake.tag/recipe: kv-test
-        bake.tag/package_version: 1.0.0
-        bake.tag/bake_version: 0.5.3
-        bake.tag/owner: ""
-        bake.tag/ing_version: 0.1.98
+        bake.tag/recipe: Kados
+        bake.tag/package_version: 0.0.1
+        bake.tag/bake_version: 0.5.36
+        bake.tag/owner: "Architecture"
+        bake.tag/ing_version: 0.1.112
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: '{{CONFIGMAP}}'
+        bake.tag/deployment_ts: '2022-04-04T20:27:46.406Z'
     spec:
       containers:
         - name: nginx
