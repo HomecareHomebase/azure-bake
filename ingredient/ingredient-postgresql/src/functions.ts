@@ -7,5 +7,9 @@ export class PostgreSQLDBUtils extends BaseUtility {
         const name = util.create_resource_name("pgsql", null, true);
         return name;
     }
+
+    public create_resource_uri(): string {
+        return this.create_resource_name() + ".postgres.database.azure.com"; 
+    }
 }
 
