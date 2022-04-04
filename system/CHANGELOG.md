@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.41](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.40...azure-bake@0.5.41) (2022-04-04)
+
+
+### Bug Fixes
+
+* resolving peer dep installs ([#249](https://github.com/HomecareHomebase/azure-bake/issues/249)) ([5284c61](https://github.com/HomecareHomebase/azure-bake/commit/5284c611a192b1a8c8c2209354d5a265a67b3a15))
+
+
+
+
+
 ## [0.5.40](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.39...azure-bake@0.5.40) (2022-04-04)
 
 **Note:** Version bump only for package azure-bake
