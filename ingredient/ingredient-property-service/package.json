@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-property-service",
   "description": "Ingredient for managing peoperty service.",
-  "version": "0.1.45",
+  "version": "0.1.46",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -27,7 +27,7 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.104",
+    "@azbake/core": "^0.1.105",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },

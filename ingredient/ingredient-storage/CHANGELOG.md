@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.125](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.124...@azbake/ingredient-storage@0.1.125) (2022-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-storage
+
+
+
+
+
 ## [0.1.124](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.123...@azbake/ingredient-storage@0.1.124) (2022-04-04)
 
 
