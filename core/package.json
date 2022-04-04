@@ -26,8 +26,8 @@
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
   },
   "peerDependencies": {
-    "@azure/ms-rest-nodeauth": "^3.0.0",
-    "colors": "1.4.0"
+    "@azure/ms-rest-nodeauth": "*",
+    "colors": "*"
   },
   "devDependencies": {
     "@azure/ms-rest-nodeauth": "^3.0.0",
