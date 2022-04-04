@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.38](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.37...azure-bake@0.5.38) (2022-04-04)
+
+
+### Bug Fixes
+
+* Upgrading bake serve node version ([c5bf536](https://github.com/HomecareHomebase/azure-bake/commit/c5bf536eb8ac49ee95f9eb9b30c609591276d659))
+
+
+
+
+
 ## [0.5.37](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.36...azure-bake@0.5.37) (2022-04-04)
 
 

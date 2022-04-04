@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.165](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.164...@azbake/ingredient-functions@0.1.165) (2022-04-04)
+
+
+### Bug Fixes
+
+* Upgrading bake serve node version ([c5bf536](https://github.com/HomecareHomebase/azure-bake/commit/c5bf536eb8ac49ee95f9eb9b30c609591276d659))
+
+
+
+
+
 ## [0.1.164](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.163...@azbake/ingredient-functions@0.1.164) (2022-03-28)
 
 **Note:** Version bump only for package @azbake/ingredient-functions
