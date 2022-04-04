@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-container-reg",
   "description": "Ingredient for deploying an Azure Container Registry instance",
-  "version": "0.1.106",
+  "version": "0.1.107",
   "main": "dist/index.js",
   "author": "HCHB",
   "license": "MIT",

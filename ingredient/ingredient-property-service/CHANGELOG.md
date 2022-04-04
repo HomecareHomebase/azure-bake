@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.45](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.44...@azbake/ingredient-property-service@0.1.45) (2022-04-04)
+
+
+### Bug Fixes
+
+* force updating all ingredients ([#247](https://github.com/HomecareHomebase/azure-bake/issues/247)) ([f59586d](https://github.com/HomecareHomebase/azure-bake/commit/f59586d8b364860cc4b30059feb9a56d2cc329a0))
+
+
+
+
+
 ## [0.1.44](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.43...@azbake/ingredient-property-service@0.1.44) (2022-01-11)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-service-bus-queue",
   "description": "Ingredient for deploying a service bus queue.",
-  "version": "0.1.108",
+  "version": "0.1.109",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "^0.1.106",
+    "@azbake/ingredient-utils": "^0.1.107",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
