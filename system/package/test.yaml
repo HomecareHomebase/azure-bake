@@ -7,12 +7,11 @@ resourceGroup: false
 ingredients:
    - "@azbake/ingredient-kubernetes@~0"
 rgOverride: "whilke-poc"
-resourceGroup: false
 recipe:
   k8s:
     properties:
       type: "@azbake/ingredient-kubernetes"
       source: "./k8"
       parameters:
-        kubeconfig: "[corutils.variable('')]"
+        kubeconfig: "[coreutils.variable('')]"
         configmap: "[k8s.configmap('./k8-configmap', 'testmap', 'hchb-shared')]"
