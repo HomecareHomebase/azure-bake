@@ -4,6 +4,9 @@ import {DeploymentContext} from "./deployment-context"
 import * as process from "process"
 import * as fs from 'fs'
 
+const {createRequire} = require('module');
+const path = require('path');
+
 export class IngredientManager {
     
     private static ingredientTypes : Map<string, IIngredientType>
@@ -13,9 +16,15 @@ export class IngredientManager {
     private static ingredientTypesVersions : Map<string, string>
         = new Map<string, string>()
 
+    public static RequireIngredient(moduleName: string): any {
+        const packagePath = path.resolve('./', 'noop.js');
+        const module = createRequire(packagePath)(moduleName);
+        return module;
+    }
+
     public static Register(moduleName: string):void {
 
-        var module = require(moduleName)
+        const module = IngredientManager.RequireIngredient(moduleName);
 
         if (module.plugin){
 

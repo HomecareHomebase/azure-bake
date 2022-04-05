@@ -256,8 +256,8 @@ async function run(): Promise<number> {
         sep = ';'
     }
 
-    process.env.NODE_PATH = path.join(rootPath,'node_modules') + sep + ingredientPath
-    require("module").Module._initPaths();
+    //process.env.NODE_PATH = path.join(rootPath,'node_modules') + sep + ingredientPath
+    //require("module").Module._initPaths();
 
     let regions: Array<IBakeRegion> = JSON.parse(process.env.BAKE_ENV_REGIONS || "")
 
