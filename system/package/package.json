@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@azbake/ingredient-kubernetes": "^0.1.114"
+  }
+}
