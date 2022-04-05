@@ -3,8 +3,6 @@ import { BaseIngredient } from "./base-ingredient"
 import {DeploymentContext} from "./deployment-context"
 import * as process from "process"
 import * as fs from 'fs'
-
-const {createRequire} = require('module');
 const path = require('path');
 
 export class IngredientManager {
@@ -16,15 +14,18 @@ export class IngredientManager {
     private static ingredientTypesVersions : Map<string, string>
         = new Map<string, string>()
 
-    public static RequireIngredient(moduleName: string): any {
-        const packagePath = path.resolve('./', 'noop.js');
-        const module = createRequire(packagePath)(moduleName);
-        return module;
-    }
-
     public static Register(moduleName: string):void {
 
-        const module = IngredientManager.RequireIngredient(moduleName);
+        let module = null;
+        try {
+            module = require(moduleName);
+        }catch {
+            //fallback to a brute force, since linux doesn't let us load modules downloaded at runtime anymore
+            const basePath = "./node_modules/" + moduleName + "/";
+            const packageData = require(path.resolve(basePath + "package.json"));
+            const packagePath = path.resolve(basePath + "/" + packageData.main);
+            module = require(packagePath);    
+        }
 
         if (module.plugin){
 
