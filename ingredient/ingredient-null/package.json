@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-null",
   "description": "null ingredient for variable controlled variable execution",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "",
@@ -19,7 +19,7 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.105",
+    "@azbake/core": "^0.1.106",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.131](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.130...@azbake/ingredient-network-interface@0.1.131) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module load in linux ([#250](https://github.com/HomecareHomebase/azure-bake/issues/250)) ([5b90aa1](https://github.com/HomecareHomebase/azure-bake/commit/5b90aa16b7138b83342629bdf25c8edc66bd13f4))
+
+
+
+
+
 ## [0.1.130](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.129...@azbake/ingredient-network-interface@0.1.130) (2022-04-04)
 
 **Note:** Version bump only for package @azbake/ingredient-network-interface

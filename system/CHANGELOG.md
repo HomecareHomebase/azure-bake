@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.42](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.41...azure-bake@0.5.42) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module load in linux ([#250](https://github.com/HomecareHomebase/azure-bake/issues/250)) ([5b90aa1](https://github.com/HomecareHomebase/azure-bake/commit/5b90aa16b7138b83342629bdf25c8edc66bd13f4))
+
+
+
+
+
 ## [0.5.41](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.40...azure-bake@0.5.41) (2022-04-04)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.10](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.9...@azbake/ingredient-cosmosdb@0.0.10) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
 ## [0.0.9](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.8...@azbake/ingredient-cosmosdb@0.0.9) (2022-04-04)
 
 **Note:** Version bump only for package @azbake/ingredient-cosmosdb
