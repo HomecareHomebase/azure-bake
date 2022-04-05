@@ -134,7 +134,7 @@ export class BakePackage {
                 }
 
                 const packageDir = path.join(ingPackage, 'package.json');
-                let packageVersion = IngredientManager.RequireIngredient(packageDir).version
+                let packageVersion = require(packageDir).version
 
                 //making it this var means we could load the ingredient as a module.
                 //so skip install! 
