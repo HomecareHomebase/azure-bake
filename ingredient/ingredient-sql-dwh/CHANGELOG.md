@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.169](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.168...@azbake/ingredient-sql-dwh@0.1.169) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-sql-dwh
+
+
+
+
+
 ## [0.1.168](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-sql-dwh@0.1.167...@azbake/ingredient-sql-dwh@0.1.168) (2022-04-05)
 
 
