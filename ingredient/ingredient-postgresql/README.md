@@ -31,6 +31,7 @@ recipe:
         administratorLoginPassword: "[coreutils.variable('adminPass')]"
         location: "[coreutils.current_region().name]"
         serverName: "[coreutils.variable('dbServerName')]"
+        access: "private" 
         serverEdition: "Burstable" 
         skuSizeGB: 32 
         dbInstanceType: "Standard_B1ms"
@@ -45,7 +46,7 @@ recipe:
         backupRetentionDays: 14
         geoRedundantBackup: "Disabled"
         virtualNetworkExternalId: ""
-        subnetName: ""
+        subnetName: "pgsql"
         privateDnsZoneArmResourceId: ""
 ```
 
@@ -54,6 +55,7 @@ recipe:
 | administratorLogin | yes | The username for the server admin |
 | administratorLoginPassword | yes | Admin password  |
 | serverName | Yes | Server name  |
+| access | Yes | "public" or "private" |
 | location | No | Region name. ex `[coreutils.current_region().name]` or `eastus` |
 | serverEdition | No | ex `Burstable` or `GeneralPurpose` |
 | skuSizeGB | No | Minimum 32 GB. Billed at $0.115/GB/mo|
@@ -64,9 +66,10 @@ recipe:
 | firewallRules | No | a "rules" object with an array of rules. By default, no public IP addresses are allowed. |
 | backupRetentionDays | No | Default 14 |
 | geoRedundantBackup | No | Default `Disabled` |
-| virtualNetworkExternalId | No | Default empty string, which is treated as "Enabled". |
-| subnetName | No | |
+| virtualNetworkExternalId | No | For **public** access servers only. Default empty string, which is treated as "Enabled". |
+| subnetName | No | For **private** access servers only. The name of a subnet that's empty or already delegated to PostgreSQL |
 | privateDnsZoneArmResourceId | No | |
+
 
 
 ## Utilities
