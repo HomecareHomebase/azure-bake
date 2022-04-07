@@ -47,6 +47,8 @@ recipe:
         geoRedundantBackup: "Disabled"
         virtualNetworkExternalId: ""
         subnetName: "pgsql"
+        virtualNetworkName: "YOUR_VNET_HERE"
+        virtualNetworkResourceGroup: "SOME_RG"
         privateDnsZoneArmResourceId: ""
 ```
 
@@ -67,7 +69,9 @@ recipe:
 | backupRetentionDays | No | Default 14 |
 | geoRedundantBackup | No | Default `Disabled` |
 | virtualNetworkExternalId | No | For **public** access servers only. Default empty string, which is treated as "Enabled". |
-| subnetName | No | For **private** access servers only. The name of a subnet that's empty or already delegated to PostgreSQL |
+| subnetName | No | For **private** access servers only. The name of an existing subnet that's empty or already delegated to PostgreSQL. Must be a subnet of **virtualNetworkName** |
+| virtualNetworkName | No | For **private** access servers only. The name of an existing virtual network with subnet **subnetName** |
+| virtualNetworkResourceGroup | No | For **private** access servers only. RG of Vnet |
 | privateDnsZoneArmResourceId | No | |
 
 
