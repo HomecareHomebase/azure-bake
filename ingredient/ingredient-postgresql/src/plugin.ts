@@ -1,10 +1,10 @@
 import { BaseIngredient, IngredientManager,IIngredient,DeploymentContext } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import { PostgreSQLDBUtils } from "./functions"
-import { VirtualMachineScaleSetDataDisk } from "@azure/arm-compute/esm/models/mappers"
 import { VnetData } from "./vnetData"
 import PublicAccessARMTemplate from "./PublicAccessArm.json" 
 import PrivateAccessARMTemplate from "./PrivateAccessArm.json"
+import { Subnet,VirtualNetwork } from "@azure/arm-network/esm/models"
 
 export class PostgreSQLDB extends BaseIngredient {
 
@@ -33,8 +33,7 @@ export class PostgreSQLDB extends BaseIngredient {
             throw error;
         }
 
-        var vnetData = new VirtualMachineScaleSetDataDisk()
-        vnetData.value.subnetProperties = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
+        const vnetData = await this.getVnetData(params);
 
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
@@ -46,6 +45,44 @@ export class PostgreSQLDB extends BaseIngredient {
             this._logger.error('Deployment failed: ' + error)
             throw error
         }
+    }
+
+    public async getVnetData(params: any): Promise<VnetData> {
+        //var data: any = {}};
+        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+
+        let vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
+        let subnetPropertiesGet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
+        let privateDnsZoneName = this._functions.create_resource_uri(params.access); // todo investigate public equivalent.
+        let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
+        
+        let vnetData: VnetData = {
+            value: {
+                virtualNetworkName: params.virtualNetworkName.value,
+                virtualNetworkId: vNet.id!,
+                subnetName: params.subnetName.value,
+                virtualNetworkAddressPrefix: subnetPropertiesGet.addressPrefix!,
+                virtualNetworkResourceGroupName: params.virtualvirtualNetworkResourceGroup.value,
+                location: await util.current_region(), // maybe primary_region()?
+                subscriptionId: this._ctx.Environment.authentication.subscriptionId,
+                subnetProperties: subnetPropertiesGet,
+                subnetNeedsUpdate: false,
+                isNewVnet: false,
+                usePrivateDnsZone: (params.access === "private"),
+                isNewPrivateDnsZone: !dnsZone, //todo test that dnsZone evaluates to false when no dns zone by that name exists
+                privateDnsResourceGroup: params.virtualvirtualNetworkResourceGroup.value,
+                privateDnsSubscriptionId: this._ctx.Environment.authentication.subscriptionId,
+                privateDnsZoneName: privateDnsZoneName,
+                linkVirtualNetwork: true,
+                Network: {
+                    DelegatedSubnetResourceId: subnetPropertiesGet.id!,
+                    PrivateDnsZoneArmResourceId: dnsZone.id //todo generate this id if the dnsZone doesn't exist :(
+                }
+
+            }
+        };
+
+        return vnetData;
     }
 
 
