@@ -26,7 +26,5 @@ export class Value {
 
 export class Network {
     DelegatedSubnetResourceId!: string;
-    PrivateDnsZoneArmResourceId!: string;
+    PrivateDnsZoneArmResourceId?: string;
 }
-
-

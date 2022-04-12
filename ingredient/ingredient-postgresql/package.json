@@ -28,7 +28,8 @@
   "dependencies": {
     "@azbake/arm-helper": "^0.1.107",
     "@azure/arm-network": "^26.0.0",
-    "@azure/arm-privatedns": "^3.0.0"
+    "@azure/arm-privatedns": "^3.0.0",
+    "@azure/identity": "^2.0.4"
   },
   "publishConfig": {
     "access": "public",

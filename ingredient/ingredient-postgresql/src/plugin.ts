@@ -55,6 +55,12 @@ export class PostgreSQLDB extends BaseIngredient {
         let subnetPropertiesGet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
         let privateDnsZoneName = this._functions.create_resource_uri(params.access); // todo investigate public equivalent.
         let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
+
+        // if dnsZone doesn't exist, generate its id
+        if (dnsZone === undefined)
+        {
+            dnsZone = { id: `fancy/id/here`};
+        }
         
         let vnetData: VnetData = {
             value: {

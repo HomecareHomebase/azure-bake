@@ -2,11 +2,16 @@ import {BaseUtility, IngredientManager} from '@azbake/core'
 import { NetworkManagementClient } from '@azure/arm-network';
 import { Subnet, VirtualNetwork } from '@azure/arm-network/esm/models';
 import { PrivateDnsManagementClient, PrivateZone } from '@azure/arm-privatedns';
+import { DefaultAzureCredential, DefaultAzureCredentialOptions, ClientSecretCredential,ChainedTokenCredential } from "@azure/identity";
+import { RestError } from '@azure/ms-rest-js';
 
 export class PostgreSQLDBUtils extends BaseUtility {
 
-
+    private token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
+    private credential = new ChainedTokenCredential(this.token, new DefaultAzureCredential());
+    
     public create_resource_name(): string {
+
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         const name = util.create_resource_name("pgsql", null, true);
         return name;
@@ -27,9 +32,7 @@ export class PostgreSQLDBUtils extends BaseUtility {
     }
 
     public async get_vnet(virtualNetworkResourceGroup: string, virtualNetworkName: string): Promise<VirtualNetwork>  {
-        const token: any = this.context.AuthToken
-
-        var client = new NetworkManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        var client = new NetworkManagementClient(this.credential , this.context.Environment.authentication.subscriptionId);
         let vNet = await client.virtualNetworks.get(virtualNetworkResourceGroup, virtualNetworkName);
 
         this.context._logger.debug(`PostgreSQLDBUtils.get_vnet() returned ${JSON.stringify(vNet)}`);
@@ -38,9 +41,7 @@ export class PostgreSQLDBUtils extends BaseUtility {
     }
 
     public async get_subnet(resourceGroup: string, vnetName: string, subnetName: string): Promise<Subnet> {
-        const token: any = this.context.AuthToken
-
-        var client = new NetworkManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        var client = new NetworkManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
         let subnet = await client.subnets.get(resourceGroup, vnetName, subnetName);
 
         this.context._logger.debug(`PostgreSQLDBUtils.get_subnet() returned ${JSON.stringify(subnet)}`);
@@ -48,11 +49,18 @@ export class PostgreSQLDBUtils extends BaseUtility {
         return subnet;
     }
 
-    public async get_private_dns_zone(resourceGroup: string, privateDnsZoneName: string): Promise<PrivateZone> {
-        const token: any = this.context.AuthToken
-
-        var client = new PrivateDnsManagementClient(token, this.context.Environment.authentication.subscriptionId);
-        let dns = await client.privateZones.get(resourceGroup, privateDnsZoneName);
+    public async get_private_dns_zone(resourceGroup: string, privateDnsZoneName: string): Promise<PrivateZone | undefined> {
+        var client = new PrivateDnsManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
+        var dns: PrivateZone | undefined; 
+        try {
+            dns = await client.privateZones.get(resourceGroup, privateDnsZoneName);
+        }
+        catch (error) {
+            if (!(error instanceof RestError)) // && error.code === 'ResourceNotFound') //is of type 404 not found
+            {
+                throw error;
+            }
+        }
 
         this.context._logger.debug(`PostgreSQLDBUtils.get_private_dns_zone() returned ${JSON.stringify(dns)}`);
         
