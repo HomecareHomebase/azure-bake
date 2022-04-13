@@ -55,11 +55,14 @@ export class PostgreSQLDB extends BaseIngredient {
         let subnetPropertiesGet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
         let privateDnsZoneName = this._functions.create_resource_uri(params.access); // todo investigate public equivalent.
         let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
+        let dnsZoneIsNew: boolean = false;
 
         // if dnsZone doesn't exist, generate its id
         if (dnsZone === undefined)
         {
-            dnsZone = { id: `fancy/id/here`};
+            dnsZoneIsNew = true;
+            dnsZone = { id: `/subscriptions/${this._ctx.Environment.authentication.subscriptionId}/resourceGroups/${params.virtualNetworkResourceGroup.value}` +
+                `/providers/Microsoft.Network/privateDnsZones/${privateDnsZoneName}`};
         }
         
         let vnetData: VnetData = {
@@ -68,23 +71,22 @@ export class PostgreSQLDB extends BaseIngredient {
                 virtualNetworkId: vNet.id!,
                 subnetName: params.subnetName.value,
                 virtualNetworkAddressPrefix: subnetPropertiesGet.addressPrefix!,
-                virtualNetworkResourceGroupName: params.virtualvirtualNetworkResourceGroup.value,
+                virtualNetworkResourceGroupName: params.virtualNetworkResourceGroup.value,
                 location: await util.current_region(), // maybe primary_region()?
                 subscriptionId: this._ctx.Environment.authentication.subscriptionId,
                 subnetProperties: subnetPropertiesGet,
                 subnetNeedsUpdate: false,
                 isNewVnet: false,
                 usePrivateDnsZone: (params.access === "private"),
-                isNewPrivateDnsZone: !dnsZone, //todo test that dnsZone evaluates to false when no dns zone by that name exists
-                privateDnsResourceGroup: params.virtualvirtualNetworkResourceGroup.value,
+                isNewPrivateDnsZone: dnsZoneIsNew, 
+                privateDnsResourceGroup: params.virtualNetworkResourceGroup.value,
                 privateDnsSubscriptionId: this._ctx.Environment.authentication.subscriptionId,
                 privateDnsZoneName: privateDnsZoneName,
                 linkVirtualNetwork: true,
                 Network: {
                     DelegatedSubnetResourceId: subnetPropertiesGet.id!,
-                    PrivateDnsZoneArmResourceId: dnsZone.id //todo generate this id if the dnsZone doesn't exist :(
+                    PrivateDnsZoneArmResourceId: dnsZone.id 
                 }
-
             }
         };
 

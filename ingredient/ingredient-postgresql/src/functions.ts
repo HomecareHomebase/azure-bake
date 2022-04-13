@@ -18,7 +18,7 @@ export class PostgreSQLDBUtils extends BaseUtility {
     }
 
     public create_resource_uri(access: string): string {
-        let infix = (access === 'private') ? '.private' : '';
+        let infix = (access == 'private') ? '.private' : '';
         return `${this.create_resource_name()}${infix}.postgres.database.azure.com`; 
     }
 
@@ -56,7 +56,7 @@ export class PostgreSQLDBUtils extends BaseUtility {
             dns = await client.privateZones.get(resourceGroup, privateDnsZoneName);
         }
         catch (error) {
-            if (!(error instanceof RestError)) // && error.code === 'ResourceNotFound') //is of type 404 not found
+            if (!(this.isRestError(error) && error.code === 'ResourceNotFound' ))
             {
                 throw error;
             }
@@ -65,6 +65,11 @@ export class PostgreSQLDBUtils extends BaseUtility {
         this.context._logger.debug(`PostgreSQLDBUtils.get_private_dns_zone() returned ${JSON.stringify(dns)}`);
         
         return dns;
+    }
+
+    private isRestError(error: RestError | Error | any): error is RestError {
+        return (<RestError>error).code !== undefined
+            && (<RestError>error).name === 'RestError' ;
     }
 }
 

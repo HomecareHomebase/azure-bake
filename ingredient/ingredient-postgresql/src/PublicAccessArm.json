@@ -19,7 +19,7 @@
             "defaultValue": "GeneralPurpose",
             "type": "String"
         },
-        "skuSizeGB": {
+        "storageSizeGB": {
             "defaultValue": 128,
             "type": "Int"
         },
@@ -92,7 +92,7 @@
                     "mode": "[parameters('haMode')]"
                 },
                 "storage": {
-                    "storageSizeGB": "[parameters('skuSizeGB')]"
+                    "storageSizeGB": "[parameters('storageSizeGB')]"
                 },
                 "backup": {
                     "backupRetentionDays": "[parameters('backupRetentionDays')]",

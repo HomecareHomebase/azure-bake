@@ -33,7 +33,7 @@ recipe:
         serverName: "[coreutils.variable('dbServerName')]"
         access: "private" 
         serverEdition: "Burstable" 
-        skuSizeGB: 32 
+        storageSizeGB: 32 
         dbInstanceType: "Standard_B1ms"
         haMode: "Disabled"
         availabilityZone: ""
@@ -45,11 +45,10 @@ recipe:
               endIPAddress: "192.168.0.1"
         backupRetentionDays: 14
         geoRedundantBackup: "Disabled"
-        virtualNetworkExternalId: ""
+        virtualNetworkExternalId: "" 
         subnetName: "pgsql"
         virtualNetworkName: "YOUR_VNET_HERE"
         virtualNetworkResourceGroup: "SOME_RG"
-        privateDnsZoneArmResourceId: ""
 ```
 
 | property | required | description |
@@ -60,7 +59,7 @@ recipe:
 | access | Yes | "public" or "private" |
 | location | No | Region name. ex `[coreutils.current_region().name]` or `eastus` |
 | serverEdition | No | ex `Burstable` or `GeneralPurpose` |
-| skuSizeGB | No | Minimum 32 GB. Billed at $0.115/GB/mo|
+| storageSizeGB | No | Minimum 32 GB. Billed at $0.115/GB/mo|
 | dbInstanceType | No | VM size. ex `Standard_B1ms` |
 | haMode | No | High Availability mode. ex `Disabled` or `ZoneRedundant` |
 | availabilityZone | No | Preferred availability zone. ex `1` or `2` |
@@ -72,7 +71,6 @@ recipe:
 | subnetName | No | For **private** access servers only. The name of an existing subnet that's empty or already delegated to PostgreSQL. Must be a subnet of **virtualNetworkName** |
 | virtualNetworkName | No | For **private** access servers only. The name of an existing virtual network with subnet **subnetName** |
 | virtualNetworkResourceGroup | No | For **private** access servers only. RG of Vnet. Assuming this is in the same subscription that everything else in the deployment belongs to. |
-| privateDnsZoneArmResourceId | No | |
 
 
 

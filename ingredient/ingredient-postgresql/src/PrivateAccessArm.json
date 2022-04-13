@@ -20,7 +20,7 @@
         "storageSizeGB": {
             "type": "int"
         },
-        "haEnabled": {
+        "haMode": {
             "type": "string",
             "defaultValue": "Disabled"
         },
@@ -45,7 +45,7 @@
         "geoRedundantBackup": {
             "type": "string"
         },
-        "vmName": {
+        "dbInstanceType": {
             "type": "string",
             "defaultValue": "Standard_D4s_v3"
         },
@@ -218,7 +218,7 @@
                     "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
                 },
                 "highAvailability": {
-                    "mode": "[parameters('haEnabled')]"
+                    "mode": "[parameters('haMode')]"
                 },
                 "Network": "[if(empty(parameters('vnetData').Network), json('null'), parameters('vnetData').Network)]",
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -228,7 +228,7 @@
                 "version": "[parameters('version')]"
             },
             "sku": {
-                "name": "[parameters('vmName')]",
+                "name": "[parameters('dbInstanceType')]",
                 "tier": "[parameters('serverEdition')]"
             },
             "tags": "[parameters('tags')]",
