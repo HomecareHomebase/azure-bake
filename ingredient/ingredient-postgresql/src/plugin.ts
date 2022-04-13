@@ -12,28 +12,41 @@ export class PostgreSQLDB extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
+        this._access = this._ingredient.properties.parameters.get("access")?._value.toLowerCase();
     }
 
     _helper: ARMHelper;
     _functions: PostgreSQLDBUtils; // Might remove this later and put all the "function" logic in the bake yaml.
+    private _access: string;
+
 
     public async Execute(): Promise<void> {
         try {
             var params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+            this.validateBakeParams(params);
 
-            var ARMTemplate = (params.access.value == "public") ? PublicAccessARMTemplate
-                : (params.access.value == "private") ? PrivateAccessARMTemplate
-                : null;
-            
-            if (ARMTemplate == null) throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
 
-            // TODO add a lot more validation here. eg if private and missing vnetname or subnetname or they don't exist
         } catch (error){
             this._logger.error('Bake validation failed: ' + error)
             throw error;
         }
 
+        // Set appropriate ARM template based on the access type defined in the Bake YAML
+        var ARMTemplate = (this._access == "public") ? PublicAccessARMTemplate
+            : (this._access == "private") ? PrivateAccessARMTemplate
+            : null;
+
         const vnetData = await this.getVnetData(params);
+        params.vnetData = vnetData;
+
+        if (this._access == "Private")
+        {
+            // The Private ARM template includes a few Microsoft.Resources/deployments which should be uniquely named
+            let timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
+            params.virtualNetworkDeploymentName = `virtualNetwork_${timestamp}`;
+            params.virtualNetworkLinkDeploymentName = `virtualNetworkLink_${timestamp}`;
+            params.privateDnsZoneDeploymentName = `privateDnsZone_${timestamp}`;
+        }
 
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
@@ -93,5 +106,24 @@ export class PostgreSQLDB extends BaseIngredient {
         return vnetData;
     }
 
+    validateBakeParams(params: any) {
+        const validAccesses = ["public", "private"];
+        if (!validAccesses.includes(this._access)) throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
+        
+        // This gets checked by the regular ARM validation anyway but might as well catch it early here.
+        if (!params.serverName || !params.administratorLogin || !params.administratorLoginPassword) {
+            throw new Error("serverName, administratorLogin, and administratorLoginPassword must be defined in the Bake parameters.");
+        }
+
+        // private access requires some special data for subnet
+        if (this._access == "private") {
+            if (!params.subnetName || !params.virtualNetworkName || !params.virtualNetworkResourceGroup) {
+                throw new Error("subnetName, virtualNetworkName, and virtualNetworkResourceGroup must be defined in the Bake Parameters for 'private' access");
+            } 
+        }
+    }
 
 }
+
+
+
