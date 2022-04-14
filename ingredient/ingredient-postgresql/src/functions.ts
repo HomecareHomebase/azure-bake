@@ -6,7 +6,6 @@ import { DefaultAzureCredential, DefaultAzureCredentialOptions, ClientSecretCred
 import { RestError } from '@azure/ms-rest-js';
 
 export class PostgreSQLDBUtils extends BaseUtility {
-
     private token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
     private credential = new ChainedTokenCredential(this.token, new DefaultAzureCredential());
     
@@ -72,4 +71,3 @@ export class PostgreSQLDBUtils extends BaseUtility {
             && (<RestError>error).name === 'RestError' ;
     }
 }
-

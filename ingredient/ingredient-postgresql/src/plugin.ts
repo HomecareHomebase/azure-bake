@@ -58,9 +58,7 @@ export class PostgreSQLDB extends BaseIngredient {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
             this._logger.log('PostgreSQL Plugin Logging: ' + this._ingredient.properties.parameters)
-
             await this._helper.DeployTemplate(this._name, this._armTemplate, params, await util.resource_group())
-
         } catch(error){
             this._logger.error('Deployment failed: ' + error)
             throw error
@@ -108,7 +106,6 @@ export class PostgreSQLDB extends BaseIngredient {
                 }
             }
         };
-
         return vnetData;
     }
 
@@ -137,8 +134,4 @@ export class PostgreSQLDB extends BaseIngredient {
             }
         }
     }
-
 }
-
-
-
