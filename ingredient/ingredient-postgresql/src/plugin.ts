@@ -13,46 +13,53 @@ export class PostgreSQLDB extends BaseIngredient {
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
         this._access = this._ingredient.properties.parameters.get("access")?._value.toLowerCase();
+        this._armTemplate = (this._access == "public") ? PublicAccessARMTemplate
+            : (this._access == "private") ? PrivateAccessARMTemplate
+            : null;
     }
 
     _helper: ARMHelper;
-    _functions: PostgreSQLDBUtils; // Might remove this later and put all the "function" logic in the bake yaml.
+    _functions: PostgreSQLDBUtils; 
     private _access: string;
-
+    private _armTemplate: any;
 
     public async Execute(): Promise<void> {
         try {
             var params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             this.validateBakeParams(params);
 
-
         } catch (error){
             this._logger.error('Bake validation failed: ' + error)
             throw error;
         }
 
-        // Set appropriate ARM template based on the access type defined in the Bake YAML
-        var ARMTemplate = (this._access == "public") ? PublicAccessARMTemplate
-            : (this._access == "private") ? PrivateAccessARMTemplate
-            : null;
-
-        const vnetData = await this.getVnetData(params);
+        var vnetData = await this.getVnetData(params);
         params.vnetData = vnetData;
 
-        if (this._access == "Private")
+        if (this._access == "private")
         {
             // The Private ARM template includes a few Microsoft.Resources/deployments which should be uniquely named
             let timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
-            params.virtualNetworkDeploymentName = `virtualNetwork_${timestamp}`;
-            params.virtualNetworkLinkDeploymentName = `virtualNetworkLink_${timestamp}`;
-            params.privateDnsZoneDeploymentName = `privateDnsZone_${timestamp}`;
+            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${timestamp}`};
+            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${timestamp}`};
+            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${timestamp}`};
+            
+            // Hard coding this for security
+            params.publicNetworkAccess = {value: 'Disabled'};
         }
+
+        if (!params.firewallRules)
+        {
+            params.firewallRules = {value: {rules: [] }};
+        }
+
+        this.trimParametersForARM(params);
 
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
             this._logger.log('PostgreSQL Plugin Logging: ' + this._ingredient.properties.parameters)
 
-            await this._helper.DeployTemplate(this._name, ARMTemplate, params, await util.resource_group())
+            await this._helper.DeployTemplate(this._name, this._armTemplate, params, await util.resource_group())
 
         } catch(error){
             this._logger.error('Deployment failed: ' + error)
@@ -60,13 +67,13 @@ export class PostgreSQLDB extends BaseIngredient {
         }
     }
 
-    public async getVnetData(params: any): Promise<VnetData> {
+    private async getVnetData(params: any): Promise<VnetData> {
         //var data: any = {}};
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
 
         let vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
         let subnetPropertiesGet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
-        let privateDnsZoneName = this._functions.create_resource_uri(params.access); // todo investigate public equivalent.
+        let privateDnsZoneName = this._functions.create_resource_uri(this._access); // todo investigate public equivalent.
         let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
         let dnsZoneIsNew: boolean = false;
 
@@ -90,7 +97,7 @@ export class PostgreSQLDB extends BaseIngredient {
                 subnetProperties: subnetPropertiesGet,
                 subnetNeedsUpdate: false,
                 isNewVnet: false,
-                usePrivateDnsZone: (params.access === "private"),
+                usePrivateDnsZone: (this._access === "private"),
                 isNewPrivateDnsZone: dnsZoneIsNew, 
                 privateDnsResourceGroup: params.virtualNetworkResourceGroup.value,
                 privateDnsSubscriptionId: this._ctx.Environment.authentication.subscriptionId,
@@ -106,7 +113,7 @@ export class PostgreSQLDB extends BaseIngredient {
         return vnetData;
     }
 
-    validateBakeParams(params: any) {
+    private validateBakeParams(params: any) {
         const validAccesses = ["public", "private"];
         if (!validAccesses.includes(this._access)) throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
         
@@ -120,6 +127,15 @@ export class PostgreSQLDB extends BaseIngredient {
             if (!params.subnetName || !params.virtualNetworkName || !params.virtualNetworkResourceGroup) {
                 throw new Error("subnetName, virtualNetworkName, and virtualNetworkResourceGroup must be defined in the Bake Parameters for 'private' access");
             } 
+        }
+    }
+
+    private trimParametersForARM(params: any) {
+        for (var param in params) {
+            if (!this._armTemplate.parameters.hasOwnProperty(param)) {
+                this._logger.log(`Removing unneeded parameter ${param}`) // todo rethink this. we want users to know when they added something that isn't being used, but we don't necessarily want to log when a parameter like virtualNetworkResourceGroup is removed.
+                delete params[param];
+            }
         }
     }
 

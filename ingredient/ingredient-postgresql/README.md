@@ -69,8 +69,8 @@ recipe:
 | geoRedundantBackup | No | Default `Disabled` |
 | virtualNetworkExternalId | No | For **public** access servers only. Default empty string, which is treated as "Enabled". |
 | subnetName | Yes, for **private** access | For **private** access servers only. The name of an existing subnet that's empty or already delegated to PostgreSQL. Must be a subnet of **virtualNetworkName** |
-| virtualNetworkName | No | For **private** access servers only. The name of an existing virtual network with subnet **subnetName** |
-| virtualNetworkResourceGroup | No | For **private** access servers only. RG of Vnet. Assuming this is in the same subscription that everything else in the deployment belongs to. |
+| virtualNetworkName | Yes, for **private** access | For **private** access servers only. The name of an existing virtual network with subnet **subnetName** |
+| virtualNetworkResourceGroup | Yes, for **private** access | For **private** access servers only. RG of Vnet. Assuming this is in the same subscription that everything else in the deployment belongs to. |
 
 
 
