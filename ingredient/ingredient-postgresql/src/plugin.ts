@@ -68,7 +68,6 @@ export class PostgreSQLDB extends BaseIngredient {
     }
 
     private async getVnetData(params: any): Promise<VnetData> {
-        //var data: any = {}};
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
 
         let vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
