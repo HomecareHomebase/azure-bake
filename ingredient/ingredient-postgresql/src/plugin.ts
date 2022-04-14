@@ -91,7 +91,7 @@ export class PostgreSQLDB extends BaseIngredient {
                 subnetName: params.subnetName.value,
                 virtualNetworkAddressPrefix: subnetPropertiesGet.addressPrefix!,
                 virtualNetworkResourceGroupName: params.virtualNetworkResourceGroup.value,
-                location: await util.current_region(), // maybe primary_region()?
+                location: vNet.location!,
                 subscriptionId: this._ctx.Environment.authentication.subscriptionId,
                 subnetProperties: subnetPropertiesGet,
                 subnetNeedsUpdate: false,
