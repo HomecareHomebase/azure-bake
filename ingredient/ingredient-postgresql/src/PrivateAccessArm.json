@@ -227,7 +227,7 @@
                 "name": "[parameters('dbInstanceType')]",
                 "tier": "[parameters('serverEdition')]"
             },
-            "tags": "[parameters('tags')]",
+            "tags": {},
             "type": "Microsoft.DBforPostgreSQL/flexibleServers"
         },
         {
