@@ -33,11 +33,11 @@ export class PostgreSQLDB extends BaseIngredient {
             throw error;
         }
 
-        var vnetData = await this.getVnetData(params);
-        params.vnetData = vnetData;
-
         if (this._access == "private")
         {
+            var vnetData = await this.getVnetData(params);
+            params.vnetData = vnetData;
+
             // The Private ARM template includes a few Microsoft.Resources/deployments which should be uniquely named
             let timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
             params.virtualNetworkDeploymentName = {value: `virtualNetwork_${timestamp}`};
