@@ -129,10 +129,10 @@ export class PostgreSQLDB extends BaseIngredient {
         }
     }
 
+    // Remove parameters that are not defined in the ARM template. We call for extra params in the YAML so we can fetch necessary objects for ARM parameters like vNetData.
     private trimParametersForARM(params: any) {
         for (var param in params) {
             if (!this._armTemplate.parameters.hasOwnProperty(param)) {
-                this._logger.log(`Removing unneeded parameter ${param}`) // todo rethink this. we want users to know when they added something that isn't being used, but we don't necessarily want to log when a parameter like virtualNetworkResourceGroup is removed.
                 delete params[param];
             }
         }
