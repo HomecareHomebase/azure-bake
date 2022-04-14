@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-databricks",
   "description": "Ingredient for deploying an instance of DataBricks.",
-  "version": "0.1.147",
+  "version": "0.1.149",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -28,12 +28,12 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.105",
+    "@azbake/core": "^0.1.107",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.107",
+    "@azbake/arm-helper": "^0.1.109",
     "@azure/arm-sql": "^5.7.0"
   },
   "publishConfig": {

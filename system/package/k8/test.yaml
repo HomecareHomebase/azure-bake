@@ -8,11 +8,11 @@ metadata:
     bake.tag/region: East US
     bake.tag/recipe: Kados
     bake.tag/package_version: 0.0.1
-    bake.tag/bake_version: 0.5.36
+    bake.tag/bake_version: 0.5.40
     bake.tag/owner: "Architecture"
-    bake.tag/ing_version: 0.1.112
+    bake.tag/ing_version: 0.1.114
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
+    bake.tag/deployment_ts: 2022-04-05T01:04:28.839Z
 spec:
   selector:
     matchLabels:
@@ -28,11 +28,11 @@ spec:
         bake.tag/region: East US
         bake.tag/recipe: Kados
         bake.tag/package_version: 0.0.1
-        bake.tag/bake_version: 0.5.36
+        bake.tag/bake_version: 0.5.40
         bake.tag/owner: "Architecture"
-        bake.tag/ing_version: 0.1.112
+        bake.tag/ing_version: 0.1.114
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
+        bake.tag/deployment_ts: 2022-04-05T01:04:28.839Z
     spec:
       containers:
         - name: nginx
@@ -52,11 +52,11 @@ metadata:
     bake.tag/region: East US
     bake.tag/recipe: Kados
     bake.tag/package_version: 0.0.1
-    bake.tag/bake_version: 0.5.36
+    bake.tag/bake_version: 0.5.40
     bake.tag/owner: "Architecture"
-    bake.tag/ing_version: 0.1.112
+    bake.tag/ing_version: 0.1.114
     bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-    bake.tag/deployment_ts: 2022-04-04T20:27:46.406Z
+    bake.tag/deployment_ts: 2022-04-05T01:04:28.839Z
 spec:
   selector:
     matchLabels:
@@ -72,11 +72,11 @@ spec:
         bake.tag/region: East US
         bake.tag/recipe: Kados
         bake.tag/package_version: 0.0.1
-        bake.tag/bake_version: 0.5.36
+        bake.tag/bake_version: 0.5.40
         bake.tag/owner: "Architecture"
-        bake.tag/ing_version: 0.1.112
+        bake.tag/ing_version: 0.1.114
         bake.tag/ingredient: "@azbake/ingredient-kubernetes"
-        bake.tag/deployment_ts: '2022-04-04T20:27:46.406Z'
+        bake.tag/deployment_ts: '2022-04-05T01:04:28.839Z'
     spec:
       containers:
         - name: nginx

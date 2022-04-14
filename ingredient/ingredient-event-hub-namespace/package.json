@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-event-hub-namespace",
   "description": "Ingredient for deploying an instance of Event Hub Namespace resource",
-  "version": "0.1.112",
+  "version": "0.1.114",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,12 +19,12 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.105",
+    "@azbake/core": "^0.1.107",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.107",
+    "@azbake/arm-helper": "^0.1.109",
     "@azure/arm-eventhub": "3.2.0"
   },
   "publishConfig": {

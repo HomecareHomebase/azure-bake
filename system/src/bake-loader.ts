@@ -133,7 +133,8 @@ export class BakePackage {
                     npmPackageName = ingPackage;
                 }
 
-                let packageVersion = require(path.join(ingPackage, 'package.json')).version
+                const packageDir = path.join(ingPackage, 'package.json');
+                let packageVersion = require(packageDir).version
 
                 //making it this var means we could load the ingredient as a module.
                 //so skip install! 
