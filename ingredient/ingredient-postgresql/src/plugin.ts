@@ -13,9 +13,11 @@ export class PostgreSQLDB extends BaseIngredient {
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
         this._access = this._ingredient.properties.parameters.get("access")?._value.toLowerCase();
-        this._armTemplate = (this._access == "public") ? PublicAccessARMTemplate
-            : (this._access == "private") ? PrivateAccessARMTemplate
-            : null;
+        if (this._access == "public") {
+            this._armTemplate = PublicAccessARMTemplate
+        } else if (this._access == "private") {
+            this._armTemplate = PrivateAccessARMTemplate;
+        } else throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
     }
 
     _helper: ARMHelper;
@@ -117,9 +119,6 @@ export class PostgreSQLDB extends BaseIngredient {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private validateBakeParams(params: any) {
-        const validAccesses = ["public", "private"];
-        if (!validAccesses.includes(this._access)) throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
-        
         // This gets checked by the regular ARM validation anyway but might as well catch it early here.
         if (!params.serverName || !params.administratorLogin || !params.administratorLoginPassword) {
             throw new Error("serverName, administratorLogin, and administratorLoginPassword must be defined in the Bake parameters.");
@@ -137,7 +136,7 @@ export class PostgreSQLDB extends BaseIngredient {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private trimParametersForARM(params: any) {
         for (const param in params) {
-            if (!Object.prototype.hasOwnProperty.call(this._armTemplate, param)) {
+            if (!Object.prototype.hasOwnProperty.call(this._armTemplate.parameters, param)) {
                 delete params[param];
             }
         }
