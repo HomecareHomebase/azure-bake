@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseIngredient, IngredientManager,IIngredient,DeploymentContext } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import { PostgreSQLDBUtils } from "./functions"
@@ -23,10 +24,10 @@ export class PostgreSQLDB extends BaseIngredient {
     _helper: ARMHelper;
     _functions: PostgreSQLDBUtils; 
     private _access: string;
-    private _armTemplate;
+    private _armTemplate: any;
 
     public async Execute(): Promise<void> {
-        let params;
+        let params: any;
         try {
             params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             this.validateBakeParams(params);
@@ -117,7 +118,6 @@ export class PostgreSQLDB extends BaseIngredient {
         return vnetData;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private validateBakeParams(params: any) {
         // This gets checked by the regular ARM validation anyway but might as well catch it early here.
         if (!params.serverName || !params.administratorLogin || !params.administratorLoginPassword) {
@@ -133,7 +133,6 @@ export class PostgreSQLDB extends BaseIngredient {
     }
 
     // Remove parameters that are not defined in the ARM template. We call for extra params in the YAML so we can fetch necessary objects for ARM parameters like vNetData.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private trimParametersForARM(params: any) {
         for (const param in params) {
             if (!Object.prototype.hasOwnProperty.call(this._armTemplate.parameters, param)) {
