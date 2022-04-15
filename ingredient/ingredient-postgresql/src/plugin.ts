@@ -21,25 +21,25 @@ export class PostgreSQLDB extends BaseIngredient {
     _helper: ARMHelper;
     _functions: PostgreSQLDBUtils; 
     private _access: string;
-    private _armTemplate: any;
+    private _armTemplate;
 
     public async Execute(): Promise<void> {
+        let params;
         try {
-            var params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+            params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             this.validateBakeParams(params);
-
-        } catch (error){
+        } 
+        catch (error){
             this._logger.error('Bake validation failed: ' + error)
             throw error;
         }
 
         if (this._access == "private")
         {
-            var vnetData = await this.getVnetData(params);
-            params.vnetData = vnetData;
+            params.vnetData = await this.getVnetData(params);
 
             // The Private ARM template includes a few Microsoft.Resources/deployments which should be uniquely named
-            let timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
+            const timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
             params.virtualNetworkDeploymentName = {value: `virtualNetwork_${timestamp}`};
             params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${timestamp}`};
             params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${timestamp}`};
@@ -56,7 +56,7 @@ export class PostgreSQLDB extends BaseIngredient {
         this.trimParametersForARM(params);
 
         try {
-            let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+            const util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
             this._logger.log('PostgreSQL Plugin Logging: ' + this._ingredient.properties.parameters)
             await this._helper.DeployTemplate(this._name, this._armTemplate, params, await util.resource_group())
         } catch(error){
@@ -65,14 +65,12 @@ export class PostgreSQLDB extends BaseIngredient {
         }
     }
 
-    private async getVnetData(params: any): Promise<VnetData> {
-        let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
-
-        let vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
-        let subnetPropertiesGet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
-        let privateDnsZoneName = this._functions.create_resource_uri(this._access); 
+    private async getVnetData(params: { virtualNetworkResourceGroup: { value: string }; virtualNetworkName: { value: string }; subnetName: { value: string } }): Promise<VnetData> {
+        const vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
+        const subnet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
+        const privateDnsZoneName = this._functions.create_resource_uri(this._access); 
         let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
-        let dnsZoneIsNew: boolean = false;
+        let dnsZoneIsNew = false;
 
         // if dnsZone doesn't exist, generate its id
         if (dnsZone === undefined)
@@ -81,17 +79,25 @@ export class PostgreSQLDB extends BaseIngredient {
             dnsZone = { id: `/subscriptions/${this._ctx.Environment.authentication.subscriptionId}/resourceGroups/${params.virtualNetworkResourceGroup.value}` +
                 `/providers/Microsoft.Network/privateDnsZones/${privateDnsZoneName}`};
         }
+
+        // We need to assert non-null values for nullable VirtualNetwork and Subnet properties, though a 404 error in get_vnet() or get_subnet() will probably precede these checks
+        if (!vNet.id || !vNet.location) {
+            throw new Error(`Failed to find Virtual Network using ResourceGroup ${params.virtualNetworkResourceGroup.value} and name ${params.virtualNetworkName.value}`);
+        }
+        if (!subnet.addressPrefix || !subnet.id) {
+            throw new Error(`Failed to find Subnet using ResourceGroup ${params.virtualNetworkResourceGroup.value}, Vnet name ${params.virtualNetworkName.value}, and Subnet name ${params.subnetName.value}`);
+        }
         
-        let vnetData: VnetData = {
+        const vnetData: VnetData = {
             value: {
                 virtualNetworkName: params.virtualNetworkName.value,
-                virtualNetworkId: vNet.id!,
+                virtualNetworkId: vNet.id,
                 subnetName: params.subnetName.value,
-                virtualNetworkAddressPrefix: subnetPropertiesGet.addressPrefix!,
+                virtualNetworkAddressPrefix: subnet.addressPrefix,
                 virtualNetworkResourceGroupName: params.virtualNetworkResourceGroup.value,
-                location: vNet.location!,
+                location: vNet.location,
                 subscriptionId: this._ctx.Environment.authentication.subscriptionId,
-                subnetProperties: subnetPropertiesGet,
+                subnetProperties: subnet,
                 subnetNeedsUpdate: false,
                 isNewVnet: false,
                 usePrivateDnsZone: (this._access === "private"),
@@ -101,7 +107,7 @@ export class PostgreSQLDB extends BaseIngredient {
                 privateDnsZoneName: privateDnsZoneName,
                 linkVirtualNetwork: true,
                 Network: {
-                    DelegatedSubnetResourceId: subnetPropertiesGet.id!,
+                    DelegatedSubnetResourceId: subnet.id,
                     PrivateDnsZoneArmResourceId: dnsZone.id 
                 }
             }
@@ -109,6 +115,7 @@ export class PostgreSQLDB extends BaseIngredient {
         return vnetData;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private validateBakeParams(params: any) {
         const validAccesses = ["public", "private"];
         if (!validAccesses.includes(this._access)) throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
@@ -127,9 +134,10 @@ export class PostgreSQLDB extends BaseIngredient {
     }
 
     // Remove parameters that are not defined in the ARM template. We call for extra params in the YAML so we can fetch necessary objects for ARM parameters like vNetData.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private trimParametersForARM(params: any) {
-        for (var param in params) {
-            if (!this._armTemplate.parameters.hasOwnProperty(param)) {
+        for (const param in params) {
+            if (!Object.prototype.hasOwnProperty.call(this._armTemplate, param)) {
                 delete params[param];
             }
         }

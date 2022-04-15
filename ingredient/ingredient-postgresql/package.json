@@ -23,7 +23,10 @@
     "@azbake/core": "^0.1.107",
     "@azbake/ingredient-utils": "^0.1.110",
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.109",
