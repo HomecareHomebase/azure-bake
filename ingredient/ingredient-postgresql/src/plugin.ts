@@ -13,23 +13,25 @@ export class PostgreSQLDB extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
-        this._access = this._ingredient.properties.parameters.get("access")?._value.toLowerCase();
-        if (this._access == "public") {
-            this._armTemplate = PublicAccessARMTemplate
-        } else if (this._access == "private") {
-            this._armTemplate = PrivateAccessARMTemplate;
-        } else throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
+
     }
 
     _helper: ARMHelper;
     _functions: PostgreSQLDBUtils; 
-    private _access: string;
+    private _access: string | undefined;
     private _armTemplate: any;
 
     public async Execute(): Promise<void> {
         let params: any;
         try {
             params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+            this._access = params.access._value.toLowerCase();
+            if (this._access == "public") {
+                this._armTemplate = PublicAccessARMTemplate
+            } else if (this._access == "private") {
+                this._armTemplate = PrivateAccessARMTemplate;
+            } else throw new Error("Parameter 'access' must be set to \"public\" or \"private\".");
+
             this.validateBakeParams(params);
         } 
         catch (error){
@@ -70,7 +72,7 @@ export class PostgreSQLDB extends BaseIngredient {
     private async getVnetData(params: { virtualNetworkResourceGroup: { value: string }; virtualNetworkName: { value: string }; subnetName: { value: string } }): Promise<VnetData> {
         const vNet: VirtualNetwork = await this._functions.get_vnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value)
         const subnet: Subnet = await this._functions.get_subnet(params.virtualNetworkResourceGroup.value, params.virtualNetworkName.value, params.subnetName.value)
-        const privateDnsZoneName = this._functions.create_resource_uri(this._access); 
+        const privateDnsZoneName = this._functions.create_resource_uri(this._access!); 
         let dnsZone = await this._functions.get_private_dns_zone(params.virtualNetworkResourceGroup.value, privateDnsZoneName)
         let dnsZoneIsNew = false;
 
