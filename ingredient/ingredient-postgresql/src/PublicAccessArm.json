@@ -1,31 +1,31 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "administratorLogin": {
-            "type": "String"
+            "type": "string"
         },
         "administratorLoginPassword": {
-            "type": "SecureString"
+            "type": "securestring"
         },
         "location": {
             "defaultValue": "[resourceGroup().location]",
-            "type": "String"
+            "type": "string"
         },
         "serverName": {
-            "type": "String"
+            "type": "string"
         },
         "serverEdition": {
             "defaultValue": "GeneralPurpose",
-            "type": "String"
+            "type": "string"
         },
-        "skuSizeGB": {
+        "storageSizeGB": {
             "defaultValue": 128,
-            "type": "Int"
+            "type": "int"
         },
         "dbInstanceType": {
             "defaultValue": "Standard_D4ds_v4",
-            "type": "String"
+            "type": "string"
         },
         "haMode": {
             "defaultValue": "ZoneRedundant",
@@ -33,39 +33,35 @@
         },
         "availabilityZone": {
             "defaultValue": "",
-            "type": "String"
+            "type": "string"
         },
         "version": {
             "defaultValue": "12",
-            "type": "String"
-        },
-        "tags": {
-            "defaultValue": {},
-            "type": "Object"
+            "type": "string"
         },
         "firewallRules": {
             "defaultValue": {},
-            "type": "Object"
+            "type": "object"
         },
         "backupRetentionDays": {
             "defaultValue": 14,
-            "type": "Int"
+            "type": "int"
         },
         "geoRedundantBackup": {
             "defaultValue": "Disabled",
-            "type": "String"
+            "type": "string"
         },
         "virtualNetworkExternalId": {
             "defaultValue": "",
-            "type": "String"
+            "type": "string"
         },
         "subnetName": {
             "defaultValue": "",
-            "type": "String"
+            "type": "string"
         },
         "privateDnsZoneArmResourceId": {
             "defaultValue": "",
-            "type": "String"
+            "type": "string"
         }
     },
     "variables": {
@@ -82,7 +78,7 @@
                 "name": "[parameters('dbInstanceType')]",
                 "tier": "[parameters('serverEdition')]"
             },
-            "tags": "[parameters('tags')]",
+            "tags": {},
             "properties": {
                 "version": "[parameters('version')]",
                 "administratorLogin": "[parameters('administratorLogin')]",
@@ -96,7 +92,7 @@
                     "mode": "[parameters('haMode')]"
                 },
                 "storage": {
-                    "storageSizeGB": "[parameters('skuSizeGB')]"
+                    "storageSizeGB": "[parameters('storageSizeGB')]"
                 },
                 "backup": {
                     "backupRetentionDays": "[parameters('backupRetentionDays')]",

@@ -31,16 +31,13 @@ recipe:
         administratorLoginPassword: "[coreutils.variable('adminPass')]"
         location: "[coreutils.current_region().name]"
         serverName: "[coreutils.variable('dbServerName')]"
+        access: "private" 
         serverEdition: "Burstable" 
-        skuSizeGB: 32 
+        storageSizeGB: 32 
         dbInstanceType: "Standard_B1ms"
         haMode: "Disabled"
         availabilityZone: ""
         version: "13"
-        tags:
-          value:
-            app: "myapp"
-            tag2: "a value"
         firewallRules:
           rules:
             - name: "testrule"
@@ -48,9 +45,10 @@ recipe:
               endIPAddress: "192.168.0.1"
         backupRetentionDays: 14
         geoRedundantBackup: "Disabled"
-        virtualNetworkExternalId: ""
-        subnetName: ""
-        privateDnsZoneArmResourceId: ""
+        virtualNetworkExternalId: "" 
+        subnetName: "pgsql"
+        virtualNetworkName: "YOUR_VNET_HERE"
+        virtualNetworkResourceGroup: "SOME_RG"
 ```
 
 | property | required | description |
@@ -58,20 +56,22 @@ recipe:
 | administratorLogin | yes | The username for the server admin |
 | administratorLoginPassword | yes | Admin password  |
 | serverName | Yes | Server name  |
+| access | Yes | "public" or "private" |
 | location | No | Region name. ex `[coreutils.current_region().name]` or `eastus` |
 | serverEdition | No | ex `Burstable` or `GeneralPurpose` |
-| skuSizeGB | No | Minimum 32 GB. Billed at $0.115/GB/mo|
+| storageSizeGB | No | Minimum 32 GB. Billed at $0.115/GB/mo|
 | dbInstanceType | No | VM size. ex `Standard_B1ms` |
 | haMode | No | High Availability mode. ex `Disabled` or `ZoneRedundant` |
 | availabilityZone | No | Preferred availability zone. ex `1` or `2` |
 | version | No | Postgres version ex `12` or `13` |
-| tags | No | key-value pairs in the form of an object |
 | firewallRules | No | a "rules" object with an array of rules. By default, no public IP addresses are allowed. |
 | backupRetentionDays | No | Default 14 |
 | geoRedundantBackup | No | Default `Disabled` |
-| virtualNetworkExternalId | No | Default empty string, which is treated as "Enabled". |
-| subnetName | No | |
-| privateDnsZoneArmResourceId | No | |
+| virtualNetworkExternalId | No | For **public** access servers only. Default empty string, which is treated as "Enabled". |
+| subnetName | Yes, for **private** access | For **private** access servers only. The name of an existing subnet that's empty or already delegated to PostgreSQL. Must be a subnet of **virtualNetworkName** |
+| virtualNetworkName | Yes, for **private** access | For **private** access servers only. The name of an existing virtual network with subnet **subnetName** |
+| virtualNetworkResourceGroup | Yes, for **private** access | For **private** access servers only. RG of Vnet. Assuming this is in the same subscription that everything else in the deployment belongs to. |
+
 
 
 ## Utilities
