@@ -41,11 +41,10 @@ export class PostgreSQLDB extends BaseIngredient {
         {
             params.vnetData = await this.getVnetData(params);
 
-            // The Private ARM template includes a few Microsoft.Resources/deployments which should be uniquely named
-            const timestamp = new Date().toISOString().replace(/[^a-zA-Z0-9]/g, "");
-            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${timestamp}`};
-            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${timestamp}`};
-            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${timestamp}`};
+            // Microsoft.Resources/deployments reuse deployment names because they aren't cleaned up.
+            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${params.serverName}`};
+            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${params.serverName}`};
+            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${params.serverName}`};
             
             // Hard coding this for security
             params.publicNetworkAccess = {value: 'Disabled'};
