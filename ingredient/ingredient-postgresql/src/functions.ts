@@ -20,15 +20,6 @@ export class PostgreSQLDBUtils extends BaseUtility {
         return `${this.create_resource_name()}${infix}.postgres.database.azure.com`; 
     }
 
-    public async get_resource_group(): Promise<string> {
-        const util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const resourceGroup = await util.resource_group();
-
-        this.context._logger.debug(`PostgreSQLDBUtils.get_resource_group() returned ${JSON.stringify(resourceGroup)}`);
-
-        return resourceGroup;
-    }
-
     public async get_vnet(virtualNetworkResourceGroup: string, virtualNetworkName: string): Promise<VirtualNetwork>  {
         const client = new NetworkManagementClient(this.credential , this.context.Environment.authentication.subscriptionId);
         const vNet = await client.virtualNetworks.get(virtualNetworkResourceGroup, virtualNetworkName);
