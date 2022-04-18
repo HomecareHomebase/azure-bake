@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.7...@azbake/ingredient-postgresql@0.1.8) (2022-04-18)
+
+
+### Bug Fixes
+
+* Feature/postgres privatenetwork ([#252](https://github.com/HomecareHomebase/azure-bake/issues/252)) ([201cbe7](https://github.com/HomecareHomebase/azure-bake/commit/201cbe70412204b228b5576177e4a8f1df8d99e4))
+
+
+
+
+
 ## [0.1.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.6...@azbake/ingredient-postgresql@0.1.7) (2022-04-05)
 
 **Note:** Version bump only for package @azbake/ingredient-postgresql
