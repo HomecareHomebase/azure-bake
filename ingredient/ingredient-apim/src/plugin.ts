@@ -822,8 +822,18 @@ export class ApimPlugin extends BaseIngredient {
                 let hostnameConfiguration = apim.hostnameConfigurations[i];
 
                 hostnameConfiguration.hostName = (await (new BakeVariable(hostnameConfiguration.hostName)).valueAsync(this._ctx));
-                hostnameConfiguration.encodedCertificate = (await (new BakeVariable(hostnameConfiguration.encodedCertificate)).valueAsync(this._ctx));
-                hostnameConfiguration.certificatePassword = (await (new BakeVariable(hostnameConfiguration.certificatePassword)).valueAsync(this._ctx));
+
+                if (hostnameConfiguration.keyVaultId) {
+                    hostnameConfiguration.keyVaultId = (await (new BakeVariable(hostnameConfiguration.keyVaultId)).valueAsync(this._ctx));
+                }
+
+                if (hostnameConfiguration.encodedCertificate) {
+                    hostnameConfiguration.encodedCertificate = (await (new BakeVariable(hostnameConfiguration.encodedCertificate)).valueAsync(this._ctx));
+                }
+                
+                if (hostnameConfiguration.certificatePassword) {
+                    hostnameConfiguration.certificatePassword = (await (new BakeVariable(hostnameConfiguration.certificatePassword)).valueAsync(this._ctx));
+                }
 
                 if (hostnameConfiguration.certificate) {
                     hostnameConfiguration.certificate.expiry = (await (new BakeVariable(hostnameConfiguration.certificate.expiry.toString())).valueAsync(this._ctx));
