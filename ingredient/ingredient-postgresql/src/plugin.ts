@@ -25,7 +25,7 @@ export class PostgreSQLDB extends BaseIngredient {
         let params: any;
         try {
             params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            this._access = params.access._value.toLowerCase();
+            this._access = params.access.value.toLowerCase();
             if (this._access == "public") {
                 this._armTemplate = PublicAccessARMTemplate
             } else if (this._access == "private") {
