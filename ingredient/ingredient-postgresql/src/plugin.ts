@@ -43,9 +43,9 @@ export class PostgreSQLDB extends BaseIngredient {
             params.vnetData = await this.getVnetData(params);
 
             // Microsoft.Resources/deployments reuse deployment names because they aren't cleaned up.
-            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${params.serverName}`};
-            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${params.serverName}`};
-            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${params.serverName}`};
+            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${params.serverName.value}`};
+            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${params.serverName.value}`};
+            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${params.serverName.value}`};
             
             // Hard coding this for security
             params.publicNetworkAccess = {value: 'Disabled'};
