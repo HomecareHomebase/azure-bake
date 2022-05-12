@@ -13,7 +13,6 @@ export class PostgreSQLDB extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
-
     }
 
     _helper: ARMHelper;
@@ -61,7 +60,6 @@ export class PostgreSQLDB extends BaseIngredient {
 
         try {
             const util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
-            this._logger.log('PostgreSQL Plugin Logging: ' + this._ingredient.properties.parameters)
             await this._helper.DeployTemplate(this._name, this._armTemplate, params, await util.resource_group())
         } catch(error){
             this._logger.error('Deployment failed: ' + error)
