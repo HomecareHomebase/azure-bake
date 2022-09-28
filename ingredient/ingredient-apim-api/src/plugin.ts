@@ -326,10 +326,30 @@ export class ApimApiPlugin extends BaseIngredient {
                 diagnostics.loggerId = logger.id   
             }
         }
-
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.name + " to API " + apiId)
 
-        for(let i=0; i <= 3; ++i) {
+        let applyDiagnostic = true;
+
+        try {
+            var existingDiagnostics = await this.apim_client.apiDiagnostic.listByService(this.resource_group, this.resource_name, apiId);;
+
+            for (let i = 0; i < existingDiagnostics.length; i++) {
+                let existingDiagnosticsLoggerId = existingDiagnostics[i].loggerId || ""
+                let existingDiagnosticsName = existingDiagnostics[i].name || ""
+    
+                if (diagnostics.name == existingDiagnosticsName && diagnostics.loggerId == existingDiagnosticsLoggerId) {
+                    this._logger.log('APIM API Plugin: Matching Diagnostics already exist - skipping')
+                    
+                    applyDiagnostic = false;
+                    break;
+                }
+            }
+        }
+        catch(error){
+            this._logger.error("APIM API Plugin: Could determine existing diagnostics:" + "'" + error + "'")
+        }
+
+        if (applyDiagnostic) {
             let logErrMessage = "APIM API Plugin: Could not apply diagnostics " + diagnostics.name + " to API " + apiId;
             try {
                 let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
@@ -343,16 +363,8 @@ export class ApimApiPlugin extends BaseIngredient {
                 if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
                     this._logger.error(logErrMessage)
                 }
-
-                break; 
             } catch (error) {
-                if (i == 3) {
-                    this._logger.error(logErrMessage + " due to error '" + error + "'")
-                }
-                else {
-                    this._logger.error(logErrMessage + " - retrying")
-                    await this.Sleep(1000);
-                }
+                this._logger.error(logErrMessage + ": '" + error + "'")
             }
         }
     }
