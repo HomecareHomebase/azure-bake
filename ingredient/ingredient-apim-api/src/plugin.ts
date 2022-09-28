@@ -326,6 +326,7 @@ export class ApimApiPlugin extends BaseIngredient {
                 diagnostics.loggerId = logger.id   
             }
         }
+        
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.name + " to API " + apiId)
 
         let applyDiagnostic = true;
