@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.41](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.40...@azbake/ingredient-apim@0.2.41) (2022-05-05)
+
+
+### Bug Fixes
+
+* prepping apim ingredient for keyvault ([#256](https://github.com/HomecareHomebase/azure-bake/issues/256)) ([6eec2d0](https://github.com/HomecareHomebase/azure-bake/commit/6eec2d01c7e364c138dd2168007f7f477209e159))
+
+
+
+
+
 ## [0.2.40](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.39...@azbake/ingredient-apim@0.2.40) (2022-04-05)
 
 **Note:** Version bump only for package @azbake/ingredient-apim

@@ -13,7 +13,6 @@ export class PostgreSQLDB extends BaseIngredient {
         super(name, ingredient, ctx);
         this._helper = new ARMHelper(this._ctx);
         this._functions = new PostgreSQLDBUtils(this._ctx);
-
     }
 
     _helper: ARMHelper;
@@ -25,7 +24,7 @@ export class PostgreSQLDB extends BaseIngredient {
         let params: any;
         try {
             params = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
-            this._access = params.access._value.toLowerCase();
+            this._access = params.access.value.toLowerCase();
             if (this._access == "public") {
                 this._armTemplate = PublicAccessARMTemplate
             } else if (this._access == "private") {
@@ -44,9 +43,9 @@ export class PostgreSQLDB extends BaseIngredient {
             params.vnetData = await this.getVnetData(params);
 
             // Microsoft.Resources/deployments reuse deployment names because they aren't cleaned up.
-            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${params.serverName}`};
-            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${params.serverName}`};
-            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${params.serverName}`};
+            params.virtualNetworkDeploymentName = {value: `virtualNetwork_${params.serverName.value}`};
+            params.virtualNetworkLinkDeploymentName = {value: `virtualNetworkLink_${params.serverName.value}`};
+            params.privateDnsZoneDeploymentName = {value: `privateDnsZone_${params.serverName.value}`};
             
             // Hard coding this for security
             params.publicNetworkAccess = {value: 'Disabled'};
@@ -61,7 +60,6 @@ export class PostgreSQLDB extends BaseIngredient {
 
         try {
             const util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
-            this._logger.log('PostgreSQL Plugin Logging: ' + this._ingredient.properties.parameters)
             await this._helper.DeployTemplate(this._name, this._armTemplate, params, await util.resource_group())
         } catch(error){
             this._logger.error('Deployment failed: ' + error)

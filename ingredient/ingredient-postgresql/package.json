@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-postgresql",
   "description": "Ingredient for deploying an instance of PostgreSQL.",
-  "version": "0.1.8",
+  "version": "0.1.11",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -32,7 +32,8 @@
     "@azbake/arm-helper": "^0.1.109",
     "@azure/arm-network": "^26.0.0",
     "@azure/arm-privatedns": "^3.0.0",
-    "@azure/identity": "^2.0.4"
+    "@azure/identity": "^2.0.4",
+    "typescript": "^4.6.0"
   },
   "publishConfig": {
     "access": "public",

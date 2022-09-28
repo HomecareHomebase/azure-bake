@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.44](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.43...azure-bake@0.5.44) (2022-07-19)
+
+
+### Bug Fixes
+
+* Update kubectl to 1.19.16 ([#262](https://github.com/HomecareHomebase/azure-bake/issues/262)) ([3758dee](https://github.com/HomecareHomebase/azure-bake/commit/3758dee9dea82455e4be3e652c0ac24eac3a6040))
+
+
+
+
+
 ## [0.5.43](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.42...azure-bake@0.5.43) (2022-04-05)
 
 
