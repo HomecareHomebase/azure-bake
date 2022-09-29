@@ -326,19 +326,47 @@ export class ApimApiPlugin extends BaseIngredient {
                 diagnostics.loggerId = logger.id   
             }
         }
-
+        
         this._logger.log('APIM API Plugin: Applying diagnostics ' + diagnostics.name + " to API " + apiId)
 
-        let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
-            this.resource_group,
-            this.resource_name,
-            apiId,
-            diagnostics.name,
-            diagnostics,
-            <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
+        let applyDiagnostic = true;
+
+        try {
+            var existingDiagnostics = await this.apim_client.apiDiagnostic.listByService(this.resource_group, this.resource_name, apiId);;
+
+            for (let i = 0; i < existingDiagnostics.length; i++) {
+                let existingDiagnosticsLoggerId = existingDiagnostics[i].loggerId || ""
+                let existingDiagnosticsName = existingDiagnostics[i].name || ""
+    
+                if (diagnostics.name == existingDiagnosticsName && diagnostics.loggerId == existingDiagnosticsLoggerId) {
+                    this._logger.log('APIM API Plugin: Matching Diagnostics already exist - skipping')
+                    
+                    applyDiagnostic = false;
+                    break;
+                }
+            }
+        }
+        catch(error){
+            this._logger.error("APIM API Plugin: Could determine existing diagnostics:" + "'" + error + "'")
+        }
+
+        if (applyDiagnostic) {
+            let logErrMessage = "APIM API Plugin: Could not apply diagnostics " + diagnostics.name + " to API " + apiId;
+            try {
+                let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
+                    this.resource_group,
+                    this.resource_name,
+                    apiId,
+                    diagnostics.name,
+                    diagnostics,
+                    <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
         
-        if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-            this._logger.error("APIM API Plugin: Could not apply diagnostics " + diagnostics.name + "to API " + apiId)
+                if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
+                    this._logger.error(logErrMessage)
+                }
+            } catch (error) {
+                this._logger.error(logErrMessage + ": '" + error + "'")
+            }
         }
     }
 
