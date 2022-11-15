@@ -52,16 +52,18 @@ export class BakePackage {
             process.env.BAKE_AUTH_TENANT_ID =""
 
         //yaml parse out the global variables.
+        let content = "";
         try {
             let file : string = process.env.BAKE_VARIABLES || ""
             if (file && fs.existsSync(file)) {
-                let content = fs.readFileSync(file, 'utf8')
+                content = fs.readFileSync(file, 'utf8')
                 let obj  =YAML.safeLoad(content)
                 this._env.variables = objToVariableMap( obj || [] )
             }
            
         } catch (e) {
             let logger = new Logger()
+            logger.debug(content)
             logger.error("Failed to load global environment variables")
             logger.error(e)
         }
