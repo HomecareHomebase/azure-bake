@@ -1,7 +1,10 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
 import {CommunicationServiceManagementClient} from '@azure/arm-communication'
+import { DefaultAzureCredential, ClientSecretCredential,ChainedTokenCredential } from "@azure/identity";
 export class AcsUtils extends BaseUtility {
 
+    private token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
+    private credential = new ChainedTokenCredential(this.token, new DefaultAzureCredential());
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
@@ -14,16 +17,14 @@ export class AcsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        // The communication client needs a token credential, instead of the auth. https://learn.microsoft.com/en-us/java/api/com.azure.core.credential.tokencredential?source=recommendations&view=azure-java-stable
-        
-        const client = new CommunicationServiceManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+       const client = new CommunicationServiceManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.communicationService.listKeys(resource_group, name)
 
         let key: string = ""
         if (response.primaryConnectionString)
         {
-            return response.primaryConnectionString
+            key =  response.primaryConnectionString || ""
         }
         return key
     }
