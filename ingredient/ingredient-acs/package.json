@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "@types/node": "^10.12.18",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@azbake/core": "^0.1.107"
+
   },
   "publishConfig": {
     "access": "public",
