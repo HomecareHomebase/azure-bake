@@ -28,6 +28,23 @@ export class AcsUtils extends BaseUtility {
         }
         return key
     }
+
+    public async get_secondary_connectionstring(name: string, rg: string | null = null) : Promise<string> {
+     
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
+        let resource_group = rg || await util.resource_group()
+
+       const client = new CommunicationServiceManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
+
+        let response = await client.communicationService.listKeys(resource_group, name)
+
+        let key: string = ""
+        if (response.secondaryConnectionString)
+        {
+            key =  response.secondaryConnectionString || ""
+        }
+        return key
+    }
  
 
 }
