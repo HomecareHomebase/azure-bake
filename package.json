@@ -14,6 +14,7 @@
     "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes"
   },
   "dependencies": {
+    "@azure/arm-communication": "^3.0.1",
     "@azure/arm-compute": "^10.0.0",
     "@azure/arm-cosmosdb": "^9.1.0",
     "@azure/arm-network": "^14.0.0",

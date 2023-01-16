@@ -1,0 +1,29 @@
+{
+  "name": "@azbake/ingredient-acs",
+  "description": "Ingredient for managing Azure Communications Service",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "author": "HCHB",
+  "license": "",
+  "scripts": {
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "@azbake/core": "*",
+    "@azure/ms-rest-nodeauth": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "@azure/ms-rest-nodeauth": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
