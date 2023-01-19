@@ -1,4 +1,4 @@
-import { BaseIngredient, IngredientManager,IIngredient, DeploymentContext } from "@azbake/core"
+import { BaseIngredient, IngredientManager,IIngredient,DeploymentContext } from "@azbake/core"
 import { ARMHelper } from "@azbake/arm-helper"
 import ARMTemplate from "./acs-arm.json"
 

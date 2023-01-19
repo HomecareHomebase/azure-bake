@@ -19,7 +19,6 @@ recipe:
       type: "@azbake/ingredient-null"
       condition: "[coreutils.current_region_primary()]"
       parameters:         
-        primaryConnectionString: "[acsutils.get_primary_connectionstring( parameters['resourceName'], await coreutils.resource_group())]"             
+        primaryConnectionString: "[acsutils.get_primary_connectionstring( acsutils.create_resource_name(), await coreutils.resource_group())]"             
     dependsOn: 
       - acs-create         
- 

@@ -8,7 +8,7 @@ export class AcsUtils extends BaseUtility {
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        const st_profile = util.create_resource_name("acs", null, false);
+        const st_profile = util.create_resource_name("", null, false);
         return st_profile;
     }
 
