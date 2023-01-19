@@ -7,4 +7,4 @@ exports.pluginNS = "@azbake/ingredient-acs" //name of the ingredient to referenc
 
 /* comment out these entries if you are not including a set of expression functions*/
 exports.functions = AcsUtils
-exports.functionsNS = "acs" //bake.yaml expressions can access your functions via "myutils.my_function()"
+exports.functionsNS = "acsutils" //bake.yaml expressions can access your functions via "myutils.my_function()"
