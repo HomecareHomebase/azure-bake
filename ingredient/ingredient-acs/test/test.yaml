@@ -1,0 +1,25 @@
+name: ACS Test    
+shortName: acs
+version: 0.1.0
+ingredients:
+  - "@azbake/ingredient-acs@~0" 
+  - "@azbake/ingredient-null@~0"
+resourceGroup: true
+#rgOverride: "" 
+variables:
+recipe:
+  acs-create:
+    properties:
+      type: "@azbake/ingredient-acs"
+      source: ./arm.json
+      parameters: 
+        resourceName: "[acsutils.create_resource_name()]"                
+  acs-strings:
+    properties: 
+      type: "@azbake/ingredient-null"
+      condition: "[coreutils.current_region_primary()]"
+      parameters:         
+        primaryConnectionString: "[acsutils.get_primary_connectionstring( parameters['resourceName'], await coreutils.resource_group())]"             
+    dependsOn: 
+      - acs-create         
+ 
