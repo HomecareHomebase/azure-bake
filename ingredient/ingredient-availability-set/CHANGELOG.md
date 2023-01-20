@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-availability-set@0.1.110...@azbake/ingredient-availability-set@0.1.111) (2023-01-20)
+
+
+### Bug Fixes
+
+* upgrading typescript compiler to 4.1, and fixing compile issues ([#282](https://github.com/HomecareHomebase/azure-bake/issues/282)) ([c1ce8ea](https://github.com/HomecareHomebase/azure-bake/commit/c1ce8ea3330bd4c7662dd12209829c68e2b60a3e))
+
+
+
+
+
 ## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-availability-set@0.1.109...@azbake/ingredient-availability-set@0.1.110) (2022-04-05)
 
 **Note:** Version bump only for package @azbake/ingredient-availability-set

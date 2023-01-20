@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-acs",
   "description": "Ingredient for managing Azure Communications Service",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,13 +19,13 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@types/node": "^10.12.18"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.109",
-    "@azure/arm-communication" : "^3.0.1",
-    "@azbake/core": "^0.1.107"
+    "@azbake/core": "^0.1.107",
+    "@azure/arm-communication": "^3.0.1"
   },
   "publishConfig": {
     "access": "public",

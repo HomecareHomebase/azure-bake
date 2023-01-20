@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.170](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.169...@azbake/ingredient-functions@0.1.170) (2023-01-20)
+
+
+### Bug Fixes
+
+* Feature/acsingredient ([#277](https://github.com/HomecareHomebase/azure-bake/issues/277)) ([3008ffe](https://github.com/HomecareHomebase/azure-bake/commit/3008ffeff09c6a2ca0c02643d278604674b2fc36))
+* upgrading typescript compiler to 4.1, and fixing compile issues ([#282](https://github.com/HomecareHomebase/azure-bake/issues/282)) ([c1ce8ea](https://github.com/HomecareHomebase/azure-bake/commit/c1ce8ea3330bd4c7662dd12209829c68e2b60a3e))
+
+
+
+
+
 ## [0.1.169](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-functions@0.1.168...@azbake/ingredient-functions@0.1.169) (2022-04-05)
 
 **Note:** Version bump only for package @azbake/ingredient-functions

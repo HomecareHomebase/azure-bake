@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.12](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.11...@azbake/ingredient-postgresql@0.1.12) (2023-01-20)
+
+
+### Bug Fixes
+
+* Feature/acsingredient ([#277](https://github.com/HomecareHomebase/azure-bake/issues/277)) ([3008ffe](https://github.com/HomecareHomebase/azure-bake/commit/3008ffeff09c6a2ca0c02643d278604674b2fc36))
+* upgrading typescript compiler to 4.1, and fixing compile issues ([#282](https://github.com/HomecareHomebase/azure-bake/issues/282)) ([c1ce8ea](https://github.com/HomecareHomebase/azure-bake/commit/c1ce8ea3330bd4c7662dd12209829c68e2b60a3e))
+
+
+
+
+
 ## [0.1.11](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.10...@azbake/ingredient-postgresql@0.1.11) (2022-05-12)
 
 
