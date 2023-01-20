@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-acs",
   "description": "Ingredient for managing Azure Communications Service",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
