@@ -30,10 +30,10 @@ export abstract class ClientBase<TModel>
         this._client = new HCHBServicesPropertyServiceAPIv1(credentials, options);
     }
 
-    public abstract async Search(operator: SearchOperator, name: string, selectors: { [key: string]: string } | undefined): Promise<TModel[] | null>;
-    public abstract async Create(model: TModel): Promise<TModel | null>;
-    public abstract async Update(model: TModel): Promise<TModel | null>;
-    public abstract async Delete(id: string, name: string, version: string | null): Promise<boolean>;
+    public abstract Search(operator: SearchOperator, name: string, selectors: { [key: string]: string } | undefined): Promise<TModel[] | null>;
+    public abstract Create(model: TModel): Promise<TModel | null>;
+    public abstract Update(model: TModel): Promise<TModel | null>;
+    public abstract Delete(id: string, name: string, version: string | null): Promise<boolean>;
 
     public async SearchSingle(name: string, selectors: { [key: string]: string } | undefined): Promise<TModel | null> {
         let models: TModel[] | null = await this.Search(SearchOperator.Equals, name, selectors);
