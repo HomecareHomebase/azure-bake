@@ -241,7 +241,7 @@ function testNycMocha(done) {
 }
 
 function toolInstall(done) {
-    var gitScript = `sudo npm install lerna@3.13.0 typescript@3.3.3 --global`;
+    var gitScript = `sudo npm install lerna@3.13.0 typescript@4.1 --global`;
     console.log('Tool Script: ' + gitScript);
     return runCmd(gitScript, done);
 }

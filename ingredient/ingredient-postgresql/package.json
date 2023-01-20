@@ -33,7 +33,7 @@
     "@azure/arm-network": "^26.0.0",
     "@azure/arm-privatedns": "^3.0.0",
     "@azure/identity": "^2.0.4",
-    "typescript": "^4.6.0"
+    "typescript": "^4.1.6"
   },
   "publishConfig": {
     "access": "public",
