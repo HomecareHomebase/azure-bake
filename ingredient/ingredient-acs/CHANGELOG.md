@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.3...@azbake/ingredient-acs@0.0.4) (2023-01-22)
+
+
+### Bug Fixes
+
+* Move @azbake/core to dev dep for acs ([#286](https://github.com/HomecareHomebase/azure-bake/issues/286)) ([b5c34fd](https://github.com/HomecareHomebase/azure-bake/commit/b5c34fda5db71fb49706a3352eb2d1860595cbe0))
+
+
+
+
+
 ## [0.0.3](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.2...@azbake/ingredient-acs@0.0.3) (2023-01-20)
 
 
