@@ -20,11 +20,11 @@
   },
   "devDependencies": {
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/node": "^10.12.18"
+    "@types/node": "^10.12.18",
+    "@azbake/core": "^0.1.107"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.109",
-    "@azbake/core": "^0.1.107",
     "@azure/arm-communication": "^3.0.1",
     "@azure/identity": "^2.0.4"
   },
