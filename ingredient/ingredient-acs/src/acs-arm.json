@@ -16,12 +16,13 @@
             }}
    },
     "variables": {       
+    
     },
     "resources": [
         {
             "type": "Microsoft.Communication/CommunicationServices",
             "apiVersion": "2022-07-01-preview",
-            "name": "[parameters('resourceName')]",
+            "name": "[concat(parameters('resourceName'), uniqueString(resourceGroup().id) )]" ,
             "location": "[parameters('location')]",
             "tags": {},
             "properties": {
