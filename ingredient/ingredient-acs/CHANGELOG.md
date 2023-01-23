@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.4...@azbake/ingredient-acs@0.0.5) (2023-01-23)
+
+
+### Bug Fixes
+
+* Create unique name for ACS ([#287](https://github.com/HomecareHomebase/azure-bake/issues/287)) ([38ecaea](https://github.com/HomecareHomebase/azure-bake/commit/38ecaeaf2abb22de02682ae2ff9ac2cb6930a1c7))
+
+
+
+
+
 ## [0.0.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.3...@azbake/ingredient-acs@0.0.4) (2023-01-22)
 
 
