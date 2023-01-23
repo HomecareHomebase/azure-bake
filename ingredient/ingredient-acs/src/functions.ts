@@ -8,7 +8,8 @@ export class AcsUtils extends BaseUtility {
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        const st_profile = util.create_resource_name("", null, false);
+        let env = this.context.Environment.environmentCode;
+        const st_profile = util.create_resource_name("acs", null, false);
         return st_profile;
     }
 
