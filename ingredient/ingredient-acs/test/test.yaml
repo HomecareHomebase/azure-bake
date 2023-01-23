@@ -7,13 +7,14 @@ ingredients:
 resourceGroup: true
 #rgOverride: "" 
 variables:
+  env : "test"
 recipe:
   acs-create:
     properties:
       type: "@azbake/ingredient-acs"
-      source: ./arm.json
+      condition: "[coreutils.current_region_primary()]"
       parameters: 
-        resourceName: "[acsutils.create_resource_name()]"                
+        resourceName: "[acsutils.create_resource_name()]"
   acs-strings:
     properties: 
       type: "@azbake/ingredient-null"
