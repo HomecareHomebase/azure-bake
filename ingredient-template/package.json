@@ -15,11 +15,15 @@
     "lib": "dist"
   },
   "peerDependencies": {
-    "@azbake/core": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azbake/core": "*",
+    "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
     "@types/node": "^10.12.18",
     "@azure/ms-rest-nodeauth": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

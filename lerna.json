@@ -10,7 +10,8 @@
         "*.yaml",
         "*.yml"
       ],
-      "message": "chore(release): publish"
+      "message": "chore(release): publish",
+      "verifyAccess": false
     }
   },
   "packages": [

@@ -61,14 +61,13 @@ exports.pluginNS = "@azbake/ingredient-app-insights"
 ```
 11. Open a terminal window
 12. Navigate to your new ingredient's directory.
-13. Get the latest Azure Bake packages
+13. Install packages as defined in package.json
 ```bash
-npm i @azbake/core --no-save
-npm i @azbake/arm-helper --nosave
+npm install
 ```
 14. Compile your new ingredient 
-```
-tsc
+```bash
+npm run compile
 ```
 15. Package your ingredient
 ```bash

@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "administratorLogin": {
+            "type": "string"
+        },
+        "administratorLoginPassword": {
+            "type": "securestring"
+        },
+        "location": {
+            "defaultValue": "[resourceGroup().location]",
+            "type": "string"
+        },
+        "serverName": {
+            "type": "string"
+        },
+        "serverEdition": {
+            "defaultValue": "GeneralPurpose",
+            "type": "string"
+        },
+        "storageSizeGB": {
+            "defaultValue": 128,
+            "type": "int"
+        },
+        "dbInstanceType": {
+            "defaultValue": "Standard_D4ds_v4",
+            "type": "string"
+        },
+        "haMode": {
+            "defaultValue": "ZoneRedundant",
+            "type": "string"
+        },
+        "availabilityZone": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "version": {
+            "defaultValue": "12",
+            "type": "string"
+        },
+        "firewallRules": {
+            "defaultValue": {},
+            "type": "object"
+        },
+        "backupRetentionDays": {
+            "defaultValue": 14,
+            "type": "int"
+        },
+        "geoRedundantBackup": {
+            "defaultValue": "Disabled",
+            "type": "string"
+        },
+        "virtualNetworkExternalId": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "subnetName": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "privateDnsZoneArmResourceId": {
+            "defaultValue": "",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "api": "2021-06-01",
+        "publicNetworkAccess": "[if(empty(parameters('virtualNetworkExternalId')), 'Enabled', 'Disabled')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+            "apiVersion": "[variables('api')]",
+            "name": "[parameters('serverName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "[parameters('dbInstanceType')]",
+                "tier": "[parameters('serverEdition')]"
+            },
+            "tags": {},
+            "properties": {
+                "version": "[parameters('version')]",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "network": {
+                    "publicNetworkAccess": "[variables('publicNetworkAccess')]",
+                    "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(concat(parameters('virtualNetworkExternalId'), '/subnets/' , parameters('subnetName'))))]",
+                    "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
+                },
+                "highAvailability": {
+                    "mode": "[parameters('haMode')]"
+                },
+                "storage": {
+                    "storageSizeGB": "[parameters('storageSizeGB')]"
+                },
+                "backup": {
+                    "backupRetentionDays": "[parameters('backupRetentionDays')]",
+                    "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+                },
+                "availabilityZone": "[parameters('availabilityZone')]"
+            }
+        }
+    ]
+}

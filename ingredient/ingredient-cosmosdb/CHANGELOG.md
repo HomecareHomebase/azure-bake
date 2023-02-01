@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.10...@azbake/ingredient-cosmosdb@0.0.11) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
+## [0.0.10](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.9...@azbake/ingredient-cosmosdb@0.0.10) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
+## [0.0.9](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.8...@azbake/ingredient-cosmosdb@0.0.9) (2022-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
+## [0.0.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.7...@azbake/ingredient-cosmosdb@0.0.8) (2022-04-04)
+
+
+### Bug Fixes
+
+* force updating all ingredients ([#247](https://github.com/HomecareHomebase/azure-bake/issues/247)) ([f59586d](https://github.com/HomecareHomebase/azure-bake/commit/f59586d8b364860cc4b30059feb9a56d2cc329a0))
+
+
+
+
+
+## [0.0.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.6...@azbake/ingredient-cosmosdb@0.0.7) (2022-03-28)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
+## [0.0.6](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.5...@azbake/ingredient-cosmosdb@0.0.6) (2022-01-11)
+
+**Note:** Version bump only for package @azbake/ingredient-cosmosdb
+
+
+
+
+
 ## [0.0.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.4...@azbake/ingredient-cosmosdb@0.0.5) (2020-11-12)
 
 

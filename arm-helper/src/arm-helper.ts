@@ -4,6 +4,7 @@ import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/model
 import { stringify } from 'querystring';
 import { AnyCnameRecord } from 'dns';
 import alertTemplate from "./alert.json"
+import { RestError } from '@azure/ms-rest-js';
 
 export class ARMHelper {
 
@@ -81,7 +82,8 @@ export class ARMHelper {
             logger.log('deployment finished...');
 
         } catch(error) {
-            logger.error('deployment failed: ' + error);
+            if (error instanceof RestError) error = JSON.stringify(error.body.error.details); // [string]error misses Azure deployment failure messages. 
+            logger.error('deployment failed: ' + error); 
             throw error;
         }
     }

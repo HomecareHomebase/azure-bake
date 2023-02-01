@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-sql-dwh",
   "description": "Ingredient for deploying an instance of SQL Data Warehouse.",
-  "version": "0.1.162",
+  "version": "0.1.170",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -23,18 +23,18 @@
     "lib": "dist"
   },
   "peerDependencies": {
-    "@azbake/core": "0.*",
-    "@azbake/ingredient-utils": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azbake/core": "*",
+    "@azbake/ingredient-utils": "*",
+    "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.103",
-    "@azbake/ingredient-utils": "^0.1.105",
+    "@azbake/core": "^0.1.107",
+    "@azbake/ingredient-utils": "^0.1.110",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.104",
+    "@azbake/arm-helper": "^0.1.109",
     "@azure/arm-sql": "^7.0.2"
   },
   "publishConfig": {

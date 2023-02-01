@@ -3,6 +3,122 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.46](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.45...azure-bake@0.5.46) (2023-01-20)
+
+
+### Bug Fixes
+
+* Feature/acsingredient ([#277](https://github.com/HomecareHomebase/azure-bake/issues/277)) ([3008ffe](https://github.com/HomecareHomebase/azure-bake/commit/3008ffeff09c6a2ca0c02643d278604674b2fc36))
+* upgrading typescript compiler to 4.1, and fixing compile issues ([#282](https://github.com/HomecareHomebase/azure-bake/issues/282)) ([c1ce8ea](https://github.com/HomecareHomebase/azure-bake/commit/c1ce8ea3330bd4c7662dd12209829c68e2b60a3e))
+
+
+
+
+
+## [0.5.45](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.44...azure-bake@0.5.45) (2022-11-15)
+
+
+### Bug Fixes
+
+* adding debug of bake_vars on error ([#275](https://github.com/HomecareHomebase/azure-bake/issues/275)) ([4ccd769](https://github.com/HomecareHomebase/azure-bake/commit/4ccd7691f12ec35470c0a560bfa648f00e9853b9))
+
+
+
+
+
+## [0.5.44](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.43...azure-bake@0.5.44) (2022-07-19)
+
+
+### Bug Fixes
+
+* Update kubectl to 1.19.16 ([#262](https://github.com/HomecareHomebase/azure-bake/issues/262)) ([3758dee](https://github.com/HomecareHomebase/azure-bake/commit/3758dee9dea82455e4be3e652c0ac24eac3a6040))
+
+
+
+
+
+## [0.5.43](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.42...azure-bake@0.5.43) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module loading on linux ([#251](https://github.com/HomecareHomebase/azure-bake/issues/251)) ([5cf94e2](https://github.com/HomecareHomebase/azure-bake/commit/5cf94e2b1f2db41dfdb5c280cf660528103774a6))
+
+
+
+
+
+## [0.5.42](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.41...azure-bake@0.5.42) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module load in linux ([#250](https://github.com/HomecareHomebase/azure-bake/issues/250)) ([5b90aa1](https://github.com/HomecareHomebase/azure-bake/commit/5b90aa16b7138b83342629bdf25c8edc66bd13f4))
+
+
+
+
+
+## [0.5.41](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.40...azure-bake@0.5.41) (2022-04-04)
+
+
+### Bug Fixes
+
+* resolving peer dep installs ([#249](https://github.com/HomecareHomebase/azure-bake/issues/249)) ([5284c61](https://github.com/HomecareHomebase/azure-bake/commit/5284c611a192b1a8c8c2209354d5a265a67b3a15))
+
+
+
+
+
+## [0.5.40](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.39...azure-bake@0.5.40) (2022-04-04)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.39](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.38...azure-bake@0.5.39) (2022-04-04)
+
+**Note:** Version bump only for package azure-bake
+
+
+
+
+
+## [0.5.38](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.37...azure-bake@0.5.38) (2022-04-04)
+
+
+### Bug Fixes
+
+* Upgrading bake serve node version ([c5bf536](https://github.com/HomecareHomebase/azure-bake/commit/c5bf536eb8ac49ee95f9eb9b30c609591276d659))
+
+
+
+
+
+## [0.5.37](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.36...azure-bake@0.5.37) (2022-04-04)
+
+
+### Bug Fixes
+
+* Upgrading bake serve node version ([#244](https://github.com/HomecareHomebase/azure-bake/issues/244)) ([177303b](https://github.com/HomecareHomebase/azure-bake/commit/177303b3b7f8bdb3f2ab7b349da5533d50c0f548))
+
+
+
+
+
+## [0.5.36](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.35...azure-bake@0.5.36) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.5.35](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.34...azure-bake@0.5.35) (2021-09-28)
 
 **Note:** Version bump only for package azure-bake

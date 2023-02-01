@@ -3,6 +3,63 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.41](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.40...@azbake/ingredient-apim@0.2.41) (2022-05-05)
+
+
+### Bug Fixes
+
+* prepping apim ingredient for keyvault ([#256](https://github.com/HomecareHomebase/azure-bake/issues/256)) ([6eec2d0](https://github.com/HomecareHomebase/azure-bake/commit/6eec2d01c7e364c138dd2168007f7f477209e159))
+
+
+
+
+
+## [0.2.40](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.39...@azbake/ingredient-apim@0.2.40) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.2.39](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.38...@azbake/ingredient-apim@0.2.39) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.2.38](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.37...@azbake/ingredient-apim@0.2.38) (2022-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-apim
+
+
+
+
+
+## [0.2.37](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.36...@azbake/ingredient-apim@0.2.37) (2022-04-04)
+
+
+### Bug Fixes
+
+* force updating all ingredients ([#247](https://github.com/HomecareHomebase/azure-bake/issues/247)) ([f59586d](https://github.com/HomecareHomebase/azure-bake/commit/f59586d8b364860cc4b30059feb9a56d2cc329a0))
+
+
+
+
+
+## [0.2.36](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.35...@azbake/ingredient-apim@0.2.36) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.2.35](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.34...@azbake/ingredient-apim@0.2.35) (2021-09-28)
 
 

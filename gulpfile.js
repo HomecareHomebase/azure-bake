@@ -21,7 +21,7 @@ function adoPrep(done) {
     if (branchName !== 'master') {
         branchName = branchName.replace(/refs\/heads\/(feature\/)?/i, '');
     }
-    var gitScript = `sudo git checkout ${branchName}`;
+    var gitScript = `git checkout ${branchName}`;
     console.log('ADO Prep Script: ' + gitScript);
     return runCmd(gitScript, done);
 }
@@ -74,15 +74,15 @@ function conditions(done) {
 
 function gitCommit(done) {
     var branchName = params.build.buildSourceBranch.replace(/refs\/heads\/(feature\/)?/i, '');
-    var gitScript = `sudo git checkout ${branchName} && 
-    sudo git config user.email "${params.build.buildRequestedForEmail}" &&
-    sudo git config user.name "${params.build.buildRequestedFor}" &&
-    sudo git update-index --assume-unchanged .npmrc &&
-    sudo git add . && 
-    sudo git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "chore[skip ci]: Update & Commit Locks" && 
-    sudo git tag v${lerna.version} &&
-    sudo git push origin ${branchName} &&
-    sudo git push origin --tags`;
+    var gitScript = `git checkout ${branchName} && 
+    git config user.email "${params.build.buildRequestedForEmail}" &&
+    git config user.name "${params.build.buildRequestedFor}" &&
+    git update-index --assume-unchanged .npmrc &&
+    git add . && 
+    git commit --author '${params.build.buildRequestedFor} <${params.build.buildRequestedForEmail}>' --message "chore[skip ci]: Update & Commit Locks" && 
+    git tag v${lerna.version} &&
+    git push origin ${branchName} &&
+    git push origin --tags`;
     console.log('Git Script: ' + gitScript);
     return shell.task(gitScript)(done());
 }
@@ -94,13 +94,13 @@ function inlineCoverageSource() {
 }
 
 function lernaBuild(done) {
-    var gitScript = `sudo npm run clean:build`;
+    var gitScript = `npm run clean:build`;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);
 }
 
 function lernaPublish(done) {
-    var gitScript = `sudo npm run publish`;
+    var gitScript = `npm run publish`;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);
 }
@@ -220,7 +220,7 @@ function sonarQube(done) {
 }
 
 function systemPublish(done) {
-    var gitScript = `sudo npm run release-build --prefix ./system`;
+    var gitScript = `npm run release-build --prefix ./system`;
     console.log('Build Script: ' + gitScript);
     return runCmd(gitScript, done);
 }
@@ -241,7 +241,7 @@ function testNycMocha(done) {
 }
 
 function toolInstall(done) {
-    var gitScript = `sudo npm install lerna@3.13.0 typescript@3.3.3 --global`;
+    var gitScript = `sudo npm install lerna@3.13.0 typescript@4.1 --global`;
     console.log('Tool Script: ' + gitScript);
     return runCmd(gitScript, done);
 }

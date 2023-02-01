@@ -1,0 +1,35 @@
+{
+  "name": "@azbake/ingredient-batch",
+  "description": "Ingredient for deploying a batch account",
+  "version": "0.0.12",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "author": "HCHB",
+  "license": "MIT",
+  "scripts": {
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "@azbake/core": "*",
+    "@azure/ms-rest-nodeauth": "*"
+  },
+  "devDependencies": {
+    "@azbake/core": "^0.1.107",
+    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@types/node": "^10.12.18"
+  },
+  "dependencies": {
+    "@azbake/arm-helper": "^0.1.109",
+    "@azure/arm-storage": "^15.1.0",
+    "@azure/batch": "^10.0.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

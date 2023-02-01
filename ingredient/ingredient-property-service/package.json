@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-property-service",
   "description": "Ingredient for managing peoperty service.",
-  "version": "0.1.43",
+  "version": "0.1.49",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -23,20 +23,20 @@
     "lib": "dist"
   },
   "peerDependencies": {
-    "@azbake/core": "0.*",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azbake/core": "*",
+    "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.103",
+    "@azbake/core": "^0.1.107",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "colors": "^1.3.3",
+    "colors": "1.4.0",
     "fluentvalidation-ts": "^2.1.5",
     "node-rsa": "^1.0.8",
     "rsa-xml": "^0.1.5",
-    "typescript": "^3.8.3"
+    "typescript": "^4.1.6"
   },
   "publishConfig": {
     "access": "public"

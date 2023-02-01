@@ -106,7 +106,7 @@ export class PropertyOperation extends OperationBase<IPropertyCreateConfiguratio
             return
         }
 
-        this.LogOperationMessage(false, 'Create', index, this.GetConfiguration(name, configuration.selectors), `Property Create Failed`);
+        this.LogOperationMessage(false, 'Create', index, this.GetConfiguration(configuration.name, configuration.selectors), `Property Create Failed`);
         throw new Error(`The property failed to be created`);
     }
 

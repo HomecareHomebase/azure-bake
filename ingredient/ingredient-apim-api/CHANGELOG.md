@@ -3,6 +3,63 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.39](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.38...@azbake/ingredient-apim-api@0.2.39) (2022-09-29)
+
+
+### Bug Fixes
+
+* apim diagnostics error fix ([#265](https://github.com/HomecareHomebase/azure-bake/issues/265)) ([a552d07](https://github.com/HomecareHomebase/azure-bake/commit/a552d078ffb753de824bd2b63e029cd2e7791d82))
+
+
+
+
+
+## [0.2.38](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.37...@azbake/ingredient-apim-api@0.2.38) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+
+
+
+## [0.2.37](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.36...@azbake/ingredient-apim-api@0.2.37) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+
+
+
+## [0.2.36](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.35...@azbake/ingredient-apim-api@0.2.36) (2022-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-apim-api
+
+
+
+
+
+## [0.2.35](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.34...@azbake/ingredient-apim-api@0.2.35) (2022-04-04)
+
+
+### Bug Fixes
+
+* force updating all ingredients ([#247](https://github.com/HomecareHomebase/azure-bake/issues/247)) ([f59586d](https://github.com/HomecareHomebase/azure-bake/commit/f59586d8b364860cc4b30059feb9a56d2cc329a0))
+
+
+
+
+
+## [0.2.34](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.33...@azbake/ingredient-apim-api@0.2.34) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.2.33](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.32...@azbake/ingredient-apim-api@0.2.33) (2021-06-01)
 
 

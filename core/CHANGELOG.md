@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.106...@azbake/core@0.1.107) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module loading on linux ([#251](https://github.com/HomecareHomebase/azure-bake/issues/251)) ([5cf94e2](https://github.com/HomecareHomebase/azure-bake/commit/5cf94e2b1f2db41dfdb5c280cf660528103774a6))
+
+
+
+
+
+## [0.1.106](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.105...@azbake/core@0.1.106) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module load in linux ([#250](https://github.com/HomecareHomebase/azure-bake/issues/250)) ([5b90aa1](https://github.com/HomecareHomebase/azure-bake/commit/5b90aa16b7138b83342629bdf25c8edc66bd13f4))
+
+
+
+
+
+## [0.1.105](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.104...@azbake/core@0.1.105) (2022-04-04)
+
+
+### Bug Fixes
+
+* bumping core & helper versions ([#248](https://github.com/HomecareHomebase/azure-bake/issues/248)) ([718cc18](https://github.com/HomecareHomebase/azure-bake/commit/718cc186582beb9a032cb902255ecec844fe2843))
+
+
+
+
+
+## [0.1.104](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.103...@azbake/core@0.1.104) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.1.103](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.102...@azbake/core@0.1.103) (2020-10-16)
 
 

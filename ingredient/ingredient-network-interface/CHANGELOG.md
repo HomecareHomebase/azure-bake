@@ -3,6 +3,86 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.133](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.132...@azbake/ingredient-network-interface@0.1.133) (2023-01-20)
+
+
+### Bug Fixes
+
+* Feature/acsingredient ([#277](https://github.com/HomecareHomebase/azure-bake/issues/277)) ([3008ffe](https://github.com/HomecareHomebase/azure-bake/commit/3008ffeff09c6a2ca0c02643d278604674b2fc36))
+* upgrading typescript compiler to 4.1, and fixing compile issues ([#282](https://github.com/HomecareHomebase/azure-bake/issues/282)) ([c1ce8ea](https://github.com/HomecareHomebase/azure-bake/commit/c1ce8ea3330bd4c7662dd12209829c68e2b60a3e))
+
+
+
+
+
+## [0.1.132](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.131...@azbake/ingredient-network-interface@0.1.132) (2022-04-05)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.131](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.130...@azbake/ingredient-network-interface@0.1.131) (2022-04-05)
+
+
+### Bug Fixes
+
+* resolving module load in linux ([#250](https://github.com/HomecareHomebase/azure-bake/issues/250)) ([5b90aa1](https://github.com/HomecareHomebase/azure-bake/commit/5b90aa16b7138b83342629bdf25c8edc66bd13f4))
+
+
+
+
+
+## [0.1.130](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.129...@azbake/ingredient-network-interface@0.1.130) (2022-04-04)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.129](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.128...@azbake/ingredient-network-interface@0.1.129) (2022-04-04)
+
+
+### Bug Fixes
+
+* force updating all ingredients ([#247](https://github.com/HomecareHomebase/azure-bake/issues/247)) ([f59586d](https://github.com/HomecareHomebase/azure-bake/commit/f59586d8b364860cc4b30059feb9a56d2cc329a0))
+
+
+
+
+
+## [0.1.128](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.127...@azbake/ingredient-network-interface@0.1.128) (2022-04-04)
+
+
+### Bug Fixes
+
+* Upgrading bake serve node version ([c5bf536](https://github.com/HomecareHomebase/azure-bake/commit/c5bf536eb8ac49ee95f9eb9b30c609591276d659))
+
+
+
+
+
+## [0.1.127](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.126...@azbake/ingredient-network-interface@0.1.127) (2022-03-28)
+
+**Note:** Version bump only for package @azbake/ingredient-network-interface
+
+
+
+
+
+## [0.1.126](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.125...@azbake/ingredient-network-interface@0.1.126) (2022-01-11)
+
+
+### Bug Fixes
+
+* pinned colors to 1.4.0 ([754c0f2](https://github.com/HomecareHomebase/azure-bake/commit/754c0f26baa25f236f15ef3daaa14df22c361f4e))
+
+
+
+
+
 ## [0.1.125](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-network-interface@0.1.124...@azbake/ingredient-network-interface@0.1.125) (2021-09-28)
 
 **Note:** Version bump only for package @azbake/ingredient-network-interface

@@ -52,16 +52,18 @@ export class BakePackage {
             process.env.BAKE_AUTH_TENANT_ID =""
 
         //yaml parse out the global variables.
+        let content = "";
         try {
             let file : string = process.env.BAKE_VARIABLES || ""
             if (file && fs.existsSync(file)) {
-                let content = fs.readFileSync(file, 'utf8')
+                content = fs.readFileSync(file, 'utf8')
                 let obj  =YAML.safeLoad(content)
                 this._env.variables = objToVariableMap( obj || [] )
             }
            
         } catch (e) {
             let logger = new Logger()
+            logger.debug(content)
             logger.error("Failed to load global environment variables")
             logger.error(e)
         }
@@ -133,7 +135,8 @@ export class BakePackage {
                     npmPackageName = ingPackage;
                 }
 
-                let packageVersion = require(path.join(ingPackage, 'package.json')).version
+                const packageDir = path.join(ingPackage, 'package.json');
+                let packageVersion = require(packageDir).version
 
                 //making it this var means we could load the ingredient as a module.
                 //so skip install! 
@@ -150,7 +153,7 @@ export class BakePackage {
             if (!skipNpm){
                 logger.log('- ' + ingredientsType)
                 var npm = new ShellRunner(cmd).start()
-                npm.arg("install").arg(ingredientsType)
+                npm.arg("install").arg(ingredientsType).arg("--legacy-peer-deps")
                 let er = npm.exec()
                 if (er.code != 0){
                     console.log(er)

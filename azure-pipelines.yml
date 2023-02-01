@@ -51,6 +51,10 @@ steps:
     command: Login
     containerRegistry: HCHBDockerHub
 
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+
 - task: Npm@1
   displayName: NPM Install
   inputs:    
@@ -58,25 +62,30 @@ steps:
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 
-- bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
-  displayName: "NPM Token Export"
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  env:
-    NPM_AUTH_TOKEN: $(Npm_Auth_Token)
+- task: npmAuthenticate@0
+  inputs:
+    workingFile: '.npmrc'
+    customEndpoint: 'hchb-npm-public-registry'
+
+# - bash: echo //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN > .npmrc
+#   displayName: "NPM Token Export"
+#   workingDirectory: '$(System.DefaultWorkingDirectory)'
+#   env:
+#     NPM_AUTH_TOKEN: $(Npm_Auth_Token)
 
 - task: gulp@1
   displayName: GULP List Environment
   inputs:
-    gulpFile: 'gulpfile.js' 
+    gulpFile: 'gulpfile.js'
     targets: 'listenvironment'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: gulp@1
   displayName: GULP Build and Release
   inputs:
-    gulpFile: 'gulpfile.js' 
-    targets: 'build'    
-    workingDirectory: '$(System.DefaultWorkingDirectory)'    
+    gulpFile: 'gulpfile.js'
+    targets: 'build'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
     arguments: --sonarToken '$(SonarQubeToken)'
   condition: not(contains(variables['Build.SourceVersionMessage'], '[skip ci]'))
 

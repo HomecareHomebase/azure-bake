@@ -21,9 +21,9 @@ export abstract class OperationBase<TCreate extends ICreateConfiguration, TUpdat
         await this._deleteImpl()
     }
 
-    protected abstract async Create(index: number, configuration: TCreate): Promise<void>
-    protected abstract async Update(index: number, configuration: TUpdate): Promise<void>
-    protected abstract async Delete(index: number, configuration: TDelete): Promise<void>
+    protected abstract Create(index: number, configuration: TCreate): Promise<void>
+    protected abstract Update(index: number, configuration: TUpdate): Promise<void>
+    protected abstract Delete(index: number, configuration: TDelete): Promise<void>
 
     private async _createImpl(): Promise<void> {
 
