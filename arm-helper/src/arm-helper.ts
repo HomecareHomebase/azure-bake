@@ -139,13 +139,13 @@ export class ARMHelper {
         if (params["actionGroups"])
         {
             if (params["actionGroups"].value) {
-                params["actionGroups"].value.forEach(async  (element:any) => {
+                params["actionGroups"].value.forEach((element:any) => {
                     if (element.actionGroupShortName) 
                     {
                         let actionGroupShortName = element.actionGroupShortName;
                         
-                        let subscriptionId = this._ctx.Environment.authentication.subscriptionId;
-                        let actionResourceGroup = await util.resource_group("actiongroups",false,null,true); 
+                        let subscriptionId = this._ctx.Environment.authentication.subscriptionId;                        
+                        let actionResourceGroup = util.get_resource_group("actiongroups",false); 
                         let actionGroup = util.create_resource_name("act", actionGroupShortName, false);
 
                         let actionGroupId = "/subscriptions/" + subscriptionId + "/resourceGroups/" + actionResourceGroup + "/providers/Microsoft.Insights/actionGroups/" + actionGroup                        
