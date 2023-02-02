@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-acs",
   "description": "Ingredient for managing Azure Communications Service",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.109",
+    "@azbake/arm-helper": "^0.1.110",
     "@azure/arm-communication": "^3.0.1",
     "@azure/identity": "^2.0.4"
   },

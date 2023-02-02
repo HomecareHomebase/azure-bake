@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-batch",
   "description": "Ingredient for deploying a batch account",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -24,7 +24,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.109",
+    "@azbake/arm-helper": "^0.1.110",
     "@azure/arm-storage": "^15.1.0",
     "@azure/batch": "^10.0.2"
   },

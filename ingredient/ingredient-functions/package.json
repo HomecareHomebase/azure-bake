@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-functions",
   "description": "Ingredient for deploying a function app from a docker image.",
-  "version": "0.1.170",
+  "version": "0.1.171",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -20,12 +20,12 @@
   },
   "devDependencies": {
     "@azbake/core": "^0.1.107",
-    "@azbake/ingredient-utils": "^0.1.110",
+    "@azbake/ingredient-utils": "^0.1.111",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.17.5"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.109",
+    "@azbake/arm-helper": "^0.1.110",
     "azure-bake": "^0.1.95"
   },
   "publishConfig": {
