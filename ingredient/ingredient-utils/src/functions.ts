@@ -192,8 +192,11 @@ export class CoreUtils extends BaseUtility {
         return `${rg}/${appSvc}`;
     }
 
-    public get_resource_group(pkgName: string): string {
-        let rgn = this.context.Region.code
+    public get_resource_group(pkgName: string, useRegionCode: boolean = true): string {
+        let rgn = this.context.Region.code;
+        if (!useRegionCode)        
+            rgn = "";        
+        
         return this._create_resource_group_name(pkgName,rgn)
     }
 
