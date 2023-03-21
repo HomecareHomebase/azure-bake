@@ -122,6 +122,12 @@ export class CoreUtils extends BaseUtility {
         return await v.valueAsync(this.context);
     }
 
+    public async if_then_variable(key1: string, key2: string, def?: string): Promise<any> {
+        let v: BakeVariable = this._find_variable(key1) || this._find_variable(key2) || new BakeVariable(def || "");
+        return await v.valueAsync(this.context);
+    }
+
+
     public create_region_resource_name(resType: string, name: string | null = null, region: IBakeRegion | null, suffix: string = ""): string {
         let rgn = ""
         if (region)
