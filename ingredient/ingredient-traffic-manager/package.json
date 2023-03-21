@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-traffic-manager",
   "description": "Ingredient for deploying an instance of traffic manager and adding endpoints.",
-  "version": "0.1.115",
+  "version": "0.1.116",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@azbake/core": "^0.1.107",
-    "@azbake/ingredient-utils": "^0.1.111",
+    "@azbake/ingredient-utils": "^0.1.112",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },

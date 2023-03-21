@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.112](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.1.111...@azbake/ingredient-utils@0.1.112) (2023-03-21)
+
+
+### Bug Fixes
+
+* Added if_then_variable() coreutil - allows cascading variable values to use first param first, if not found, try second param, if still not found, use optional default value. ([#289](https://github.com/HomecareHomebase/azure-bake/issues/289)) ([35b869b](https://github.com/HomecareHomebase/azure-bake/commit/35b869b09e33711bf8793a2d848b7b3f127d4eab))
+
+
+
+
+
 ## [0.1.111](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.1.110...@azbake/ingredient-utils@0.1.111) (2023-02-02)
 
 

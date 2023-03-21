@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-postgresql",
   "description": "Ingredient for deploying an instance of PostgreSQL.",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@azbake/core": "^0.1.107",
-    "@azbake/ingredient-utils": "^0.1.111",
+    "@azbake/ingredient-utils": "^0.1.112",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18",
     "@typescript-eslint/eslint-plugin": "^5.19.0",

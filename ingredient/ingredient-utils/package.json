@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-utils",
   "description": "Bake ingredient for core utility functions",
-  "version": "0.1.111",
+  "version": "0.1.112",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "directories": {
