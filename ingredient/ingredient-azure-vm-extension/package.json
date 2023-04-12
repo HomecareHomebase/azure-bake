@@ -25,7 +25,7 @@
 	},
 	"dependencies": {
 		"@azbake/arm-helper": "^0.1.110",
-		"@azure/arm-compute": "^10.0.0",
+		"@azure/arm-compute": "^20.0.0",
 		"@azure/arm-eventhub": "3.2.0"
 	},
 	"publishConfig": {

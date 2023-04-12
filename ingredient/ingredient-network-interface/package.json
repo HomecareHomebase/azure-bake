@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.110",
-    "@azure/arm-network": "^23.0.0"
+    "@azure/arm-network": "^30.2.0"
   },
   "publishConfig": {
     "access": "public"
