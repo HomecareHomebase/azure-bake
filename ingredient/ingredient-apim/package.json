@@ -26,7 +26,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azure/arm-apimanagement": "^6.0.0",
+    "@azure/arm-apimanagement": "^9.0.0",
     "@azure/arm-monitor": "^5.4.0",
     "@azure/arm-network": "^14.0.0",
     "got": "^11.7.0"

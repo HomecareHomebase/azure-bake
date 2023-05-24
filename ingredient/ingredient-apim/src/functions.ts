@@ -1,7 +1,8 @@
+import { ClientSecretCredential } from '@azure/identity';
 import { BaseUtility, IngredientManager } from '@azbake/core'
 import { ApiManagementClient } from "@azure/arm-apimanagement"
 import { NetworkManagementClient } from '@azure/arm-network';
-import { SubscriptionGetResponse, LoggerGetResponse, NamedValueGetResponse } from '@azure/arm-apimanagement/esm/models';
+import { SubscriptionGetResponse, LoggerGetResponse, NamedValueGetResponse } from '@azure/arm-apimanagement/src/models';
 import { SubnetsGetResponse } from '@azure/arm-network/esm/models';
 
 export class ApimUtils extends BaseUtility {
@@ -43,7 +44,7 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_logger(resourceGroup: string, apimName: string, loggerId: string): Promise<LoggerGetResponse> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let logger = await client.logger.get(resourceGroup, apimName, loggerId)
@@ -54,7 +55,7 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_namedValue(resourceGroup: string, apimName: string, namedValueId: string): Promise<NamedValueGetResponse> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let namedValue = await client.namedValue.get(resourceGroup, apimName, namedValueId);
@@ -65,7 +66,7 @@ export class ApimUtils extends BaseUtility {
     }
 
     public async get_subscription(resourceGroup: string, resource: string, subscriptionId: string) : Promise<SubscriptionGetResponse> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let subscription = await apim_client.subscription.get(resourceGroup, resource, subscriptionId)
@@ -76,7 +77,7 @@ export class ApimUtils extends BaseUtility {
     }   
 
     public async get_subscription_key(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
@@ -87,7 +88,7 @@ export class ApimUtils extends BaseUtility {
     } 
 
     public async get_subscription_keySecondary(resourceGroup: string, resource: string, subscriptionId: string) : Promise<string> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let apim_client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId)
         let secrets = await apim_client.subscription.listSecrets(resourceGroup, resource, subscriptionId);
