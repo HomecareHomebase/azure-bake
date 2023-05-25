@@ -55,7 +55,7 @@ options:
 **apis**
 
 ```yaml
-apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1460
+apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3215
   - name: <api-version-name> #unique id for the API (version set) - required
     versions:
       - versionSchema #See next section for version schema
@@ -64,7 +64,7 @@ apis: #follows this azure spec for *ApiVersionSetContract* : https://github.com/
 **api[n].versions**
 
 ```yaml
-versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1310
+versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L180
   - name: <api-name> #typically you want set the id to <api-version-id>-<version> to keep the id consistant for the version set it belongs to - required
     version: <string> #version string that will be used as part of the above ApiVersionSetContract.versioningSchema
     products: #optional list of product names to assign API to
@@ -77,15 +77,15 @@ versions: #follows this azure spec for *ApiCreateOrUpdateParameter* : https://gi
 **api.versions[n].policies**
 
 ```yaml
-policies: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L797
+policies: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3097
   - operation: <string> #optional, and if not set this will be the default policy set for the entire api. Otherwise, name of an operation within this api to apply the policy to.
 ```
 
 **api.versions[n].diagnostics**
 
 ```yaml
-diagnostics: #scheme follows this azure spec for *PolicyContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L727
-  - name: <type of diagnostic> #required name of the diagnostic
+diagnostics: #follows this azure spec for *DiagnosticSettingsResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L991
+  - name: <diagnostics name> #required name of diagnostics settings
 ```
 
 ## Utility Functions
