@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@azure/arm-apimanagement": "^9.0.0",
+    "@azure/identity": "^2.0.4",
     "got": "^11.7.0"
   },
   "publishConfig": {
