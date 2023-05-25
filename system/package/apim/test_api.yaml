@@ -1,0 +1,100 @@
+name: hchbapi
+shortName: hchbapi
+owner: arch
+version: 1.0.0
+ingredients:
+  - "@azbake/ingredient-apim@*"
+  - "@azbake/ingredient-apim-api@*"
+  - "@azbake/ingredient-app-insights@*"
+resourceGroup: true
+parallelRegions: false
+rgOverride: "[apim.get_resource_group()]"
+variables:
+recipe:
+  api-default-api:
+    properties:
+      type: "@azbake/ingredient-apim-api"
+      source: "[apim.get_source()]"
+      condition: "[coreutils.current_region_primary()]"
+      parameters:
+        options:
+          apiWaitTime: 60
+        apis:
+          - name: utilities-api
+            displayName: Utilities API
+            description: Utilities API
+            versioningScheme: Segment
+            versions:
+              - name: util 
+                version: v1
+                apiType: http
+                path: util
+                protocols:
+                  - https
+                format: openapi
+                value: |-
+                  openapi: 3.0.1
+                  info:
+                    title: Utilities API
+                    description: HCHB Utilities for general maintenance and operations for this APIM instance
+                    version: v1
+                  servers:
+                    - url: http://localhost
+                  paths:
+                    /ping:
+                      get:
+                        summary: Ping
+                        description: Ping
+                        operationId: ping
+                        responses:
+                          '200':
+                            description: ''
+                    /health:
+                      get:
+                        summary: Health
+                        description: Health
+                        operationId: health
+                        responses:
+                          '200':
+                            description: ''
+                  components:
+                    securitySchemes:
+                      apiKeyHeader:
+                        type: apiKey
+                        name: Ocp-Apim-Subscription-Key
+                        in: header
+                      apiKeyQuery:
+                        type: apiKey
+                        name: subscription-key
+                        in: query
+                  security:
+                    - apiKeyHeader: [ ]
+                    - apiKeyQuery: [ ]
+                products:
+                  - hchbUtilities
+                policies: 
+                  - format: xml
+                    value: >-
+                      <policies>
+                          <inbound>
+                              <set-header name="op-mode" exists-action="override">
+                                  <value>transform</value>
+                              </set-header>
+                              <base />
+                          </inbound>
+                          <backend>
+                              <base />
+                          </backend>
+                          <outbound>
+                              <base />
+                          </outbound>
+                          <on-error>
+                              <base />
+                          </on-error>
+                      </policies>                
+                  - operation: ping
+                    format: xml-link
+                    value: file:///./policies/utilities-ping-policy.xml
+                  - operation: health
+                    format: xml-link
+                    value: file:///./policies/utilities-health-policy.xml

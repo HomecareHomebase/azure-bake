@@ -1,0 +1,220 @@
+<!--
+    IMPORTANT:
+    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.
+    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.
+    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.
+    - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.
+    - To remove a policy, delete the corresponding policy statement from the policy document.
+    - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.
+    - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.
+    - Policies are applied in the order of their appearance, from the top down.
+    - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.
+-->
+<policies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <inbound>
+        <base />
+        <set-header name="APIMHostInfo" exists-action="override">
+            <value>@(context.Request.OriginalUrl.Host)</value>
+        </set-header>
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid." clock-skew="900">
+            <openid-config url="https://login.microsoftonline.com/hchbazure.onmicrosoft.com/.well-known/openid-configuration" />
+        </validate-jwt>
+        <set-variable name="AssigningAuthorityID" value="@(context.Request.Headers.GetValueOrDefault(&quot;tenant-assigning-authority-oid&quot;))" />
+        <set-variable name="DataCenterID" value="@{ 
+                                                         var DC = (string)context.Variables[&quot;AssigningAuthorityID&quot;]; 
+                                                         if(DC != null &amp;&amp; DC.Length > 1)
+                                                         {
+                                                             DC = DC.Substring(DC.Length-1); 
+                                                         }
+                                                         else
+                                                         {
+                                                            DC = &quot;&quot;;
+                                                         }
+                                                         return DC.ToString();
+                                                      }" />
+        <!-- Set Rate Limiting-->
+        <set-variable name="jwt" value="@(((string)context.Request.Headers.GetValueOrDefault(&quot;Authorization&quot;,&quot;scheme param&quot;).Split(' ').Last()).AsJwt())" />
+        <set-variable name="subject" value="@(((Jwt)context.Variables[&quot;jwt&quot;])?.Subject)" />
+        <rate-limit-by-key calls="{{ThrottleRateConnectVendorOrca}}" renewal-period="{{ThrottlePeriodConnectVendorOrca}}" counter-key="@((string)context.Variables[&quot;subject&quot;])" />
+        <!-- Lookup cache value for both Louisville and Dallas to determine if they are up or down -->
+        <cache-lookup-value key="@(&quot;is-lou-down-key-&quot; + context.Api.Id)" variable-name="is-lou-down" default-value="@(false)" />
+        <cache-lookup-value key="@(&quot;is-dal-down-key-&quot; + context.Api.Id)" variable-name="is-dal-down" default-value="@(false)" />
+        <cache-lookup-value key="@(&quot;is-eus-down-key-&quot; + context.Api.Id)" variable-name="is-eus-down" default-value="@(false)" />
+        <cache-lookup-value key="@(&quot;is-wus-down-key-&quot; + context.Api.Id)" variable-name="is-wus-down" default-value="@(false)" />
+        <!-- Convert the DataCenterId variable -->
+        <choose>
+            <when condition="@((string)context.Variables[&quot;DataCenterID&quot;] == &quot;1&quot;)">
+                <set-variable name="dataCenter" value="D" />
+            </when>
+            <when condition="@((string)context.Variables[&quot;DataCenterID&quot;] == &quot;2&quot;)">
+                <set-variable name="dataCenter" value="L" />
+            </when>
+            <when condition="@((string)context.Variables[&quot;DataCenterID&quot;] == &quot;3&quot;)">
+                <set-variable name="dataCenter" value="W" />
+            </when>
+            <when condition="@((string)context.Variables[&quot;DataCenterID&quot;] == &quot;4&quot;)">
+                <set-variable name="dataCenter" value="E" />
+            </when>
+        </choose>
+        <choose>
+            <!-- If pinned to Louisville -->
+            <when condition="@((string)context.Variables[&quot;dataCenter&quot;] == &quot;L&quot;)">
+                <choose>
+                    <!-- Check if Louisville backend is down, if so set backend to Dallas -->
+		    		<when condition="@((bool)context.Variables[&quot;is-lou-down&quot;])">
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceDallasEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>D</value>
+                        </set-header>
+                    </when>
+                    <!-- Set to Louisville backend -->
+                    <otherwise>
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceLouisvilleEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>L</value>
+                        </set-header>
+                    </otherwise>
+                </choose>
+            </when>
+            <!-- If pinned to Dallas -->
+            <when condition="@((string)context.Variables[&quot;dataCenter&quot;] == &quot;D&quot;)">
+                <choose>
+                    <!-- Check if Dallas backend is down, if so set backend to Louisville -->
+		    		<when condition="@((bool)context.Variables[&quot;is-dal-down&quot;])">
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceLouisvilleEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>L</value>
+                        </set-header>
+                    </when>
+                    <!-- Set to Dallas backend -->
+                    <otherwise>
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceDallasEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>D</value>
+                        </set-header>
+                    </otherwise>
+                </choose>
+            </when>
+            <!-- If pinned to Azure East -->
+            <when condition="@((string)context.Variables[&quot;dataCenter&quot;] == &quot;E&quot;)">
+                <choose>
+                    <!-- Check if Azure East backend is down, if so set backend to Azure West -->
+		    		<when condition="@((bool)context.Variables[&quot;is-eus-down&quot;])">
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureWestEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>W</value>
+                        </set-header>
+                    </when>
+                    <!-- Set to Azure East backend -->
+                    <otherwise>
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureEastEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>E</value>
+                        </set-header>
+                    </otherwise>
+                </choose>
+            </when>
+            <!-- If pinned to Azure West -->
+            <when condition="@((string)context.Variables[&quot;dataCenter&quot;] == &quot;W&quot;)">
+                <choose>
+                    <!-- Check if Azure West backend is down, if so set backend to Azure East -->
+		    		<when condition="@((bool)context.Variables[&quot;is-wus-down&quot;])">
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureEastEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>E</value>
+                        </set-header>
+                    </when>
+                    <!-- Set to Azure West backend -->
+                    <otherwise>
+                        <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureWestEndpoint}}" />
+                        <set-header name="DataCenterRedirect" exists-action="override">
+                            <value>W</value>
+                        </set-header>
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                <return-response>
+                    <set-status code="403" reason="Forbidden" />
+                </return-response>
+            </otherwise>
+        </choose>
+        <set-backend-service base-url="@($&quot;{(string)context.Variables[&quot;orchestrationEndpoint&quot;]}/{(string)context.Variables[&quot;orchestrationPath&quot;]}/&quot;)" />
+    </inbound>
+    <backend>
+        <!-- On HttpStatus Not Found -->
+        <retry condition="@(context.Response != null &amp;&amp; new List&lt;int&gt; {503}.Contains(context.Response.StatusCode) &amp;&amp; (string)context.Variables[&quot;autoRedirect&quot;] == &quot;true&quot;)" count="2" interval="1" first-fast-retry="true">
+	    	<set-variable name="DataCenterRedirectHeader" value="@{return context.Request.Headers.GetValueOrDefault(&quot;DataCenterRedirect&quot;, (string[])null).First();}" />
+            <choose>
+	    		<when condition="@(context.Response != null &amp;&amp; new List&lt;int&gt; {503}.Contains(context.Response.StatusCode))">
+                    <choose>
+                        <!-- If Louisville is not found, repoint to Dallas backend and add cache key to denote Louisville is down -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;L&quot;)">
+                            <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceDallasEndpoint}}" />
+                            <set-header name="DataCenterRedirect" exists-action="override">
+                                <value>D</value>
+                            </set-header>
+                            <cache-store-value key="@(&quot;is-lou-down-key-&quot; + context.Api.Id)" value="@(true)" duration="{{FailoverCacheDuration}}" />
+                        </when>
+                        <!-- If Dallas is not found, repoint to Louisville backend and add cache key to denote Dallas is down -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;D&quot;)">
+                            <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceLouisvilleEndpoint}}" />
+                            <set-header name="DataCenterRedirect" exists-action="override">
+                                <value>L</value>
+                            </set-header>
+                            <cache-store-value key="@(&quot;is-dal-down-key-&quot; + context.Api.Id)" value="@(true)" duration="{{FailoverCacheDuration}}" />
+                        </when>
+                        <!-- If Azure East is not found, repoint to Azure West backend and add cache key to denote Azure East is down -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;E&quot;)">
+                            <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureWestEndpoint}}" />
+                            <set-header name="DataCenterRedirect" exists-action="override">
+                                <value>W</value>
+                            </set-header>
+                            <cache-store-value key="@(&quot;is-eus-down-key-&quot; + context.Api.Id)" value="@(true)" duration="{{FailoverCacheDuration}}" />
+                        </when>
+                        <!-- If Azure West is not found, repoint to Azure East backend and add cache key to denote Azure West is down -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;W&quot;)">
+                            <set-variable name="orchestrationEndpoint" value="{{InteropOrchestrationServiceAzureEastEndpoint}}" />
+                            <set-header name="DataCenterRedirect" exists-action="override">
+                                <value>E</value>
+                            </set-header>
+                            <cache-store-value key="@(&quot;is-wus-down-key-&quot; + context.Api.Id)" value="@(true)" duration="{{FailoverCacheDuration}}" />
+                        </when>
+                    </choose>
+                    <set-backend-service base-url="@($&quot;{(string)context.Variables[&quot;orchestrationEndpoint&quot;]}/{(string)context.Variables[&quot;orchestrationPath&quot;]}/&quot;)" />
+                </when>
+            </choose>
+            <forward-request buffer-request-body="true" />
+            <choose>
+                <!-- On Success -->
+				<when condition="@(context.Response != null &amp;&amp; context.Response.StatusCode &gt;= 200 &amp;&amp; context.Response.StatusCode &lt; 400)">
+		    		<set-variable name="DataCenterRedirectHeader" value="@{return context.Request.Headers.GetValueOrDefault(&quot;DataCenterRedirect&quot;, (string[])null).First();}" />
+                    <choose>
+                        <!--If we came from Louisville backend clear the East cache key -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;L&quot;)">
+                            <cache-remove-value key="@(&quot;is-lou-down-key-&quot; + context.Api.Id)" />
+                        </when>
+                        <!--If we came from Dallas backend clear the West cache key -->
+						<when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;D&quot;)">
+                            <cache-remove-value key="@(&quot;is-dal-down-key-&quot; + context.Api.Id)" />
+                        </when>
+                        <!--If we came from Azure East backend clear the Azure East cache key -->
+                        <when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;E&quot;)">
+                            <cache-remove-value key="@(&quot;is-eus-down-key-&quot; + context.Api.Id)" />
+                        </when>
+                        <!--If we came from Azure West backend clear the Azure West cache key -->
+                        <when condition="@((string)context.Variables[&quot;DataCenterRedirectHeader&quot;] == &quot;W&quot;)">
+                            <cache-remove-value key="@(&quot;is-wus-down-key-&quot; + context.Api.Id)" />
+                        </when>
+                    </choose>
+                </when>
+            </choose>
+        </retry>
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

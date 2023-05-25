@@ -507,21 +507,16 @@ export class ApimPlugin extends BaseIngredient {
             
             let policyData = await this.ResolvePolicy(product.policy)
 
-            if (policyData.name) {
-                await this.apim_client.productPolicy
-                .createOrUpdate(
-                    this.resource_group,
-                    this.resource_name,
-                    product.name,
-                    policyData.name,
-                    policyData,
-                    <ProductPolicyCreateOrUpdateOptionalParams>{ifMatch:'*'}
-                )
-                .catch((error) => this._logger.error("APIM Plugin: Could not apply policies to product " + product.name + '\n' + error))
-            }
-            else {
-                this._logger.error("APIM Plugin: Could not apply policies to product " + product)
-            }
+            await this.apim_client.productPolicy
+            .createOrUpdate(
+                this.resource_group,
+                this.resource_name,
+                product.name,
+                "policy",
+                policyData,
+                <ProductPolicyCreateOrUpdateOptionalParams>{ifMatch:'*'}
+            )
+            .catch((error) => this._logger.error("APIM Plugin: Could not apply policies to product " + product.name + '\n' + error))
         }
     }
 
