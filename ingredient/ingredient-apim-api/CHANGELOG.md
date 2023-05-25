@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.42](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.41...@azbake/ingredient-apim-api@0.2.42) (2023-05-25)
+
+
+### Bug Fixes
+
+* update arm-apimanagement to v9.0.0 ([#299](https://github.com/HomecareHomebase/azure-bake/issues/299)) ([59cfbb3](https://github.com/HomecareHomebase/azure-bake/commit/59cfbb3a26007c542a4d608245b338fdb9d0194c))
+
+
+
+
+
 ## [0.2.41](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim-api@0.2.40...@azbake/ingredient-apim-api@0.2.41) (2023-03-21)
 
 **Note:** Version bump only for package @azbake/ingredient-apim-api
