@@ -45,7 +45,7 @@ Here is the documentation for all the supported paremeters for this ingredient.
 **apimService**
 
 ```yaml
-apimService: #follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2451
+apimService: #follows this azure spec for *ApiManagementServiceResource* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4025
   - name: <apim name> #required name of APIM service
 ```
 
@@ -59,28 +59,28 @@ diagnostics: #follows this azure spec for *DiagnosticSettingsResource* : https:/
 **namedValues**
 
 ```yaml
-namedValues: #follows this azure spec for *PropertyContract * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3769
+namedValues: #follows this azure spec for *NamedValueCreateContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#LL3568C1-L3568C1
   - name: <named value id> #required name of property (named value)
 ```
 
 **groups**
 
 ```yaml
-groups: #follows this azure spec for *GroupCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3088
+groups: #follows this azure spec for *GroupCreateParameters* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1882
   - name: <group id> #required name of the group
 ```
 
 **users**
 
 ```yaml
-users: #follows this azure spec for *UserCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4387
+users: #follows this azure spec for *UserCreateParameters* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2874
   - name: <user id> #required name of the user
 ```
 
  **subscriptions**
 
 ```yaml
-subscriptions: #follows this azure spec for *SubscriptionCreateParameters * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L4107
+subscriptions: #follows this azure spec for *SubscriptionCreateParameters* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L2746
   - name: <subscription id> #required name of the subscription
     user: <user> #optional user lookup, can also use ownerId on SubscriptionCreateParameters if the path is known
 ```
@@ -96,7 +96,7 @@ apis:
 **products**
 
 ```yaml
-products: #follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L826
+products: #follows this azure spec for *ProductContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3111
   - name: <product id> #required name of the product
     apis: #optional array of api names to add to product
       - api1
@@ -107,8 +107,8 @@ products: #follows this azure spec for *ProductContract* : https://github.com/Az
 
 **loggers**
 
-```yaml #follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3261
-loggers:
+```yaml 
+loggers: #follows this azure spec for *LoggerContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3537
   - name: <logger name> #required name of the logger
     cleanKeys: true # clean the old subscription keys
 ```
@@ -116,28 +116,28 @@ loggers:
 **authServers**
 
 ```yaml
-authServers: #follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1641
+authServers: #follows this azure spec for *AuthorizationServerContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3229
   - name: <auth servier id> #required name of the auth server
 ```
 
 **identityProviders**
 
 ```yaml
-identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3193
+identityProviders: #follows this azure spec for *IdentityProviderContract* : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3489
   - identityProviderContractType: microsoft #this is part of the IdentityProviderContract contract and is required
 ```
 
 **autoScaleSettings**
 
 ```yaml
-autoScaleSettings: #follows this azure spec for *AutoscaleSettingResource * : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L347
+autoScaleSettings: #follows this azure spec for *AutoscaleSettingResource* : https://github.com/Azure/azure-sdk-for-js/blob/20fe312b1122b21811f9364e3d95fe77202e6466/sdk/monitor/arm-monitor/src/models/index.ts#L347
   - name: <auto scale setting name>
 ```
 
 **backends**
 
 ```yaml
-backends: #follows this azure spec for *BackendContract*  : https://github.com/Azure/azure-sdk-for-js/blob/0f358041f43f3414be37c9bd44492acb6f461f61/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L1932
+backends: #follows this azure spec for *BackendContract*  : https://github.com/Azure/azure-sdk-for-js/blob/01898c51c663be4c53e02034a0468cf550ce5279/sdk/apimanagement/arm-apimanagement/src/models/index.ts#L3301
   - name: <back end name>
 ```
 

@@ -1,11 +1,12 @@
+import { ClientSecretCredential } from '@azure/identity';
 import { BaseUtility } from '@azbake/core'
 import { ApiManagementClient } from "@azure/arm-apimanagement"
-import { ApiGetResponse, BackendGetResponse } from '@azure/arm-apimanagement/esm/models';
+import { ApiGetResponse, BackendGetResponse } from '@azure/arm-apimanagement/src/models';
 
 export class ApimApiUtils extends BaseUtility {
 
     public async get_api(resourceGroup: string, apimName: string, apiId: string): Promise<ApiGetResponse> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let api = await client.api.get(resourceGroup, apimName, apiId);
@@ -16,7 +17,7 @@ export class ApimApiUtils extends BaseUtility {
     }
 
     public async get_backend(resourceGroup: string, apimName: string, backendId: string): Promise<BackendGetResponse> {
-        const token: any = this.context.AuthToken
+        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
 
         let client = new ApiManagementClient(token, this.context.Environment.authentication.subscriptionId);
         let backend = await client.backend.get(resourceGroup, apimName, backendId);

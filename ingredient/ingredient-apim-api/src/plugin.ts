@@ -1,7 +1,9 @@
+import { ClientSecretCredential } from '@azure/identity';
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
-import { ApiManagementClient } from "@azure/arm-apimanagement"
-import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ProductContract, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/esm/models";
+import { ApiManagementClient, ProductContract } from "@azure/arm-apimanagement"
+import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/src/models";
 import { RestError } from "@azure/ms-rest-js"
+import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import * as fs from 'fs';
 import stockDiagnostics from "./stockDiagnostics.json"
 
@@ -85,7 +87,7 @@ export class ApimApiPlugin extends BaseIngredient {
         
         this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
 
-        const token: any = this._ctx.AuthToken
+        const token = new ClientSecretCredential(this._ctx.AuthToken.domain, this._ctx.AuthToken.clientId, this._ctx.AuthToken.secret);
 
         this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
 
@@ -103,14 +105,7 @@ export class ApimApiPlugin extends BaseIngredient {
             this.ca_file = fs.readFileSync(pemFile)
         }
 
-        let apis : Array<ApiContract> = new Array<ApiContract>()
-        let svcResponse = await this.apim_client.api.listByService(this.resource_group, this.resource_name)
-        apis = apis.concat(svcResponse)
-        while(svcResponse.nextLink) {
-            svcResponse = await this.apim_client.api.listByServiceNext(svcResponse.nextLink)
-            apis = apis.concat(svcResponse)
-        }
-        this.apim_apis = apis
+        this.apim_apis = await this.GetArrayFromPagedIterator<ApiContract>(this.apim_client.api.listByService(this.resource_group, this.resource_name));
 
         let optionParam =this._ctx.Ingredient.properties.parameters.get('options') || undefined
         if (optionParam){
@@ -194,7 +189,7 @@ export class ApimApiPlugin extends BaseIngredient {
                 api.apiVersion = api.version
                 api.apiVersionSetId = apiVersion.id
                 api.apiVersionSet = apiVersion
-                let result = await this.apim_client.api.createOrUpdate(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
+                let result = await this.apim_client.api.beginCreateOrUpdateAndWait(this.resource_group, this.resource_name, api.name, api, {ifMatch : '*'})
                 this._logger.log("APIM API Plugin: API " + result.displayName + " published")
                 apiRevisionId = result.apiRevision || ""
 
@@ -332,7 +327,7 @@ export class ApimApiPlugin extends BaseIngredient {
         let applyDiagnostic = true;
 
         try {
-            var existingDiagnostics = await this.apim_client.apiDiagnostic.listByService(this.resource_group, this.resource_name, apiId);;
+            var existingDiagnostics = await this.GetArrayFromPagedIterator<DiagnosticContract>(this.apim_client.apiDiagnostic.listByService(this.resource_group, this.resource_name, apiId));
 
             for (let i = 0; i < existingDiagnostics.length; i++) {
                 let existingDiagnosticsLoggerId = existingDiagnostics[i].loggerId || ""
@@ -352,21 +347,17 @@ export class ApimApiPlugin extends BaseIngredient {
 
         if (applyDiagnostic) {
             let logErrMessage = "APIM API Plugin: Could not apply diagnostics " + diagnostics.name + " to API " + apiId;
-            try {
-                let apiResponse = await this.apim_client.apiDiagnostic.createOrUpdate(
+
+            await this.apim_client.apiDiagnostic
+                .createOrUpdate(
                     this.resource_group,
                     this.resource_name,
                     apiId,
                     diagnostics.name,
                     diagnostics,
-                    <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'})
-        
-                if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-                    this._logger.error(logErrMessage)
-                }
-            } catch (error) {
-                this._logger.error(logErrMessage + ": '" + error + "'")
-            }
+                    <DiagnosticCreateOrUpdateOptionalParams>{ifMatch:'*'}
+                )
+                .catch((error) => this._logger.error(logErrMessage + '\n' + error))
         }
     }
 
@@ -380,16 +371,29 @@ export class ApimApiPlugin extends BaseIngredient {
         let policyData = await this.ResolvePolicy(policy)
 
         if (operation == "base") {
-            let response = await this.apim_client.apiPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, policyData, <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
-            if (response._response.status != 200 && response._response.status != 201) {
-                this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId)
-            }
+            await this.apim_client.apiPolicy
+                .createOrUpdate(
+                    this.resource_group,
+                    this.resource_name, 
+                    apiId,
+                    "policy",
+                    policyData,
+                    <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'}
+                )
+                .catch((error) => this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId + '\n' + error))
         }
         else {
-            let response = await this.apim_client.apiOperationPolicy.createOrUpdate(this.resource_group, this.resource_name, apiId, operation, policyData,<ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'})
-            if (response._response.status != 200 && response._response.status != 201) {
-                this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId + " operation: " + operation)
-            }
+            await this.apim_client.apiOperationPolicy
+                .createOrUpdate(
+                    this.resource_group,
+                    this.resource_name,
+                    apiId,
+                    operation,
+                    "policy",
+                    policyData,
+                    <ApiPolicyCreateOrUpdateOptionalParams>{ifMatch: '*'}
+                )
+                .catch((error) => this._logger.error("APIM API Plugin: Could not apply API Policy for API " + apiId + " operation: " + operation + '\n' + error))
         }
     }
 
@@ -398,25 +402,24 @@ export class ApimApiPlugin extends BaseIngredient {
         if (this.apim_client == undefined) return
 
         //Clean existing products if different than the one you are assigning to
-        var existingProducts = await this.apim_client.apiProduct.listByApis(this.resource_group, this.resource_name, apiId);
+        var existingProducts = await this.GetArrayFromPagedIterator<ProductContract>(this.apim_client.apiProduct.listByApis(this.resource_group, this.resource_name, apiId));
 
         for (let i = 0; i < existingProducts.length; i++) {
             let oldProductId = existingProducts[i].name || ""
 
             if(oldProductId != productId)
             {
-                await this.apim_client.productApi.deleteMethod(this.resource_group, this.resource_name, oldProductId, apiId)
-                .then((result) => { this._logger.log('APIM API Plugin: Deleting API: ' + apiId + " from product " + oldProductId)})
-                .catch((failure) => {this._logger.error("APIM API Plugin: Could not delete API " + apiId + "from product " + oldProductId) })
+                await this.apim_client.productApi.delete(this.resource_group, this.resource_name, oldProductId, apiId)
+                    .then(() => { this._logger.log('APIM API Plugin: Deleting API: ' + apiId + " from product " + oldProductId)})
+                    .catch((failure) => {this._logger.error("APIM API Plugin: Could not delete API " + apiId + "from product " + oldProductId + '\n' + failure) })
             }
         }
         
         this._logger.log('APIM API Plugin: Assigning APIs: ' + apiId + " to product " + productId)
 
-        let apiResponse = await this.apim_client.productApi.createOrUpdate(this.resource_group, this.resource_name, productId, apiId)
-        if (apiResponse._response.status != 200 && apiResponse._response.status != 201){
-            this._logger.error("APIM API Plugin: Could not bind API " + apiId + "to product " + productId)
-        }
+        await this.apim_client.productApi
+            .createOrUpdate(this.resource_group, this.resource_name, productId, apiId)
+            .catch((error) => this._logger.error("APIM API Plugin: Could not bind API " + apiId + "to product " + productId + '\n' + error))
     }
 
     private GetApi(id: string): ApiContract | null {
@@ -446,7 +449,7 @@ export class ApimApiPlugin extends BaseIngredient {
 
         let blockTime = (this.apim_options || <IApimOptions>{}).apiWaitTime
 
-        if (policy.value.startsWith("file:///")) {
+        if (policy.value && policy.value.startsWith("file:///")) {
 
             let content = fs.readFileSync(policy.value.replace("file:///", "")).toString('utf-8')
             policy.format = "xml";
@@ -477,5 +480,18 @@ export class ApimApiPlugin extends BaseIngredient {
             setTimeout(resolve,ms)
         })
     }
+
+    private async GetArrayFromPagedIterator<T>(pagedIterator: PagedAsyncIterableIterator<T>) : Promise<T[]>
+    {
+        let retArray : Array<T> = new Array<T>()
+
+        const pages = pagedIterator.byPage();
+        for await (const page of pages) {
+            for (const item of page) {
+                retArray.push(item);
+            }
+        }
+
+        return retArray;
+    }
 }
-//https://docs.microsoft.com/en-us/javascript/api/azure-arm-apimanagement/propertycontract?view=azure-node-latest
