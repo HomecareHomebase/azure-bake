@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.45](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.44...@azbake/ingredient-apim@0.2.45) (2023-05-25)
+
+
+### Bug Fixes
+
+* add missing azure/identity dependency ([#300](https://github.com/HomecareHomebase/azure-bake/issues/300)) ([232f766](https://github.com/HomecareHomebase/azure-bake/commit/232f76609f3fc16effee9d1f5c122c6539005157))
+
+
+
+
+
 ## [0.2.44](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-apim@0.2.43...@azbake/ingredient-apim@0.2.44) (2023-05-25)
 
 
