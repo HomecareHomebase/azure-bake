@@ -91,10 +91,11 @@ export class VariableResolver {
                 this._logger.log(`Resolving bake variable [${type}[${index}].${propertyName}]`);
             }
 
-            if (isObject) {
+            if(type.startsWith('secrets.') === true){
+                this._logger.debug(`Resolving bake variable [${type}[${index}].${propertyName}] to [*** secret value masked ***]`);
+            } else if (isObject) {
                 this._logger.debug(`Resolving bake variable [${type}[${index}].${propertyName}] to [${JSON.stringify(value)}]`);
-            }
-            else {
+            } else {
                 this._logger.debug(`Resolving bake variable [${type}[${index}].${propertyName}] to [${value}]`);
             }
         }
