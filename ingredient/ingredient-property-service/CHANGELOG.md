@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.50](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.49...@azbake/ingredient-property-service@0.1.50) (2023-07-31)
+
+
+### Bug Fixes
+
+* mask when logging secrets ([#301](https://github.com/HomecareHomebase/azure-bake/issues/301)) ([b0fc944](https://github.com/HomecareHomebase/azure-bake/commit/b0fc944965c17d49b3b0db3e16fbee6bb374ad61))
+
+
+
+
+
 ## [0.1.49](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-property-service@0.1.48...@azbake/ingredient-property-service@0.1.49) (2023-01-20)
 
 
