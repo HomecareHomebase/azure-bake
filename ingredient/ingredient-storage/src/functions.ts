@@ -134,8 +134,18 @@ export class StorageUtils extends BaseUtility {
 
         if (policy)
         {
-            var mgmtClient = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
-            var responese = await mgmtClient.managementPolicies.createOrUpdate(account.rg, account.name, policy);    
+            const mgmtClient = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+
+            // ensure the policies are tied to the container via filters
+            if (policy.rules) {
+                for(let i=0; i < policy.rules.length; ++i){
+                    let rule = policy.rules[i]
+                    
+                    rule.definition.filters!.prefixMatch = [container + "/"]
+                }
+            }
+
+            await mgmtClient.managementPolicies.createOrUpdate(account.rg, account.name, policy);    
         }
 
 
