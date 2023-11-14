@@ -29,14 +29,12 @@ export class CustomScriptIngredient extends BaseIngredient {
 
             //expose all params as a simple object.
             var params: any = {}
-            this._ingredient.properties.parameters.forEach( (v, k)=>
-            {
-                v.valueAsync(this._ctx).then(val=>{
-                    let n = k +"=" + val
-                    this._logger.log('param: ' + n) 
-                    params[k] = val    
-                })
-            })
+            for(const [k,v]  of this._ingredient.properties.parameters){
+                const val = await v.valueAsync(this._ctx)
+                let n = k +"=" + val
+                this._logger.log('param: ' + n)
+                params[k] = val    
+            }
 
             let script = contents + "\n onExecute(this._ctx, this._logger, params)"
             await eval(script)
