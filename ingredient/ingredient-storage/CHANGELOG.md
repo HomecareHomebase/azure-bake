@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.130](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.129...@azbake/ingredient-storage@0.1.130) (2023-11-14)
+
+
+### Bug Fixes
+
+* Feature/storage security ([#303](https://github.com/HomecareHomebase/azure-bake/issues/303)) ([2dd4c71](https://github.com/HomecareHomebase/azure-bake/commit/2dd4c71f3408a9286e00327a26fa01a49d4fb5e3))
+
+
+
+
+
 ## [0.1.129](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.128...@azbake/ingredient-storage@0.1.129) (2023-08-23)
 
 
