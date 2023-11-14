@@ -48,7 +48,7 @@
         },
         "IsHttpsTrafficOnly": {
             "type": "bool",
-            "defaultValue": false,
+            "defaultValue": true,
             "metadata": {
                 "description": "Allows https traffic only to storage service if sets to true."
             }
