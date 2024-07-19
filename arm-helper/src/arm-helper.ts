@@ -20,10 +20,15 @@ export class ARMHelper {
 
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
 
-        try {
-            //now iterate through all resources in the template and append our standard tags to any existing tags in the ARM template.
+        try {                        
+            let tagsEnabled = this._ingredient.properties.parameters.get("tagsEnabled") || true;
+
+            if (tagsEnabled)
+            {
+                //now iterate through all resources in the template and append our standard tags to any existing tags in the ARM template.
             logger.log('appending standard tags');
-            template = this.AppendStandardTags(template);
+                template = this.AppendStandardTags(template);
+            }
 
             logger.log('starting arm deployment for template');
 
