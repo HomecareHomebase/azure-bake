@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-postgresql",
   "description": "Ingredient for deploying an instance of PostgreSQL.",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",

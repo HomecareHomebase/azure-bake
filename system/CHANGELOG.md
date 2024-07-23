@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.51](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.48...azure-bake@0.5.51) (2024-07-23)
+
+
+### Bug Fixes
+
+* resetting versions ([#306](https://github.com/HomecareHomebase/azure-bake/issues/306)) ([8496842](https://github.com/HomecareHomebase/azure-bake/commit/8496842efa7ff4cf47c1ab27c3f3f923c4e2551a))
+* update arm-apimanagement to v9.0.0 ([#299](https://github.com/HomecareHomebase/azure-bake/issues/299)) ([59cfbb3](https://github.com/HomecareHomebase/azure-bake/commit/59cfbb3a26007c542a4d608245b338fdb9d0194c))
+* updating typescript version ([#304](https://github.com/HomecareHomebase/azure-bake/issues/304)) ([e52f620](https://github.com/HomecareHomebase/azure-bake/commit/e52f620b503b27724543737deb171ccfe2f62b04))
+
+
+
+
+
 ## [0.5.49](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.48...azure-bake@0.5.49) (2024-07-23)
 
 
