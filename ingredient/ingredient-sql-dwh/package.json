@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-sql-dwh",
   "description": "Ingredient for deploying an instance of SQL Data Warehouse.",
-  "version": "0.1.172",
+  "version": "0.1.173",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
