@@ -1,4 +1,4 @@
-import { Subnet } from '@azure/arm-network/esm/models'
+import { Subnet } from '@azure/arm-network'
 
 export class VnetData {
     value!: Value;
