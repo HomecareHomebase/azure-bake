@@ -208,7 +208,7 @@ export class BakeRunner {
                 this._AuthCreds = await msRestNodeAuth
                     .loginWithServicePrincipalSecret(auth.serviceId, auth.secretKey, auth.tenantId)
             }
-            catch (err) {
+            catch (err: any) {
                 this._logger.error(red("login failed: " + err.message))
                 return false
             }
