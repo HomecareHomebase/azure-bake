@@ -5,7 +5,7 @@ import { PostgreSQLDBUtils } from "./functions"
 import { VnetData } from "./vnetData"
 import PublicAccessARMTemplate from "./PublicAccessArm.json" 
 import PrivateAccessARMTemplate from "./PrivateAccessArm.json"
-import { Subnet,VirtualNetwork } from "@azure/arm-network/esm/models"
+import { Subnet,VirtualNetwork } from "@azure/arm-network"
 
 export class PostgreSQLDB extends BaseIngredient {
 

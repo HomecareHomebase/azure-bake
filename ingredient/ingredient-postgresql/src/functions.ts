@@ -1,6 +1,5 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
-import { NetworkManagementClient } from '@azure/arm-network';
-import { Subnet, VirtualNetwork } from '@azure/arm-network/esm/models';
+import { NetworkManagementClient, Subnet, VirtualNetwork } from '@azure/arm-network';
 import { PrivateDnsManagementClient, PrivateZone } from '@azure/arm-privatedns';
 import { DefaultAzureCredential, ClientSecretCredential,ChainedTokenCredential } from "@azure/identity";
 import { RestError } from '@azure/ms-rest-js';

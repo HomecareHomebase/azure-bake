@@ -30,7 +30,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "typescript": "^4.1.6"
+    "typescript": "^5.5.4"
   },
   "publishConfig": {
     "access": "public"
