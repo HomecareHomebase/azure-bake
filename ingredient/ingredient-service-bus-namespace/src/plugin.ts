@@ -43,9 +43,9 @@ export class ServiceBusNamespace extends BaseIngredient {
                     } else {
                         this._logger.log('Pairing is already broken.');
                     }
-                } catch(error)
+                } catch(error: any)
                 {
-                    if (error.statusCode == 404) {
+                    if (error?.statusCode == 404) {
                         this._logger.log('Alias not found. Skipping the breaking of pairing.');
                     } else {
                         throw error;
