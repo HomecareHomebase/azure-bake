@@ -31,6 +31,8 @@ export interface IIngredientProperties {
     parameters: Map<string,BakeVariable>,
     tokens: Map<string,BakeVariable>,
     alerts: Map<string,BakeVariable>
+    disableTags?: boolean
+
 }
 
 export interface IIngredientType {

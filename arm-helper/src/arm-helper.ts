@@ -21,9 +21,9 @@ export class ARMHelper {
         const logger = new Logger(this._ctx.Logger.getPre().concat(deploymentName), this._ctx.Environment.logLevel);
 
         try {                        
-            let tagsEnabled = this._ingredient.properties.parameters.get("tagsEnabled") || true;
+            const shouldDisableTags: boolean = await this._ingredient.properties.disableTags || false;            
 
-            if (tagsEnabled)
+            if (!shouldDisableTags)
             {
                 //now iterate through all resources in the template and append our standard tags to any existing tags in the ARM template.
             logger.log('appending standard tags');
