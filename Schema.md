@@ -94,6 +94,8 @@ properties:
     source: string
     tokens: {string: variable}
     parameters: {string: variable}
+    disableTags?: bool
+
 dependsOn: [string]
 ```
 
@@ -105,6 +107,7 @@ dependsOn: [string]
 |source|depends on ingredient|source file/option for some ingredients|
 |tokens|depends on ingredient|Token values typically used to update configuration files when deployed.  Check ingredient docs for token options|
 |parameters|depends on ingredient|check ingredient docs for parameter options|
+|disableTags|no|If true, disables tags for resources that don't support tags (e.g. Azure storage retention policy)|
 |dependsOn|no|list of ingredient blocks that must be deployed before this block|
 
 *note: ingredients are always deployed in parallel when possible, depending on dependency requirements*
