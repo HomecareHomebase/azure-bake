@@ -94,7 +94,7 @@ properties:
     source: string
     tokens: {string: variable}
     parameters: {string: variable}
-    disableTags?: bool
+    disableTags: bool
 
 dependsOn: [string]
 ```
