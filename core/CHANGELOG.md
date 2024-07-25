@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.108](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.107...@azbake/core@0.1.108) (2024-07-25)
+
+
+### Bug Fixes
+
+* Added disableTags Property ([#307](https://github.com/HomecareHomebase/azure-bake/issues/307)) ([4ec4807](https://github.com/HomecareHomebase/azure-bake/commit/4ec4807eadf54d4bb6518ddf68d9e8390345567d)), closes [#304](https://github.com/HomecareHomebase/azure-bake/issues/304) [#305](https://github.com/HomecareHomebase/azure-bake/issues/305)
+
+
+
+
+
 ## [0.1.107](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/core@0.1.106...@azbake/core@0.1.107) (2022-04-05)
 
 

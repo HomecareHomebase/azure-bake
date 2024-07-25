@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-key-vault",
   "description": "Ingredient for deploying Key Vault",
-  "version": "0.1.112",
+  "version": "0.1.113",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -19,12 +19,12 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@azbake/core": "^0.1.107",
+    "@azbake/core": "^0.1.108",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18"
   },
   "dependencies": {
-    "@azbake/arm-helper": "^0.1.110"
+    "@azbake/arm-helper": "^0.1.112"
   },
   "publishConfig": {
     "access": "public"

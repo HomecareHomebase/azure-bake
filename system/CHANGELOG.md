@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.53](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.51...azure-bake@0.5.53) (2024-07-25)
+
+
+### Bug Fixes
+
+* Fix/build ([#308](https://github.com/HomecareHomebase/azure-bake/issues/308)) ([170a4c6](https://github.com/HomecareHomebase/azure-bake/commit/170a4c6e2330932193baca5383a6078b2c2eac25))
+
+
+
+
+
 ## [0.5.51](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.48...azure-bake@0.5.51) (2024-07-23)
 
 

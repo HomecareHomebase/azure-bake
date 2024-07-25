@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.112](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.110...@azbake/arm-helper@0.1.112) (2024-07-25)
+
+
+### Bug Fixes
+
+* Added disableTags Property ([#307](https://github.com/HomecareHomebase/azure-bake/issues/307)) ([4ec4807](https://github.com/HomecareHomebase/azure-bake/commit/4ec4807eadf54d4bb6518ddf68d9e8390345567d)), closes [#304](https://github.com/HomecareHomebase/azure-bake/issues/304) [#305](https://github.com/HomecareHomebase/azure-bake/issues/305)
+* Fix/build ([#308](https://github.com/HomecareHomebase/azure-bake/issues/308)) ([170a4c6](https://github.com/HomecareHomebase/azure-bake/commit/170a4c6e2330932193baca5383a6078b2c2eac25))
+
+
+
+
+
 ## [0.1.110](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/arm-helper@0.1.109...@azbake/arm-helper@0.1.110) (2023-02-02)
 
 

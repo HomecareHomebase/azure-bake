@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.120](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.119...@azbake/ingredient-service-bus-namespace@0.1.120) (2024-07-25)
+
+**Note:** Version bump only for package @azbake/ingredient-service-bus-namespace
+
+
+
+
+
 ## [0.1.119](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-service-bus-namespace@0.1.116...@azbake/ingredient-service-bus-namespace@0.1.119) (2024-07-23)
 
 

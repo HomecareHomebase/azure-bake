@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.6...@azbake/ingredient-acs@0.0.7) (2024-07-25)
+
+**Note:** Version bump only for package @azbake/ingredient-acs
+
+
+
+
+
 ## [0.0.6](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.5...@azbake/ingredient-acs@0.0.6) (2023-02-02)
 
 **Note:** Version bump only for package @azbake/ingredient-acs
