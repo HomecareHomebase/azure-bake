@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.131...@azbake/ingredient-storage@0.2.0) (2024-09-12)
+
+
+### Features
+
+* add properties parm to storage ingredient ([#309](https://github.com/HomecareHomebase/azure-bake/issues/309)) ([ff6c9e5](https://github.com/HomecareHomebase/azure-bake/commit/ff6c9e5e2da318a19e75db1372fc6daef9f37a26))
+
+
+
+
+
 ## [0.1.131](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.130...@azbake/ingredient-storage@0.1.131) (2024-07-25)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
