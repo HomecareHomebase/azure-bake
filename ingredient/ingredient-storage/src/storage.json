@@ -87,8 +87,8 @@
             "kind": "[parameters('storageKind')]",
             "properties": {
                 "accessTier": "[parameters('storageAccessTier')]",
-                "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" 
-            
+                "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",
+                "minimumTlsVersion": "TLS1_2"
             },
             "tags": {
                 "Metrics": "*"
