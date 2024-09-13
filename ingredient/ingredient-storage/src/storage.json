@@ -57,21 +57,6 @@
         {
             "type":"object",
             "defaultValue": {}
-        },
-        "fileServiceProperties" :
-        {
-            "type":"object",
-            "defaultValue": {}
-        },
-        "queueServiceProperties" :
-        {
-            "type":"object",
-            "defaultValue": {}
-        },
-        "tableServiceProperties" :
-        {
-            "type":"object",
-            "defaultValue": {}
         }
     },
     "resources": [
@@ -106,45 +91,6 @@
                 "tier": "[parameters('storageTier')]"   
             },
             "properties": "[parameters('blobServiceProperties')]"
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/fileServices",
-            "apiVersion": "2020-08-01-preview",
-            "name": "[concat(parameters('storageAccountName'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-            ],
-            "sku": {
-                "name": "[parameters('storageAccountType')]",
-                "tier": "[parameters('storageTier')]"   
-            },
-            "properties": "[parameters('fileServiceProperties')]"
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/queueServices",
-            "apiVersion": "2020-08-01-preview",
-            "name": "[concat(parameters('storageAccountName'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-            ],
-            "sku": {
-                "name": "[parameters('storageAccountType')]",
-                "tier": "[parameters('storageTier')]"   
-            },
-            "properties": "[parameters('queueServiceProperties')]"
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/tableServices",
-            "apiVersion": "2020-08-01-preview",
-            "name": "[concat(parameters('storageAccountName'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-            ],
-            "sku": {
-                "name": "[parameters('storageAccountType')]",
-                "tier": "[parameters('storageTier')]"   
-            },
-            "properties": "[parameters('tableServiceProperties')]"
         }
     ]
 }
