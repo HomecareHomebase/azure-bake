@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.0...@azbake/ingredient-storage@0.2.1) (2024-09-13)
+
+
+### Bug Fixes
+
+* remove file queue and table services ([661003f](https://github.com/HomecareHomebase/azure-bake/commit/661003f6ff7f3ed8996534d8b906b3b8709f9afb))
+
+
+
+
+
 # [0.2.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.1.131...@azbake/ingredient-storage@0.2.0) (2024-09-12)
 
 
