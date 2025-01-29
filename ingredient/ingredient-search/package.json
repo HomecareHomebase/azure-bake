@@ -1,0 +1,30 @@
+{
+  "name": "@azbake/ingredient-search",
+  "description": "Ingredient for deploying azure search",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "author": "HCHB",
+  "license": "MIT",
+  "scripts": {
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p ."
+  },
+  "directories": {
+    "lib": "dist"
+  },
+  "peerDependencies": {
+    "@azbake/core": "*",
+    "@azure/ms-rest-nodeauth": "*"
+    
+  },
+  "devDependencies": {
+    "@azbake/core": "^0.1.108",
+    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@types/node": "^10.12.18"
+  },
+  "dependencies": {
+    "@azure/arm-search": "^3.2.0"
+  }
+}
