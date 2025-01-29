@@ -25,6 +25,7 @@
     "@types/node": "^10.12.18"
   },
   "dependencies": {
+    "@azbake/arm-helper": "^0.1.112",
     "@azure/arm-search": "^3.2.0"
   }
 }
