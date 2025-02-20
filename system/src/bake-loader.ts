@@ -62,7 +62,7 @@ export class BakePackage {
             }
            
         } catch (e) {
-            let logger = new Logger()
+            let logger = new Logger([], this._env.logLevel);
             logger.debug(content)
             logger.error("Failed to load global environment variables")
             logger.error(e)
