@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.54](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.53...azure-bake@0.5.54) (2025-02-20)
+
+
+### Bug Fixes
+
+* Adding log level ([#314](https://github.com/HomecareHomebase/azure-bake/issues/314)) ([755eee1](https://github.com/HomecareHomebase/azure-bake/commit/755eee13aafca3068c68f8bd52f117c349eb36c8))
+* Adding log level support for env.yaml loading ([#313](https://github.com/HomecareHomebase/azure-bake/issues/313)) ([97b3038](https://github.com/HomecareHomebase/azure-bake/commit/97b3038ee05648bda1a8aae4647731093d733d35))
+
+
+
+
+
 ## [0.5.53](https://github.com/HomecareHomebase/azure-bake/compare/azure-bake@0.5.51...azure-bake@0.5.53) (2024-07-25)
 
 
