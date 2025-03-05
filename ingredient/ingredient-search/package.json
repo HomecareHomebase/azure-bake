@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-search",
   "description": "Ingredient for deploying azure search",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
@@ -17,7 +17,6 @@
   "peerDependencies": {
     "@azbake/core": "*",
     "@azure/ms-rest-nodeauth": "*"
-    
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
