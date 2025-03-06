@@ -7,6 +7,9 @@ export class SearchUtils extends BaseUtility {
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         const ais_profile = util.create_resource_name("ais", null, false);
+
+        this.context._logger.debug(`SearchUtils.create_resource_name() returned ${ais_profile}`);
+
         return ais_profile;
     }
 
@@ -27,6 +30,8 @@ export class SearchUtils extends BaseUtility {
         {
             key = response.primaryKey || ""
         }
+
+        this.context._logger.debug(`SearchUtils.get_primary_admin_key() returned ${key}`);
 
         return key
     }
@@ -49,6 +54,8 @@ export class SearchUtils extends BaseUtility {
             key = response.secondaryKey || ""
         }
         
+        this.context._logger.debug(`SearchUtils.get_secondary_admin_key() returned ${key}`);
+
         return key
     }
 }
