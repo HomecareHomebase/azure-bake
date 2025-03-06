@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-search@0.2.3...@azbake/ingredient-search@0.2.4) (2025-03-06)
+
+
+### Bug Fixes
+
+* add missing dependency ([#319](https://github.com/HomecareHomebase/azure-bake/issues/319)) ([ed29342](https://github.com/HomecareHomebase/azure-bake/commit/ed2934266209531105e09e22c343e1755541f37b))
+
+
+
+
+
 ## [0.2.3](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-search@0.2.2...@azbake/ingredient-search@0.2.3) (2025-03-06)
 
 

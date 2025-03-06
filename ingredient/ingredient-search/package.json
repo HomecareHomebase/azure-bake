@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-search",
   "description": "Ingredient for deploying azure search",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
