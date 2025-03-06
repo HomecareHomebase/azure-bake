@@ -18,7 +18,7 @@ export class SearchPlugIn extends BaseIngredient {
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
             
-            // define resource group
+            // define resource group and check rgOverride 
             let rgOverrideParam  = this._ingredient.properties.parameters.get('rgOverride')
             if (rgOverrideParam) {
                 this.resourceGroup = await rgOverrideParam.valueAsync(this._ctx)
