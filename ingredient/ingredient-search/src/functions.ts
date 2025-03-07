@@ -4,10 +4,10 @@ import { SearchManagementClient } from '@azure/arm-search'
 
 export class SearchUtils extends BaseUtility {
 
-    public create_resource_name(): string {
+    public create_resource_name(useRegionCode: boolean = true): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
-        const ais_profile = util.create_resource_name("ais", null, false);
-
+        const ais_profile = util.create_resource_name("ais", null, useRegionCode);
+                     
         this.context._logger.debug(`SearchUtils.create_resource_name() returned ${ais_profile}`);
 
         return ais_profile;
