@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-search@0.2.4...@azbake/ingredient-search@0.2.5) (2025-03-07)
+
+
+### Bug Fixes
+
+* add useRegionCode parameter to create_resource_name ([#320](https://github.com/HomecareHomebase/azure-bake/issues/320)) ([8753830](https://github.com/HomecareHomebase/azure-bake/commit/87538302e2de3fef324a85813267dc76b7e64d14))
+
+
+
+
+
 ## [0.2.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-search@0.2.3...@azbake/ingredient-search@0.2.4) (2025-03-06)
 
 
