@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.1...@azbake/ingredient-storage@0.2.2) (2025-03-14)
+
+
+### Bug Fixes
+
+* add missing sku types for storage ([#321](https://github.com/HomecareHomebase/azure-bake/issues/321)) ([1d30e06](https://github.com/HomecareHomebase/azure-bake/commit/1d30e068f97b368da2ed7f9847231d08723d4ffe))
+
+
+
+
+
 ## [0.2.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.0...@azbake/ingredient-storage@0.2.1) (2024-09-13)
 
 
