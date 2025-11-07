@@ -1,3 +1,19 @@
+try {
+  const { webcrypto } = require('crypto'); // Node's Web Crypto (Node 16+: experimental)
+  if (!globalThis.crypto) {
+    Object.defineProperty(globalThis, 'crypto', {
+      value: webcrypto,
+      writable: false,
+      configurable: true,
+      enumerable: false,
+    });
+    console.log('Having to shim crypto...");
+  }
+} catch (e) {
+  console.warn('No Crypto available:', e);
+}
+
+
 import { ApimApiPlugin } from './plugin'
 import { ApimApiUtils } from './functions'
 
