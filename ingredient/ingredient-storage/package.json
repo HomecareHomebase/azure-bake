@@ -1,7 +1,7 @@
 {
   "name": "@azbake/ingredient-storage",
   "description": "Ingredient for deploying a storage account",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "dist/index.js",
   "typings": "src/index.ts",
   "author": "HCHB",
