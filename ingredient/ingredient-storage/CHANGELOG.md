@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.4...@azbake/ingredient-storage@0.2.5) (2025-12-10)
+
+
+### Bug Fixes
+
+* Feature/add granular delete policy ([#1](https://github.com/HomecareHomebase/azure-bake/issues/1)) ([#333](https://github.com/HomecareHomebase/azure-bake/issues/333)) ([71ad515](https://github.com/HomecareHomebase/azure-bake/commit/71ad515b723c5c551b5eaadd6420d73533aa0db6))
+
+
+
+
+
 ## [0.2.4](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.3...@azbake/ingredient-storage@0.2.4) (2025-11-07)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
