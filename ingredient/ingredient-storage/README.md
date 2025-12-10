@@ -102,9 +102,7 @@ Utility classes can be used inside of the bake.yaml file for parameter and sourc
 |function|description|
 |--------|-----------|
 |create_resource_name()| Returns the name created for the traffic manager profile when deployed.|
-|add_delete_policy(name, enabled, daysAfter)| Creates a global delete policy rule for all blockBlobs.|
-|add_delete_policy_for_prefix(name, enabled, daysAfter, prefixMatch, blobTypes?)| Creates a delete policy rule with container/path prefix filters.|
-|add_delete_policy_advanced(name, enabled, daysAfter, options)| Creates a delete policy rule with advanced filtering (prefix + blob index tags).|
+|add_delete_policy(name, enabled, daysAfter, options?)| Creates a delete policy rule with optional container/path/tag filters.|
 |create_policy(...rules)| Creates a management policy schema from one or more rules.|
 |get_container(account, container, accessLevel?, policy?)| Gets or creates a container and optionally applies a management policy.|
 |get_storageaccount(resourceGroup, name)| Gets storage account details including endpoints and key.|
@@ -132,36 +130,35 @@ string
 
 The storage ingredient supports Azure Blob Storage lifecycle management policies for automatic blob deletion based on age. You can apply policies globally, per container, or even per path prefix.
 
-#### add_delete_policy(name, enabled, daysAfter)
-Creates a global delete policy rule that applies to all blockBlobs in the storage account.
+#### add_delete_policy(name, enabled, daysAfter, options?)
+Creates a delete policy rule for blob lifecycle management. Supports global policies (all blobs), container-level, path-level, or tag-based filtering.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| name | string | The name of the policy rule (unique within the policy) |
+| name | string | The name of the policy rule (unique within the policy, up to 256 alphanumeric characters) |
 | enabled | boolean | Whether the rule is enabled |
 | daysAfter | number | Days after last modification to delete the blob |
+| options | object | Optional. Filtering options for container/path/tag-based policies |
+| options.prefixMatch | string[] | Optional. Array of prefix strings (e.g., `["logs/", "data/temp/"]`). Each prefix must start with a container name. Up to 10 prefixes per rule. |
+| options.blobIndexMatch | object[] | Optional. Array of blob index tag conditions `{ name, op, value }` |
+| options.blobTypes | string[] | Optional. Blob types. Defaults to `["blockBlob"]`. Valid: `"blockBlob"`, `"appendBlob"` |
 
-#### add_delete_policy_for_prefix(name, enabled, daysAfter, prefixMatch, blobTypes?)
-Creates a delete policy rule with container/path prefix filters. This allows setting different TTL policies per container or per path prefix within containers.
+**Example: Global delete policy (all blobs)**
+```typescript
+// Delete all blockBlobs in the storage account after 90 days
+const globalRule = storage.add_delete_policy("delete-all", true, 90);
+```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| name | string | The name of the policy rule (unique within the policy) |
-| enabled | boolean | Whether the rule is enabled |
-| daysAfter | number | Days after last modification to delete the blob |
-| prefixMatch | string[] | Array of prefix strings (e.g., `["logs/", "temp/archive/"]`). Each prefix must start with a container name. Up to 10 prefixes per rule. |
-| blobTypes | string[] | Optional. Blob types to apply to. Defaults to `["blockBlob"]`. Valid: `"blockBlob"`, `"appendBlob"` |
-
-**Example: Different TTL per container**
+**Example: Container-level TTL**
 ```typescript
 // Delete blobs in 'logs' container after 30 days
-const logsRule = storage.add_delete_policy_for_prefix("delete-logs", true, 30, ["logs/"]);
+const logsRule = storage.add_delete_policy("delete-logs", true, 30, { prefixMatch: ["logs/"] });
 
 // Delete blobs in 'temp' container after 7 days  
-const tempRule = storage.add_delete_policy_for_prefix("delete-temp", true, 7, ["temp/"]);
+const tempRule = storage.add_delete_policy("delete-temp", true, 7, { prefixMatch: ["temp/"] });
 
 // Delete blobs in 'archive' container after 365 days
-const archiveRule = storage.add_delete_policy_for_prefix("delete-archive", true, 365, ["archive/"]);
+const archiveRule = storage.add_delete_policy("delete-archive", true, 365, { prefixMatch: ["archive/"] });
 
 // Create combined policy
 const policy = storage.create_policy(logsRule, tempRule, archiveRule);
@@ -170,31 +167,27 @@ const policy = storage.create_policy(logsRule, tempRule, archiveRule);
 **Example: Path-level TTL within a container**
 ```typescript
 // Delete blobs in 'data/temp/' after 7 days, 'data/cache/' after 14 days
-const tempRule = storage.add_delete_policy_for_prefix("delete-data-temp", true, 7, ["data/temp/"]);
-const cacheRule = storage.add_delete_policy_for_prefix("delete-data-cache", true, 14, ["data/cache/"]);
+const tempRule = storage.add_delete_policy("delete-data-temp", true, 7, { prefixMatch: ["data/temp/"] });
+const cacheRule = storage.add_delete_policy("delete-data-cache", true, 14, { prefixMatch: ["data/cache/"] });
 
 const policy = storage.create_policy(tempRule, cacheRule);
 ```
 
-#### add_delete_policy_advanced(name, enabled, daysAfter, options)
-Creates a delete policy rule with advanced filtering options including prefix and blob index tags.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| name | string | The name of the policy rule |
-| enabled | boolean | Whether the rule is enabled |
-| daysAfter | number | Days after last modification to delete the blob |
-| options | object | Advanced filtering options |
-| options.prefixMatch | string[] | Optional. Array of prefix strings |
-| options.blobIndexMatch | object[] | Optional. Array of blob index tag conditions `{ name, op, value }` |
-| options.blobTypes | string[] | Optional. Blob types. Defaults to `["blockBlob"]` |
-
 **Example: Filter by blob index tags**
 ```typescript
 // Delete blobs tagged as "archived" in 'reports' container after 14 days
-const rule = storage.add_delete_policy_advanced("delete-archived-reports", true, 14, {
+const rule = storage.add_delete_policy("delete-archived-reports", true, 14, {
   prefixMatch: ["reports/"],
   blobIndexMatch: [{ name: "status", op: "==", value: "archived" }]
+});
+```
+
+**Example: Include appendBlobs**
+```typescript
+// Delete both blockBlobs and appendBlobs in 'logs' container after 30 days
+const rule = storage.add_delete_policy("delete-all-types", true, 30, { 
+  prefixMatch: ["logs/"],
+  blobTypes: ["blockBlob", "appendBlob"] 
 });
 ```
 
@@ -203,7 +196,7 @@ Creates a management policy schema from one or more policy rules.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| rules | ManagementPolicyRule[] | One or more policy rules created by add_delete_policy functions |
+| rules | ManagementPolicyRule[] | One or more policy rules created by add_delete_policy |
 
 #### get_container(account, container, accessLevel?, policy?)
 Gets or creates a container and optionally applies a management policy. When a policy is provided, it automatically scopes the policy rules to the specified container by adding prefix filters.
