@@ -91,16 +91,75 @@ export class StorageUtils extends BaseUtility {
 
     }
 
-    public add_delete_policy(name: string, enabled: boolean, daysAfter: number) : ManagementPolicyRule{
+    /**
+     * Creates a delete policy rule for blob lifecycle management.
+     * Supports global policies (all blobs), container-level, path-level, or tag-based filtering.
+     * 
+     * @param name - The name of the policy rule (must be unique within the policy, up to 256 alphanumeric characters)
+     * @param enabled - Whether the rule is enabled
+     * @param daysAfter - Number of days after last modification to delete the blob
+     * @param options - Optional filtering options for container/path/tag-based TTL policies
+     * @param options.prefixMatch - Array of prefix strings to filter blobs (e.g., ["container1/", "container2/subfolder/"])
+     *                              Each prefix must start with a container name. Up to 10 prefixes per rule.
+     * @param options.blobIndexMatch - Array of blob index tag conditions for filtering (e.g., [{ name: "status", op: "==", value: "archived" }])
+     * @param options.blobTypes - Array of blob types to apply the policy to. Defaults to ["blockBlob"]. Valid: "blockBlob", "appendBlob"
+     * @returns ManagementPolicyRule configured with the specified filters
+     * 
+     * @example
+     * // Global delete policy - applies to all blockBlobs in the storage account
+     * const globalRule = storage.add_delete_policy("delete-all", true, 90);
+     * 
+     * @example
+     * // Container-level TTL - delete blobs in 'logs' container after 30 days
+     * const logsRule = storage.add_delete_policy("delete-logs", true, 30, { prefixMatch: ["logs/"] });
+     * 
+     * @example
+     * // Path-level TTL - delete blobs in specific subfolders after 7 days
+     * const tempRule = storage.add_delete_policy("delete-temp", true, 7, { prefixMatch: ["data/temp/", "cache/"] });
+     * 
+     * @example
+     * // Tag-based filtering - delete blobs tagged as "archived" in 'reports' container after 14 days
+     * const tagRule = storage.add_delete_policy("delete-archived", true, 14, {
+     *   prefixMatch: ["reports/"],
+     *   blobIndexMatch: [{ name: "status", op: "==", value: "archived" }]
+     * });
+     * 
+     * @example
+     * // Include appendBlobs in the policy
+     * const rule = storage.add_delete_policy("delete-all-types", true, 30, { 
+     *   prefixMatch: ["logs/"],
+     *   blobTypes: ["blockBlob", "appendBlob"] 
+     * });
+     */
+    public add_delete_policy(
+        name: string, 
+        enabled: boolean, 
+        daysAfter: number,
+        options: {
+            prefixMatch?: string[];
+            blobIndexMatch?: Array<{ name: string; op: string; value: string }>;
+            blobTypes?: ("blockBlob" | "appendBlob")[];
+        } = {}
+    ) : ManagementPolicyRule {
         const rule = <ManagementPolicyRule>{
             name: name,
             enabled: enabled,
         };
 
+        const filters: ManagementPolicyFilter = {
+            blobTypes: options.blobTypes || ["blockBlob"]
+        };
+
+        if (options.prefixMatch && options.prefixMatch.length > 0) {
+            filters.prefixMatch = options.prefixMatch;
+        }
+
+        if (options.blobIndexMatch && options.blobIndexMatch.length > 0) {
+            filters.blobIndexMatch = options.blobIndexMatch;
+        }
+
         rule.definition = <ManagementPolicyDefinition>{
-            filters : <ManagementPolicyFilter>{
-                blobTypes : ["blockBlob"]
-            },
+            filters: filters,
             actions: <ManagementPolicyAction>{
                 baseBlob : <ManagementPolicyBaseBlob>{
                     deleteProperty: <DateAfterModification>{
