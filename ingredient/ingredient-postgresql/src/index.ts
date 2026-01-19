@@ -38,9 +38,10 @@ try {
   });
   console.log('crypto shimmed!');
 } catch (e) {
-    console.log('No Crypto available:', e);
+  console.log('No Crypto available:', e);
 }
 
+// Use require so TS doesn't hoist imports above the shim
 const { PostgreSQLDB } = require('./plugin');
 const {PostgreSQLDBUtils} = require('./functions');
 
