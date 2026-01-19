@@ -43,7 +43,7 @@ try {
 
 // Use require so TS doesn't hoist imports above the shim
 const { PostgreSQLDB } = require('./plugin');
-const {PostgreSQLDBUtils} = require('./functions');
+const { PostgreSQLDBUtils } = require('./functions');
 
 /*  comment out these entries if you are not including an ingredient plugin runner*/
 exports.plugin = PostgreSQLDB
