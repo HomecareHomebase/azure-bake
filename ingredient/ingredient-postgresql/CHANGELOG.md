@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.19](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.18...@azbake/ingredient-postgresql@0.1.19) (2026-01-19)
+
+
+### Bug Fixes
+
+* Add crypto shim to postgresql ingredient ([#334](https://github.com/HomecareHomebase/azure-bake/issues/334)) ([0b88c7c](https://github.com/HomecareHomebase/azure-bake/commit/0b88c7c3377453d4e0ddc5af8b03f786a2ea843a))
+
+
+
+
+
 ## [0.1.18](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.17...@azbake/ingredient-postgresql@0.1.18) (2024-07-25)
 
 **Note:** Version bump only for package @azbake/ingredient-postgresql
