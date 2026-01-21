@@ -2,11 +2,14 @@ name: test-package
 shortName: tstpkg
 version: 1.0.0
 ingredients:
-  - "@azbake/ingredient-null@~0"
+  - "@azbake/fixture-ingredient@1.2.3"
+variables:
+  foo: config
+  bar: config
 recipe:
   alpha:
     properties:
-      type: "@azbake/ingredient-null"
+      type: fixture
       source: ./src
       parameters:
         foo: bar

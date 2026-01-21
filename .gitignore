@@ -16,6 +16,13 @@ lib
 .idea
 *.vsix
 
+!tests/fixtures/node_modules/
+!tests/fixtures/node_modules/**
+!tests/fixtures/fallback/node_modules/
+!tests/fixtures/fallback/node_modules/**
+!tests/fixtures/recipes/node_modules/
+!tests/fixtures/recipes/node_modules/**
+
 azdevops/**/*.js
 !azdevops/imports/**/*.js
 /.vs

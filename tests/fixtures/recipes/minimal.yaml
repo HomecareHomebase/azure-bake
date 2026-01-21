@@ -3,6 +3,9 @@ shortName: tstpkg
 version: 1.0.0
 ingredients:
   - "@azbake/ingredient-null@~0"
+variables:
+  foo: config
+  bar: config
 recipe:
   alpha:
     properties:

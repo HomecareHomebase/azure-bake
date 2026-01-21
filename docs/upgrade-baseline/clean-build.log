@@ -1,0 +1,321 @@
+# npm run clean:build
+
+## STDOUT
+
+> clean:build
+> lerna clean --yes && lerna bootstrap --hoist && lerna run compile
+
+
+> @azbake/core@0.1.108 compile
+> tsc -p .
+
+
+> @azbake/ingredient-null@0.0.11 compile
+> tsc -p .
+
+
+> @azbake/ingredient-kubernetes@0.1.117 compile
+> tsc -p .
+
+
+> @azbake/arm-helper@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-utils@0.1.113 compile
+> tsc -p .
+
+
+> @azbake/ingredient-script@0.1.116 compile
+> tsc -p .
+
+
+> @azbake/ingredient-property-service@0.1.54 compile
+> tsc -p .
+
+
+> @azbake/ingredient-acs@0.0.7 compile
+> tsc -p .
+
+
+> @azbake/ingredient-arm@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-availability-set@0.1.113 compile
+> tsc -p .
+
+
+> @azbake/ingredient-app-insights@0.1.115 compile
+> tsc -p .
+
+
+> @azbake/ingredient-container-reg@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-azure-vm-extension@0.1.113 compile
+> tsc -p .
+
+
+> @azbake/ingredient-databricks@0.1.151 compile
+> tsc -p .
+
+
+> @azbake/ingredient-cosmosdb@0.0.13 compile
+> tsc -p .
+
+
+> @azbake/ingredient-batch@0.0.14 compile
+> tsc -p .
+
+
+> @azbake/ingredient-event-hub-namespace@0.1.116 compile
+> tsc -p .
+
+
+> @azbake/ingredient-event-hub@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-metric-alert@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-app-service-plan@0.1.115 compile
+> tsc -p .
+
+
+> @azbake/ingredient-key-vault@0.1.113 compile
+> tsc -p .
+
+
+> @azbake/ingredient-storage@0.2.5 compile
+> tsc -p .
+
+
+> @azbake/ingredient-function-app@0.1.112 compile
+> tsc -p .
+
+
+> @azbake/ingredient-apim-api@0.2.46 compile
+> tsc -p .
+
+
+> @azbake/ingredient-search@0.2.5 compile
+> tsc -p .
+
+
+> @azbake/ingredient-functions@0.1.176 compile
+> tsc -p .
+
+
+> @azbake/ingredient-datafactoryv2@0.1.152 compile
+> tsc -p .
+
+
+> @azbake/ingredient-azure-vm@0.1.118 compile
+> tsc -p .
+
+
+> @azbake/ingredient-host-names@0.1.115 compile
+> tsc -p .
+
+
+> @azbake/ingredient-network-interface@0.1.139 compile
+> tsc -p .
+
+
+> @azbake/ingredient-apim@0.2.46 compile
+> tsc -p .
+
+
+> @azbake/ingredient-postgresql@0.1.19 compile
+> tsc -p .
+
+
+> @azbake/ingredient-sqlserver-logical@0.1.152 compile
+> tsc -p .
+
+
+> @azbake/ingredient-sqldb@0.1.152 compile
+> tsc -p .
+
+
+> azure-bake@0.5.54 compile
+> tsc -p .
+
+
+> @azbake/ingredient-service-bus-queue@0.1.115 compile
+> tsc -p .
+
+
+> @azbake/ingredient-webapp-container@0.1.115 compile
+> tsc -p .
+
+
+> @azbake/ingredient-sql-dwh@0.1.176 compile
+> tsc -p .
+
+
+> @azbake/ingredient-service-bus-namespace@0.1.120 compile
+> tsc -p .
+
+
+> @azbake/ingredient-traffic-manager@0.1.117 compile
+> tsc -p .
+
+
+## STDERR
+
+npm warn Unknown project config "always-auth". This will stop working in the next major version of npm.
+lerna notice cli v3.22.1
+lerna info versioning independent
+lerna info clean removing D:\git\azure-bake\arm-helper\node_modules
+lerna info clean removing D:\git\azure-bake\core\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-acs\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-apim-api\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-apim\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-app-insights\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-app-service-plan\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-arm\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-availability-set\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-azure-vm-extension\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-azure-vm\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-batch\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-container-reg\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-cosmosdb\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-databricks\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-datafactoryv2\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-event-hub-namespace\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-event-hub\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-function-app\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-functions\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-host-names\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-key-vault\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-kubernetes\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-metric-alert\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-network-interface\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-null\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-postgresql\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-property-service\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-script\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-search\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-service-bus-namespace\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-service-bus-queue\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-sql-dwh\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-sqldb\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-sqlserver-logical\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-storage\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-traffic-manager\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-utils\node_modules
+lerna info clean removing D:\git\azure-bake\ingredient\ingredient-webapp-container\node_modules
+lerna info clean removing D:\git\azure-bake\system\node_modules
+lerna success clean finished
+lerna notice cli v3.22.1
+lerna info versioning independent
+lerna info Bootstrapping 40 packages
+lerna WARN EHOIST_PKG_VERSION "@azbake/ingredient-functions" package depends on @types/node@^10.17.5, which differs from the hoisted @types/node@^10.12.18.
+lerna WARN EHOIST_ROOT_VERSION The repository root depends on @azure/arm-network@^14.0.0, which differs from the more common @azure/arm-network@^26.0.0.
+lerna WARN EHOIST_PKG_VERSION "@azbake/ingredient-network-interface" package depends on @azure/arm-network@^23.0.0, which differs from the hoisted @azure/arm-network@^14.0.0.
+lerna WARN EHOIST_PKG_VERSION "@azbake/ingredient-postgresql" package depends on @azure/arm-network@^26.0.0, which differs from the hoisted @azure/arm-network@^14.0.0.
+lerna WARN EHOIST_PKG_VERSION "azure-bake" package depends on @azure/arm-resources@^4.0.0, which differs from the hoisted @azure/arm-resources@1.*.
+lerna WARN EHOIST_PKG_VERSION "@azbake/ingredient-sql-dwh" package depends on @azure/arm-sql@^7.0.2, which differs from the hoisted @azure/arm-sql@^5.7.0.
+lerna info Installing external dependencies
+lerna info hoist Installing hoisted dependencies into root
+lerna info hoist Pruning hoisted dependencies
+lerna info hoist Finished pruning hoisted dependencies
+lerna info hoist Finished bootstrapping root
+lerna info Symlinking packages and binaries
+lerna WARN EREPLACE_EXIST @azbake/core is already installed for @azbake/ingredient-functions. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/core is already installed for @azbake/ingredient-network-interface. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/ingredient-utils is already installed for @azbake/ingredient-network-interface. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/ingredient-utils is already installed for @azbake/ingredient-postgresql. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/core is already installed for @azbake/ingredient-postgresql. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/core is already installed for @azbake/ingredient-sql-dwh. Replacing with symlink...
+lerna WARN EREPLACE_EXIST @azbake/ingredient-utils is already installed for @azbake/ingredient-sql-dwh. Replacing with symlink...
+lerna success Bootstrapped 40 packages
+lerna notice cli v3.22.1
+lerna info versioning independent
+lerna info Executing command in 40 packages: "npm run compile"
+lerna info run Ran npm script 'compile' in '@azbake/core' in 1.2s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-null' in 1.4s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-kubernetes' in 1.5s:
+lerna info run Ran npm script 'compile' in '@azbake/arm-helper' in 1.5s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-utils' in 2.0s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-script' in 2.3s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-property-service' in 2.4s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-acs' in 2.5s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-arm' in 2.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-availability-set' in 2.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-app-insights' in 3.0s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-container-reg' in 3.1s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-azure-vm-extension' in 3.2s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-databricks' in 3.3s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-cosmosdb' in 3.5s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-batch' in 3.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-event-hub-namespace' in 3.6s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-event-hub' in 3.9s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-metric-alert' in 3.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-app-service-plan' in 3.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-key-vault' in 4.2s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-storage' in 4.1s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-function-app' in 4.3s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-apim-api' in 4.4s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-search' in 4.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-functions' in 4.5s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-datafactoryv2' in 4.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-azure-vm' in 4.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-host-names' in 4.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-network-interface' in 4.6s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-apim' in 5.1s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-postgresql' in 3.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-sqlserver-logical' in 3.2s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-sqldb' in 3.3s:
+lerna info run Ran npm script 'compile' in 'azure-bake' in 2.8s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-service-bus-queue' in 3.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-webapp-container' in 3.0s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-sql-dwh' in 3.7s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-service-bus-namespace' in 4.0s:
+lerna info run Ran npm script 'compile' in '@azbake/ingredient-traffic-manager' in 3.2s:
+lerna success run Ran npm script 'compile' in 40 packages in 9.5s:
+lerna success - @azbake/arm-helper
+lerna success - @azbake/core
+lerna success - @azbake/ingredient-acs
+lerna success - @azbake/ingredient-apim-api
+lerna success - @azbake/ingredient-apim
+lerna success - @azbake/ingredient-app-insights
+lerna success - @azbake/ingredient-app-service-plan
+lerna success - @azbake/ingredient-arm
+lerna success - @azbake/ingredient-availability-set
+lerna success - @azbake/ingredient-azure-vm-extension
+lerna success - @azbake/ingredient-azure-vm
+lerna success - @azbake/ingredient-batch
+lerna success - @azbake/ingredient-container-reg
+lerna success - @azbake/ingredient-cosmosdb
+lerna success - @azbake/ingredient-databricks
+lerna success - @azbake/ingredient-datafactoryv2
+lerna success - @azbake/ingredient-event-hub-namespace
+lerna success - @azbake/ingredient-event-hub
+lerna success - @azbake/ingredient-function-app
+lerna success - @azbake/ingredient-functions
+lerna success - @azbake/ingredient-host-names
+lerna success - @azbake/ingredient-key-vault
+lerna success - @azbake/ingredient-kubernetes
+lerna success - @azbake/ingredient-metric-alert
+lerna success - @azbake/ingredient-network-interface
+lerna success - @azbake/ingredient-null
+lerna success - @azbake/ingredient-postgresql
+lerna success - @azbake/ingredient-property-service
+lerna success - @azbake/ingredient-script
+lerna success - @azbake/ingredient-search
+lerna success - @azbake/ingredient-service-bus-namespace
+lerna success - @azbake/ingredient-service-bus-queue
+lerna success - @azbake/ingredient-sql-dwh
+lerna success - @azbake/ingredient-sqldb
+lerna success - @azbake/ingredient-sqlserver-logical
+lerna success - @azbake/ingredient-storage
+lerna success - @azbake/ingredient-traffic-manager
+lerna success - @azbake/ingredient-utils
+lerna success - @azbake/ingredient-webapp-container
+lerna success - azure-bake

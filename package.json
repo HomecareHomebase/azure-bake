@@ -12,6 +12,7 @@
     "load:build": "lerna bootstrap --hoist && lerna run compile",
     "load:ingredients": "lerna run link:ingredients",
     "build": "lerna bootstrap --hoist && lerna run compile",
+    "test": "lerna run test",
     "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes"
   },
   "dependencies": {

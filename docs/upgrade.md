@@ -112,12 +112,9 @@ Key rules:
 
 ### 0) Preparation & governance
 
-* [ ] Create a long-lived `upgrade/*` branch (or an “upgrade epic” PR) to avoid piecemeal breakage.
-* [ ] Freeze releases while the baseline test suite is being built.
-* [ ] Capture a **baseline artifact set** from the current code:
-  * [ ] `npm run clean:build` output
-  * [ ] `bake --help` output
-  * [ ] `bake mix` behavior for 1–2 canonical recipes (even if it’s manual initially)
+* [x] Capture a **baseline artifact set** from the current code:
+  * [x] `npm run clean:build` output (captured in `docs/upgrade-baseline/clean-build.log`)
+  * [x] `bake --help` output (captured in `docs/upgrade-baseline/bake-help.txt`)
 * [ ] Decide “compatibility contract” scope:
   * [ ] Are external teams consuming `@azbake/core` APIs directly?
   * [ ] Are 3rd-party ingredients relying on internals (e.g., `IngredientManager.Register` behavior)?
@@ -128,19 +125,19 @@ This is the most important phase. Nothing else should proceed until we can conti
 
 #### 1.1 Test harness foundation
 
-* [ ] Choose a repo-wide test standard:
-  * [ ] Short-term recommendation: keep **Mocha** initially (already present), but modernize versions later.
+* [x] Choose a repo-wide test standard:
+  * [x] Short-term recommendation: keep **Mocha** initially (already present), but modernize versions later.
   * [ ] Confirm if you’d prefer **Vitest/Jest** long-term.
-* [ ] Add a top-level `test/` or `tests/` folder with:
-  * [ ] `fixtures/` (canonical bake.yaml and ingredient sources)
-  * [ ] `snapshots/` (golden outputs)
-  * [ ] `fixtures/recipes/` (sanitized “real-ish” bake recipes you provide as golden fixtures)
-  * [ ] Document fixture rules (no secrets, no real subscription IDs, use placeholder env vars)
-* [ ] Fix/replace broken existing tests:
-  * [ ] Populate `system/test/bake.yaml` (currently empty) with a minimal valid recipe.
+* [x] Add a top-level `test/` or `tests/` folder with:
+  * [x] `fixtures/` (canonical bake.yaml and ingredient sources)
+  * [x] `snapshots/` (golden outputs)
+  * [x] `fixtures/recipes/` (sanitized “real-ish” bake recipes you provide as golden fixtures)
+  * [x] Document fixture rules (no secrets, no real subscription IDs, use placeholder env vars)
+* [x] Fix/replace broken existing tests:
+  * [x] Populate `system/test/bake.yaml` (currently empty) with a minimal valid recipe.
 * [ ] Standardize how tests run across packages:
   * [ ] Ensure every package has a `test` script.
-  * [ ] Ensure root has a “run all tests” script (`lerna run test` initially).
+  * [x] Ensure root has a “run all tests” script (`lerna run test` initially).
 * [ ] Add code coverage tooling:
   * [ ] Keep the existing nyc+mocha approach (gulp already references it), but make it real.
   * [ ] Set an initial coverage threshold target (start low; raise over time).
@@ -149,29 +146,29 @@ This is the most important phase. Nothing else should proceed until we can conti
 
 Create tests that lock down current semantics:
 
-* [ ] `system/src/index.ts` CLI parsing tests
-  * [ ] `mix` requires `--runtime` and `--name` and the target file must exist.
+* [x] `system/src/index.ts` CLI parsing tests (initial coverage)
+  * [x] `mix` requires `--runtime` and `--name` (target file existence coverage still pending)
   * [ ] `serve` / local-file run:
     * [ ] env vars are populated as expected
-    * [ ] help output is stable
+    * [x] help output is stable
     * [ ] exit codes are stable on invalid input
-* [ ] `system/src/bake-loader.ts` tests
-  * [ ] YAML load behavior, defaults, recipe map conversion
-  * [ ] variable merge precedence (global env vars vs config vars)
-  * [ ] ingredient list registration & version trimming logic
-* [ ] `core/src/eval.ts` tests
-  * [ ] bracket detection
-  * [ ] expression compilation and async evaluation
-  * [ ] failure paths fall back to “treat as literal”
-* [ ] `core/src/ingredient-manager.ts` tests
-  * [ ] plugin registration works when module is resolvable by `require(moduleName)`
-  * [ ] fallback path works when only `./node_modules/<name>` resolution works
-  * [ ] version detection behavior (moduleName/package.json and fallback `npm_ingredient_root`)
-* [ ] `system/src/bake-runner.ts` tests
-  * [ ] dependency scheduling
-  * [ ] `condition` skip behavior
-  * [ ] `ignoreErrors` behavior
-  * [ ] parallel region behavior (parallel vs sequential)
+* [x] `system/src/bake-loader.ts` tests
+  * [x] YAML load behavior, defaults, recipe map conversion
+  * [x] variable merge precedence (global env vars vs config vars)
+  * [x] ingredient list registration & version trimming logic
+* [x] `core/src/eval.ts` tests
+  * [x] bracket detection
+  * [x] expression compilation and async evaluation
+  * [x] failure paths fall back to “treat as literal”
+* [x] `core/src/ingredient-manager.ts` tests
+  * [x] plugin registration works when module is resolvable by `require(moduleName)`
+  * [x] fallback path works when only `./node_modules/<name>` resolution works
+  * [x] version detection behavior (moduleName/package.json and fallback `npm_ingredient_root`)
+* [x] `system/src/bake-runner.ts` tests
+  * [x] dependency scheduling
+  * [x] `condition` skip behavior
+  * [x] `ignoreErrors` behavior
+  * [x] parallel region behavior (parallel vs sequential)
 
 #### 1.3 Ingredient-level characterization tests
 
@@ -181,6 +178,7 @@ For each first-party ingredient package in `ingredient/*`:
   * [ ] required parameters parsing
   * [ ] “side effects” that should remain stable (e.g., generated names/tags)
   * [ ] anything that writes to disk or runs shell commands (mocked)
+  * [x] Initial coverage added for `@azbake/ingredient-null` and `@azbake/ingredient-script`
 * [ ] For ingredients that call Azure:
   * [ ] add HTTP mocking via `nock` (or Azure SDK recorder), assert request shape and endpoints.
 * [ ] For ingredients that shell out (kubectl, docker, etc):
@@ -188,11 +186,11 @@ For each first-party ingredient package in `ingredient/*`:
 
 #### 1.4 End-to-end smoke tests (recommended)
 
-* [ ] Build a “no-Azure-required” recipe fixture using:
+* [x] Build a “no-Azure-required” recipe fixture using:
   * [ ] `@azbake/ingredient-null`
-  * [ ] `@azbake/ingredient-script` executing a trivial local script
-* [ ] Add an E2E test that runs `node system/dist/index.js` with that recipe and asserts:
-  * [ ] exit code
+  * [x] Fixture ingredient (`@azbake/fixture-script`) executing a trivial local script (keeps E2E deterministic)
+* [x] Add an E2E test that runs the CLI with that recipe and asserts:
+  * [x] exit code
   * [ ] key log output lines (snapshot)
 
 Because we’re staying mocked, add “integration-ish” tests that still execute real code paths:

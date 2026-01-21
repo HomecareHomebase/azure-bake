@@ -1,0 +1,41 @@
+Bake CLI v0.5.54
+
+bake [command] [options] <image|file>
+commands:
+
+serve	--- Serve a pre-built image recipe or local bake yaml config
+<image>		: docker recipe image to download and deploy
+<file>		: bake yaml file to deploy
+
+mix	--- Mix a recipe into a docker image for publishing
+<file>		: bake yaml file to mix into a recipe image. The entire parent folder will get copied into the image
+--runtime		: which bake runtime to mix against (latest, v1.0.0, etc)
+--name		: Name of the recipe image (docker tag)
+
+optional options for [serve]
+
+skip-auth		: skip azure login for recipes that dont need it
+env-name		: Full environment name for deployment
+env-code		: 4 letter environment code (used for resource naming)
+regions			: [{"name":"East US","code":"eus","shortName":"eastus"}]
+sub			: Azure Subscription Id
+tenant			: Azure AAD tenant for Service Principal authentication
+serviceid		: Azure Service Principal Id
+key			: Azure Service Principal secret key
+cert			: Azure Service Principal PEM cert file (overrides secret key)
+variables		: Path to local yaml file of key:value pairs for global variables
+loglevel			: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.
+
+optional environment variables (instead of above parameters):
+
+BAKE_ENV_NAME			: Full environment name for deployment
+BAKE_ENV_CODE			: 4 letter environment code (used for resource naming)
+BAKE_ENV_REGIONS		: [{"name":"East US","code":"eus","shortName":"eastus"}]
+BAKE_AUTH_SKIP	: skip azure login for recipes that dont need it
+BAKE_AUTH_SUBSCRIPTION_ID	: Azure Subscription Id
+BAKE_AUTH_TENANT_ID		: Azure AAD tenant for Service Principal authentication
+BAKE_AUTH_SERVICE_ID		: Azure Service Principal Id
+BAKE_AUTH_SERVICE_KEY		: Azure Service Principal secret key
+BAKE_AUTH_SERVICE_CERT		: Azure Service Principal PEM cert file (overrides secret key)
+BAKE_VARIABLES			: Path to local yaml file of key:value pairs for global variables
+BAKE_LOG_LEVEL			: Log levels are debug, info, warn, and error (from most to least verbosity).  Info is the default.
