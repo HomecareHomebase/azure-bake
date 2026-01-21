@@ -15,6 +15,7 @@ npm-debug.log
 lib
 .idea
 *.vsix
+test/app.spec.ts
 
 !tests/fixtures/node_modules/
 !tests/fixtures/node_modules/**
@@ -29,3 +30,6 @@ azdevops/**/*.js
 .env
 /.devcontainer
 /_ReSharper.Caches
+.nyc_output/
+
+coverage/

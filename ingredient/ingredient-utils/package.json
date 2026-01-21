@@ -20,7 +20,8 @@
   "scripts": {
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
-    "watch": "tsc -w -p ."
+    "watch": "tsc -w -p .",
+    "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
   },
   "peerDependencies": {
     "@azbake/core": "*"

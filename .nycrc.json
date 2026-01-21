@@ -1,0 +1,31 @@
+{
+  "extension": [
+    ".ts"
+  ],
+  "all": true,
+  "check-coverage": true,
+  "reporter": [
+    "text",
+    "lcov"
+  ],
+  "require": [
+    "ts-node/register/transpile-only"
+  ],
+  "include": [
+    "core/src/**/*.ts",
+    "arm-helper/src/**/*.ts",
+    "system/src/**/*.ts",
+    "ingredient/*/src/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.d.ts",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/test/**",
+    "**/tests/**"
+  ],
+  "statements": 5,
+  "branches": 0,
+  "functions": 5,
+  "lines": 5
+}

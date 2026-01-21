@@ -5,6 +5,7 @@ resourceGroup: false
 parallelRegions: false
 ingredients:
   - "@azbake/fixture-script@1.0.0"
+  - "@azbake/ingredient-null@1.0.0"
 recipe:
   run-script:
     properties:
@@ -13,3 +14,9 @@ recipe:
       parameters:
         outputPath: ./e2e.out
         message: hello
+  noop:
+    properties:
+      type: "@azbake/ingredient-null"
+      source: ./
+      parameters:
+        ping: "[ctx.Environment.environmentCode]"

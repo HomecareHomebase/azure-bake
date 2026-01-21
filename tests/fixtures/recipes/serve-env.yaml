@@ -1,0 +1,15 @@
+name: serve-env
+shortName: srv
+version: 1.0.0
+resourceGroup: false
+parallelRegions: false
+ingredients:
+  - "@azbake/fixture-script@1.0.0"
+recipe:
+  write-env:
+    properties:
+      type: "@azbake/fixture-script"
+      source: ./
+      parameters:
+        outputPath: ./serve-env.out
+        message: "[ctx.Environment.environmentName + ':' + ctx.Environment.environmentCode]"

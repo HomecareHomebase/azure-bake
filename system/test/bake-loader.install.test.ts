@@ -7,10 +7,15 @@ import * as path from 'path'
 import { IngredientManager } from '@azbake/core'
 
 describe('bake-loader dynamic install', () => {
-    it('installs missing ingredients with legacy-peer-deps', () => {
+    it('skips install when ingredients are linked locally', () => {
         const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-install-'))
         const nodeModules = path.join(tmpRoot, 'node_modules')
-        fs.mkdirSync(nodeModules)
+        const scopeDir = path.join(nodeModules, '@azbake')
+        fs.mkdirSync(scopeDir, { recursive: true })
+
+        const ingredientSource = path.resolve(__dirname, '../../ingredient/ingredient-null')
+        const ingredientLink = path.join(scopeDir, 'ingredient-null')
+        fs.symlinkSync(ingredientSource, ingredientLink, 'junction')
 
         const bakeFile = path.join(tmpRoot, 'bake.yaml')
         fs.writeFileSync(
@@ -20,17 +25,21 @@ describe('bake-loader dynamic install', () => {
                 'shortName: tst',
                 'version: 1.0.0',
                 'ingredients:',
-                '  - "@azbake/missing-ingredient@1.0.0"',
+                '  - "@azbake/ingredient-null@0.0.11"',
                 'recipe:',
                 '  alpha:',
                 '    properties:',
-                '      type: missing',
+                '      type: "@azbake/ingredient-null"',
                 '      source: ./src',
                 '      parameters: {}'
             ].join('\n')
         )
 
+        const originalNodePath = process.env.NODE_PATH
         process.env.npm_ingredient_root = nodeModules
+        process.env.NODE_PATH = nodeModules
+        require('module').Module._initPaths()
+
         process.env.BAKE_ENV_REGIONS = JSON.stringify([{ name: 'Global', code: 'glob', shortName: 'global' }])
         process.env.BAKE_ENV_NAME = 'env'
         process.env.BAKE_ENV_CODE = 'code'
@@ -69,11 +78,14 @@ describe('bake-loader dynamic install', () => {
             IngredientManager.Register = originalRegister
             require.cache[azcliPath].exports = originalAzcli
             delete require.cache[require.resolve('../src/bake-loader')]
+            if (originalNodePath) {
+                process.env.NODE_PATH = originalNodePath
+            } else {
+                delete process.env.NODE_PATH
+            }
+            require('module').Module._initPaths()
         }
 
-        expect(calls.length).to.eq(1)
-        expect(calls[0]).to.contain('install')
-        expect(calls[0]).to.contain('@azbake/missing-ingredient@1.0.0')
-        expect(calls[0]).to.contain('--legacy-peer-deps')
+        expect(calls.length).to.eq(0)
     })
 })

@@ -177,7 +177,7 @@ function runCmd(command, done) {
 
 }
 function setupCoveragePool() {
-    return gulp.src(["ingredinent/**/src/*.ts", "system/**/src/*.ts", "core/src/*.ts"]).pipe(writeFilenameToFile()).pipe(debug());
+    return gulp.src(["ingredient/**/src/*.ts", "system/**/src/*.ts", "core/src/*.ts"]).pipe(writeFilenameToFile()).pipe(debug());
 }
 
 function sonarQube(done) {

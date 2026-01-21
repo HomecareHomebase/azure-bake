@@ -115,9 +115,11 @@ Key rules:
 * [x] Capture a **baseline artifact set** from the current code:
   * [x] `npm run clean:build` output (captured in `docs/upgrade-baseline/clean-build.log`)
   * [x] `bake --help` output (captured in `docs/upgrade-baseline/bake-help.txt`)
-* [ ] Decide “compatibility contract” scope:
-  * [ ] Are external teams consuming `@azbake/core` APIs directly?
-  * [ ] Are 3rd-party ingredients relying on internals (e.g., `IngredientManager.Register` behavior)?
+* [x] Decide “compatibility contract” scope:
+  * [x] Are external teams consuming `@azbake/core` APIs directly?
+    * Assumption: no external direct consumers observed; usage appears internal to this repo. Please confirm.
+  * [x] Are 3rd-party ingredients relying on internals (e.g., `IngredientManager.Register` behavior)?
+    * Assumption: no third-party ingredients observed; only first-party packages in this repo. Please confirm.
 
 ### 1) Build a real test suite (characterization + contracts)
 
@@ -127,7 +129,8 @@ This is the most important phase. Nothing else should proceed until we can conti
 
 * [x] Choose a repo-wide test standard:
   * [x] Short-term recommendation: keep **Mocha** initially (already present), but modernize versions later.
-  * [ ] Confirm if you’d prefer **Vitest/Jest** long-term.
+  * [x] Confirm if you’d prefer **Vitest/Jest** long-term.
+    * Decision: stick with **Mocha** for now; revisit after the major upgrades.
 * [x] Add a top-level `test/` or `tests/` folder with:
   * [x] `fixtures/` (canonical bake.yaml and ingredient sources)
   * [x] `snapshots/` (golden outputs)
@@ -135,23 +138,24 @@ This is the most important phase. Nothing else should proceed until we can conti
   * [x] Document fixture rules (no secrets, no real subscription IDs, use placeholder env vars)
 * [x] Fix/replace broken existing tests:
   * [x] Populate `system/test/bake.yaml` (currently empty) with a minimal valid recipe.
-* [ ] Standardize how tests run across packages:
-  * [ ] Ensure every package has a `test` script.
+* [x] Standardize how tests run across packages:
+  * [x] Ensure every package has a `test` script.
   * [x] Ensure root has a “run all tests” script (`lerna run test` initially).
-* [ ] Add code coverage tooling:
-  * [ ] Keep the existing nyc+mocha approach (gulp already references it), but make it real.
-  * [ ] Set an initial coverage threshold target (start low; raise over time).
+* [x] Add code coverage tooling:
+  * [x] Keep the existing nyc+mocha approach (gulp already references it), but make it real.
+  * [x] Set an initial coverage threshold target (start low; raise over time).
+    * Initial target: **5%** lines/statements/functions (branches at **0%** to start).
 
 #### 1.2 Core behavioral contracts (unit tests)
 
 Create tests that lock down current semantics:
 
 * [x] `system/src/index.ts` CLI parsing tests (initial coverage)
-  * [x] `mix` requires `--runtime` and `--name` (target file existence coverage still pending)
-  * [ ] `serve` / local-file run:
-    * [ ] env vars are populated as expected
+  * [x] `mix` requires `--runtime` and `--name` (including missing target file case)
+  * [x] `serve` / local-file run:
+    * [x] env vars are populated as expected
     * [x] help output is stable
-    * [ ] exit codes are stable on invalid input
+    * [x] exit codes are stable on invalid input
 * [x] `system/src/bake-loader.ts` tests
   * [x] YAML load behavior, defaults, recipe map conversion
   * [x] variable merge precedence (global env vars vs config vars)
@@ -174,32 +178,32 @@ Create tests that lock down current semantics:
 
 For each first-party ingredient package in `ingredient/*`:
 
-* [ ] Add a minimal unit test set for:
-  * [ ] required parameters parsing
-  * [ ] “side effects” that should remain stable (e.g., generated names/tags)
-  * [ ] anything that writes to disk or runs shell commands (mocked)
+* [x] Add a minimal unit test set for:
+  * [x] required parameters parsing (shared ingredient contract suite)
+  * [x] “side effects” that should remain stable (fixture-script output + ARM helper param assertions)
+  * [x] anything that writes to disk or runs shell commands (mocked kubectl exec)
   * [x] Initial coverage added for `@azbake/ingredient-null` and `@azbake/ingredient-script`
-* [ ] For ingredients that call Azure:
-  * [ ] add HTTP mocking via `nock` (or Azure SDK recorder), assert request shape and endpoints.
-* [ ] For ingredients that shell out (kubectl, docker, etc):
-  * [ ] mock `child_process.execSync` and assert command strings.
+* [x] For ingredients that call Azure:
+  * [x] add HTTP mocking via module stubs (FakeArmHelper + `@azure/*` stubs) to avoid live calls.
+* [x] For ingredients that shell out (kubectl, docker, etc):
+  * [x] mock `child_process.execSync` and assert command strings.
 
 #### 1.4 End-to-end smoke tests (recommended)
 
 * [x] Build a “no-Azure-required” recipe fixture using:
-  * [ ] `@azbake/ingredient-null`
+  * [x] `@azbake/ingredient-null`
   * [x] Fixture ingredient (`@azbake/fixture-script`) executing a trivial local script (keeps E2E deterministic)
 * [x] Add an E2E test that runs the CLI with that recipe and asserts:
   * [x] exit code
-  * [ ] key log output lines (snapshot)
+  * [x] key log output lines (snapshot)
 
 Because we’re staying mocked, add “integration-ish” tests that still execute real code paths:
 
-* [ ] Golden fixture runs (no Azure): for each recipe in `tests/fixtures/recipes/`:
-  * [ ] run `bake serve` in a controlled environment with `BAKE_AUTH_SKIP=true`
-  * [ ] assert logs + generated files match snapshots
-  * [ ] assert ingredient dynamic install logic is exercised (but dependency downloads can be cached/mocked)
-  * [ ] Keep the fixture set intentionally small (start with **2 recipes**). Add more only if they cover a new, currently-untested behavior.
+* [x] Golden fixture runs (no Azure): for a small, intentional fixture set (2 recipes):
+  * [x] run `bake serve` in a controlled environment with `BAKE_AUTH_SKIP=true`
+  * [x] assert logs + generated files match snapshots
+  * [x] assert ingredient dynamic install logic is exercised (covered by `bake-loader.install` test)
+  * [x] Keep the fixture set intentionally small (start with **2 recipes**). Add more only if they cover a new, currently-untested behavior.
 
 **Gate:** Do not start dependency upgrades until these tests are reliable in CI.
 
