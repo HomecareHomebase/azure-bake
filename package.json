@@ -1,6 +1,12 @@
 {
   "name": "root",
   "private": true,
+  "workspaces": [
+    "core",
+    "arm-helper",
+    "ingredient/*",
+    "system"
+  ],
   "engines": {
     "node": "16.x"
   },
@@ -12,7 +18,7 @@
     "@types/sinon": "^21.0.0",
     "chai": "^4.2.0",
     "colors": "^1.4.0",
-    "lerna": "^3.13.0",
+    "lerna": "7.4.2",
     "mocha": "^5.2.0",
     "nyc": "^15.1.0",
     "sinon": "^21.0.1",
@@ -21,10 +27,10 @@
     "typescript": "^5.5.4"
   },
   "scripts": {
-    "clean:build": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile",
-    "load:build": "lerna bootstrap --hoist && lerna run compile",
+    "clean:build": "lerna clean --yes && npm ci && lerna run compile",
+    "load:build": "npm ci && lerna run compile",
     "load:ingredients": "lerna run link:ingredients",
-    "build": "lerna bootstrap --hoist && lerna run compile",
+    "build": "npm ci && lerna run compile",
     "test": "lerna run test",
     "test:coverage": "nyc mocha --timeout 30000 --require ./test/coverage-setup.js --require tsx --reporter min --exclude \"**/node_modules/**\" \"core/test/**/*.ts\" \"arm-helper/test/**/*.ts\" \"system/test/**/*.ts\" \"ingredient/*/test/**/*.ts\" \"tests/**/*.test.ts\"",
     "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes",

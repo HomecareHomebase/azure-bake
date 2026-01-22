@@ -17,8 +17,9 @@ export class FunctionAppUtils extends BaseUtility {
         let client = new ResourceManagementClient(token, this.context.Environment.authentication.subscriptionId);
 
         let faResource = await client.resources.get(await util.resource_group(), "Microsoft.Web", "", "sites", name, "2018-11-01");
+        const properties = faResource.properties as { hostNames: string[] };
 
-        return faResource.properties.hostNames[0];
+        return properties.hostNames[0];
     }
 }
 

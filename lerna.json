@@ -1,9 +1,10 @@
 {
   "version": "independent",
   "npmClient": "npm",
+  "useNx": false,
   "command": {
     "publish": {
-      "conventionalCommits": "true",
+      "conventionalCommits": true,
       "ignoreChanges": [
         "ignored-file",
         "*.md",

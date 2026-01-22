@@ -226,21 +226,23 @@ Modern Lerna expects you to use your package manager’s workspaces.
 
 #### 3.1 Inventory and replace legacy commands
 
-* [ ] Search and list all usages of:
-  * [ ] `lerna bootstrap`
-  * [ ] `lerna add`
-  * [ ] `lerna link`
-* [ ] Replace them with package-manager equivalents (npm examples):
-  * [ ] `lerna bootstrap --hoist` → `npm install` (or `npm ci`)
-  * [ ] `lerna add <dep> --scope <pkg>` → `npm install <dep> -w <pkg>`
+* [x] Search and list all usages of:
+  * [x] `lerna bootstrap` (found in root scripts)
+  * [x] `lerna add` (no repo usages found)
+  * [x] `lerna link` (no repo usages found)
+* [x] Replace them with package-manager equivalents (npm examples):
+  * [x] `lerna bootstrap --hoist` → `npm install` (or `npm ci`)
+  * [x] `lerna add <dep> --scope <pkg>` → `npm install <dep> -w <pkg>` (no usages to replace)
+* [x] Add npm workspaces config in root `package.json` to align with modern Lerna.
 
 #### 3.2 Upgrade Lerna safely
 
 * [ ] Upgrade in two hops (recommended):
-  * [ ] Hop A: upgrade to a Lerna version that still supports your current scripts (if needed).
-  * [ ] Hop B: migrate scripts to workspaces, then upgrade to **Lerna 9.x**.
+  * [x] Hop A: upgrade to a Lerna version that still supports your current scripts (Node 16-compatible). **Completed with `lerna@7.4.2`.**
+  * [ ] Hop B: migrate scripts to workspaces, then upgrade to **Lerna 9.x** (requires Node >= 20.19; deferred to Phase 4).
+  * [x] Keep classic task runner behavior during the hop (`useNx: false`).
 * [ ] After upgrading, run:
-  * [ ] `lerna repair` to update configuration to the current format.
+  * [ ] `lerna repair` to update configuration to the current format (defer until Hop B).
 * [ ] Ensure independent versioning and publish behavior remains the same:
   * [ ] conventional commits
   * [ ] publish tags
