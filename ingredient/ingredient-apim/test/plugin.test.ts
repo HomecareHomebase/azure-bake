@@ -1178,4 +1178,655 @@ describe('ApimPlugin', () => {
             expect(plugin.apim_client.logger.createOrUpdate.calledOnce).to.be.true
         })
     })
+
+    describe('Setup', () => {
+        const originalGetIngredientFunction = IngredientManager.getIngredientFunction
+
+        afterEach(() => {
+            ;(IngredientManager as any).getIngredientFunction = originalGetIngredientFunction
+        })
+
+        it('returns false when resource_group is empty', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => '',
+                resource_group: async () => '',
+                parseResource: () => ({ resourceGroup: '', resource: '' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+            const errorSpy = sandbox.spy(plugin._logger, 'error')
+
+            const result = await plugin.Setup()
+
+            expect(result).to.be.false
+            expect(errorSpy.calledWith('APIM Plugin: resourceGroup can not be empty')).to.be.true
+        })
+
+        it('returns false when resource_name is empty', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => '',
+                resource_group: async () => 'test-rg',
+                parseResource: () => ({ resourceGroup: 'test-rg', resource: '' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+            const errorSpy = sandbox.spy(plugin._logger, 'error')
+
+            const result = await plugin.Setup()
+
+            expect(result).to.be.false
+            expect(errorSpy.calledWith('APIM Plugin: resourceName can not be empty')).to.be.true
+        })
+
+        it('parses source string to get resource group and name', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => 'apim-test',
+                resource_group: async () => 'fallback-rg',
+                parseResource: (source: string) => {
+                    const parts = source.split('/')
+                    return {
+                        resourceGroup: parts[0],
+                        resource: parts[1]
+                    }
+                }
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('custom-rg/custom-apim')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+
+            const result = await plugin.Setup()
+
+            expect(result).to.be.true
+            expect(plugin.resource_group).to.equal('custom-rg')
+            expect(plugin.resource_name).to.equal('custom-apim')
+        })
+
+        it('uses apimService parameter for name when source is empty', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => 'apim-test',
+                resource_group: async () => 'param-rg',
+                parseResource: () => ({ resourceGroup: '', resource: '' })
+            })
+
+            const params = new Map<string, BakeVariable>()
+            params.set('apimService', new BakeVariable({ name: 'apim-from-param' } as any))
+
+            const ctx = createContext()
+            const ingredient = createIngredient(params)
+            ingredient.properties.source = new BakeVariable('')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+
+            const result = await plugin.Setup()
+
+            expect(result).to.be.true
+            expect(plugin.resource_group).to.equal('param-rg')
+            expect(plugin.resource_name).to.equal('apim-from-param')
+        })
+
+        it('creates APIM client on successful setup', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => 'apim-test',
+                resource_group: async () => 'test-rg',
+                parseResource: () => ({ resourceGroup: 'test-rg', resource: 'test-apim' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('test-rg/test-apim')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+
+            const result = await plugin.Setup()
+
+            expect(result).to.be.true
+            expect(plugin.apim_client).to.not.be.undefined
+        })
+    })
+
+    describe('Execute', () => {
+        const originalGetIngredientFunction = IngredientManager.getIngredientFunction
+
+        afterEach(() => {
+            ;(IngredientManager as any).getIngredientFunction = originalGetIngredientFunction
+        })
+
+        it('catches and rethrows errors', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => 'test',
+                resource_group: async () => { throw new Error('Setup failed') },
+                parseResource: () => ({ resourceGroup: '', resource: '' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+            const errorSpy = sandbox.spy(plugin._logger, 'error')
+
+            let error: Error | undefined
+            try {
+                await plugin.Execute()
+            } catch (e: any) {
+                error = e
+            }
+
+            expect(error).to.be.instanceOf(Error)
+            expect(error?.message).to.equal('Setup failed')
+            expect(errorSpy.calledOnce).to.be.true
+        })
+
+        it('does not proceed if Setup returns false', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => '',
+                resource_group: async () => '',
+                parseResource: () => ({ resourceGroup: '', resource: '' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+
+            // Spy on BuildAPIM to ensure it's not called
+            const buildApimSpy = sandbox.spy(plugin, 'BuildAPIM')
+
+            await plugin.Execute()
+
+            expect(buildApimSpy.called).to.be.false
+        })
+
+        it('calls all build methods in order when Setup succeeds', async () => {
+            ;(IngredientManager as any).getIngredientFunction = () => ({
+                create_resource_name: () => 'test-apim',
+                resource_group: async () => 'test-rg',
+                parseResource: () => ({ resourceGroup: 'test-rg', resource: 'test-apim' })
+            })
+
+            const ctx = createContext()
+            const ingredient = createIngredient()
+            ingredient.properties.source = new BakeVariable('test-rg/test-apim')
+            const plugin = new ApimPlugin('apim', ingredient, ctx) as any
+
+            // Stub all the build methods
+            const stubs = {
+                BuildAPIM: sandbox.stub(plugin, 'BuildAPIM').resolves(),
+                BuildDiagnostics: sandbox.stub(plugin, 'BuildDiagnostics').resolves(),
+                BuildNamedValues: sandbox.stub(plugin, 'BuildNamedValues').resolves(),
+                BuildGroups: sandbox.stub(plugin, 'BuildGroups').resolves(),
+                BuildUsers: sandbox.stub(plugin, 'BuildUsers').resolves(),
+                BuildLoggers: sandbox.stub(plugin, 'BuildLoggers').resolves(),
+                BuildAPIs: sandbox.stub(plugin, 'BuildAPIs').resolves(),
+                BuildProducts: sandbox.stub(plugin, 'BuildProducts').resolves(),
+                BuilSubscriptions: sandbox.stub(plugin, 'BuilSubscriptions').resolves(),
+                BuildAuthServers: sandbox.stub(plugin, 'BuildAuthServers').resolves(),
+                BuildIdentityProviders: sandbox.stub(plugin, 'BuildIdentityProviders').resolves(),
+                BuildAutoscaleSettings: sandbox.stub(plugin, 'BuildAutoscaleSettings').resolves(),
+                BuildBackends: sandbox.stub(plugin, 'BuildBackends').resolves()
+            }
+
+            await plugin.Execute()
+
+            // Verify all methods were called
+            expect(stubs.BuildAPIM.calledOnce).to.be.true
+            expect(stubs.BuildDiagnostics.calledOnce).to.be.true
+            expect(stubs.BuildNamedValues.calledOnce).to.be.true
+            expect(stubs.BuildGroups.calledOnce).to.be.true
+            expect(stubs.BuildUsers.calledOnce).to.be.true
+            expect(stubs.BuildLoggers.calledOnce).to.be.true
+            expect(stubs.BuildAPIs.calledOnce).to.be.true
+            expect(stubs.BuildProducts.calledOnce).to.be.true
+            expect(stubs.BuilSubscriptions.calledOnce).to.be.true
+            expect(stubs.BuildAuthServers.calledOnce).to.be.true
+            expect(stubs.BuildIdentityProviders.calledOnce).to.be.true
+            expect(stubs.BuildAutoscaleSettings.calledOnce).to.be.true
+            expect(stubs.BuildBackends.calledOnce).to.be.true
+        })
+    })
+
+    describe('BuildAPIM', () => {
+        it('returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            // Should not throw
+            await plugin.BuildAPIM()
+        })
+
+        it('returns early when apimService parameter is not set', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = {}
+
+            // Should not throw
+            await plugin.BuildAPIM()
+        })
+
+        it('calls beginCreateOrUpdateAndWait with resolved apim data', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('apimService', new BakeVariable({
+                name: 'test-apim',
+                sku: { name: 'Developer', capacity: 1 },
+                publisherEmail: 'test@test.com',
+                publisherName: 'Test'
+            } as any))
+
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(params), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+
+            const mockApim = { id: '/apim', location: 'Global' }
+            plugin.apim_client = {
+                apiManagementService: {
+                    beginCreateOrUpdateAndWait: sandbox.stub().resolves(mockApim)
+                }
+            }
+
+            await plugin.BuildAPIM()
+
+            expect(plugin.apim_client.apiManagementService.beginCreateOrUpdateAndWait.calledOnce).to.be.true
+            expect(plugin.apim).to.deep.equal(mockApim)
+        })
+
+        it('logs error when beginCreateOrUpdateAndWait fails', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('apimService', new BakeVariable({
+                name: 'test-apim',
+                sku: { name: 'Developer', capacity: 1 },
+                publisherEmail: 'test@test.com',
+                publisherName: 'Test'
+            } as any))
+
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(params), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+
+            plugin.apim_client = {
+                apiManagementService: {
+                    beginCreateOrUpdateAndWait: sandbox.stub().rejects(new Error('API call failed'))
+                }
+            }
+
+            let error: Error | undefined
+            try {
+                await plugin.BuildAPIM()
+            } catch (e: any) {
+                error = e
+            }
+
+            expect(error).to.be.instanceOf(Error)
+        })
+    })
+
+    describe('BuildDiagnostics', () => {
+        it('returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildDiagnostics()
+        })
+
+        it('returns early when diagnostics parameter is not set', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = {}
+
+            await plugin.BuildDiagnostics()
+        })
+    })
+
+    describe('BuildLoggers', () => {
+        it('returns early when loggers parameter is not set', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = {}
+
+            await plugin.BuildLoggers()
+        })
+
+        it('iterates through loggers array', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('loggers', new BakeVariable([
+                { name: 'logger1', loggerType: 'applicationInsights', credentials: { instrumentationKey: 'key1' } },
+                { name: 'logger2', loggerType: 'applicationInsights', credentials: { instrumentationKey: 'key2' } }
+            ] as any))
+
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(params), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+            plugin.apim_client = {
+                logger: {
+                    createOrUpdate: sandbox.stub().resolves({
+                        credentials: { instrumentationKey: '{{Logger.Credentials-abc}}' }
+                    })
+                },
+                namedValue: {
+                    listByService: sandbox.stub().returns({
+                        byPage: () => ({
+                            async *[Symbol.asyncIterator]() {
+                                yield []
+                            }
+                        })
+                    })
+                }
+            }
+
+            await plugin.BuildLoggers()
+
+            expect(plugin.apim_client.logger.createOrUpdate.calledTwice).to.be.true
+        })
+    })
+
+    describe('Edge cases', () => {
+        it('GetUserId defaults to Administrator when user is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+            plugin.apim_client = {
+                user: {
+                    get: sandbox.stub().resolves({ id: '/users/1' })
+                }
+            }
+
+            const result = await plugin.GetUserId(undefined)
+
+            expect(plugin.apim_client.user.get.calledWith('rg', 'apim', '1')).to.be.true
+            expect(result).to.equal('/users/1')
+        })
+
+        it('BuildSubscription sets ownerId when user is specified', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+            plugin.apim_client = {
+                user: {
+                    get: sandbox.stub().resolves({ id: '/users/testuser' })
+                },
+                subscription: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                }
+            }
+
+            const sub: any = { name: 'sub-1', displayName: 'Subscription 1', user: 'testuser' }
+            await plugin.BuildSubscription(sub)
+
+            expect(sub.ownerId).to.equal('/users/testuser')
+        })
+
+        it('ResolveAutoscaleSetting returns unchanged when apim.id is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim = { location: 'eastus' } // No id
+
+            const settings = { name: 'scale', profiles: [] }
+            const result = await plugin.ResolveAutoscaleSetting(settings)
+
+            expect(result).to.equal(settings)
+        })
+
+        it('ResolveApim handles additionalLocations with virtualNetworkConfiguration', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+
+            const apim = {
+                name: 'test-apim',
+                sku: { name: 'Premium', capacity: 1 },
+                publisherEmail: 'test@test.com',
+                publisherName: 'Test',
+                additionalLocations: [
+                    {
+                        location: 'westus',
+                        sku: { name: 'Premium', capacity: 1 },
+                        virtualNetworkConfiguration: {
+                            subnetResourceId: '/subscriptions/sub/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet'
+                        }
+                    }
+                ]
+            }
+
+            const result = await plugin.ResolveApim(apim)
+
+            expect(result.additionalLocations[0].virtualNetworkConfiguration.subnetResourceId).to.contain('subnets/subnet')
+        })
+
+        it('ResolveApim handles hostnameConfigurations with certificate details', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+
+            const apim = {
+                name: 'test-apim',
+                sku: { name: 'Developer', capacity: 1 },
+                publisherEmail: 'test@test.com',
+                publisherName: 'Test',
+                hostnameConfigurations: [
+                    {
+                        hostName: 'api.test.com',
+                        type: 'Proxy',
+                        encodedCertificate: 'base64cert',
+                        certificatePassword: 'password',
+                        certificate: {
+                            expiry: '2025-01-01',
+                            thumbprint: 'ABC123',
+                            subject: 'CN=api.test.com'
+                        }
+                    }
+                ]
+            }
+
+            const result = await plugin.ResolveApim(apim)
+
+            expect(result.hostnameConfigurations[0].certificate.thumbprint).to.equal('ABC123')
+        })
+
+        it('ResolveApim handles certificates with certificate details', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+
+            const apim = {
+                name: 'test-apim',
+                sku: { name: 'Developer', capacity: 1 },
+                publisherEmail: 'test@test.com',
+                publisherName: 'Test',
+                certificates: [
+                    {
+                        encodedCertificate: 'base64cert',
+                        certificatePassword: 'password',
+                        storeName: 'Root',
+                        certificate: {
+                            expiry: '2025-01-01',
+                            thumbprint: 'XYZ789',
+                            subject: 'CN=ca.test.com'
+                        }
+                    }
+                ]
+            }
+
+            const result = await plugin.ResolveApim(apim)
+
+            expect(result.certificates[0].certificate.thumbprint).to.equal('XYZ789')
+        })
+
+        it('BuildProduct handles product without apis, groups, or policy', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+            plugin.apim_client = {
+                product: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                },
+                productApi: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                },
+                productGroup: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                },
+                productPolicy: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                }
+            }
+
+            const product = {
+                name: 'basic',
+                displayName: 'Basic'
+                // No apis, groups, or policy
+            }
+
+            await plugin.BuildProduct(product)
+
+            expect(plugin.apim_client.product.createOrUpdate.calledOnce).to.be.true
+            expect(plugin.apim_client.productApi.createOrUpdate.called).to.be.false
+            expect(plugin.apim_client.productGroup.createOrUpdate.called).to.be.false
+            expect(plugin.apim_client.productPolicy.createOrUpdate.called).to.be.false
+        })
+
+        it('BuildUser handles user without groups', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.resource_group = 'rg'
+            plugin.resource_name = 'apim'
+            plugin.apim_client = {
+                user: {
+                    createOrUpdate: sandbox.stub().resolves({})
+                },
+                groupUser: {
+                    create: sandbox.stub().resolves({})
+                }
+            }
+
+            const user = {
+                name: 'testuser',
+                email: 'test@test.com',
+                firstName: 'Test',
+                lastName: 'User'
+                // No groups
+            }
+
+            await plugin.BuildUser(user)
+
+            expect(plugin.apim_client.user.createOrUpdate.calledOnce).to.be.true
+            expect(plugin.apim_client.groupUser.create.called).to.be.false
+        })
+
+        it('BuildBackend returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildBackend({ name: 'backend', url: 'https://api.com', protocol: 'http' })
+            // Should not throw
+        })
+
+        it('BuildGroup returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildGroup({ name: 'group', displayName: 'Group' })
+            // Should not throw
+        })
+
+        it('BuildUser returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildUser({ name: 'user', email: 'test@test.com', firstName: 'Test', lastName: 'User' })
+            // Should not throw
+        })
+
+        it('BuildSubscription returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildSubscription({ name: 'sub', displayName: 'Sub' } as any)
+            // Should not throw
+        })
+
+        it('BuildProduct returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildProduct({ name: 'prod', displayName: 'Prod' } as any)
+            // Should not throw
+        })
+
+        it('BuildAuthServer returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildAuthServer({ name: 'auth', clientId: 'id', grantTypes: [] } as any)
+            // Should not throw
+        })
+
+        it('BuildIdentityProvider returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildIdentityProvider({ name: 'aad', clientId: 'id', clientSecret: 'secret' })
+            // Should not throw
+        })
+
+        it('BuildLogger returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildLogger({ name: 'logger', loggerType: 'applicationInsights', cleanKeys: false })
+            // Should not throw
+        })
+
+        it('BuildNamedValue returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildNamedValue({ name: 'nv', displayName: 'NV', value: 'val' })
+            // Should not throw
+        })
+
+        it('BuildAutoscaleSetting returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.BuildAutoscaleSetting({ name: 'scale', profiles: [] } as any)
+            // Should not throw
+        })
+
+        it('DeleteApi returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.DeleteApi({ name: 'api', delete: true })
+            // Should not throw
+        })
+
+        it('DeleteProduct returns early when apim_client is undefined', async () => {
+            const ctx = createContext()
+            const plugin = new ApimPlugin('apim', createIngredient(), ctx) as any
+            plugin.apim_client = undefined
+
+            await plugin.DeleteProduct({ name: 'prod', delete: true } as any)
+            // Should not throw
+        })
+    })
 })

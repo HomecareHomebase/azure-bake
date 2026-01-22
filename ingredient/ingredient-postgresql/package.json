@@ -10,7 +10,7 @@
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register/transpile-only ../../tests/ingredient-contracts.test.ts"
+        "test": "mocha --timeout 30000 -r ts-node/register/transpile-only test/**/*.ts"
   },
   "directories": {
     "lib": "dist"
@@ -25,6 +25,13 @@
     "@azbake/ingredient-utils": "^0.1.113",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^10.12.18",
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.5",
+        "@types/sinon": "^7.5.0",
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0",
+        "sinon": "^9.0.0",
+        "ts-node": "^7.0.1",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0"

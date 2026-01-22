@@ -45,6 +45,36 @@ function createContext(): DeploymentContext {
 }
 
 describe('BakeVariable', () => {
+        describe('Code getter', () => {
+            it('returns empty string when value is null', () => {
+                const variable = new BakeVariable()
+                ;(variable as any)._value = null
+                expect(variable.Code).to.equal('')
+            })
+
+            it('returns empty string when value is undefined', () => {
+                const variable = new BakeVariable()
+                expect(variable.Code).to.equal('')
+            })
+
+            it('returns the value when value is defined', () => {
+                const variable = new BakeVariable('test-value')
+                expect(variable.Code).to.equal('test-value')
+            })
+
+            it('returns numeric values as-is', () => {
+                const variable = new BakeVariable()
+                ;(variable as any)._value = 42
+                expect(variable.Code).to.equal(42)
+            })
+
+            it('returns boolean values as-is', () => {
+                const variable = new BakeVariable()
+                ;(variable as any)._value = false
+                expect(variable.Code).to.equal(false)
+            })
+        })
+
     it('returns literal values when no eval is required', async () => {
         const ctx = createContext()
         const variable = new BakeVariable('plain')
@@ -75,4 +105,40 @@ describe('BakeVariable', () => {
             ;(BakeEval as any).Eval = originalEval
         }
     })
+
+        it('returns Code directly when _compiled is already set to null', async () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('literal-value')
+        
+            // Pre-set _compiled to null to simulate already-evaluated non-expression
+            ;(variable as any)._compiled = null
+
+            const value = await variable.valueAsync(ctx)
+            expect(value).to.equal('literal-value')
+        })
+
+        it('reuses existing compiled function without re-evaluating', async () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('[5 + 5]')
+
+            // First call compiles
+            const first = await variable.valueAsync(ctx)
+            expect(first).to.equal(10)
+        
+            // Verify _compiled is now set
+            expect((variable as any)._compiled).to.not.equal(undefined)
+            expect((variable as any)._compiled).to.not.equal(null)
+
+            // Second call should reuse the compiled function
+            const second = await variable.valueAsync(ctx)
+            expect(second).to.equal(10)
+        })
+
+        it('handles string expressions with context access', async () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('["hello" + " world"]')
+
+            const value = await variable.valueAsync(ctx)
+            expect(value).to.equal('hello world')
+        })
 })

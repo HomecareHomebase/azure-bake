@@ -110,4 +110,26 @@ describe('IngredientManager.Register', () => {
         expect(instance).not.null
         expect((instance as any)._ingredient.pluginVersion).eq('2.0.0')
     })
+
+        it('returns null for unregistered ingredient type', () => {
+            const ctx = createContext()
+            const ingredient = createIngredient('nonexistent')
+
+            const instance = IngredientManager.CreateIngredient('nonexistent', 'alpha', ingredient, ctx)
+            expect(instance).to.equal(null)
+        })
+
+        it('returns null for unregistered function type', () => {
+            const ctx = createContext()
+
+            const func = IngredientManager.getIngredientFunction('nonexistent-function', ctx)
+            expect(func).to.equal(null)
+        })
+
+        it('builds empty wrapper eval when no utils are registered', () => {
+            resetIngredientManager()
+
+            const evalStr = IngredientManager.buildUtilWrapperEval('ctx', 'wrapper')
+            expect(evalStr).to.equal('')
+        })
 })

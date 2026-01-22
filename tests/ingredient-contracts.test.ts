@@ -26,16 +26,27 @@ const packageName = pkgJson.name || ''
 
 const pluginIndexPath = path.join(pkgRoot, 'src', 'index.ts')
 const pluginSourcePath = path.join(pkgRoot, 'src', 'plugin.ts')
+const functionsSourcePath = path.join(pkgRoot, 'src', 'functions.ts')
 const hasPluginSource = fs.existsSync(pluginSourcePath)
 const pluginSource = hasPluginSource ? fs.readFileSync(pluginSourcePath, 'utf8') : ''
+const hasFunctionsSource = fs.existsSync(functionsSourcePath)
+const functionsSource = hasFunctionsSource ? fs.readFileSync(functionsSourcePath, 'utf8') : ''
 
 const usesArmHelper = pluginSource.includes('ARMHelper')
 const usesChildProcess = pluginSource.includes('child_process') || pluginSource.includes('execSync')
 const usesApim = pluginSource.includes('ApiManagementClient') || pluginSource.includes('got')
 const usesPropertyService = pluginSource.includes('PropertyService')
 const usesStorageBlob = pluginSource.includes('BlobServiceClient') || pluginSource.includes('@azure/storage-blob') || pluginSource.includes('StorageUtils')
+const usesNetworkManagement = pluginSource.includes('NetworkManagementClient') || functionsSource.includes('NetworkManagementClient') || pluginSource.includes('@azure/arm-network') || functionsSource.includes('@azure/arm-network')
+const usesFunctionsPlugin = packageName === '@azbake/ingredient-functions'
+const usesKeyVaultPlugin = packageName === '@azbake/ingredient-key-vault'
+const usesSqlDBPlugin = packageName === '@azbake/ingredient-sqldb'
+const usesTrafficManagerPlugin = packageName === '@azbake/ingredient-traffic-manager'
+const usesHostNamesPlugin = packageName === '@azbake/ingredient-host-names'
+const usesWebAppContainerPlugin = packageName === '@azbake/ingredient-webapp-container'
+const usesServiceBusPlugin = packageName === '@azbake/ingredient-service-bus-namespace' || packageName === '@azbake/ingredient-service-bus-queue'
 
-const shouldExecute = usesArmHelper && !usesChildProcess && !usesApim && !usesPropertyService && !usesStorageBlob
+const shouldExecute = usesArmHelper && !usesChildProcess && !usesApim && !usesPropertyService && !usesStorageBlob && !usesNetworkManagement && !usesFunctionsPlugin && !usesKeyVaultPlugin && !usesSqlDBPlugin && !usesTrafficManagerPlugin && !usesHostNamesPlugin && !usesWebAppContainerPlugin && !usesServiceBusPlugin
 
 type ArmHelperCall = {
     deploymentName: string

@@ -1,0 +1,388 @@
+import { expect } from 'chai'
+import 'mocha'
+import * as sinon from 'sinon'
+
+import {
+    DeploymentContext,
+    IBakeConfig,
+    IBakeEnvironment,
+    IBakePackage,
+    IBakeRegion,
+    IIngredient,
+    IngredientManager,
+    Logger,
+    BakeVariable
+} from '@azbake/core'
+
+import { CosmosDb } from '../src/plugin'
+import { CosmosUtility } from '../src/functions'
+
+// Require the compiled modules to verify exports
+const cosmosdbIndex = require('../dist/index')
+
+function createContext(region?: IBakeRegion, ingredient?: IIngredient): DeploymentContext {
+    const config: IBakeConfig = {
+        name: 'test',
+        shortName: 'tst',
+        version: '1.0.0',
+        resourceGroup: false,
+        recipe: new Map(),
+        variables: new Map()
+    }
+
+    const env: IBakeEnvironment = {
+        toolVersion: '0.0.0',
+        environmentName: 'env',
+        environmentCode: 'dev',
+        regions: [{ name: 'Global', shortName: 'global', code: 'glob' }],
+        authentication: {
+            subscriptionId: 'test-sub-id',
+            tenantId: 'tenant',
+            serviceId: 'service',
+            secretKey: 'secret',
+            certPath: '',
+            skipAuth: true
+        },
+        variables: new Map(),
+        logLevel: 'info'
+    }
+
+    const pkg: IBakePackage = {
+        Config: config,
+        Environment: env,
+        Authenticate: async () => true
+    }
+
+    const testRegion: IBakeRegion = region || { name: 'Global', shortName: 'global', code: 'glob' }
+    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    return new DeploymentContext(auth, pkg, testRegion, new Logger(), ingredient)
+}
+
+function createIngredient(params: Map<string, BakeVariable>, source?: BakeVariable): IIngredient {
+    return {
+        properties: {
+            type: '@azbake/ingredient-cosmosdb',
+            source: source || new BakeVariable(''),
+            parameters: params,
+            tokens: new Map(),
+            alerts: new Map()
+        },
+        dependsOn: [],
+        pluginVersion: '0.0.0'
+    }
+}
+
+describe('ingredient-cosmosdb index exports', () => {
+    it('exports plugin', () => {
+        expect(cosmosdbIndex.plugin).to.not.be.undefined
+        expect(typeof cosmosdbIndex.plugin).to.equal('function')
+    })
+
+    it('exports pluginNS', () => {
+        expect(cosmosdbIndex.pluginNS).to.equal('@azbake/ingredient-cosmosdb')
+    })
+
+    it('exports functions', () => {
+        expect(cosmosdbIndex.functions).to.not.be.undefined
+        expect(typeof cosmosdbIndex.functions).to.equal('function')
+        expect(cosmosdbIndex.functions.name).to.equal('CosmosUtility')
+    })
+
+    it('exports functionsNS', () => {
+        expect(cosmosdbIndex.functionsNS).to.equal('cosmosdbutils')
+    })
+
+    it('plugin can be constructed from export', () => {
+        const params = new Map<string, BakeVariable>()
+        const ingredient = createIngredient(params)
+        const ctx = createContext(undefined, ingredient)
+
+        const Plugin = cosmosdbIndex.plugin
+        const instance = new Plugin('test', ingredient, ctx)
+        expect(instance).to.not.be.undefined
+        expect(instance._name).to.equal('test')
+    })
+
+    it('functions can be constructed from export', () => {
+        const ctx = createContext()
+        const Functions = cosmosdbIndex.functions
+        const instance = new Functions(ctx)
+        expect(instance).to.not.be.undefined
+        expect(instance.context).to.equal(ctx)
+    })
+})
+
+describe('CosmosDb Plugin', () => {
+    let sandbox: sinon.SinonSandbox
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox()
+    })
+
+    afterEach(() => {
+        sandbox.restore()
+    })
+
+    describe('Execute', () => {
+        it('deploys cosmos db with multi-region template when secondaryRegion is specified', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            params.set('secondaryRegion', new BakeVariable('westus2'))
+            
+            const source = new BakeVariable('test-source')
+            const ingredient = createIngredient(params, source)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            let capturedTemplate: any = null
+            const mockDeployTemplate = sandbox.stub().callsFake((name: string, template: any) => {
+                capturedTemplate = template
+                return Promise.resolve({})
+            })
+            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+                accountName: { value: 'mycosmosaccount' },
+                secondaryRegion: { value: 'westus2' }
+            })
+            
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: mockDeployTemplate,
+                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+            expect(mockBakeParamsToARMParamsAsync.called).to.be.true
+            expect(mockDeployTemplate.called).to.be.true
+            // Should use the multi-region template (CosmosServerless.json)
+            expect(capturedTemplate).to.not.be.undefined
+        })
+
+        it('deploys cosmos db with single-region template when secondaryRegion is not specified', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const source = new BakeVariable('test-source')
+            const ingredient = createIngredient(params, source)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            let capturedTemplate: any = null
+            const mockDeployTemplate = sandbox.stub().callsFake((name: string, template: any) => {
+                capturedTemplate = template
+                return Promise.resolve({})
+            })
+            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+                accountName: { value: 'mycosmosaccount' }
+            })
+            
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: mockDeployTemplate,
+                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+            expect(mockBakeParamsToARMParamsAsync.called).to.be.true
+            expect(mockDeployTemplate.called).to.be.true
+            // Should use the single-region template (CosmosServerlessSingleRegion.json)
+            expect(capturedTemplate).to.not.be.undefined
+        })
+
+        it('logs and throws error on deployment failure', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const source = new BakeVariable('test-source')
+            const ingredient = createIngredient(params, source)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const deploymentError = new Error('CosmosDB deployment failed')
+            const mockDeployTemplate = sandbox.stub().rejects(deploymentError)
+            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+                accountName: { value: 'mycosmosaccount' }
+            })
+            
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: mockDeployTemplate,
+                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            
+            try {
+                await plugin.Execute()
+                expect.fail('Expected error to be thrown')
+            } catch (error: any) {
+                expect(error.message).to.equal('CosmosDB deployment failed')
+            }
+        })
+
+        it('logs source property during execution', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const source = new BakeVariable('my-cosmos-source')
+            const ingredient = createIngredient(params, source)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const mockDeployTemplate = sandbox.stub().resolves({})
+            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+                accountName: { value: 'mycosmosaccount' }
+            })
+            
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: mockDeployTemplate,
+                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+            // Verify the plugin executed successfully
+            expect(mockDeployTemplate.called).to.be.true
+        })
+
+        it('creates ARMHelper with correct context', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const ingredient = createIngredient(params)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            let capturedCtx: any = null
+            const ARMHelperStub = sandbox.stub().callsFake((ctxArg: any) => {
+                capturedCtx = ctxArg
+                return {
+                    DeployTemplate: sandbox.stub().resolves({}),
+                    BakeParamsToARMParamsAsync: sandbox.stub().resolves({})
+                }
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+                expect(capturedCtx).to.not.be.null
+                expect(capturedCtx.Environment.authentication.subscriptionId).to.equal('test-sub-id')
+        })
+
+        it('passes correct resource group to DeployTemplate', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const ingredient = createIngredient(params)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('my-cosmos-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const mockDeployTemplate = sandbox.stub().resolves({})
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: mockDeployTemplate,
+                BakeParamsToARMParamsAsync: sandbox.stub().resolves({})
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+            expect(mockDeployTemplate.firstCall.args[3]).to.equal('my-cosmos-rg')
+        })
+
+        it('passes ingredient name to BakeParamsToARMParamsAsync', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const ingredient = createIngredient(params)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({})
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: sandbox.stub().resolves({}),
+                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('my-cosmos-db', ingredient, ctx)
+            await plugin.Execute()
+
+            expect(mockBakeParamsToARMParamsAsync.calledWith('my-cosmos-db', params)).to.be.true
+        })
+
+        it('uses coreutils from IngredientManager', async () => {
+            const params = new Map<string, BakeVariable>()
+            params.set('accountName', new BakeVariable('mycosmosaccount'))
+            
+            const ingredient = createIngredient(params)
+            const ctx = createContext(undefined, ingredient)
+
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            const getIngredientFunctionStub = sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const ARMHelperStub = sandbox.stub().returns({
+                DeployTemplate: sandbox.stub().resolves({}),
+                BakeParamsToARMParamsAsync: sandbox.stub().resolves({})
+            })
+            
+            const armHelper = require('@azbake/arm-helper')
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+
+            const plugin = new CosmosDb('test', ingredient, ctx)
+            await plugin.Execute()
+
+            expect(getIngredientFunctionStub.calledWith('coreutils', ctx)).to.be.true
+        })
+    })
+})

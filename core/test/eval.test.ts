@@ -52,6 +52,54 @@ describe('BakeEval', () => {
         expect(compiled).eq(null)
     })
 
+        it('returns null when value starts with [ but does not end with ]', () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('[incomplete expression')
+            const compiled = BakeEval.Eval(variable, ctx)
+            expect(compiled).eq(null)
+        })
+
+        it('returns null when value ends with ] but does not start with [', () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('incomplete expression]')
+            const compiled = BakeEval.Eval(variable, ctx)
+            expect(compiled).eq(null)
+        })
+
+        it('handles whitespace around expressions', () => {
+            const ctx = createContext()
+            const variable = new BakeVariable('  [2 * 3]  ')
+            const compiled = BakeEval.Eval(variable, ctx)
+            expect(compiled).not.eq(null)
+
+            const resultWrapper = (compiled as Function)(ctx, () => null)
+            return resultWrapper().then((value: number) => {
+                expect(value).eq(6)
+            })
+        })
+
+            it('handles async expressions', async () => {
+                const ctx = createContext()
+                const variable = new BakeVariable('[Promise.resolve(42)]')
+                const compiled = BakeEval.Eval(variable, ctx)
+                expect(compiled).not.eq(null)
+
+                const resultWrapper = (compiled as Function)(ctx, () => null)
+                const value = await resultWrapper()
+                expect(value).eq(42)
+            })
+
+            it('handles context access in expressions', async () => {
+                const ctx = createContext()
+                const variable = new BakeVariable('[ctx.Region.name]')
+                const compiled = BakeEval.Eval(variable, ctx)
+                expect(compiled).not.eq(null)
+
+                const resultWrapper = (compiled as Function)(ctx, () => null)
+                const value = await resultWrapper()
+                expect(value).eq('Global')
+            })
+
     it('evaluates bracketed expressions', async () => {
         const ctx = createContext()
         const variable = new BakeVariable('[1 + 1]')

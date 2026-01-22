@@ -6,6 +6,7 @@
   "check-coverage": true,
   "reporter": [
     "text",
+    "text-summary",
     "lcov"
   ],
   "require": [

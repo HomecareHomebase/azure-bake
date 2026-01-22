@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
+import * as sinon from 'sinon'
 
 import { BakeRunner } from '../src/bake-runner'
 import { IngredientFactory } from '../src/ingredients'
@@ -11,7 +12,8 @@ import {
     IBakePackage,
     IBakeRegion,
     IIngredient,
-    Logger
+    Logger,
+    IngredientManager
 } from '@azbake/core'
 
 function createEnvironment(): IBakeEnvironment {
@@ -74,9 +76,15 @@ function createContext(pkg: IBakePackage): DeploymentContext {
 
 describe('bake-runner', () => {
     const originalBuild = IngredientFactory.Build
+    let sandbox: sinon.SinonSandbox
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox()
+    })
 
     afterEach(() => {
         IngredientFactory.Build = originalBuild
+        sandbox.restore()
     })
 
     it('executes ingredients when dependencies are satisfied', async () => {
@@ -292,5 +300,362 @@ describe('bake-runner', () => {
         expect(calls).eq(1)
         expect(error).not.eq(null)
         expect(error?.message).to.contain('Not all regions deployed successfully')
+    })
+
+    describe('login', () => {
+        it('returns true when skipAuth is enabled', async () => {
+            const recipe = new Map<string, IIngredient>()
+            const pkg = createPackage(recipe)
+            pkg.Environment.authentication.skipAuth = true
+
+            const runner = new BakeRunner(pkg, new Logger())
+
+            // Mock _loadBuiltIns to prevent actual registration
+            const originalRegister = IngredientManager.Register
+            IngredientManager.Register = (() => {}) as any
+
+            try {
+                const result = await runner.login()
+                expect(result).eq(true)
+            } finally {
+                IngredientManager.Register = originalRegister
+            }
+        })
+
+        it('returns result from Authenticate callback', async () => {
+            const recipe = new Map<string, IIngredient>()
+            const pkg = createPackage(recipe)
+            pkg.Environment.authentication.skipAuth = true
+            let authCallbackCalled = false
+            pkg.Authenticate = async (callback) => {
+                authCallbackCalled = true
+                return await callback(pkg.Environment.authentication)
+            }
+
+            const runner = new BakeRunner(pkg, new Logger())
+
+            const originalRegister = IngredientManager.Register
+            IngredientManager.Register = (() => {}) as any
+
+            try {
+                const result = await runner.login()
+                expect(authCallbackCalled).eq(true)
+                expect(result).eq(true)
+            } finally {
+                IngredientManager.Register = originalRegister
+            }
+        })
+    })
+
+    describe('_executeBakeLoop edge cases', () => {
+        it('handles condition that throws with ignoreErrors true', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient({
+                properties: {
+                    ...createIngredient().properties,
+                    condition: { 
+                        valueAsync: async () => { 
+                            throw new Error('condition error') 
+                        } 
+                    } as any,
+                    ignoreErrors: true
+                }
+            }))
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            const executed: string[] = []
+            IngredientFactory.Build = (name: string) => {
+                return {
+                    Execute: async () => {
+                        executed.push(name)
+                    }
+                } as any
+            }
+
+            const finished: string[] = []
+            // Should not throw - error is ignored
+            const hasRemaining = await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            expect(executed).deep.eq([])
+            expect(finished).deep.eq(['alpha'])
+            expect(hasRemaining).eq(false)
+        })
+
+        it('handles condition that throws with ignoreErrors false', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient({
+                properties: {
+                    ...createIngredient().properties,
+                    condition: { 
+                        valueAsync: async () => { 
+                            throw new Error('condition error') 
+                        } 
+                    } as any,
+                    ignoreErrors: false
+                }
+            }))
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            IngredientFactory.Build = () => {
+                return {
+                    Execute: async () => {}
+                } as any
+            }
+
+            const finished: string[] = []
+            // Should throw due to foundErrors = true
+            let error: Error | null = null
+            try {
+                await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            } catch (e: any) {
+                error = e
+            }
+            expect(error).to.not.be.null
+        })
+
+        it('logs error when ingredient type is not found', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            // Return null to simulate missing ingredient
+            IngredientFactory.Build = () => null
+
+            const finished: string[] = []
+            let error: Error | null = null
+            try {
+                await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            } catch (e: any) {
+                error = e
+            }
+
+            expect(error).to.not.be.null
+            expect(finished).deep.eq(['alpha'])
+        })
+
+        it('throws error when execution fails without ignoreErrors', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient({
+                properties: {
+                    ...createIngredient().properties,
+                    ignoreErrors: false
+                }
+            }))
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            IngredientFactory.Build = () => {
+                return {
+                    Execute: async () => {
+                        throw new Error('execution failed')
+                    }
+                } as any
+            }
+
+            const finished: string[] = []
+            let error: Error | null = null
+            try {
+                await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            } catch (e: any) {
+                error = e
+            }
+
+            expect(error).to.not.be.null
+        })
+
+        it('skips already finished ingredients', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            const executed: string[] = []
+            IngredientFactory.Build = (name: string) => {
+                return {
+                    Execute: async () => {
+                        executed.push(name)
+                    }
+                } as any
+            }
+
+            // Ingredient already in finished list
+            const finished: string[] = ['alpha']
+            const hasRemaining = await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            expect(executed).deep.eq([])
+            expect(hasRemaining).eq(false)
+        })
+
+        it('waits for all dependencies before executing', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+            recipe.set('beta', createIngredient())
+            recipe.set('gamma', createIngredient({ dependsOn: ['alpha', 'beta'] }))
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            const executed: string[] = []
+            IngredientFactory.Build = (name: string) => {
+                return {
+                    Execute: async () => {
+                        executed.push(name)
+                    }
+                } as any
+            }
+
+            // Only alpha is finished
+            const finished: string[] = ['alpha']
+            const hasRemaining = await (runner as any)._executeBakeLoop(['alpha', 'beta', 'gamma'], finished, ctx)
+            
+            // beta should execute, gamma should wait
+            expect(executed).to.include('beta')
+            expect(executed).to.not.include('gamma')
+            expect(hasRemaining).eq(true)
+        })
+
+        it('passes customAuthToken to context when set', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            
+            // Set a custom auth token
+            ;(runner as any)._customAuthToken.set('alpha', 'custom-token-123')
+            
+            const ctx = createContext(pkg)
+
+            let receivedToken: string | null = null
+            IngredientFactory.Build = (name: string, ingredient: IIngredient, buildCtx: DeploymentContext) => {
+                receivedToken = buildCtx.CustomAuthToken
+                return {
+                    Execute: async () => {}
+                } as any
+            }
+
+            const finished: string[] = []
+            await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            
+            expect(receivedToken).eq('custom-token-123')
+        })
+
+        it('executes condition that evaluates to true', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient({
+                properties: {
+                    ...createIngredient().properties,
+                    condition: { valueAsync: async () => true } as any
+                }
+            }))
+
+            const pkg = createPackage(recipe)
+            const runner = new BakeRunner(pkg, new Logger())
+            const ctx = createContext(pkg)
+
+            const executed: string[] = []
+            IngredientFactory.Build = (name: string) => {
+                return {
+                    Execute: async () => {
+                        executed.push(name)
+                    }
+                } as any
+            }
+
+            const finished: string[] = []
+            await (runner as any)._executeBakeLoop(['alpha'], finished, ctx)
+            
+            // Ingredient should execute when condition is true
+            expect(executed).deep.eq(['alpha'])
+        })
+    })
+
+    describe('bake parallel edge cases', () => {
+        it('catches Promise.all rejection in parallel mode', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+
+            const pkg = createPackage(recipe)
+            pkg.Config.parallelRegions = true
+            const runner = new BakeRunner(pkg, new Logger())
+
+            ;(runner as any)._bakeRegion = async () => {
+                throw new Error('region explosion')
+            }
+
+            const regions: IBakeRegion[] = [
+                { name: 'Boom', shortName: 'boom', code: 'boom' }
+            ]
+
+            let error: Error | null = null
+            try {
+                await runner.bake(regions)
+            } catch (err: any) {
+                error = err
+            }
+
+            expect(error).to.not.be.null
+            expect(error?.message).to.contain('Not all regions deployed successfully')
+        })
+
+        it('propagates error in sequential mode', async () => {
+            const recipe = new Map<string, IIngredient>()
+            recipe.set('alpha', createIngredient())
+
+            const pkg = createPackage(recipe)
+            pkg.Config.parallelRegions = false
+            const runner = new BakeRunner(pkg, new Logger())
+
+            const thrownError = new Error('sequential boom')
+            ;(runner as any)._bakeRegion = async () => {
+                throw thrownError
+            }
+
+            const regions: IBakeRegion[] = [
+                { name: 'Boom', shortName: 'boom', code: 'boom' }
+            ]
+
+            let error: Error | null = null
+            try {
+                await runner.bake(regions)
+            } catch (err: any) {
+                error = err
+            }
+
+            expect(error).to.eq(thrownError)
+        })
+    })
+
+    describe('constructor', () => {
+        it('uses default logger when none provided', () => {
+            const recipe = new Map<string, IIngredient>()
+            const pkg = createPackage(recipe)
+            
+            const runner = new BakeRunner(pkg)
+            
+            expect((runner as any)._logger).to.not.be.null
+        })
+
+        it('uses provided logger', () => {
+            const recipe = new Map<string, IIngredient>()
+            const pkg = createPackage(recipe)
+            const customLogger = new Logger(['custom'], 'debug')
+            
+            const runner = new BakeRunner(pkg, customLogger)
+            
+            expect((runner as any)._logger).to.eq(customLogger)
+        })
     })
 })

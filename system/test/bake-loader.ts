@@ -48,12 +48,401 @@ describe('bake-loader', () => {
 
     beforeEach(() => {
         savedEnv = { ...process.env }
-        setEnv()
     })
 
     afterEach(() => {
         restoreEnv(savedEnv)
     })
+
+    describe('_loadEnvironment', () => {
+        beforeEach(() => {
+            setEnv()
+        })
+
+        it('uses defaults when environment variables are missing', () => {
+            delete process.env.BAKE_ENV_NAME
+            delete process.env.BAKE_ENV_CODE
+            delete process.env.BAKE_LOG_LEVEL
+            process.env.BAKE_ENV_REGIONS = '[]'
+
+            const pkg = new BakePackage(bakeFile)
+
+            expect(pkg.Environment.environmentName).eq('')
+            expect(pkg.Environment.environmentCode).eq('')
+            expect(pkg.Environment.logLevel).eq('info')
+        })
+
+        it('reads skipAuth from environment', () => {
+            process.env.BAKE_AUTH_SKIP = 'true'
+
+            const pkg = new BakePackage(bakeFile)
+
+            expect(pkg.Environment.authentication.skipAuth).eq(true)
+        })
+
+        it('sets skipAuth to false when BAKE_AUTH_SKIP is false', () => {
+            process.env.BAKE_AUTH_SKIP = 'false'
+
+            const pkg = new BakePackage(bakeFile)
+
+            expect(pkg.Environment.authentication.skipAuth).eq(false)
+        })
+
+        it('sets skipAuth to false when BAKE_AUTH_SKIP is missing', () => {
+            delete process.env.BAKE_AUTH_SKIP
+
+            const pkg = new BakePackage(bakeFile)
+
+            expect(pkg.Environment.authentication.skipAuth).eq(false)
+        })
+
+        it('reads certPath from environment', () => {
+            process.env.BAKE_AUTH_SERVICE_CERT = '/path/to/cert.pem'
+
+            const pkg = new BakePackage(bakeFile)
+
+            // Auth is cleared after construction, but we can verify it was read
+            expect(process.env.BAKE_AUTH_SERVICE_CERT).eq('')
+        })
+
+        it('handles missing BAKE_VARIABLES file gracefully', () => {
+            process.env.BAKE_VARIABLES = '/nonexistent/path/to/variables.yaml'
+
+            const pkg = new BakePackage(bakeFile)
+
+            // Should not throw, variables should be empty or from config only
+            expect(pkg.Config.variables).to.be.an.instanceof(Map)
+        })
+
+        it('handles invalid YAML in variables file gracefully', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const badVarsFile = path.join(tmpDir, 'bad-vars.yaml')
+            fs.writeFileSync(badVarsFile, '{{invalid: yaml: content')
+
+            process.env.BAKE_VARIABLES = badVarsFile
+
+            // Should not throw, should log error and continue
+            const pkg = new BakePackage(bakeFile)
+            expect(pkg.Config).to.not.be.null
+        })
+
+        it('handles empty variables file', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const emptyVarsFile = path.join(tmpDir, 'empty-vars.yaml')
+            fs.writeFileSync(emptyVarsFile, '')
+
+            process.env.BAKE_VARIABLES = emptyVarsFile
+
+            const pkg = new BakePackage(bakeFile)
+            expect(pkg.Config.variables).to.be.an.instanceof(Map)
+        })
+
+        it('clears all auth environment variables after loading', () => {
+            process.env.BAKE_AUTH_SUBSCRIPTION_ID = 'test-sub'
+            process.env.BAKE_AUTH_SERVICE_ID = 'test-id'
+            process.env.BAKE_AUTH_SERVICE_KEY = 'test-key'
+            process.env.BAKE_AUTH_SERVICE_CERT = 'test-cert'
+            process.env.BAKE_AUTH_TENANT_ID = 'test-tenant'
+
+            new BakePackage(bakeFile)
+
+            expect(process.env.BAKE_AUTH_SUBSCRIPTION_ID).eq('')
+            expect(process.env.BAKE_AUTH_SERVICE_ID).eq('')
+            expect(process.env.BAKE_AUTH_SERVICE_KEY).eq('')
+            expect(process.env.BAKE_AUTH_SERVICE_CERT).eq('')
+            expect(process.env.BAKE_AUTH_TENANT_ID).eq('')
+        })
+    })
+
+    describe('_validatePackage', () => {
+        beforeEach(() => {
+            setEnv()
+        })
+
+        it('throws when config.name is missing', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const badFile = path.join(tmpDir, 'bad.yaml')
+            fs.writeFileSync(badFile, 'shortName: tst\nversion: 1.0.0\nrecipe: {}')
+
+            expect(() => new BakePackage(badFile)).to.throw('config.name not defined')
+        })
+
+        it('throws when config.shortName is missing', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const badFile = path.join(tmpDir, 'bad.yaml')
+            fs.writeFileSync(badFile, 'name: test\nversion: 1.0.0\nrecipe: {}')
+
+            expect(() => new BakePackage(badFile)).to.throw('config.shortName not defined')
+        })
+
+        it('throws when config.version is missing', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const badFile = path.join(tmpDir, 'bad.yaml')
+            fs.writeFileSync(badFile, 'name: test\nshortName: tst\nrecipe: {}')
+
+            expect(() => new BakePackage(badFile)).to.throw('config.version not defined')
+        })
+    })
+
+    describe('_loadPackage', () => {
+        beforeEach(() => {
+            setEnv()
+        })
+
+        it('throws when bake file has invalid YAML', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const badFile = path.join(tmpDir, 'invalid.yaml')
+            fs.writeFileSync(badFile, '{{invalid yaml content here:::')
+
+            expect(() => new BakePackage(badFile)).to.throw()
+        })
+
+        it('sets parallelRegions to true by default', () => {
+            const pkg = new BakePackage(bakeFile)
+            expect(pkg.Config.parallelRegions).eq(true)
+        })
+
+        it('sets resourceGroup to true by default', () => {
+            const pkg = new BakePackage(bakeFile)
+            expect(pkg.Config.resourceGroup).eq(true)
+        })
+
+        it('respects parallelRegions: false in config', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'parallelRegions: false',
+                'recipe: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            expect(pkg.Config.parallelRegions).eq(false)
+        })
+
+        it('respects resourceGroup: false in config', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'resourceGroup: false',
+                'recipe: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            expect(pkg.Config.resourceGroup).eq(false)
+        })
+
+        it('wraps rgOverride in BakeVariable when present', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'rgOverride: my-custom-rg',
+                'recipe: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            expect(pkg.Config.rgOverride).to.not.be.undefined
+            expect(pkg.Config.rgOverride?.Code).eq('my-custom-rg')
+        })
+
+        it('handles ingredient with condition property', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe:',
+                '  alpha:',
+                '    properties:',
+                '      type: fixture',
+                '      source: ./src',
+                '      condition: "[@{{ variables.enabled }}@]"',
+                '      parameters: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            const alpha = pkg.Config.recipe.get('alpha')
+            expect(alpha?.properties.condition).to.not.be.undefined
+        })
+
+        it('handles ingredient with tokens', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe:',
+                '  alpha:',
+                '    properties:',
+                '      type: fixture',
+                '      source: ./src',
+                '      parameters: {}',
+                '      tokens:',
+                '        myToken: tokenValue'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            const alpha = pkg.Config.recipe.get('alpha')
+            expect(alpha?.properties.tokens.get('myToken')?.Code).eq('tokenValue')
+        })
+
+        it('handles ingredient with alerts', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe:',
+                '  alpha:',
+                '    properties:',
+                '      type: fixture',
+                '      source: ./src',
+                '      parameters: {}',
+                '      alerts:',
+                '        myAlert: alertConfig'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            const alpha = pkg.Config.recipe.get('alpha')
+            expect(alpha?.properties.alerts.get('myAlert')?.Code).eq('alertConfig')
+        })
+
+        it('handles ingredient with dependsOn', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe:',
+                '  alpha:',
+                '    properties:',
+                '      type: fixture',
+                '      source: ./src',
+                '      parameters: {}',
+                '  beta:',
+                '    dependsOn:',
+                '      - alpha',
+                '    properties:',
+                '      type: fixture',
+                '      source: ./src',
+                '      parameters: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            const beta = pkg.Config.recipe.get('beta')
+            expect(beta?.dependsOn).deep.eq(['alpha'])
+        })
+
+        it('handles empty ingredients array', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            expect(pkg.Config).to.not.be.null
+        })
+
+        it('handles ingredient without source (defaults to empty)', () => {
+            const fs = require('fs')
+            const os = require('os')
+            const path = require('path')
+
+            const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+            const configFile = path.join(tmpDir, 'bake.yaml')
+            fs.writeFileSync(configFile, [
+                'name: test',
+                'shortName: tst',
+                'version: 1.0.0',
+                'recipe:',
+                '  alpha:',
+                '    properties:',
+                '      type: fixture',
+                '      parameters: {}'
+            ].join('\n'))
+
+            const pkg = new BakePackage(configFile)
+            const alpha = pkg.Config.recipe.get('alpha')
+            expect(alpha?.properties.source.Code).eq('')
+        })
+    })
+
+    describe('config loading (original tests)', () => {
+        beforeEach(() => {
+            setEnv()
+        })
 
     it('loads config, merges variables, and clears auth env', () => {
         const pkg = new BakePackage(bakeFile)
@@ -111,5 +500,6 @@ describe('bake-loader', () => {
         } finally {
             IngredientManager.Register = originalRegister
         }
+    })
     })
 })

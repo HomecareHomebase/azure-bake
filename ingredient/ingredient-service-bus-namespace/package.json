@@ -18,7 +18,7 @@
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register ../../tests/ingredient-contracts.test.ts"
+        "test": "mocha --timeout 30000 -r ts-node/register test/**/*.test.ts ../../tests/ingredient-contracts.test.ts"
   },
   "directories": {
     "lib": "dist"

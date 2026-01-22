@@ -6,6 +6,7 @@ import { PropertyServiceConfiguration } from '../src/configuration/propertyServi
 import { ConfigurationValidator } from '../src/configuration/configurationValidator'
 import { SearchOperator } from '../src/models/searchOperator'
 
+
 describe('property-service configuration', () => {
     it('calculates counts and flags', () => {
         const config = new PropertyServiceConfiguration()
