@@ -56,9 +56,9 @@ steps:
     versionSpec: '16.x'
 
 - task: Npm@1
-  displayName: NPM Install
+  displayName: NPM CI
   inputs:    
-    command: 'install'
+    command: 'ci'
     workingDir: '$(System.DefaultWorkingDirectory)'
     verbose: true
 

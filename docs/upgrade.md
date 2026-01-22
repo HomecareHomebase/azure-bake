@@ -209,15 +209,15 @@ Because we’re staying mocked, add “integration-ish” tests that still execu
 
 ### 2) Reproducible builds & environment pinning
 
-* [ ] Add explicit toolchain pins:
-  * [ ] Add `.nvmrc` or `.node-version` with the current CI Node version (16) first.
-  * [ ] Add `engines` in root and in publishable packages (decide after Node target).
+* [x] Add explicit toolchain pins:
+  * [x] Add `.nvmrc` or `.node-version` with the current CI Node version (16) first.
+  * [x] Add `engines` in root and in publishable packages (decide after Node target).
   * [ ] Consider adding `packageManager` in root `package.json`.
-* [ ] Normalize `.npmrc` behavior:
-  * [ ] Decide whether `always-auth=true` is still needed.
-  * [ ] If needed, update `.npmrc` to a modern, supported configuration and keep secrets out of repo.
-* [ ] Ensure CI uses deterministic installs:
-  * [ ] Prefer `npm ci` where possible.
+* [x] Normalize `.npmrc` behavior:
+  * [x] Decide whether `always-auth=true` is still needed (kept for now; CI injects auth).
+  * [x] If needed, update `.npmrc` to a modern, supported configuration and keep secrets out of repo (documented in-file).
+* [x] Ensure CI uses deterministic installs:
+  * [x] Prefer `npm ci` where possible.
   * [ ] Ensure lockfiles are updated intentionally (no accidental churn).
 
 ### 3) Modernize monorepo tooling (Lerna upgrade path)

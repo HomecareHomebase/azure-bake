@@ -6,6 +6,9 @@
   "typings": "src/index.ts",
   "author": "HCHB",
   "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HomecareHomebase/azure-bake.git"

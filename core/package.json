@@ -8,6 +8,9 @@
   },
   "author": "HCHB",
   "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  },
   "version": "0.1.108",
   "repository": {
     "type": "git",
