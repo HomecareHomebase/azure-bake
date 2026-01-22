@@ -1,33 +1,41 @@
-{
-  "name": "@azbake/ingredient-function-app",
-  "description": "Ingredient for deploying Function Apps",
-  "version": "0.1.112",
-  "main": "dist/index.js",
-  "typings": "src/index.ts",
-  "author": "HCHB",
-  "license": "MIT",
-  "scripts": {
-    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
-    "compile": "tsc -p .",
-    "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register ../../tests/ingredient-contracts.test.ts"
-  },
-  "directories": {
-    "lib": "dist"
-  },
-  "peerDependencies": {
-    "@azbake/core": "*",
-    "@azure/ms-rest-nodeauth": "*"
-  },
-  "devDependencies": {
-    "@azbake/core": "^0.1.108",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/node": "^10.12.18"
-  },
-  "dependencies": {
-    "@azbake/arm-helper": "^0.1.112"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
-}
+{  
+  "name": "@azbake/ingredient-function-app",  
+  "description": "Ingredient for deploying Function Apps",  
+  "version": "0.1.112",  
+  "main": "dist/index.js",  
+  "typings": "src/index.ts",  
+  "author": "HCHB",  
+  "license": "MIT",  
+  "scripts": {  
+    "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",  
+    "compile": "tsc -p .",  
+    "watch": "tsc -w -p .",  
+    "test": "mocha --timeout 30000 -r ts-node/register test/plugin.test.ts"  
+  },  
+  "directories": {  
+    "lib": "dist"  
+  },  
+  "peerDependencies": {  
+    "@azbake/core": "*",  
+    "@azure/ms-rest-nodeauth": "*"  
+  },  
+  "devDependencies": {  
+    "@azbake/core": "^0.1.108",  
+    "@azure/ms-rest-nodeauth": "^3.0.0",  
+    "@types/node": "^10.12.18",  
+    "@types/chai": "^4.2.0",  
+    "@types/mocha": "^8.0.0",  
+    "@types/sinon": "^10.0.0",  
+    "chai": "^4.3.0",  
+    "mocha": "^9.0.0",  
+    "sinon": "^13.0.0",  
+    "ts-node": "^10.0.0"  
+  },  
+  "dependencies": {  
+    "@azbake/arm-helper": "^0.1.112",  
+    "@azure/arm-resources": "^5.0.0"  
+  },  
+  "publishConfig": {  
+    "access": "public"  
+  }  
+}  

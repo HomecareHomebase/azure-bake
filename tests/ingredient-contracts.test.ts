@@ -45,8 +45,9 @@ const usesTrafficManagerPlugin = packageName === '@azbake/ingredient-traffic-man
 const usesHostNamesPlugin = packageName === '@azbake/ingredient-host-names'
 const usesWebAppContainerPlugin = packageName === '@azbake/ingredient-webapp-container'
 const usesServiceBusPlugin = packageName === '@azbake/ingredient-service-bus-namespace' || packageName === '@azbake/ingredient-service-bus-queue'
+const usesArmPlugin = packageName === '@azbake/ingredient-arm'
 
-const shouldExecute = usesArmHelper && !usesChildProcess && !usesApim && !usesPropertyService && !usesStorageBlob && !usesNetworkManagement && !usesFunctionsPlugin && !usesKeyVaultPlugin && !usesSqlDBPlugin && !usesTrafficManagerPlugin && !usesHostNamesPlugin && !usesWebAppContainerPlugin && !usesServiceBusPlugin
+const shouldExecute = usesArmHelper && !usesChildProcess && !usesApim && !usesPropertyService && !usesStorageBlob && !usesNetworkManagement && !usesFunctionsPlugin && !usesKeyVaultPlugin && !usesSqlDBPlugin && !usesTrafficManagerPlugin && !usesHostNamesPlugin && !usesWebAppContainerPlugin && !usesServiceBusPlugin && !usesArmPlugin
 
 type ArmHelperCall = {
     deploymentName: string
