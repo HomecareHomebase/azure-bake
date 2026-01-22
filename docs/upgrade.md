@@ -254,15 +254,15 @@ Modern Lerna expects you to use your package manager’s workspaces.
 
 Do this as a dedicated phase, because Node upgrades can cause cascading issues.
 
-* [ ] Upgrade CI from Node 16 → Node 20 (first), then Node 22 (optional second hop)
-  * [ ] Update `azure-pipelines.yml` `NodeTool@0` versionSpec.
-* [ ] Upgrade runtime Docker image:
-  * [ ] Update `system/Dockerfile` base image to Node 20+.
-  * [ ] Re-evaluate kubectl version (v1.19 is very old).
-  * [ ] Replace deprecated npm flags:
-    * [ ] `npm install --only=production` → `npm ci --omit=dev` (preferred) or `npm install --omit=dev`.
-* [ ] Upgrade devcontainer:
-  * [ ] Update `.devcontainer/parent/Dockerfile` from `node:10` to the chosen Node LTS.
+* [x] Upgrade CI from Node 16 → Node 22 (skipped the intermediate 20 hop)
+  * [x] Update `azure-pipelines.yml` `NodeTool@0` versionSpec.
+* [x] Upgrade runtime Docker image:
+  * [x] Update `system/Dockerfile` base image to Node 20+.
+  * [x] Re-evaluate kubectl version (v1.19 is very old; kept for compatibility for now).
+  * [x] Replace deprecated npm flags:
+    * [x] `npm install --only=production` → `npm ci --omit=dev` (preferred) or `npm install --omit=dev`.
+* [x] Upgrade devcontainer:
+  * [x] Update `.devcontainer/parent/Dockerfile` from `node:10` to the chosen Node LTS.
   * [ ] Validate postCreateCommand still works.
 
 **Gate:** All tests + E2E smoke tests pass on the new Node version.

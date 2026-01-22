@@ -9,7 +9,7 @@
   "author": "HCHB",
   "license": "MIT",
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
   "version": "0.1.108",
   "repository": {

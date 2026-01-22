@@ -14,11 +14,16 @@ import {
     BakeVariable
 } from '@azbake/core'
 
-import { AppInsightsPlugIn } from '../src/plugin'
 import { AppInsightsUtils } from '../src/functions'
 
 // Require the compiled modules to verify exports
 const appInsightsIndex = require('../dist/index')
+
+function loadPlugin(): any {
+    const resolved = require.resolve('../src/plugin')
+    delete require.cache[resolved]
+    return require(resolved).AppInsightsPlugIn
+}
 
 function createContext(region?: IBakeRegion, ingredient?: IIngredient): DeploymentContext {
     const config: IBakeConfig = {
@@ -313,6 +318,7 @@ describe('AppInsightsPlugIn', () => {
             const ingredient = createIngredient(params)
             const ctx = createContext(undefined, ingredient)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test-name', ingredient, ctx)
 
             expect(plugin._name).to.equal('test-name')
@@ -349,6 +355,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -392,6 +399,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -428,6 +436,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             
             try {
@@ -470,6 +479,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -510,6 +520,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -544,6 +555,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -583,6 +595,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('my-deployment', ingredient, ctx)
             await plugin.Execute()
 
@@ -618,6 +631,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             
             try {
@@ -651,6 +665,7 @@ describe('AppInsightsPlugIn', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const AppInsightsPlugIn = loadPlugin()
             const plugin = new AppInsightsPlugIn('test', ingredient, ctx)
             
             try {

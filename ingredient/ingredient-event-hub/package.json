@@ -7,7 +7,7 @@
 	"author": "HCHB",
 	"license": "MIT",
 	"engines": {
-		"node": "16.x"
+		"node": "22.x"
 	},
 	"scripts": {
 		"upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",

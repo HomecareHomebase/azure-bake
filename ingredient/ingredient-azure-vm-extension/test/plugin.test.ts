@@ -13,12 +13,21 @@ import {
     Logger,
     BakeVariable
 } from '@azbake/core'
-
-import { VirtualMachineExtensions } from '../src/plugin'
 import { VirtualMachineExtensionsUtils } from '../src/functions'
 
 // Require the compiled modules to verify exports
 const vmExtIndex = require('../dist/index')
+
+function loadPlugin(): any {
+    const resolved = require.resolve('../src/plugin')
+    delete require.cache[resolved]
+    return require(resolved).VirtualMachineExtensions
+}
+
+function buildPlugin(name: string, ingredient: IIngredient, ctx: DeploymentContext): any {
+    const VirtualMachineExtensions = loadPlugin()
+    return new VirtualMachineExtensions(name, ingredient, ctx)
+}
 
 function createContext(region?: IBakeRegion, ingredient?: IIngredient): DeploymentContext {
     const config: IBakeConfig = {
@@ -158,8 +167,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(mockBakeParamsToARMParamsAsync.called).to.be.true
@@ -208,8 +216,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(capturedTemplate.resources[0].properties.settings).to.deep.equal({
@@ -261,8 +268,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(capturedTemplate.resources[0].properties.protectedSettings).to.deep.equal({
@@ -316,8 +322,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(capturedTemplate.resources[0].properties.settings).to.deep.equal({
@@ -376,8 +381,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(capturedTemplate.resources[0].properties.settings.commandToExecute).to.equal('echo hello')
@@ -420,8 +424,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             
             try {
                 await plugin.Execute()
@@ -461,8 +464,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             expect(capturedCtx).to.not.be.null
@@ -494,8 +496,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('my-vmext-name', ingredient, ctx)
+            const plugin = buildPlugin('my-vmext-name', ingredient, ctx)
             await plugin.Execute()
 
             expect(mockBakeParamsToARMParamsAsync.calledWith('my-vmext-name', params)).to.be.true
@@ -542,8 +543,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
             // Empty settings object should still be created but be empty
@@ -577,8 +577,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             
             try {
                 await plugin.Execute()
@@ -616,8 +615,7 @@ describe('VirtualMachineExtensions Plugin', () => {
             
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
-
-            const plugin = new VirtualMachineExtensions('test', ingredient, ctx)
+            const plugin = buildPlugin('test', ingredient, ctx)
             
             try {
                 await plugin.Execute()

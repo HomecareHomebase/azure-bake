@@ -1,11 +1,11 @@
-FROM mhart/alpine-node:16.4.2
+FROM node:22-alpine
 ENV NODE_ENV production
 
 
 # Install kubectl
 # Note: Latest version may be found on:
 # https://aur.archlinux.org/packages/kubectl-bin/
-ADD https://storage.googleapis.com/kubernetes-release/release/v1.19.16/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.35.0/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 
 RUN set -x \
     && apk add --no-cache bash \
@@ -17,7 +17,7 @@ COPY package.json .
 COPY package-lock.json .
 COPY dist ./dist
 
-RUN npm install --only=production
+RUN npm ci --omit=dev
 RUN npm link
 
 #setup placeholder paths for config/package

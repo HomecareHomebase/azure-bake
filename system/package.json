@@ -4,7 +4,7 @@
   "author": "HCHB",
   "license": "MIT",
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
   "version": "0.5.54",
   "repository": {

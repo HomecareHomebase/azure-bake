@@ -166,6 +166,23 @@ function createContext(): DeploymentContext {
 
 function stubModuleLoad() {
     const originalLoad = Module._load
+    const armHelperSegment = `${path.sep}arm-helper${path.sep}`.toLowerCase()
+
+    try {
+        const resolvedArmHelper = require.resolve('@azbake/arm-helper', { paths: [pkgRoot] })
+        const armHelperDir = path.dirname(resolvedArmHelper).toLowerCase()
+        for (const key of Object.keys(require.cache)) {
+            if (key.toLowerCase().startsWith(armHelperDir)) {
+                delete require.cache[key]
+            }
+        }
+    } catch {
+        for (const key of Object.keys(require.cache)) {
+            if (key.toLowerCase().includes(armHelperSegment)) {
+                delete require.cache[key]
+            }
+        }
+    }
     const noopFn: any = new Proxy(
         function () {
             return {}
@@ -178,7 +195,7 @@ function stubModuleLoad() {
     )
 
     Module._load = function (request: string, parent: any, isMain: boolean) {
-        if (request === '@azbake/arm-helper') {
+        if (request === '@azbake/arm-helper' || request.startsWith('@azbake/arm-helper/')) {
             return { ARMHelper: FakeArmHelper }
         }
         if (request === './functions.js') {

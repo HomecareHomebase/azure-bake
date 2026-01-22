@@ -8,7 +8,7 @@
     "system"
   ],
   "engines": {
-    "node": "16.x"
+    "node": "22.x"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
