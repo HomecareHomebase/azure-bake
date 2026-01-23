@@ -444,6 +444,116 @@ describe('bake-loader', () => {
             setEnv()
         })
 
+        describe('YAML edge cases (js-yaml v4 compatibility)', () => {
+            it('handles zero-prefixed numeric-looking strings', () => {
+                const fs = require('fs')
+                const os = require('os')
+                const path = require('path')
+
+                const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+                const configFile = path.join(tmpDir, 'bake.yaml')
+                // In YAML 1.1, 010 would be parsed as octal (8), but js-yaml v4 (YAML 1.2)
+                // parses it as a plain string "010" unless it has a leading 0o
+                fs.writeFileSync(configFile, [
+                    'name: test',
+                    'shortName: tst',
+                    'version: "1.0.0"',
+                    'variables:',
+                    '  numericString: "010"',
+                    '  plainZero: 010',
+                    'recipe: {}'
+                ].join('\n'))
+
+                const pkg = new BakePackage(configFile)
+                const vars = pkg.Config.variables
+                expect(vars?.get('numericString')?.Code).eq('010')
+                // In js-yaml v4 (YAML 1.2), 010 is parsed as integer 10, not octal 8
+                expect(vars?.get('plainZero')?.Code).eq(10)
+            })
+
+            it('handles yes/no/on/off as strings in YAML 1.2', () => {
+                const fs = require('fs')
+                const os = require('os')
+                const path = require('path')
+
+                const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+                const configFile = path.join(tmpDir, 'bake.yaml')
+                // In YAML 1.1, yes/no/on/off were booleans, but js-yaml v4 (YAML 1.2)
+                // treats them as plain strings by default
+                fs.writeFileSync(configFile, [
+                    'name: test',
+                    'shortName: tst',
+                    'version: "1.0.0"',
+                    'variables:',
+                    '  yesVal: yes',
+                    '  noVal: no',
+                    '  onVal: on',
+                    '  offVal: off',
+                    '  trueVal: true',
+                    '  falseVal: false',
+                    'recipe: {}'
+                ].join('\n'))
+
+                const pkg = new BakePackage(configFile)
+                const vars = pkg.Config.variables
+                // In js-yaml v4, yes/no/on/off are strings, not booleans
+                expect(vars?.get('yesVal')?.Code).eq('yes')
+                expect(vars?.get('noVal')?.Code).eq('no')
+                expect(vars?.get('onVal')?.Code).eq('on')
+                expect(vars?.get('offVal')?.Code).eq('off')
+                // true/false are still booleans
+                expect(vars?.get('trueVal')?.Code).eq(true)
+                expect(vars?.get('falseVal')?.Code).eq(false)
+            })
+
+            it('handles null values', () => {
+                const fs = require('fs')
+                const os = require('os')
+                const path = require('path')
+
+                const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+                const configFile = path.join(tmpDir, 'bake.yaml')
+                fs.writeFileSync(configFile, [
+                    'name: test',
+                    'shortName: tst',
+                    'version: "1.0.0"',
+                    'variables:',
+                    '  nullVal: null',
+                    '  tildeNull: ~',
+                    'recipe: {}'
+                ].join('\n'))
+
+                const pkg = new BakePackage(configFile)
+                const vars = pkg.Config.variables
+                // BakeVariable converts null to empty string (by design)
+                expect(vars?.get('nullVal')?.Code).eq('')
+                expect(vars?.get('tildeNull')?.Code).eq('')
+            })
+
+            it('handles multiline strings', () => {
+                const fs = require('fs')
+                const os = require('os')
+                const path = require('path')
+
+                const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
+                const configFile = path.join(tmpDir, 'bake.yaml')
+                fs.writeFileSync(configFile, [
+                    'name: test',
+                    'shortName: tst',
+                    'version: "1.0.0"',
+                    'variables:',
+                    '  multiline: |',
+                    '    line1',
+                    '    line2',
+                    'recipe: {}'
+                ].join('\n'))
+
+                const pkg = new BakePackage(configFile)
+                const vars = pkg.Config.variables
+                expect(vars?.get('multiline')?.Code).eq('line1\nline2\n')
+            })
+        })
+
     it('loads config, merges variables, and clears auth env', () => {
         const pkg = new BakePackage(bakeFile)
 

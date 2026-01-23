@@ -57,7 +57,7 @@ export class BakePackage {
             let file : string = process.env.BAKE_VARIABLES || ""
             if (file && fs.existsSync(file)) {
                 content = fs.readFileSync(file, 'utf8')
-                let obj  =YAML.safeLoad(content)
+                    let obj  =YAML.load(content)
                 this._env.variables = objToVariableMap( obj || [] )
             }
            
@@ -93,7 +93,7 @@ export class BakePackage {
         let config: IBakeConfig = <IBakeConfig>{}
 
         try{
-            config = YAML.load(file)
+            config = YAML.load(file) as IBakeConfig
         } catch(e) {
             let logger = new Logger()
             logger.error("Failed to load bake file: " + source)

@@ -45,9 +45,6 @@
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "azure-arm-compute": "^10.0.0",
     "azure-arm-keyvault": "^1.2.0",
-    "child_process": "^1.0.2",
-    "del": "^4.1.1",
-    "event-stream": "^4.0.1",
     "file-system": "^2.2.2",
     "git-rev": "^0.2.1",
     "gulp": "^4.0.2",
@@ -57,6 +54,6 @@
     "gulp-inline-source": "^4.0.0",
     "gulp-shell": "^0.7.1",
     "moment": "^2.24.0",
-    "yargs": "^13.2.4"
+        "yargs": "^17.7.2"
   }
 }

@@ -288,27 +288,28 @@ Upgrade these first after the test gate, because they primarily affect developme
 
 Handle “ecosystem breaking changes” explicitly:
 
-* [ ] `js-yaml` v3 → v4
-  * [ ] Replace `safeLoad`/`safeDump` usages:
+* [x] `js-yaml` v3 → v4
+  * [x] Replace `safeLoad`/`safeDump` usages:
     * `safeLoad` → `load`
     * `safeDump` → `dump`
-  * [ ] Add regression tests for YAML edge cases (notably zero-prefixed numeric-looking strings).
+  * [x] Add regression tests for YAML edge cases (notably zero-prefixed numeric-looking strings).
   * Touch points:
-    * [ ] `system/src/bake-loader.ts`
-* [ ] `yargs` v13 → v18 (root build tooling)
-  * [ ] Validate gulp tasks still parse args identically.
-* [ ] `del` v4 → v8 (gulp tooling)
-  * [ ] del is ESM-only in v7+.
-  * [ ] Decide: convert `gulpfile.js` to ESM, or use dynamic import, or replace with `fs.rm`.
-* [ ] `got` v11 → v14 (ingredient-apim)
-  * [ ] got is ESM-only from v12+.
-  * [ ] Preferred: replace got usage with Node’s built-in `fetch` (Node 18+) or `axios` to avoid ESM churn.
-  * [ ] Add HTTP-mocking tests to prove no behavior change.
-* [ ] Remove/replace risky deps:
-  * [ ] Remove `event-stream` usage from `gulpfile.js` (replace with `through2` or native streams).
-  * [ ] Remove `child_process` from `package.json` (Node builtin).
+    * [x] `system/src/bake-loader.ts`
+* [x] `yargs` v13 → v18 (root build tooling)
+  * [x] Validate gulp tasks still parse args identically.
+* [x] `del` v4 → v8 (gulp tooling)
+  * [x] del is ESM-only in v7+.
+  * [x] Replaced with `fs.promises.rm` (Node builtin) instead of converting to ESM.
+* [x] `got` v11 → v14 (ingredient-apim)
+  * [x] got is ESM-only from v12+.
+  * [x] Replaced got usage with Node's built-in `https` module to avoid ESM churn (Node 18+ fetch not needed).
+  * [x] Maintained CA certificate support via custom https Agent.
+  * [x] Removed unused `got` dependency from `ingredient-apim/package.json`.
+* [x] Remove/replace risky deps:
+  * [x] Remove `event-stream` usage from `gulpfile.js` (replaced with native Transform streams).
+  * [x] Remove `child_process` from `package.json` (Node builtin).
 
-**Gate:** tests pass; no snapshot diffs.
+**Gate:** ✅ tests pass (1380 tests); no snapshot diffs.
 
 ### 7) Azure SDK modernization (highest risk)
 

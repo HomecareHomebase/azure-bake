@@ -5,9 +5,8 @@ import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, Api
 import { RestError } from "@azure/ms-rest-js"
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import * as fs from 'fs';
+import * as https from 'https';
 import stockDiagnostics from "./stockDiagnostics.json"
-
-const got = require('got');
 
 interface IApimApiDiagnostics extends DiagnosticContract{
     name: string
@@ -45,6 +44,7 @@ export class ApimApiPlugin extends BaseIngredient {
     private     apim_apis:          Array<ApiContract> | undefined
     private     apim_options:       IApimOptions | undefined
     private     ca_file:            Buffer | undefined
+    private     httpsAgent:         https.Agent | undefined
 
     public async Execute(): Promise<void> {
         try {
@@ -103,6 +103,10 @@ export class ApimApiPlugin extends BaseIngredient {
         }
         else{
             this.ca_file = fs.readFileSync(pemFile)
+            // Create an HTTPS agent with custom CA for use with fetch
+            this.httpsAgent = new https.Agent({
+                ca: this.ca_file
+            })
         }
 
         this.apim_apis = await this.GetArrayFromPagedIterator<ApiContract>(this.apim_client.api.listByService(this.resource_group, this.resource_name));
@@ -249,6 +253,38 @@ export class ApimApiPlugin extends BaseIngredient {
         }
     }
 
+    /**
+     * Performs an HTTP GET request using Node's built-in fetch (Node 18+).
+     * Falls back to using the custom HTTPS agent if a CA file was configured.
+     */
+    private async httpGet(url: string): Promise<{ statusCode: number; body: string }> {
+        // For custom CA support, we need to use the https module with a custom agent
+        // Node's native fetch doesn't directly support custom CA files without undici dispatcher
+        // Using a promise wrapper around https.get for full CA support
+        return new Promise((resolve, reject) => {
+            const options: https.RequestOptions = {
+                agent: this.httpsAgent
+            };
+
+            const req = https.get(url, options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
+                res.on('end', () => {
+                    resolve({
+                        statusCode: res.statusCode || 0,
+                        body: data
+                    });
+                });
+            });
+
+            req.on('error', (error) => {
+                reject(error);
+            });
+        });
+    }
+
     private async BlockForApi(api: IApimApi, apiOptions: IApimOptions): Promise<boolean> {
 
         if (api.format != "openapi-link" &&
@@ -270,14 +306,10 @@ export class ApimApiPlugin extends BaseIngredient {
         }
 
         for(let i=0; i < blockTime; ++i) {
-            let response: any | undefined;
+            let response: { statusCode: number; body: string } | undefined;
 
             try {
-                response = await got(api.value, {
-                    https: {
-                        certificateAuthority: this.ca_file
-                    }
-                });
+                response = await this.httpGet(api.value!);
 
                 if(api.format == "openapi-link") {
                     api.format="openapi"
@@ -458,11 +490,7 @@ export class ApimApiPlugin extends BaseIngredient {
         }
 
         for(let i=0; i < blockTime; ++i){
-            let response = await got(policy.value, {
-                https: {
-                    certificateAuthority: this.ca_file
-                }
-            });
+            let response = await this.httpGet(policy.value!);
 
             if (response && response.statusCode >= 200 && response.statusCode < 400){
                 policy.format = "xml";

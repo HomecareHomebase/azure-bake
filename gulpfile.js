@@ -1,9 +1,10 @@
-const argv = require('yargs');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+const argv = yargs(hideBin(process.argv)).argv;
 const bump = require('gulp-bump');
 const exec = require('child_process').exec;
-const del = require('del');
-const es = require('event-stream');
 const fs = require('file-system');
+const fsPromises = require('fs').promises;
 const git = require('gulp-git');
 const gulp = require('gulp');
 const debug = require('gulp-debug');
@@ -11,6 +12,7 @@ const inlinesource = require('gulp-inline-source');
 const moment = require('moment');
 const rev = require('git-rev');
 const shell = require('gulp-shell');
+const { Transform } = require('stream');
 
 //Parameters and Variables
 const params = require('./build/parameters');
@@ -57,8 +59,16 @@ function build(done) {
     }
 }
 
-function cleanCoverage() {
-    return del('coverage/**', { force: true });
+async function cleanCoverage() {
+    // Use Node.js built-in fs.rm instead of del (ESM-only from v7+)
+    try {
+        await fsPromises.rm('coverage', { recursive: true, force: true });
+    } catch (err) {
+        // Ignore errors if directory doesn't exist
+        if (err.code !== 'ENOENT') {
+            throw err;
+        }
+    }
 }
 
 function conditions(done) {
@@ -148,7 +158,7 @@ function printVersion(done) {
     }
 
     // make sure no illegal characters are there
-    name = name.replace(/\"|\/|:|<|>|\\|\|\?|\@|\*/g, '_');
+    name = name.replace(/\"|\\/|:|<|>|\\|\|\\?|\\@|\\*/g, '_');
 
     // add YYYYMMDD_HHmm to mark the date and time of this build
     name += `_${moment().format('YYYYMMDD.HHmm')}`;
@@ -249,15 +259,17 @@ function toolInstall(done) {
 function writeFilenameToFile() {
     let output = fs.createWriteStream(__dirname + '/test/app.spec.ts');
     output.write('// I am an automatically generated file. I help ensure that unit tests have accurate code coverage numbers. You can ignore me.\n\n')
-    //Return event-stream map to the pipeline
-    return es.map((file, cb) => {
-        let name = file.history[0];
-        if (name) {
-            name = name.replace(__dirname + '.').replace(/\\/g, '/');
-            output.write('require(\'' + name + '\');\n');
+    // Use Node.js native Transform stream instead of event-stream
+    return new Transform({
+        objectMode: true,
+        transform(file, encoding, cb) {
+            let name = file.history[0];
+            if (name) {
+                name = name.replace(__dirname + '.').replace(/\\/g, '/');
+                output.write('require(\'' + name + '\');\n');
+            }
+            cb(null, file);
         }
-        //Callback signals the operation is done and returns the object to the pipeline
-        cb(null, file);
     });
 }
 
