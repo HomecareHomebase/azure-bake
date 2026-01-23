@@ -1,8 +1,6 @@
-import { ClientSecretCredential } from '@azure/identity';
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
 import { ApiManagementClient, ProductContract } from "@azure/arm-apimanagement"
-import { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, ApiVersionSetContractDetails, DiagnosticContract } from "@azure/arm-apimanagement/src/models";
-import { RestError } from "@azure/ms-rest-js"
+import type { DiagnosticCreateOrUpdateOptionalParams, ApiCreateOrUpdateParameter, ApiContract, PolicyContract, ApiPolicyCreateOrUpdateOptionalParams, ApiVersionSetContract, ApiVersionSetCreateOrUpdateOptionalParams, DiagnosticContract } from "@azure/arm-apimanagement";
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import * as fs from 'fs';
 import * as https from 'https';
@@ -87,9 +85,9 @@ export class ApimApiPlugin extends BaseIngredient {
         
         this._logger.log('APIM API Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
 
-        const token = new ClientSecretCredential(this._ctx.AuthToken.domain, this._ctx.AuthToken.clientId, this._ctx.AuthToken.secret);
+        const credential = this._ctx.Credentials.modernCredentials;
 
-        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
+        this.apim_client = new ApiManagementClient(credential, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.log('APIM API Plugin: APIM client is null')
@@ -158,7 +156,7 @@ export class ApimApiPlugin extends BaseIngredient {
         }
     }
 
-    private async BuildAPI(api: IApimApi, apiVersion: ApiVersionSetContractDetails) : Promise<void> { 
+    private async BuildAPI(api: IApimApi, apiVersion: ApiVersionSetContract) : Promise<void> { 
         
         if (this.apim_client == undefined) return
 
@@ -200,18 +198,7 @@ export class ApimApiPlugin extends BaseIngredient {
                 break; 
             } catch (error) {
                 if (i == apimOptions.apiRetries) {
-                    if (error instanceof RestError){
-                        let re: RestError = error
-                        let msg: string = re.message
-                        let details: any[] = re.body.details
-                        details.forEach(e => {
-                            msg += "\n" + e.message
-                        })
-                        throw msg    
-                    }
-                    else {
-                        throw error
-                    }
+                    throw this.FormatApimError(error)
                 }
                 else {
                     this._logger.debug('APIM API Plugin: Error updating API - retrying.');
@@ -443,7 +430,7 @@ export class ApimApiPlugin extends BaseIngredient {
             {
                 await this.apim_client.productApi.delete(this.resource_group, this.resource_name, oldProductId, apiId)
                     .then(() => { this._logger.log('APIM API Plugin: Deleting API: ' + apiId + " from product " + oldProductId)})
-                    .catch((failure) => {this._logger.error("APIM API Plugin: Could not delete API " + apiId + "from product " + oldProductId + '\n' + failure) })
+                    .catch((failure: unknown) => {this._logger.error("APIM API Plugin: Could not delete API " + apiId + "from product " + oldProductId + '\n' + failure) })
             }
         }
         
@@ -507,6 +494,27 @@ export class ApimApiPlugin extends BaseIngredient {
         return new Promise(resolve=>{
             setTimeout(resolve,ms)
         })
+    }
+
+    private FormatApimError(error: unknown): string {
+        if (!error) {
+            return 'Unknown error'
+        }
+
+        const err: any = error as any
+        let message = typeof err.message === 'string' ? err.message : String(error)
+        const body = err.body ?? err.response?.parsedBody ?? err.response?.body
+        const details = body?.details ?? err.details
+
+        if (Array.isArray(details)) {
+            details.forEach((detail: any) => {
+                if (detail?.message) {
+                    message += `\n${detail.message}`
+                }
+            })
+        }
+
+        return message
     }
 
     private async GetArrayFromPagedIterator<T>(pagedIterator: PagedAsyncIterableIterator<T>) : Promise<T[]>

@@ -24,15 +24,17 @@
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
+    "test": "mocha --timeout 30000 --require tsx test/**/*.ts"
   },
   "peerDependencies": {
     "@azbake/core": "*",
-    "@azure/arm-resources": "*"
+    "@azure/arm-resources": "^7.0.0",
+    "@azure/arm-resourcesdeployments": "^1.0.0-beta.1"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
-    "@azure/arm-resources": "1.*",
+    "@azure/arm-resources": "^7.0.0",
+    "@azure/arm-resourcesdeployments": "^1.0.0-beta.1",
     "@types/chai": "^4.3.11",
     "@types/mocha": "^10.0.6",
     "@types/node": "^22.13.0",

@@ -35,6 +35,13 @@ export class MyCustomPlugin extends BaseIngredient {
 }
 ```
 
+**If you use Azure management clients in your plugin:**
+
+- Construct clients with `this._ctx.Credentials.modernCredentials` (TokenCredential).
+- Import models/types from the package root (avoid deep imports like `/esm/models` or `/src/models`).
+- Use `beginXxxAndWait` (or pollers) for long-running operations.
+- Consume paged lists via async iteration (`for await (...)`).
+
 7. Edit package.json in your ingredient folder
    - Set the name, description, version number, and author for your ingredient.  
 ```json

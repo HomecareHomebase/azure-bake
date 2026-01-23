@@ -226,7 +226,7 @@ describe('EventHubNamespaceUtils', () => {
             const utils = new EventHubNamespaceUtils(ctx)
             await utils.get_authorizationrule('test-rg', 'my-namespace', 'my-rule')
 
-            expect(clientStub.calledWith(ctx.AuthToken, 'test-sub-id')).to.be.true
+            expect(clientStub.calledWith(ctx.Credentials.modernCredentials, 'test-sub-id')).to.be.true
         })
     })
 })

@@ -29,7 +29,7 @@
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
   },
   "peerDependencies": {
-    "@azure/identity": "*",
+    "@azure/identity": "^4.13.0",
     "@azure/ms-rest-nodeauth": "*",
     "colors": "*"
   },

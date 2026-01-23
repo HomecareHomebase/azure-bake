@@ -39,11 +39,11 @@
     "test:coverage:summary": "nyc --reporter=text-summary mocha --timeout 30000 --require ./test/coverage-setup.js --require tsx --reporter min --exclude \"**/node_modules/**\" \"core/test/**/*.ts\" \"arm-helper/test/**/*.ts\" \"system/test/**/*.ts\" \"ingredient/*/test/**/*.ts\" \"tests/**/*.test.ts\""
   },
   "dependencies": {
-    "@azure/arm-compute": "^10.0.0",
-    "@azure/arm-cosmosdb": "^9.1.0",
-    "@azure/arm-network": "^14.0.0",
+    "@azure/arm-compute": "^23.3.0",
+    "@azure/arm-cosmosdb": "^16.4.0",
+    "@azure/arm-network": "^35.0.0",
     "@azure/identity": "^4.13.0",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
+    "@azure/ms-rest-nodeauth": "^3.1.1",
     "azure-arm-compute": "^10.0.0",
     "azure-arm-keyvault": "^1.2.0",
     "file-system": "^2.2.2",

@@ -119,27 +119,10 @@ describe('ingredient-acs index exports', () => {
 
     it('functions can be constructed from export', () => {
         const ctx = createContext()
-        
-        // Mock the Azure Identity classes
-        const identity = require('@azure/identity')
-        const originalClientSecretCredential = identity.ClientSecretCredential
-        const originalChainedTokenCredential = identity.ChainedTokenCredential
-        const originalDefaultAzureCredential = identity.DefaultAzureCredential
-        
-        identity.ClientSecretCredential = function() { return {} }
-        identity.ChainedTokenCredential = function() { return {} }
-        identity.DefaultAzureCredential = function() { return {} }
-
-        try {
-            const Functions = acsIndex.functions
-            const instance = new Functions(ctx)
-            expect(instance).to.not.be.undefined
-            expect(instance.context).to.equal(ctx)
-        } finally {
-            identity.ClientSecretCredential = originalClientSecretCredential
-            identity.ChainedTokenCredential = originalChainedTokenCredential
-            identity.DefaultAzureCredential = originalDefaultAzureCredential
-        }
+        const Functions = acsIndex.functions
+        const instance = new Functions(ctx)
+        expect(instance).to.not.be.undefined
+        expect(instance.context).to.equal(ctx)
     })
 })
 
@@ -148,12 +131,6 @@ describe('AcsUtils', () => {
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        
-        // Mock Azure Identity classes
-        const identity = require('@azure/identity')
-        sandbox.stub(identity, 'ClientSecretCredential').returns({})
-        sandbox.stub(identity, 'ChainedTokenCredential').returns({})
-        sandbox.stub(identity, 'DefaultAzureCredential').returns({})
     })
 
     afterEach(() => {

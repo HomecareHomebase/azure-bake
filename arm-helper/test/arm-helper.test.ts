@@ -61,6 +61,37 @@ function withStubbedIngredientManager(factory: (name: string) => any): () => voi
     }
 }
 
+function stubDeploymentsClient(
+    sandbox: sinon.SinonSandbox,
+    options: {
+        validateResult?: any
+        validateError?: any
+        createResult?: any
+        createError?: any
+    } = {}
+) {
+    const deployments = {
+        beginValidateAndWait: sandbox.stub(),
+        beginCreateOrUpdateAndWait: sandbox.stub()
+    }
+
+    if (options.validateError) {
+        deployments.beginValidateAndWait.rejects(options.validateError)
+    } else {
+        deployments.beginValidateAndWait.resolves(options.validateResult ?? { error: undefined })
+    }
+
+    if (options.createError) {
+        deployments.beginCreateOrUpdateAndWait.rejects(options.createError)
+    } else {
+        deployments.beginCreateOrUpdateAndWait.resolves(options.createResult ?? { _response: { status: 200 } })
+    }
+
+    const factory = () => ({ deployments } as any)
+
+    return { deployments, factory }
+}
+
 describe('arm-helper', () => {
     let sandbox: sinon.SinonSandbox
 
@@ -88,33 +119,17 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
-
-            // Mock the ResourceManagementClient
-            const mockDeployments = {
-                validate: sandbox.stub().resolves({ error: undefined }),
-                createOrUpdate: sandbox.stub().resolves({ _response: { status: 200 } })
-            }
-
-            sandbox.stub(require('@azure/arm-resources'), 'ResourceManagementClient').returns({
-                deployments: mockDeployments
-            })
-
-            // Since we can't easily mock the imported ResourceManagementClient,
-            // let's test by mocking at a different level
+            const { deployments, factory } = stubDeploymentsClient(sandbox)
+            const helper = new ARMHelper(ctx, factory)
             const template = {
                 resources: [{ type: 'Custom/thing' }]
             }
             const params = { param1: { value: 'test' } }
 
-            // The test will throw because we can't mock the constructor easily
-            // This is expected behavior when the client fails to authenticate
-            try {
-                await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
-            } catch (error: any) {
-                // Expected to fail on authentication, but code paths are covered
-                expect(error).to.exist
-            }
+            await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
+
+            expect(deployments.beginValidateAndWait.calledOnce).to.equal(true)
+            expect(deployments.beginCreateOrUpdateAndWait.calledOnce).to.equal(true)
         })
 
         it('throws when validation fails with error code', async () => {
@@ -132,7 +147,15 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                validateResult: {
+                    error: {
+                        code: 'BadRequest',
+                        message: 'Validation failed'
+                    }
+                }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             const template = {
                 resources: [{ type: 'Custom/thing' }]
@@ -161,7 +184,8 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx) as any
+            const { factory } = stubDeploymentsClient(sandbox)
+            const helper = new ARMHelper(ctx, factory) as any
 
             let appendTagsCalled = false
             const originalAppendTags = helper.AppendStandardTags.bind(helper)
@@ -175,11 +199,7 @@ describe('arm-helper', () => {
             }
             const params = {}
 
-            try {
-                await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
-            } catch (error: any) {
-                // Expected - but we verified disableTags path
-            }
+            await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
 
             expect(appendTagsCalled).to.equal(false)
         })
@@ -199,7 +219,8 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx) as any
+            const { factory } = stubDeploymentsClient(sandbox)
+            const helper = new ARMHelper(ctx, factory) as any
 
             let appendTagsCalled = false
             const originalAppendTags = helper.AppendStandardTags.bind(helper)
@@ -213,11 +234,7 @@ describe('arm-helper', () => {
             }
             const params = {}
 
-            try {
-                await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
-            } catch (error: any) {
-                // Expected - but we verified tag path was hit
-            }
+            await helper.DeployTemplate('test-deploy', template, params, 'test-rg')
 
             expect(appendTagsCalled).to.equal(true)
         })
@@ -1165,7 +1182,16 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                validateResult: {
+                    error: {
+                        code: 'BadRequest',
+                        target: 'resourceGroup',
+                        message: 'Validation failed'
+                    }
+                }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             // The actual deployment will fail, but this covers initialization path
             const template = { resources: [{ type: 'Custom/thing' }] }
@@ -1193,7 +1219,21 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                validateResult: {
+                    error: {
+                        code: 'InvalidTemplate',
+                        message: 'Validation failed',
+                        details: [
+                            {
+                                message: 'Detail message',
+                                details: [{ code: 'Nested', message: 'Nested detail' }]
+                            }
+                        ]
+                    }
+                }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             const template = { resources: [{ type: 'Custom/thing' }] }
 
@@ -1219,7 +1259,23 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                validateResult: {
+                    error: {
+                        code: 'InvalidTemplate',
+                        message: 'Validation failed',
+                        details: [
+                            {
+                                message: 'Top level detail',
+                                details: [
+                                    { code: 'Nested', message: 'Nested detail' }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             const template = { resources: [{ type: 'Custom/resource' }] }
 
@@ -1230,7 +1286,7 @@ describe('arm-helper', () => {
             }
         })
 
-        it('handles RestError with body details', async () => {
+        it('handles deployment error with body details', async () => {
             const ingredient: IIngredient = {
                 properties: {
                     type: '@azbake/arm-helper',
@@ -1245,7 +1301,16 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                createError: {
+                    body: {
+                        error: {
+                            details: [{ message: 'Deployment failed' }]
+                        }
+                    }
+                }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             const template = { resources: [{ type: 'Test/type', tags: {} }] }
 
@@ -1271,7 +1336,10 @@ describe('arm-helper', () => {
             }
 
             const ctx = createContext(ingredient)
-            const helper = new ARMHelper(ctx)
+            const { factory } = stubDeploymentsClient(sandbox, {
+                createResult: { _response: { status: 500, bodyAsText: 'server error' } }
+            })
+            const helper = new ARMHelper(ctx, factory)
 
             const template = { resources: [{ type: 'ARM/response' }] }
 

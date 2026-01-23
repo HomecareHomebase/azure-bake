@@ -53,7 +53,12 @@ function createContext(): DeploymentContext {
     }
 
     const region: IBakeRegion = { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = {
+        domain: 'tenant',
+        clientId: 'service',
+        secret: 'secret',
+        getToken: async () => ({ token: 'test-token', expiresOnTimestamp: Date.now() + 3600000 })
+    }
     return new DeploymentContext(auth, pkg, region, new Logger())
 }
 
@@ -698,14 +703,14 @@ describe('ApimPlugin', () => {
             plugin.resource_name = 'apim'
             plugin.apim_client = {
                 api: {
-                    delete: sandbox.stub().resolves({})
+                    beginDeleteAndWait: sandbox.stub().resolves({})
                 }
             }
 
             await plugin.DeleteApi({ name: 'old-api', delete: true })
 
-            expect(plugin.apim_client.api.delete.calledOnce).to.be.true
-            expect(plugin.apim_client.api.delete.firstCall.args[2]).to.equal('old-api')
+            expect(plugin.apim_client.api.beginDeleteAndWait.calledOnce).to.be.true
+            expect(plugin.apim_client.api.beginDeleteAndWait.firstCall.args[2]).to.equal('old-api')
         })
 
         it('DeleteProduct calls delete with correct params', async () => {
@@ -715,14 +720,14 @@ describe('ApimPlugin', () => {
             plugin.resource_name = 'apim'
             plugin.apim_client = {
                 product: {
-                    delete: sandbox.stub().resolves({})
+                    beginDeleteAndWait: sandbox.stub().resolves({})
                 }
             }
 
             await plugin.DeleteProduct({ name: 'old-product', delete: true })
 
-            expect(plugin.apim_client.product.delete.calledOnce).to.be.true
-            expect(plugin.apim_client.product.delete.firstCall.args[2]).to.equal('old-product')
+            expect(plugin.apim_client.product.beginDeleteAndWait.calledOnce).to.be.true
+            expect(plugin.apim_client.product.beginDeleteAndWait.firstCall.args[2]).to.equal('old-product')
         })
 
         it('BuildProduct creates product and assigns apis and groups', async () => {
@@ -919,13 +924,13 @@ describe('ApimPlugin', () => {
             plugin.resource_name = 'apim'
             plugin.apim_client = {
                 api: {
-                    delete: sandbox.stub().resolves({})
+                    beginDeleteAndWait: sandbox.stub().resolves({})
                 }
             }
 
             await plugin.BuildAPIs()
 
-            expect(plugin.apim_client.api.delete.calledOnce).to.be.true
+            expect(plugin.apim_client.api.beginDeleteAndWait.calledOnce).to.be.true
         })
 
         it('BuildProducts handles both create and delete', async () => {
@@ -942,7 +947,7 @@ describe('ApimPlugin', () => {
             plugin.apim_client = {
                 product: {
                     createOrUpdate: sandbox.stub().resolves({}),
-                    delete: sandbox.stub().resolves({})
+                    beginDeleteAndWait: sandbox.stub().resolves({})
                 },
                 productApi: { createOrUpdate: sandbox.stub().resolves({}) },
                 productGroup: { createOrUpdate: sandbox.stub().resolves({}) },
@@ -952,7 +957,7 @@ describe('ApimPlugin', () => {
             await plugin.BuildProducts()
 
             expect(plugin.apim_client.product.createOrUpdate.calledOnce).to.be.true
-            expect(plugin.apim_client.product.delete.calledOnce).to.be.true
+            expect(plugin.apim_client.product.beginDeleteAndWait.calledOnce).to.be.true
         })
 
         it('BuilSubscriptions iterates through subscriptions', async () => {

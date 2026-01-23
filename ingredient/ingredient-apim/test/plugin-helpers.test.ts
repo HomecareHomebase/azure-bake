@@ -51,7 +51,12 @@ function createContext(): DeploymentContext {
     }
 
     const region: IBakeRegion = { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = {
+        domain: 'tenant',
+        clientId: 'service',
+        secret: 'secret',
+        getToken: async () => ({ token: 'test-token', expiresOnTimestamp: Date.now() + 3600000 })
+    }
     return new DeploymentContext(auth, pkg, region, new Logger())
 }
 

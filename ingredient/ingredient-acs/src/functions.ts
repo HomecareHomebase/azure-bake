@@ -1,10 +1,6 @@
-import {BaseUtility, IngredientManager} from '@azbake/core'
-import {CommunicationServiceManagementClient} from '@azure/arm-communication'
-import { DefaultAzureCredential, ClientSecretCredential,ChainedTokenCredential } from "@azure/identity";
+import { BaseUtility, IngredientManager } from '@azbake/core'
+import { CommunicationServiceManagementClient } from '@azure/arm-communication'
 export class AcsUtils extends BaseUtility {
-
-    private token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
-    private credential = new ChainedTokenCredential(this.token, new DefaultAzureCredential());
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
@@ -18,7 +14,7 @@ export class AcsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-       const client = new CommunicationServiceManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
+        const client = new CommunicationServiceManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.communicationService.listKeys(resource_group, name)
 
@@ -35,7 +31,7 @@ export class AcsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-       const client = new CommunicationServiceManagementClient(this.credential, this.context.Environment.authentication.subscriptionId);
+        const client = new CommunicationServiceManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.communicationService.listKeys(resource_group, name)
 

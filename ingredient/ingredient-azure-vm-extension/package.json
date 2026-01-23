@@ -19,18 +19,17 @@
 		"lib": "dist"
 	},
 	"peerDependencies": {
-		"@azbake/core": "*",
-		"@azure/ms-rest-nodeauth": "*"
+		"@azbake/core": "*"
 	},
 	"devDependencies": {
 		"@azbake/core": "^0.1.108",
-		"@azure/ms-rest-nodeauth": "^3.0.0",
 		"@types/node": "^22.13.0"
 	},
 	"dependencies": {
 		"@azbake/arm-helper": "^0.1.112",
-		"@azure/arm-compute": "^10.0.0",
-		"@azure/arm-eventhub": "3.2.0"
+		"@azure/arm-compute": "^23.3.0",
+		"@azure/arm-eventhub": "^5.2.0",
+		"@azure/identity": "^4.13.0"
 	},
 	"publishConfig": {
 		"access": "public"

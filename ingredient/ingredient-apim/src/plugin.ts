@@ -1,15 +1,37 @@
 import { BaseIngredient, IngredientManager, BakeVariable } from "@azbake/core"
-import { ApiManagementClient, NamedValue, NamedValueContract } from "@azure/arm-apimanagement"
-import { MonitorManagementClient } from "@azure/arm-monitor"
-import { BackendContract, BackendCreateOrUpdateOptionalParams, ApiDeleteOptionalParams, ProductDeleteOptionalParams, ApiManagementServiceResource,
-    IdentityProviderCreateOrUpdateOptionalParams, LoggerCreateOrUpdateOptionalParams, AuthorizationServerCreateOrUpdateOptionalParams, UserCreateOrUpdateOptionalParams, GroupCreateOrUpdateOptionalParams,
-    LoggerContract, GroupCreateParameters, UserCreateParameters, AuthorizationServerContract, PolicyContract, SubscriptionCreateParameters, ProductContract,
-    ProductCreateOrUpdateOptionalParams, ProductPolicyCreateOrUpdateOptionalParams, SubscriptionCreateOrUpdateOptionalParams, NamedValueCreateOrUpdateOptionalParams, NamedValueCreateContract, IdentityProviderCreateContract } from "@azure/arm-apimanagement/src/models";
-import { DiagnosticSettingsResource, AutoscaleSettingResource, AutoscaleSettingsCreateOrUpdateResponse } from "@azure/arm-monitor/esm/models";
+import {
+    ApiManagementClient,
+    ApiDeleteOptionalParams,
+    ApiManagementServiceResource,
+    AuthorizationServerContract,
+    AuthorizationServerCreateOrUpdateOptionalParams,
+    BackendContract,
+    BackendCreateOrUpdateOptionalParams,
+    GroupCreateOrUpdateOptionalParams,
+    GroupCreateParameters,
+    IdentityProviderCreateContract,
+    IdentityProviderCreateOrUpdateOptionalParams,
+    LoggerContract,
+    LoggerCreateOrUpdateOptionalParams,
+    NamedValueContract,
+    NamedValueCreateContract,
+    NamedValueCreateOrUpdateOptionalParams,
+    PolicyContract,
+    ProductContract,
+    ProductCreateOrUpdateOptionalParams,
+    ProductDeleteOptionalParams,
+    ProductPolicyCreateOrUpdateOptionalParams,
+    SubscriptionCreateOrUpdateOptionalParams,
+    SubscriptionCreateParameters,
+    UserCreateOrUpdateOptionalParams,
+    UserCreateParameters
+} from "@azure/arm-apimanagement";
+import * as monitor from "@azure/arm-monitor"
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
-import { HttpResponse } from "@azure/ms-rest-js"
-import { ClientSecretCredential } from '@azure/identity';
 import * as fs from 'fs';
+
+type DiagnosticSettingsResource = Record<string, any>
+type AutoscaleSettingResource = Record<string, any>
 
 interface IApim extends ApiManagementServiceResource{
     name: string
@@ -17,10 +39,17 @@ interface IApim extends ApiManagementServiceResource{
 
 interface IApimAutoscaleSettings extends AutoscaleSettingResource{
     name: string
+    autoscaleSettingResourceName?: string
+    location?: string
+    targetResourceUri?: string
+    profiles: Array<any>
 }
 
 interface IApimDiagnostics extends DiagnosticSettingsResource{
     name: string
+    eventHubName?: string
+    eventHubAuthorizationRuleId?: string
+    storageAccountId?: string
 }
 
 interface IApimIdentityProvider extends IdentityProviderCreateContract{
@@ -145,9 +174,9 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Binding APIM to resource: ' + this.resource_group + '\\' + this.resource_name);
 
-        const token = new ClientSecretCredential(this._ctx.AuthToken.domain, this._ctx.AuthToken.clientId, this._ctx.AuthToken.secret);
+        const credential = this._ctx.Credentials.modernCredentials
 
-        this.apim_client = new ApiManagementClient(token, this._ctx.Environment.authentication.subscriptionId)
+        this.apim_client = new ApiManagementClient(credential, this._ctx.Environment.authentication.subscriptionId)
 
         if (this.apim_client == null) {
             this._logger.error('APIM Plugin: APIM client is null')
@@ -205,9 +234,10 @@ export class ApimPlugin extends BaseIngredient {
         {
             return
         }
-        const token: any = this._ctx.AuthToken
+        const credential = this._ctx.Credentials.modernCredentials
+        const MonitorClientCtor = (monitor as any).MonitorClient || (monitor as any).MonitorManagementClient
 
-        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
+        var monitorClient = new MonitorClientCtor(credential, this._ctx.Environment.authentication.subscriptionId);
 
         let diagnosticsData = await this.ResolveDiagnostics(apimDiagnostics);
 
@@ -216,11 +246,11 @@ export class ApimPlugin extends BaseIngredient {
         await monitorClient.diagnosticSettings
             .createOrUpdate(
                 resourceUri,
-                diagnosticsData,
-                apimDiagnostics.name
+                apimDiagnostics.name,
+                diagnosticsData
             )
-            .then((response) => this.LogResponseIfError(response._response, "APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name))
-            .catch((error) => this._logger.error("APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name + '\n' + error))
+            .then((response: any) => this.LogResponseIfError((response as any)._response, "APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name))
+            .catch((error: any) => this._logger.error("APIM Plugin: Could not create/update APIM diagnostics " + apimDiagnostics.name + '\n' + error))
     }
 
     private async BuildNamedValues(): Promise<void> {
@@ -438,15 +468,15 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Deleting APIM API: ' + api.name)
         
-        await this.apim_client.api
-            .delete(
+        await (this.apim_client.api as any)
+            .beginDeleteAndWait(
                 this.resource_group,
                 this.resource_name,
                 api.name,
                 '*',
                 <ApiDeleteOptionalParams>{ifMatch:'*', deleteRevisions:true}
             )
-            .catch((error) => this._logger.error("APIM Plugin: Could not delete API " + api.name + '\n' + error))
+            .catch((error: any) => this._logger.error("APIM Plugin: Could not delete API " + api.name + '\n' + error))
     }
 
     private async DeleteProduct(product: IApimProduct): Promise<void> {
@@ -454,15 +484,15 @@ export class ApimPlugin extends BaseIngredient {
 
         this._logger.log('APIM Plugin: Deleting APIM product: ' + product.name)
         
-        await this.apim_client.product
-            .delete(
+        await (this.apim_client.product as any)
+            .beginDeleteAndWait(
                 this.resource_group,
                 this.resource_name,
                 product.name,
                 '*',
                 <ProductDeleteOptionalParams>{ifMatch:'*', deleteSubscriptions:true}
             )
-            .catch((error) => this._logger.error("APIM Plugin: Could not delete product " + product.name + '\n' + error))
+            .catch((error: any) => this._logger.error("APIM Plugin: Could not delete product " + product.name + '\n' + error))
     }
 
     private async BuildProduct(product: IApimProduct): Promise<void> {
@@ -715,8 +745,9 @@ export class ApimPlugin extends BaseIngredient {
     private async BuildAutoscaleSetting(autoscaleSettings: IApimAutoscaleSettings) : Promise<void> {
         if (this.apim_client == undefined) return
 
-        const token: any = this._ctx.AuthToken
-        var monitorClient = new MonitorManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
+        const credential = this._ctx.Credentials.modernCredentials
+        const MonitorClientCtor = (monitor as any).MonitorClient || (monitor as any).MonitorManagementClient
+        var monitorClient = new MonitorClientCtor(credential, this._ctx.Environment.authentication.subscriptionId);
 
         let autoscaleSettingsData = await this.ResolveAutoscaleSetting(autoscaleSettings);
 
@@ -725,10 +756,10 @@ export class ApimPlugin extends BaseIngredient {
         let response = await monitorClient.autoscaleSettings.createOrUpdate(
             this.resource_group,
             autoscaleSettings.name,
-            autoscaleSettingsData,
-            <AutoscaleSettingsCreateOrUpdateResponse>{})
+            autoscaleSettingsData)
 
-        if (response._response.status  != 200 && response._response.status != 201) {
+        const responseStatus = (response as any)._response?.status
+        if (responseStatus && responseStatus != 200 && responseStatus != 201) {
             this._logger.error("APIM Plugin: Could not create/update autoscale settings " + autoscaleSettings.name)
         }
     }
@@ -1049,9 +1080,9 @@ export class ApimPlugin extends BaseIngredient {
         return retArray;
     }
 
-    private LogResponseIfError(response: HttpResponse, errorMessage: string)
+    private LogResponseIfError(response: { status?: number } | undefined, errorMessage: string)
     {
-        if (response.status >= 400) {
+        if (response && response.status && response.status >= 400) {
           this._logger.error(errorMessage);
         }
     }

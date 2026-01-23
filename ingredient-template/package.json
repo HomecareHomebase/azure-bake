@@ -19,11 +19,11 @@
   },
   "peerDependencies": {
     "@azbake/core": "*",
-    "@azure/ms-rest-nodeauth": "*"
+    "@azure/identity": "^4.13.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.0",
-    "@azure/ms-rest-nodeauth": "^3.0.0"
+    "@azure/identity": "^4.13.0"
   },
   "publishConfig": {
     "access": "public",

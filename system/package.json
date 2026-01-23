@@ -61,7 +61,7 @@
   "dependencies": {
     "@azbake/core": "^0.1.108",
     "@azbake/ingredient-utils": "^0.1.113",
-    "@azure/arm-resources": "^4.0.0",
+    "@azure/arm-resources": "^7.0.0",
     "@azure/identity": "^4.13.0",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "azcli-npm": "^1.1.3",

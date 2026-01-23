@@ -49,7 +49,7 @@ Within your execute method you have access to the current deployment context, wh
 ```js
 this._ctx
 ```
-This will give you access to things like the logger (which is context aware of current region/ingredient/etc.), the bake package config, environment variables (minus login credentials), The current region for the execution (if needed around primary/secondary ingredient logic), The current azure `AuthToken` that can be passed to Azure APIs, as well as the current `Ingredient` object which contains the parameters:
+This will give you access to things like the logger (which is context aware of current region/ingredient/etc.), the bake package config, environment variables (minus login credentials), the current region for the execution (if needed around primary/secondary ingredient logic), the current Azure `TokenCredential` (via `this._ctx.Credentials.modernCredentials`) for management clients, as well as the current `Ingredient` object which contains the parameters:
 
 ```js
 this._ingredient.properties.parameters
@@ -57,6 +57,15 @@ this._ingredient.properties.source
 ```
 
 *note: source and parameter values are BakeVariables and must be resolved with the current context* 
+
+## Azure SDK guidance (Phase 7.3)
+
+When using Azure management SDKs in your ingredient:
+
+- Construct clients with `this._ctx.Credentials.modernCredentials` (TokenCredential).
+- Import models/types from the package root (avoid deep imports like `/esm/models` or `/src/models`).
+- Use `beginXxxAndWait` (or pollers) for long-running operations.
+- Consume paged lists via async iteration (`for await (...)`).
 
 Your plugin will execute with an isolated context for each region that should be deployed ast the environment level, and once for every entry in the bake.yaml file for the recipe.
 

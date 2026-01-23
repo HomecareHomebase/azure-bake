@@ -692,13 +692,24 @@ describe('bake-runner', () => {
 
             const pkg = createPackage(recipe)
             pkg.Config.resourceGroup = true
-            const runner = new BakeRunner(pkg, new Logger())
 
             IngredientFactory.Build = () => {
                 return {
                     Execute: async () => {}
                 } as any
             }
+
+            const checkExistenceStub = sandbox.stub().resolves({ body: false })
+            const createOrUpdateStub = sandbox.stub().resolves({})
+            const getStub = sandbox.stub().resolves({ location: 'eastus' })
+            const clientStub = {
+                resourceGroups: {
+                    checkExistence: checkExistenceStub,
+                    createOrUpdate: createOrUpdateStub,
+                    get: getStub
+                }
+            }
+            const runner = new BakeRunner(pkg, new Logger(), () => clientStub as any)
 
             // Mock coreutils
             const originalGetFunc = IngredientManager.getIngredientFunction
@@ -713,12 +724,13 @@ describe('bake-runner', () => {
 
             const ctx = createContext(pkg)
             
-            // The test will fail on ResourceManagementClient but covers the resourceGroup path
-            try {
-                await (runner as any)._bakeRegion(ctx)
-            } catch (e) {
-                // Expected - mocked client will fail
-            }
+            await (runner as any)._bakeRegion(ctx)
+
+            expect(checkExistenceStub.calledOnceWith('test-rg')).to.equal(true)
+            expect(createOrUpdateStub.calledOnce).to.equal(true)
+            expect(createOrUpdateStub.firstCall.args[0]).to.equal('test-rg')
+            expect(createOrUpdateStub.firstCall.args[1].location).to.equal('global')
+            expect(getStub.called).to.equal(false)
 
             IngredientManager.getIngredientFunction = originalGetFunc
         })
@@ -729,13 +741,24 @@ describe('bake-runner', () => {
 
             const pkg = createPackage(recipe)
             pkg.Config.resourceGroup = true
-            const runner = new BakeRunner(pkg, new Logger())
 
             IngredientFactory.Build = () => {
                 return {
                     Execute: async () => {}
                 } as any
             }
+
+            const checkExistenceStub = sandbox.stub().resolves({ body: true })
+            const createOrUpdateStub = sandbox.stub().resolves({})
+            const getStub = sandbox.stub().resolves({ location: 'westus' })
+            const clientStub = {
+                resourceGroups: {
+                    checkExistence: checkExistenceStub,
+                    createOrUpdate: createOrUpdateStub,
+                    get: getStub
+                }
+            }
+            const runner = new BakeRunner(pkg, new Logger(), () => clientStub as any)
 
             const originalGetFunc = IngredientManager.getIngredientFunction
             IngredientManager.getIngredientFunction = ((name: string) => {
@@ -749,11 +772,12 @@ describe('bake-runner', () => {
 
             const ctx = createContext(pkg)
 
-            try {
-                await (runner as any)._bakeRegion(ctx)
-            } catch (e) {
-                // Expected
-            }
+            await (runner as any)._bakeRegion(ctx)
+
+            expect(checkExistenceStub.calledOnceWith('existing-rg')).to.equal(true)
+            expect(getStub.calledOnceWith('existing-rg')).to.equal(true)
+            expect(createOrUpdateStub.calledOnce).to.equal(true)
+            expect(createOrUpdateStub.firstCall.args[1].location).to.equal('westus')
 
             IngredientManager.getIngredientFunction = originalGetFunc
         })

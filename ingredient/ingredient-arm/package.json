@@ -27,12 +27,10 @@
         "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts ../../tests/ingredient-contracts.test.ts"
   },
   "peerDependencies": {
-    "@azbake/core": "*",
-    "@azure/ms-rest-nodeauth": "*"
+    "@azbake/core": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^22.13.0"
   },
   "dependencies": {

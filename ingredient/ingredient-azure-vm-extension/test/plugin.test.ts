@@ -675,8 +675,10 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             const result = await utils.get('test-rg', 'my-vm', 'myExtension')
@@ -697,8 +699,10 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             await utils.get('custom-rg', 'my-vm', 'myExtension')
@@ -727,8 +731,10 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             const result = await utils.list('test-rg', 'my-vm', 'ext')
@@ -749,8 +755,10 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             await utils.list('specific-rg', 'my-vm', 'ext')
@@ -779,18 +787,20 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const mockVmExtensionsClient = {
-                update: sandbox.stub().resolves(mockUpdateResponse)
+                beginUpdateAndWait: sandbox.stub().resolves(mockUpdateResponse)
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             const result = await utils.update('test-rg', 'my-vm', 'myExtension', extensionParams)
 
             expect(result).to.deep.equal(mockUpdateResponse)
-            expect(mockVmExtensionsClient.update.calledWith('test-rg', 'my-vm', 'myExtension', extensionParams)).to.be.true
+            expect(mockVmExtensionsClient.beginUpdateAndWait.calledWith('test-rg', 'my-vm', 'myExtension', extensionParams)).to.be.true
         })
 
         it('uses provided resource group for update', async () => {
@@ -805,17 +815,19 @@ describe('VirtualMachineExtensionsUtils', () => {
             }
 
             const mockVmExtensionsClient = {
-                update: sandbox.stub().resolves({})
+                beginUpdateAndWait: sandbox.stub().resolves({})
             }
 
             const armCompute = require('@azure/arm-compute')
-            sandbox.stub(armCompute, 'ComputeManagementClientContext').returns({})
-            sandbox.stub(armCompute, 'VirtualMachineExtensions').returns(mockVmExtensionsClient)
+            const computeClientStub = sandbox.stub().returns({
+                virtualMachineExtensions: mockVmExtensionsClient
+            })
+            sandbox.stub(armCompute, 'ComputeManagementClient').get(() => computeClientStub)
 
             const utils = new VirtualMachineExtensionsUtils(ctx)
             await utils.update('another-rg', 'my-vm', 'myExtension', extensionParams)
 
-            expect(mockVmExtensionsClient.update.calledWith('another-rg', 'my-vm', 'myExtension', extensionParams)).to.be.true
+            expect(mockVmExtensionsClient.beginUpdateAndWait.calledWith('another-rg', 'my-vm', 'myExtension', extensionParams)).to.be.true
         })
     })
 })

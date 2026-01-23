@@ -1,7 +1,5 @@
 import {BaseUtility, IngredientManager} from '@azbake/core'
-import { VirtualMachineExtensions  } from "@azure/arm-compute";
-import {VirtualMachineExtensionUpdate } from "@azure/arm-compute/src/models"
-import {ComputeManagementClientContext} from "@azure/arm-compute";
+import { ComputeManagementClient, VirtualMachineExtensionUpdate } from "@azure/arm-compute";
 
 export class VirtualMachineExtensionsUtils extends BaseUtility {
 
@@ -17,11 +15,11 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
         
-        const token: any = this.context.AuthToken
+        const credentials = this.context.Credentials.modernCredentials
 
-        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
-        const vm = new VirtualMachineExtensions(client);                
-        let response = await vm.get(rg, vmName, vmExtensionName) ;                     
+        let client = new ComputeManagementClient(credentials, this.context.Environment.authentication.subscriptionId);        
+        const vm = client.virtualMachineExtensions                
+        let response = await vm.get(resource_group, vmName, vmExtensionName) ;                     
         return response;
     }   
     
@@ -30,11 +28,11 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const token: any = this.context.AuthToken
+        const credentials = this.context.Credentials.modernCredentials
 
-        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
-        const vm = new VirtualMachineExtensions(client);                
-        let response = await vm.list(rg, vmName) ;                     
+        let client = new ComputeManagementClient(credentials, this.context.Environment.authentication.subscriptionId);        
+        const vm = client.virtualMachineExtensions;                
+        let response = await vm.list(resource_group, vmName) ;                     
         return response;
     }   
 
@@ -55,11 +53,11 @@ export class VirtualMachineExtensionsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const token: any = this.context.AuthToken
+        const credentials = this.context.Credentials.modernCredentials
 
-        let client = new ComputeManagementClientContext(token,this.context.Environment.authentication.subscriptionId);        
-        const vm = new VirtualMachineExtensions(client);                          
-        let response = await vm.update(rg, vmName, vmExtensionName, extensionParameters) ;                     
+        let client = new ComputeManagementClient(credentials, this.context.Environment.authentication.subscriptionId);        
+        const vm = client.virtualMachineExtensions;                          
+        let response = await vm.beginUpdateAndWait(resource_group, vmName, vmExtensionName, extensionParameters) ;                     
         return response;
     }   
 }

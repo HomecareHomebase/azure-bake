@@ -1,20 +1,25 @@
 import { IIngredient, Logger, DeploymentContext, BakeVariable, TagGenerator, IngredientManager, objToVariableMap } from '@azbake/core';
-import { ResourceManagementClient } from '@azure/arm-resources';
-import { Deployment, DeploymentProperties } from '@azure/arm-resources/esm/models';
+import { DeploymentsClient } from '@azure/arm-resourcesdeployments';
+import type { Deployment } from '@azure/arm-resourcesdeployments';
 import { stringify } from 'querystring';
 import { AnyCnameRecord } from 'dns';
 import alertTemplate from "./alert.json"
-import { RestError } from '@azure/ms-rest-js';
 
 export class ARMHelper {
 
-    constructor(context: DeploymentContext) {
+    constructor(
+        context: DeploymentContext,
+        deploymentsClientFactory?: (credential: any, subscriptionId: string) => DeploymentsClient
+    ) {
         this._ctx = context;
         this._ingredient = context.Ingredient;
+        this._deploymentsClientFactory = deploymentsClientFactory
+            ?? ((credential, subscriptionId) => new DeploymentsClient(credential, subscriptionId));
     }
 
     _ctx: DeploymentContext;
     _ingredient: IIngredient;
+    _deploymentsClientFactory: (credential: any, subscriptionId: string) => DeploymentsClient;
 
     public async DeployTemplate(deploymentName: string, template: any, params: any, resourceGroup: string): Promise<void> {
 
@@ -32,8 +37,8 @@ export class ARMHelper {
 
             logger.log('starting arm deployment for template');
 
-            let deployment = <Deployment>{
-                properties: <DeploymentProperties>{
+            const deployment: Deployment = {
+                properties: {
                     template: template,
                     parameters: params,
                     mode: "Incremental",
@@ -47,12 +52,12 @@ export class ARMHelper {
             logger.debug('template:\n' + JSON.stringify(template, null, 3));
             logger.debug('input params:\n' + JSON.stringify(params, null, 3));
 
-            const token: any = this._ctx.AuthToken
+            const token: any = this._ctx.Credentials.modernCredentials
 
-            let client = new ResourceManagementClient(token, this._ctx.Environment.authentication.subscriptionId);
+            let client = this._deploymentsClientFactory(token, this._ctx.Environment.authentication.subscriptionId);
 
             logger.log('validating deployment...');
-            let validate = await client.deployments.validate(resourceGroup, deploymentName, deployment);
+            let validate = await client.deployments.beginValidateAndWait(resourceGroup, deploymentName, deployment);
             if (validate.error)
             {
                 let errorMsg = `Validation failed (${(validate.error.code || 'unknown')})`;
@@ -79,16 +84,17 @@ export class ARMHelper {
                 throw new Error('validate failed');
             }
             logger.log('starting deployment...');
-            let result = await client.deployments.createOrUpdate(resourceGroup, deploymentName, deployment);
-            if (result._response.status > 299) {
-                throw new Error(`ARM Error ${result._response.bodyAsText}`);
+            let result = await client.deployments.beginCreateOrUpdateAndWait(resourceGroup, deploymentName, deployment);
+            if ((result as any)?._response?.status > 299) {
+                throw new Error(`ARM Error ${(result as any)._response?.bodyAsText}`);
             }
 
             logger.log('deployment finished...');
 
-        } catch(error) {
-            if (error instanceof RestError) error = JSON.stringify(error.body.error.details); // [string]error misses Azure deployment failure messages. 
-            logger.error('deployment failed: ' + error); 
+        } catch(error: any) {
+            const errorDetails = error?.body?.error?.details || error?.error?.details
+            const errorMessage = errorDetails ? JSON.stringify(errorDetails) : (error?.message || error)
+            logger.error('deployment failed: ' + errorMessage); 
             throw error;
         }
     }

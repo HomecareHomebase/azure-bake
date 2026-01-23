@@ -1,9 +1,5 @@
-import {BaseUtility, IngredientManager} from '@azbake/core'
-import { CosmosDBManagementClient, CosmosDBManagementModels, CosmosDBManagementMappers } from "@azure/arm-cosmosdb";
-import { ApplicationTokenCredentials } from '@azure/ms-rest-nodeauth';
-import { HttpHeaders }  from "@azure/ms-rest-js"
-import { request } from 'http';
-import { ClientHttp2Session, Http2ServerRequest } from 'http2';
+import { BaseUtility, IngredientManager } from '@azbake/core'
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 
 
 export class CosmosUtility extends BaseUtility {
@@ -20,7 +16,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CosmosDBManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.databaseAccounts.listKeys(resource_group, name)
 
@@ -36,7 +32,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CosmosDBManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.databaseAccounts.listKeys(resource_group, name)
 
@@ -53,7 +49,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
   
-        const client = new CosmosDBManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""
@@ -75,7 +71,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
   
-        const client = new CosmosDBManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""

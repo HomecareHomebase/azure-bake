@@ -13,24 +13,22 @@
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
-        "test": "mocha --timeout 30000 -r ts-node/register test/plugin.test.ts ../../tests/ingredient-contracts.test.ts"
+        "test": "mocha --timeout 30000 --require tsx test/plugin.test.ts ../../tests/ingredient-contracts.test.ts"
   },
   "directories": {
     "lib": "dist"
   },
   "peerDependencies": {
-    "@azbake/core": "*",
-    "@azure/ms-rest-nodeauth": "*"
+    "@azbake/core": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^22.13.0"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112",
-    "@azure/arm-communication": "^3.0.1",
-    "@azure/identity": "^2.0.4"
+    "@azure/arm-communication": "^4.2.0",
+    "@azure/identity": "^4.13.0"
   },
   "publishConfig": {
     "access": "public",

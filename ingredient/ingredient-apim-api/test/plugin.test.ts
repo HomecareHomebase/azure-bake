@@ -144,10 +144,6 @@ describe('ApimApiPlugin', () => {
             const fs = require('fs')
             sandbox.stub(fs, 'existsSync').returns(false)
 
-            // Mock ClientSecretCredential
-            const identity = require('@azure/identity')
-            sandbox.stub(identity, 'ClientSecretCredential').returns({})
-
             // Mock ApiManagementClient
             const mockApimClient = {
                 api: {
@@ -182,10 +178,6 @@ describe('ApimApiPlugin', () => {
             // Mock fs.existsSync to avoid CA file checks
             const fs = require('fs')
             sandbox.stub(fs, 'existsSync').returns(false)
-
-            // Mock ClientSecretCredential
-            const identity = require('@azure/identity')
-            sandbox.stub(identity, 'ClientSecretCredential').returns({})
 
             // Mock ApiManagementClient
             const mockApimClient = {
@@ -248,9 +240,6 @@ describe('ApimApiPlugin', () => {
             const fs = require('fs')
             sandbox.stub(fs, 'existsSync').returns(false)
 
-            const identity = require('@azure/identity')
-            sandbox.stub(identity, 'ClientSecretCredential').returns({})
-
             const mockApimClient = {
                 api: {
                     listByService: sandbox.stub().returns({
@@ -289,9 +278,6 @@ describe('ApimApiPlugin', () => {
 
             const fs = require('fs')
             sandbox.stub(fs, 'existsSync').returns(false)
-
-            const identity = require('@azure/identity')
-            sandbox.stub(identity, 'ClientSecretCredential').returns({})
 
             const mockApimClient = {
                 api: {
@@ -337,9 +323,6 @@ describe('ApimApiPlugin', () => {
             // Set env var for CA file
             const originalEnv = process.env.NODE_EXTRA_CA_CERTS
             process.env.NODE_EXTRA_CA_CERTS = '/path/to/ca.pem'
-
-            const identity = require('@azure/identity')
-            sandbox.stub(identity, 'ClientSecretCredential').returns({})
 
             const mockApimClient = {
                 api: {

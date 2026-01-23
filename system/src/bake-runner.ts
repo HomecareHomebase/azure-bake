@@ -3,21 +3,29 @@ import { IngredientFactory } from './ingredients'
 import { red, cyan } from 'colors'
 import { DeploymentContext, Logger } from "@azbake/core"
 import { ResourceManagementClient } from "@azure/arm-resources"
-import { ResourceGroup } from "@azure/arm-resources/esm/models";
+import type { ResourceGroup } from "@azure/arm-resources";
+import type { TokenCredential } from "@azure/core-auth";
 
 export class BakeRunner {
-    constructor(bPackage: IBakePackage, logger?: Logger) {
+    constructor(
+        bPackage: IBakePackage,
+        logger?: Logger,
+        resourceClientFactory?: (credential: TokenCredential, subscriptionId: string) => ResourceManagementClient
+    ) {
 
         this._package = bPackage
         this._logger = logger || new Logger([], bPackage.Environment.logLevel)
         this._credentials = <BakeCredentials>{}
         this._credentialFactory = new CredentialFactory({ logger: this._logger })
+        this._resourceClientFactory = resourceClientFactory
+            ?? ((credential, subscriptionId) => new ResourceManagementClient(credential, subscriptionId))
     }
 
     _package: IBakePackage
     _logger: Logger
     _credentials: BakeCredentials
     _credentialFactory: CredentialFactory
+    _resourceClientFactory: (credential: TokenCredential, subscriptionId: string) => ResourceManagementClient
     _customAuthToken: Map<string, string | null> = new Map<string, string | null>();
 
     private _loadBuiltIns() {
@@ -128,8 +136,8 @@ export class BakeRunner {
 
 
             if (ctx.Config.resourceGroup) {
-                // Use legacy credentials for ResourceManagementClient (v4 compatibility)
-                let client = new ResourceManagementClient(ctx.Credentials.legacyCredentials, ctx.Environment.authentication.subscriptionId)
+                const tokenCredential = ctx.Credentials.modernCredentials as TokenCredential
+                let client = this._resourceClientFactory(tokenCredential, ctx.Environment.authentication.subscriptionId)
 
                 let rgExists = false
                 try {
