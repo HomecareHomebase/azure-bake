@@ -29,17 +29,21 @@
     "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
   },
   "peerDependencies": {
+    "@azure/identity": "*",
     "@azure/ms-rest-nodeauth": "*",
     "colors": "*"
   },
   "devDependencies": {
+    "@azure/identity": "^4.13.0",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/chai": "^4.3.11",
     "@types/mocha": "^10.0.6",
     "@types/node": "^22.13.0",
+    "@types/sinon": "^21.0.0",
     "chai": "^4.3.10",
     "colors": "1.4.0",
     "mocha": "^11.7.5",
+    "sinon": "^21.0.1",
     "standard-version": "^4.4.0",
     "ts-node": "^10.9.2"
   },

@@ -317,12 +317,25 @@ This is the phase that requires the most care.
 
 #### 7.1 Introduce an auth abstraction (no behavior change)
 
-* [ ] Create an internal “credential factory” that can produce:
-  * [ ] legacy ms-rest credentials (current)
-  * [ ] `TokenCredential` (`@azure/identity`) for modern SDKs
-* [ ] Add tests that validate:
-  * [ ] same env var inputs produce equivalent auth behavior
-  * [ ] token acquisition errors are handled/logged consistently
+* [x] Create an internal "credential factory" that can produce:
+  * [x] legacy ms-rest credentials (current)
+  * [x] `TokenCredential` (`@azure/identity`) for modern SDKs
+  * Implementation: `core/src/credential-factory.ts` exports `CredentialFactory` class
+  * Added `@azure/identity@^4.13.0` to core, system, and root packages
+  * Factory uses dynamic imports to support both credential types
+* [x] Add tests that validate:
+  * [x] same env var inputs produce equivalent auth behavior
+  * [x] token acquisition errors are handled/logged consistently
+  * Tests in `core/test/credential-factory.test.ts` (53 tests covering all paths)
+
+**Gate:** ✅ build passes (40 packages); 1423 tests pass. *(Verified 2026-01-22)*
+
+**Implementation notes:**
+- `CredentialFactory.createCredentials(auth)` returns `BakeCredentials` with both `legacyCredentials` and `modernCredentials`
+- `skipAuth` mode returns placeholder credentials for testing/mocked scenarios
+- Added `skipLibCheck: true` and `esModuleInterop: true` to all package tsconfigs for @azure/identity compatibility
+- Updated `system/src/index.ts` minimist import syntax for esModuleInterop
+- Helper functions `isModernCredential()` and `isLegacyCredential()` for SDK version detection
 
 #### 7.2 Migrate from `@azure/ms-rest-nodeauth` → `@azure/identity`
 

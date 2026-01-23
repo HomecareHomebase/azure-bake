@@ -6,7 +6,10 @@
     "outDir": "./dist",
     "strict": true,
     "stripInternal": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["**/*.ts"],
 }

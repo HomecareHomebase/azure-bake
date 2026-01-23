@@ -1,12 +1,1 @@
-{
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
-    "strict": true,
-    "stripInternal": true,
-    "sourceMap": true
-  },
-  "include": ["**/*.ts"],
-}
+{"compilerOptions": {"target": "es6", "module": "commonjs", "declaration": true, "outDir": "./dist", "strict": true, "stripInternal": true, "sourceMap": true, "skipLibCheck": true, "esModuleInterop": true}, "include": ["**/*.ts"]} 

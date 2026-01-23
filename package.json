@@ -33,7 +33,7 @@
     "load:ingredients": "lerna run link:ingredients",
     "build": "lerna run compile",
     "test": "lerna run test",
-        "test:quiet": "node test/run-quiet.js",
+    "test:quiet": "node test/run-quiet.js",
     "test:coverage": "nyc mocha --timeout 30000 --require ./test/coverage-setup.js --require tsx --reporter min --exclude \"**/node_modules/**\" \"core/test/**/*.ts\" \"arm-helper/test/**/*.ts\" \"system/test/**/*.ts\" \"ingredient/*/test/**/*.ts\" \"tests/**/*.test.ts\"",
     "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes",
     "test:coverage:summary": "nyc --reporter=text-summary mocha --timeout 30000 --require ./test/coverage-setup.js --require tsx --reporter min --exclude \"**/node_modules/**\" \"core/test/**/*.ts\" \"arm-helper/test/**/*.ts\" \"system/test/**/*.ts\" \"ingredient/*/test/**/*.ts\" \"tests/**/*.test.ts\""
@@ -42,6 +42,7 @@
     "@azure/arm-compute": "^10.0.0",
     "@azure/arm-cosmosdb": "^9.1.0",
     "@azure/arm-network": "^14.0.0",
+    "@azure/identity": "^4.13.0",
     "@azure/ms-rest-nodeauth": "^3.0.0",
     "azure-arm-compute": "^10.0.0",
     "azure-arm-keyvault": "^1.2.0",
@@ -54,6 +55,6 @@
     "gulp-inline-source": "^4.0.0",
     "gulp-shell": "^0.7.1",
     "moment": "^2.24.0",
-        "yargs": "^17.7.2"
+    "yargs": "^17.7.2"
   }
 }

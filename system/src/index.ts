@@ -11,7 +11,7 @@ import * as ps from 'process'
 import * as os from 'os'
 import {Buffer} from 'buffer'
 
-import * as minimist from 'minimist'
+import minimist from 'minimist'
 
 let bake_version = require('../package.json').version
 process.env['npm_package_version'] = bake_version
@@ -96,9 +96,9 @@ function validateParams() {
 
     let logger = new Logger()
 
-    if (argv._.findIndex(x=>x == 'serve') >= 0) {
+    if (argv._.findIndex((x: string)=>x == 'serve') >= 0) {
         cmd = "serve"
-    } else if (argv._.findIndex(x=>x == 'mix') >= 0) {
+    } else if (argv._.findIndex((x: string)=>x == 'mix') >= 0) {
         cmd = "mix"
     }else {
         displayHelp()
