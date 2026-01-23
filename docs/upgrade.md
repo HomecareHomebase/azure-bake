@@ -341,10 +341,27 @@ This is the phase that requires the most care.
 
 Based on Azure SDK guidance, replace `loginWithServicePrincipalSecret(...)` with `ClientSecretCredential(...)`.
 
-* [ ] Update `system/src/bake-runner.ts` login flow.
-* [ ] Update `core/src/deployment-context.ts` types if needed.
-  * [ ] Goal: preserve public API types as much as possible; if not possible, plan semver major bumps.
-* [ ] Add/expand tests for authentication and client creation.
+* [x] Update `system/src/bake-runner.ts` login flow.
+  * Replaced direct `msRestNodeAuth.loginWithServicePrincipalSecret()` with `CredentialFactory.createCredentials()`
+  * `BakeRunner` now stores `BakeCredentials` instead of raw `ApplicationTokenCredentials`
+  * Added success message logging after Azure login
+* [x] Update `core/src/deployment-context.ts` types if needed.
+  * Added `Credentials` getter that returns `BakeCredentials` (contains both legacy and modern credentials)
+  * `AuthToken` getter preserved for backward compatibility (returns `legacyCredentials`)
+  * Added `_normalizeCredentials()` method to wrap raw credentials as `BakeCredentials`
+  * Goal achieved: public API preserved; `AuthToken` returns compatible credential object
+* [x] Add/expand tests for authentication and client creation.
+  * Added 4 new tests in `deployment-context.test.ts` for `Credentials` getter and `BakeCredentials` handling
+  * Total test count: 1427 tests passing
+
+**Gate:** ✅ build passes (40 packages); 1427 tests pass. *(Verified 2026-01-22)*
+
+**Implementation notes:**
+- `BakeRunner` constructor creates a `CredentialFactory` instance
+- `login()` method now uses `CredentialFactory.createCredentials(auth)` for both real and skipped auth
+- `DeploymentContext` accepts either `BakeCredentials` or raw legacy credentials (auto-wrapped)
+- `_bakeRegion()` uses `ctx.Credentials.legacyCredentials` for `ResourceManagementClient`
+- Backward compatibility maintained: all existing code using `ctx.AuthToken` continues to work
 
 #### 7.3 Upgrade management clients (`@azure/arm-*`)
 

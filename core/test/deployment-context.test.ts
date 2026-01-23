@@ -6,6 +6,7 @@ import { DeploymentContext } from '../src/deployment-context'
 import { Logger } from '../src/logger'
 import { IBakeConfig, IBakeEnvironment, IBakePackage, IBakeRegion, IIngredient } from '../src/bake-interfaces'
 import { BakeVariable } from '../src/bake-variable'
+import { BakeCredentials } from '../src/credential-factory'
 
 function createConfig(): IBakeConfig {
     return {
@@ -182,6 +183,74 @@ describe('DeploymentContext', () => {
             const ctx = new DeploymentContext(mockAuth, createPackage(createConfig(), createEnvironment()), createRegion(), new Logger())
 
             expect(ctx.AuthToken).to.equal(mockAuth)
+        })
+
+        it('returns legacy credentials when BakeCredentials is passed', () => {
+            const legacyMock = { getToken: sandbox.stub().resolves('legacy-token') }
+            const modernMock = { getToken: sandbox.stub().resolves({ token: 'modern-token' }) }
+            const bakeCredentials: BakeCredentials = {
+                legacyCredentials: legacyMock,
+                modernCredentials: modernMock,
+                tenantId: 'test-tenant',
+                subscriptionId: 'test-sub'
+            }
+            const ctx = new DeploymentContext(bakeCredentials, createPackage(createConfig(), createEnvironment()), createRegion(), new Logger())
+
+            expect(ctx.AuthToken).to.equal(legacyMock)
+        })
+    })
+
+    describe('Credentials getter', () => {
+        it('returns BakeCredentials when passed as auth', () => {
+            const legacyMock = { getToken: sandbox.stub().resolves('legacy-token') }
+            const modernMock = { getToken: sandbox.stub().resolves({ token: 'modern-token' }) }
+            const bakeCredentials: BakeCredentials = {
+                legacyCredentials: legacyMock,
+                modernCredentials: modernMock,
+                tenantId: 'test-tenant',
+                subscriptionId: 'test-sub'
+            }
+            const ctx = new DeploymentContext(bakeCredentials, createPackage(createConfig(), createEnvironment()), createRegion(), new Logger())
+
+            expect(ctx.Credentials.legacyCredentials).to.equal(legacyMock)
+            expect(ctx.Credentials.modernCredentials).to.equal(modernMock)
+            expect(ctx.Credentials.tenantId).to.equal('test-tenant')
+            expect(ctx.Credentials.subscriptionId).to.equal('test-sub')
+        })
+
+        it('wraps legacy credentials as BakeCredentials when raw credential passed', () => {
+            const mockAuth = { 
+                getToken: sandbox.stub().resolves('token'),
+                signRequest: sandbox.stub()
+            } as any
+            const config = createConfig()
+            const env = createEnvironment()
+            const pkg = createPackage(config, env)
+            const ctx = new DeploymentContext(mockAuth, pkg, createRegion(), new Logger())
+
+            // AuthToken should return the raw credential
+            expect(ctx.AuthToken).to.equal(mockAuth)
+            
+            // Credentials should wrap it
+            expect(ctx.Credentials.legacyCredentials).to.equal(mockAuth)
+            expect(ctx.Credentials.modernCredentials).to.equal(mockAuth)
+            expect(ctx.Credentials.tenantId).to.equal(env.authentication.tenantId)
+            expect(ctx.Credentials.subscriptionId).to.equal(env.authentication.subscriptionId)
+        })
+
+        it('uses empty strings for tenantId/subscriptionId when package is undefined', () => {
+            const mockAuth = { getToken: sandbox.stub() } as any
+            // Create a minimal package without proper environment
+            const minimalPkg = {
+                Config: createConfig(),
+                Environment: {} as IBakeEnvironment,
+                Authenticate: async () => true
+            }
+            const ctx = new DeploymentContext(mockAuth, minimalPkg, createRegion(), new Logger())
+
+            expect(ctx.Credentials.legacyCredentials).to.equal(mockAuth)
+            expect(ctx.Credentials.tenantId).to.equal('')
+            expect(ctx.Credentials.subscriptionId).to.equal('')
         })
     })
 

@@ -1,8 +1,7 @@
-import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager, TagGenerator, BaseIngredient } from "@azbake/core";
+import { IBakePackage, IBakeRegion, IIngredient, IBakeAuthentication, BakeEval, IBakeConfig, IngredientManager, TagGenerator, BaseIngredient, CredentialFactory, BakeCredentials } from "@azbake/core";
 import { IngredientFactory } from './ingredients'
 import { red, cyan } from 'colors'
 import { DeploymentContext, Logger } from "@azbake/core"
-import * as msRestNodeAuth from "@azure/ms-rest-nodeauth"
 import { ResourceManagementClient } from "@azure/arm-resources"
 import { ResourceGroup } from "@azure/arm-resources/esm/models";
 
@@ -11,12 +10,14 @@ export class BakeRunner {
 
         this._package = bPackage
         this._logger = logger || new Logger([], bPackage.Environment.logLevel)
-        this._AuthCreds = <msRestNodeAuth.ApplicationTokenCredentials>{}
+        this._credentials = <BakeCredentials>{}
+        this._credentialFactory = new CredentialFactory({ logger: this._logger })
     }
 
     _package: IBakePackage
     _logger: Logger
-    _AuthCreds: msRestNodeAuth.ApplicationTokenCredentials
+    _credentials: BakeCredentials
+    _credentialFactory: CredentialFactory
     _customAuthToken: Map<string, string | null> = new Map<string, string | null>();
 
     private _loadBuiltIns() {
@@ -127,7 +128,8 @@ export class BakeRunner {
 
 
             if (ctx.Config.resourceGroup) {
-                let client = new ResourceManagementClient(ctx.AuthToken, ctx.Environment.authentication.subscriptionId)
+                // Use legacy credentials for ResourceManagementClient (v4 compatibility)
+                let client = new ResourceManagementClient(ctx.Credentials.legacyCredentials, ctx.Environment.authentication.subscriptionId)
 
                 let rgExists = false
                 try {
@@ -200,13 +202,16 @@ export class BakeRunner {
 
             if (auth.skipAuth) {
                 this._logger.log("Skipping Azure login")
+                // Create placeholder credentials for skipped auth
+                this._credentials = await this._credentialFactory.createCredentials(auth, { skipAuth: true })
                 return true
             }
 
-            //TODO, new login does not support certificate SP login.
             try {
-                this._AuthCreds = await msRestNodeAuth
-                    .loginWithServicePrincipalSecret(auth.serviceId, auth.secretKey, auth.tenantId)
+                // Use CredentialFactory to create both legacy and modern credentials
+                // This replaces direct msRestNodeAuth.loginWithServicePrincipalSecret call
+                this._credentials = await this._credentialFactory.createCredentials(auth)
+                this._logger.log("Azure login successful")
             }
             catch (err: any) {
                 this._logger.error(red("login failed: " + err.message))
@@ -216,7 +221,7 @@ export class BakeRunner {
             //check if any ingredients need access to the service principal credientals for custom auth
             let recipe = this._package.Config.recipe
 
-            let ctx = new DeploymentContext(this._AuthCreds, this._package, <IBakeRegion>{}, this._logger);
+            let ctx = new DeploymentContext(this._credentials, this._package, <IBakeRegion>{}, this._logger);
 
             for (const iterator of recipe) {
                 let name = iterator[0];
@@ -240,7 +245,7 @@ export class BakeRunner {
             let tasks: Array<Promise<boolean>> = []
 
             regions.forEach(region => {
-                let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
+                let ctx = new DeploymentContext(this._credentials, this._package, region,
                     new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, null)
                 let task = this._bakeRegion(ctx)
                 tasks.push(task)
@@ -262,7 +267,7 @@ export class BakeRunner {
             let count = regions.length
             for (let i = 0; i < count; ++i) {
                 let region = regions[i]
-                let ctx = new DeploymentContext(this._AuthCreds, this._package, region,
+                let ctx = new DeploymentContext(this._credentials, this._package, region,
                     new Logger(this._logger.getPre().concat(region.name), this._package.Environment.logLevel), undefined, null)
 
                 try {
