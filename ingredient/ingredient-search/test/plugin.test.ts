@@ -678,15 +678,6 @@ describe('SearchUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            // Mock the Azure SDK client
-            const mockClient = {
-                adminKeys: {
-                    get: sandbox.stub().resolves(null)
-                }
-            }
-            const SearchManagementClient = require('@azure/arm-search').SearchManagementClient
-            sandbox.stub(SearchManagementClient.prototype, 'adminKeys').value(mockClient.adminKeys)
-
             const utils = new SearchUtils(ctx)
 
             // Test will fail on credential creation but exercises code paths

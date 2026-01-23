@@ -31,6 +31,10 @@ function normalizeOutput(output: string): string {
 
 function runServe(recipe: string, extraArgs: string[] = []) {
     const recipeArg = recipe.split(path.sep).join('/')
+    // Remove NODE_OPTIONS to prevent suppress-logging.js from affecting child processes
+    const env = { ...process.env }
+    delete env.NODE_OPTIONS
+    delete env.BAKE_SUPPRESS_LOGGING
     return spawnSync(process.execPath, [
         '-r',
         'ts-node/register',
@@ -42,7 +46,7 @@ function runServe(recipe: string, extraArgs: string[] = []) {
         ...extraArgs
     ], {
         cwd: systemRoot,
-        env: { ...process.env },
+        env: env,
         encoding: 'utf8'
     })
 }

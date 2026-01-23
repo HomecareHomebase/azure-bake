@@ -1,6 +1,6 @@
 import { BaseIngredient, IngredientManager } from "@azbake/core";
-import { IIngredient,  DeploymentContext } from "@azbake/core";
-import { ARMHelper } from "@azbake/arm-helper";
+import { IIngredient, DeploymentContext } from "@azbake/core";
+import type { ARMHelper } from "@azbake/arm-helper";
 
 import profile from './trf-mgr.json';
 import endpoint from './endpoint.json';
@@ -10,10 +10,17 @@ import stockAlerts from "./stockAlerts.json"
 export class TrafficManager extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
         super(name, ingredient, ctx);
-        this._helper = new ARMHelper(this._ctx);
     }
     
-    _helper: ARMHelper;
+    _helper?: ARMHelper;
+
+    private getHelper(): ARMHelper {
+        if (!this._helper) {
+            const { ARMHelper } = require("@azbake/arm-helper");
+            this._helper = new ARMHelper(this._ctx);
+        }
+        return this._helper!;
+    }
 
     public async Execute(): Promise<void> {
 
@@ -40,12 +47,13 @@ export class TrafficManager extends BaseIngredient {
             const region = this._ctx.Region.code;
             let trfutil = new TrafficUtils(this._ctx);
     
-            let props = await this._helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters);
+            const helper = this.getHelper();
+            let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ctx.Ingredient.properties.parameters);
             props["name"] = {"value": trfutil.get_profile() };
 
-            props = await this._helper.ConfigureDiagnostics(props);
+            props = await helper.ConfigureDiagnostics(props);
 
-            await this._helper.DeployTemplate(`${this._name}-profile`, profile, props, await util.resource_group());
+            await helper.DeployTemplate(`${this._name}-profile`, profile, props, await util.resource_group());
 
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);
@@ -86,11 +94,12 @@ export class TrafficManager extends BaseIngredient {
 
             const primaryRG = await util.resource_group(null, true, util.primary_region());
         
-            await this._helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, primaryRG);
+            const helper = this.getHelper();
+            await helper.DeployTemplate(`${this._name}-endpoint`, endpoint, props, primaryRG);
 
             let alertTarget = profileName
             let alertOverrides = this._ingredient.properties.alerts
-            await this._helper.DeployAlerts(this._name, await primaryRG, alertTarget, stockAlerts, alertOverrides)
+            await helper.DeployAlerts(this._name, await primaryRG, alertTarget, stockAlerts, alertOverrides)
             
         } catch(error){
             this._logger.error(`deployment failed: ${error}`);

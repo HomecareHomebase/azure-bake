@@ -1,6 +1,6 @@
 import { BaseIngredient, IngredientManager, BakeVariable, Logger } from "@azbake/core"
-import { IIngredient,  DeploymentContext } from "@azbake/core";
-import { ARMHelper } from "@azbake/arm-helper";
+import { IIngredient, DeploymentContext } from "@azbake/core";
+import type { ARMHelper } from "@azbake/arm-helper";
 import stockAlerts from "./stockAlerts.json"
 
 import arm from './arm.json';
@@ -11,6 +11,16 @@ export class WebAppContainer extends BaseIngredient {
         super(name, ingredient, ctx);
     }
 
+    _helper?: ARMHelper;
+
+    private getHelper(): ARMHelper {
+        if (!this._helper) {
+            const { ARMHelper } = require("@azbake/arm-helper");
+            this._helper = new ARMHelper(this._ctx);
+        }
+        return this._helper!;
+    }
+
     public async Execute(): Promise<void> {
 
         let util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
@@ -18,7 +28,7 @@ export class WebAppContainer extends BaseIngredient {
 
         try {
 
-            var helper = new ARMHelper(this._ctx);
+            var helper = this.getHelper();
 
             //build the properties as a standard object.
             let props = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters);

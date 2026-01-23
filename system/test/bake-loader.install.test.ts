@@ -3,8 +3,14 @@ import 'mocha'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 
 import { IngredientManager } from '@azbake/core'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const require = createRequire(import.meta.url)
 
 describe('bake-loader dynamic install', () => {
     it('skips install when ingredients are linked locally', () => {
@@ -50,7 +56,10 @@ describe('bake-loader dynamic install', () => {
 
         class FakeShellRunner {
             private args: string[] = []
-            constructor(private cmd: string) {}
+            private cmd: string
+            constructor(cmd: string) {
+                this.cmd = cmd
+            }
             public start() {
                 return this
             }

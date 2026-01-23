@@ -27,7 +27,7 @@
     "@azbake/core": "^0.1.108",
     "@azure/arm-resources": "1.*",
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/node": "^10.12.18"
+    "@types/node": "^22.13.0"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112"

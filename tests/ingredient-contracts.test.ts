@@ -59,6 +59,24 @@ const armHelperState = {
     deploys: [] as Array<{ deploymentName: string; resourceGroup: string }>
 }
 
+function clearPluginModuleCache() {
+    try {
+        const resolvedIndex = require.resolve(pluginIndexPath)
+        delete require.cache[resolvedIndex]
+    } catch {
+        // ignore cache misses
+    }
+
+    if (hasPluginSource) {
+        try {
+            const resolvedPlugin = require.resolve(pluginSourcePath)
+            delete require.cache[resolvedPlugin]
+        } catch {
+            // ignore cache misses
+        }
+    }
+}
+
 class FakeArmHelper {
     private _ctx: DeploymentContext
     constructor(ctx: DeploymentContext) {
@@ -246,8 +264,8 @@ describe(`ingredient contract: ${packageName}`, () => {
     it('exports plugin and namespace', () => {
         const restoreLoad = stubModuleLoad()
         try {
+            clearPluginModuleCache()
             const resolved = require.resolve(pluginIndexPath)
-            delete require.cache[resolved]
             const mod = require(resolved)
             expect(mod).to.have.property('plugin')
             expect(mod).to.have.property('pluginNS')
@@ -302,8 +320,8 @@ describe(`ingredient contract: ${packageName}`, () => {
                 pluginVersion: '0.0.0'
             }
 
+            clearPluginModuleCache()
             const resolved = require.resolve(pluginIndexPath)
-            delete require.cache[resolved]
             const mod = require(resolved)
             const Plugin = mod.plugin
             const instance = new Plugin('sample', ingredient, ctx)

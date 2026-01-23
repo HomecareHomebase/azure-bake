@@ -14,11 +14,16 @@ import {
     BakeVariable
 } from '@azbake/core'
 
-import { FunctionsPlugin } from '../src/plugin'
 import { FunctionsUtils } from '../src/functions'
 
 // Require the compiled modules to verify exports
 const functionsIndex = require('../dist/index')
+
+function loadPlugin(): any {
+    const resolved = require.resolve('../src/plugin')
+    delete require.cache[resolved]
+    return require(resolved).FunctionsPlugin
+}
 
 function createContext(region?: IBakeRegion, ingredient?: IIngredient): DeploymentContext {
     const config: IBakeConfig = {
@@ -192,6 +197,7 @@ describe('FunctionsPlugin', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const FunctionsPlugin = loadPlugin()
             const plugin = new FunctionsPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -228,6 +234,7 @@ describe('FunctionsPlugin', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const FunctionsPlugin = loadPlugin()
             const plugin = new FunctionsPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -264,6 +271,7 @@ describe('FunctionsPlugin', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const FunctionsPlugin = loadPlugin()
             const plugin = new FunctionsPlugin('test', ingredient, ctx)
             
             try {
@@ -300,6 +308,7 @@ describe('FunctionsPlugin', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const FunctionsPlugin = loadPlugin()
             const plugin = new FunctionsPlugin('test', ingredient, ctx)
             await plugin.Execute()
 
@@ -333,6 +342,7 @@ describe('FunctionsPlugin', () => {
             const armHelper = require('@azbake/arm-helper')
             sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
+            const FunctionsPlugin = loadPlugin()
             const plugin = new FunctionsPlugin('test', ingredient, ctx)
             await plugin.Execute()
 

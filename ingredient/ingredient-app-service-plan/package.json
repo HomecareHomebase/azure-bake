@@ -21,7 +21,7 @@
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register ../../tests/ingredient-contracts.test.ts test/**/*.test.ts"
+        "test": "mocha --timeout 30000 -r ts-node/register test/**/*.test.ts ../../tests/ingredient-contracts.test.ts"
   },
   "directories": {
     "lib": "dist"
@@ -35,7 +35,7 @@
     "@azbake/core": "^0.1.108",
     "@azbake/ingredient-utils": "^0.1.113",
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/node": "^10.12.18"
+    "@types/node": "^22.13.0"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112"

@@ -194,8 +194,9 @@ describe('TrafficManager Plugin', () => {
             const plugin = new TrafficManager('test-name', ingredient, ctx)
             
             expect(plugin._name).to.equal('test-name')
-                expect(plugin._ctx).to.not.be.undefined
-            expect(plugin._helper).to.not.be.undefined
+            expect(plugin._ctx).to.not.be.undefined
+            // _helper is lazily initialized, so it should be undefined before Execute() is called
+            expect(plugin._helper).to.be.undefined
         })
 
         it('stores ingredient reference', () => {

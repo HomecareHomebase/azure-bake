@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
+import { ARMHelper } from '@azbake/arm-helper'
 
 import {
     DeploymentContext,
@@ -53,7 +54,12 @@ function createContext(region?: IBakeRegion, ingredient?: IIngredient): Deployme
     }
 
     const testRegion: IBakeRegion = region || { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = { 
+        domain: 'tenant', 
+        clientId: 'service', 
+        secret: 'secret',
+        signRequest: () => Promise.resolve()
+    }
     return new DeploymentContext(auth, pkg, testRegion, new Logger(), ingredient)
 }
 
@@ -113,8 +119,8 @@ describe('HostNames Plugin', () => {
             const plugin = new HostNames('test-name', ingredient, ctx)
             
             expect(plugin._name).to.equal('test-name')
-                expect(plugin._ctx).to.not.be.undefined
-                expect(plugin._ctx.Region).to.deep.equal(ctx.Region)
+            expect(plugin._ctx).to.not.be.undefined
+            expect(plugin._ctx.Region).to.deep.equal(ctx.Region)
         })
     })
 
@@ -135,18 +141,10 @@ describe('HostNames Plugin', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockDeployTemplate = sandbox.stub().resolves({})
-            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+            const mockDeployTemplate = sandbox.stub(ARMHelper.prototype, 'DeployTemplate').resolves()
+            sandbox.stub(ARMHelper.prototype, 'BakeParamsToARMParamsAsync').resolves({
                 certificate: { value: '[myrg]/mycert' }
             })
-            
-            const ARMHelperStub = sandbox.stub().returns({
-                DeployTemplate: mockDeployTemplate,
-                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
-            
-            const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
             const plugin = new HostNames('test', ingredient, ctx)
             await plugin.Execute()
@@ -173,18 +171,10 @@ describe('HostNames Plugin', () => {
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
             const deploymentError = new Error('Deployment failed')
-            const mockDeployTemplate = sandbox.stub().rejects(deploymentError)
-            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+            sandbox.stub(ARMHelper.prototype, 'DeployTemplate').rejects(deploymentError)
+            sandbox.stub(ARMHelper.prototype, 'BakeParamsToARMParamsAsync').resolves({
                 certificate: { value: '[myrg]/mycert' }
             })
-            
-            const ARMHelperStub = sandbox.stub().returns({
-                DeployTemplate: mockDeployTemplate,
-                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
-            
-            const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
 
             const plugin = new HostNames('test', ingredient, ctx)
             

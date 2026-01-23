@@ -254,7 +254,8 @@ describe('SqlServerLogical Plugin', () => {
 
             const plugin = new SqlServerLogical('test', ingredient, ctx)
 
-            expect(plugin._helper).to.not.be.undefined
+            // _helper is lazily initialized, so it should be undefined before Execute() is called
+            expect(plugin._helper).to.be.undefined
         })
     })
 
@@ -579,11 +580,13 @@ describe('SqlServerLogical Plugin', () => {
 
             const plugin = new SqlServerLogical('test', ingredient, ctx)
             
-            // The _helper should be defined from constructor
-            expect(plugin._helper).to.not.be.undefined
+            // _helper is lazily initialized, so it should be undefined before Execute()
+            expect(plugin._helper).to.be.undefined
             
             await plugin.Execute()
 
+            // After Execute(), the helper should be initialized
+            expect(plugin._helper).to.not.be.undefined
             expect(mockDeployTemplate.called).to.be.true
         })
     })

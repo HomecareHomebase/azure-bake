@@ -271,18 +271,18 @@ Do this as a dedicated phase, because Node upgrades can cause cascading issues.
 
 Upgrade these first after the test gate, because they primarily affect development/build output:
 
-* [ ] TypeScript: `5.5.x` → `5.9.x`
-  * [ ] Keep `module: commonjs` initially to avoid a packaging break.
-  * [ ] Add/adjust shared tsconfig base if needed.
-* [ ] `@types/node`: `^10.x` → match the chosen Node LTS
-* [ ] Test tooling:
-  * [ ] `mocha` → latest
-  * [ ] `ts-node` → latest
-  * [ ] `chai/@types/*` → latest
-* [ ] Linting/formatting (optional but recommended once stable):
-  * [ ] add ESLint + TypeScript rules (or modernize any existing setup)
+* [x] TypeScript: `5.5.x` → `5.9.x`
+  * [x] Keep `module: commonjs` initially to avoid a packaging break.
+  * [x] Add/adjust shared tsconfig base if needed. *(Not needed — existing tsconfig structure is sufficient.)*
+* [x] `@types/node`: `^10.x` → match the chosen Node LTS
+* [x] Test tooling:
+  * [x] `mocha` → latest
+  * [x] `ts-node` → latest
+  * [x] `chai/@types/*` → latest
+* [ ] Linting/formatting (optional, deferred to post-upgrade cleanup):
+  * [ ] add ESLint + TypeScript rules (or modernize any existing setup) *(Deferred — not blocking Phase 5 completion.)*
 
-**Gate:** build output and tests pass; no snapshot diffs.
+**Gate:** build output and tests pass; no snapshot diffs. ✅ *(Verified 2026-01-22: TypeScript 5.9.3, @types/node 22.13.0, mocha 11.7.5, ts-node 10.9.2, chai 4.3.10 confirmed in root package.json.)*
 
 ### 6) Upgrade non-Azure runtime dependencies (medium risk)
 

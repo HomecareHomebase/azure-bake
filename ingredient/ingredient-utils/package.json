@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
-    "@types/node": "^10.12.18"
+    "@types/node": "^22.13.0"
   },
   "publishConfig": {
     "access": "public"

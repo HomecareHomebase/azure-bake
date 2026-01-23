@@ -98,10 +98,10 @@ describe('NetworkInterface Plugin', () => {
             })
 
             const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').returns({
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(() => ({
                 DeployTemplate: mockDeployTemplate,
                 BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
+            }))
 
             const params = new Map<string, BakeVariable>([
                 ['networkInterfaceName', new BakeVariable('test-nic')],
@@ -129,10 +129,10 @@ describe('NetworkInterface Plugin', () => {
             const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({})
 
             const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').returns({
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(() => ({
                 DeployTemplate: mockDeployTemplate,
                 BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
+            }))
 
             const params = new Map<string, BakeVariable>()
             const ingredient = createIngredient(params)
@@ -157,10 +157,10 @@ describe('NetworkInterface Plugin', () => {
             const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({})
 
             const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').returns({
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(() => ({
                 DeployTemplate: mockDeployTemplate,
                 BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
+            }))
 
             const params = new Map<string, BakeVariable>()
             const source = new BakeVariable('./arm-templates')
@@ -188,10 +188,10 @@ describe('NetworkInterface Plugin', () => {
             })
 
             const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').returns({
+            sandbox.stub(armHelper, 'ARMHelper').callsFake(() => ({
                 DeployTemplate: mockDeployTemplate,
                 BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync
-            })
+            }))
 
             const params = new Map<string, BakeVariable>([
                 ['networkInterfaceName', new BakeVariable('prod-nic-01')],

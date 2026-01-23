@@ -22,7 +22,7 @@
     "@azure/ms-rest-nodeauth": "*"
   },
   "devDependencies": {
-    "@types/node": "^10.12.18",
+    "@types/node": "^22.13.0",
     "@azure/ms-rest-nodeauth": "^3.0.0"
   },
   "publishConfig": {

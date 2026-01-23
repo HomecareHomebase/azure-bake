@@ -4,7 +4,6 @@ import { ApplicationTokenCredentials } from '@azure/ms-rest-nodeauth';
 import { HttpHeaders }  from "@azure/ms-rest-js"
 import { request } from 'http';
 import { ClientHttp2Session, Http2ServerRequest } from 'http2';
-import { Credentials } from 'crypto';
 
 
 export class CosmosUtility extends BaseUtility {

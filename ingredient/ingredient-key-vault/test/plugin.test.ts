@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import 'mocha'
 import * as sinon from 'sinon'
+import { ARMHelper } from '@azbake/arm-helper'
 
 import {
     DeploymentContext,
@@ -54,7 +55,12 @@ function createContext(region?: IBakeRegion, ingredient?: IIngredient): Deployme
     }
 
     const testRegion: IBakeRegion = region || { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = { 
+        domain: 'tenant', 
+        clientId: 'service', 
+        secret: 'secret',
+        signRequest: () => Promise.resolve()
+    }
     return new DeploymentContext(auth, pkg, testRegion, new Logger(), ingredient)
 }
 
@@ -165,20 +171,11 @@ describe('KeyVault Plugin', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockDeployTemplate = sandbox.stub().resolves({})
-            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+            const mockDeployTemplate = sandbox.stub(ARMHelper.prototype, 'DeployTemplate').resolves()
+            const mockBakeParamsToARMParamsAsync = sandbox.stub(ARMHelper.prototype, 'BakeParamsToARMParamsAsync').resolves({
                 vaultName: { value: 'mykeyvault' }
             })
-            const mockConfigureDiagnostics = sandbox.stub().callsFake((params) => params)
-            
-            const ARMHelperStub = sandbox.stub().returns({
-                DeployTemplate: mockDeployTemplate,
-                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync,
-                ConfigureDiagnostics: mockConfigureDiagnostics
-            })
-            
-            const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+            const mockConfigureDiagnostics = sandbox.stub(ARMHelper.prototype, 'ConfigureDiagnostics').callsFake(async (params) => params)
 
             const plugin = new KeyVault('test', ingredient, ctx)
             await plugin.Execute()
@@ -202,20 +199,11 @@ describe('KeyVault Plugin', () => {
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
             const deploymentError = new Error('Key Vault deployment failed')
-            const mockDeployTemplate = sandbox.stub().rejects(deploymentError)
-            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+            sandbox.stub(ARMHelper.prototype, 'DeployTemplate').rejects(deploymentError)
+            sandbox.stub(ARMHelper.prototype, 'BakeParamsToARMParamsAsync').resolves({
                 vaultName: { value: 'mykeyvault' }
             })
-            const mockConfigureDiagnostics = sandbox.stub().callsFake((params) => params)
-            
-            const ARMHelperStub = sandbox.stub().returns({
-                DeployTemplate: mockDeployTemplate,
-                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync,
-                ConfigureDiagnostics: mockConfigureDiagnostics
-            })
-            
-            const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+            sandbox.stub(ARMHelper.prototype, 'ConfigureDiagnostics').callsFake(async (params) => params)
 
             const plugin = new KeyVault('test', ingredient, ctx)
             
@@ -240,20 +228,11 @@ describe('KeyVault Plugin', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockDeployTemplate = sandbox.stub().resolves({})
-            const mockBakeParamsToARMParamsAsync = sandbox.stub().resolves({
+            const mockDeployTemplate = sandbox.stub(ARMHelper.prototype, 'DeployTemplate').resolves()
+            sandbox.stub(ARMHelper.prototype, 'BakeParamsToARMParamsAsync').resolves({
                 vaultName: { value: 'mykeyvault' }
             })
-            const mockConfigureDiagnostics = sandbox.stub().callsFake((params) => params)
-            
-            const ARMHelperStub = sandbox.stub().returns({
-                DeployTemplate: mockDeployTemplate,
-                BakeParamsToARMParamsAsync: mockBakeParamsToARMParamsAsync,
-                ConfigureDiagnostics: mockConfigureDiagnostics
-            })
-            
-            const armHelper = require('@azbake/arm-helper')
-            sandbox.stub(armHelper, 'ARMHelper').callsFake(ARMHelperStub)
+            sandbox.stub(ARMHelper.prototype, 'ConfigureDiagnostics').callsFake(async (params) => params)
 
             const plugin = new KeyVault('test', ingredient, ctx)
             await plugin.Execute()

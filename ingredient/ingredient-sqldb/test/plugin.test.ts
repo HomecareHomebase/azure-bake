@@ -209,9 +209,10 @@ describe('SqlDB Plugin', () => {
             const plugin = new SqlDB('test-name', ingredient, ctx)
             
             expect(plugin._name).to.equal('test-name')
-                expect(plugin._ctx).to.not.be.undefined
-                expect(plugin._ctx.Region.name).to.equal(ctx.Region.name)
-            expect(plugin._helper).to.not.be.undefined
+            expect(plugin._ctx).to.not.be.undefined
+            expect(plugin._ctx.Region.name).to.equal(ctx.Region.name)
+            // _helper is lazily initialized, so we just check it's initially undefined
+            expect(plugin._helper).to.be.undefined
         })
 
         it('stores ingredient reference', () => {
