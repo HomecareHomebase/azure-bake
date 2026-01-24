@@ -19,7 +19,7 @@ export class AvailabilitySetUtils extends BaseUtility {
 
         let availResource = await client.resources.get(await util.resource_group(), "Microsoft.Compute", "", "availabilitySets", resourceName, "2018-06-01");
 
-        return availResource.properties.platformFaultDomainCount;
+        return (availResource.properties?.platformFaultDomainCount as number) ?? 0;
     }
 
     public async get_update_domain_count(resourceName: string): Promise<number> {
@@ -31,7 +31,7 @@ export class AvailabilitySetUtils extends BaseUtility {
 
         let availResource = await client.resources.get(await util.resource_group(), "Microsoft.Compute", "", "availabilitySets", resourceName, "2018-06-01");
 
-        return availResource.properties.platformUpdateDomainCount;
+        return (availResource.properties?.platformUpdateDomainCount as number) ?? 0;
     }
 }
 

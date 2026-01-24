@@ -5,6 +5,9 @@
 ### NPM
 node_modules
 dist
+# Only root should have package-lock.json with npm workspaces
+*/package-lock.json
+ingredient/*/package-lock.json
 system/lerna-debug\.log
 *.tgz
 

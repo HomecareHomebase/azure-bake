@@ -452,8 +452,9 @@ describe('bake-loader', () => {
 
                 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bake-test-'))
                 const configFile = path.join(tmpDir, 'bake.yaml')
-                // In YAML 1.1, 010 would be parsed as octal (8), but js-yaml v4 (YAML 1.2)
-                // parses it as a plain string "010" unless it has a leading 0o
+                    // In YAML 1.1 (js-yaml v3), 010 is parsed as octal (8)
+                    // In YAML 1.2 (js-yaml v4), 010 would be parsed as integer 10
+                    // Currently using js-yaml v3.x which uses YAML 1.1 behavior
                 fs.writeFileSync(configFile, [
                     'name: test',
                     'shortName: tst',
@@ -467,8 +468,8 @@ describe('bake-loader', () => {
                 const pkg = new BakePackage(configFile)
                 const vars = pkg.Config.variables
                 expect(vars?.get('numericString')?.Code).eq('010')
-                // In js-yaml v4 (YAML 1.2), 010 is parsed as integer 10, not octal 8
-                expect(vars?.get('plainZero')?.Code).eq(10)
+                    // In js-yaml v3 (YAML 1.1), 010 is parsed as octal (8)
+                    expect(vars?.get('plainZero')?.Code).eq(8)
             })
 
             it('handles yes/no/on/off as strings in YAML 1.2', () => {

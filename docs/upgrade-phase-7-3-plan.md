@@ -344,6 +344,7 @@ For **each** project listed in the order below, launch a **sub-agent** with a pr
 * Read the project’s `package.json`, its `src/` files, and relevant tests.
 * Identify Azure client usage and API surface.
 * Update `@azure/*` dependencies to latest compatible versions (use npm registry data; respect Node 22).
+* **Run `npm install` from the repo root** (not from the sub-package) to update the workspace lockfile.
 * Update code to the new SDK APIs (credential types, LRO, model changes).
 * Update or add tests/mocks to reflect new SDK shapes.
 * Run the project’s tests (`npx lerna run test --scope <packageName>`) and any impacted cross-tests.
@@ -358,7 +359,28 @@ After each package update:
 3. Confirm `package-lock.json` is consistent with workspace updates.
 4. If multiple packages share an SDK (e.g., `@azure/arm-sql`), keep all of them on the same version to avoid duplication.
 
-### 4) Documentation updates (must-do)
+### 4) npm workspaces — critical dependency management rules
+
+This monorepo uses **npm workspaces** with Lerna. All dependencies are hoisted to the root `node_modules/` and shared across packages. Sub-agents **must** follow these rules:
+
+1. **Always run `npm install` from the repo root** after adding or upgrading any npm package in any project (core, arm-helper, system, or any ingredient). Never run `npm install` from within a sub-package directory.
+
+2. **Only the root should have a `package-lock.json`**. Do not create or commit lockfiles in sub-packages. Nested lockfiles cause version conflicts and break hoisting.
+
+3. **Ingredients use `peerDependencies`** for shared packages like `@azbake/core`, `@azure/arm-resources`, `@azure/identity`, etc. The root `package.json` provides these shared dependencies. When upgrading a shared SDK:
+   - Update the version in the ingredient's `peerDependencies` (and `devDependencies` if needed for local dev/test)
+   - Update the same version in the root `package.json` `dependencies` section
+   - Run `npm install` at the root to regenerate the lockfile
+
+4. **Verify hoisting worked correctly** by running:
+   ```bash
+   npm ls <package-name>
+   ```
+   All usages should resolve to the same version at the root level.
+
+5. **If you see version conflicts or "invalid" warnings** from `npm ls`, delete the root `package-lock.json` and run `npm install` again to regenerate it cleanly.
+
+### 5) Documentation updates (must-do)
 
 * After each project completes, update the progress tracker below.
 * Add a short note in the “Notes / Issues” column if any SDK behavior differs and how it was handled.
