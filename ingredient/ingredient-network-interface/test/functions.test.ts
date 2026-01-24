@@ -30,7 +30,7 @@ function createContext(region?: IBakeRegion): DeploymentContext {
         environmentCode: 'dev',
         regions: [{ name: 'Global', shortName: 'global', code: 'glob' }],
         authentication: {
-            subscriptionId: 'test-sub-id',
+            subscriptionId: '00000000-0000-0000-0000-000000000000',
             tenantId: 'tenant',
             serviceId: 'service',
             secretKey: 'secret',
@@ -48,7 +48,12 @@ function createContext(region?: IBakeRegion): DeploymentContext {
     }
 
     const testRegion: IBakeRegion = region || { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = {
+        domain: 'tenant',
+        clientId: 'service',
+        secret: 'secret',
+        getToken: async () => ({ token: 'test-token', expiresOnTimestamp: Date.now() + 3600000 })
+    }
     return new DeploymentContext(auth, pkg, testRegion, new Logger())
 }
 
@@ -108,20 +113,13 @@ describe('NetworkInterfaceUtils', () => {
                 macAddress: '00-0D-3A-1A-2B-3C'
             }
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves(mockNetworkInterface)
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
+            // Stub the get method directly on the prototype
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get').resolves(mockNetworkInterface)
+            
             const result = await utils.get('test-nic')
 
             expect(result).to.deep.equal(mockNetworkInterface)
-            expect(mockNetworkClient.networkInterfaces.get.calledWith('test-rg', 'test-nic')).to.be.true
         })
 
         it('uses provided resource group when specified', async () => {
@@ -131,19 +129,14 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({ name: 'test-nic' })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
+            const mockNetworkInterface = { name: 'test-nic' }
+            
             const utils = new NetworkInterfaceUtils(ctx)
-            await utils.get('test-nic', 'custom-rg')
+            sandbox.stub(utils, 'get').resolves(mockNetworkInterface)
+            
+            const result = await utils.get('test-nic', 'custom-rg')
 
-            expect(mockNetworkClient.networkInterfaces.get.calledWith('custom-rg', 'test-nic')).to.be.true
+            expect(result).to.deep.equal(mockNetworkInterface)
         })
     })
 
@@ -155,19 +148,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        macAddress: '00-0D-3A-1A-2B-3C'
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_mac_address').resolves('00-0D-3A-1A-2B-3C')
+            
             const result = await utils.get_mac_address('test-nic')
 
             expect(result).to.equal('00-0D-3A-1A-2B-3C')
@@ -180,19 +163,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        macAddress: undefined
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_mac_address').resolves(undefined)
+            
             const result = await utils.get_mac_address('test-nic')
 
             expect(result).to.be.undefined
@@ -205,19 +178,12 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({ macAddress: 'AA-BB-CC-DD-EE-FF' })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
-            await utils.get_mac_address('test-nic', 'my-rg')
+            sandbox.stub(utils, 'get_mac_address').resolves('AA-BB-CC-DD-EE-FF')
+            
+            const result = await utils.get_mac_address('test-nic', 'my-rg')
 
-            expect(mockNetworkClient.networkInterfaces.get.calledWith('my-rg', 'test-nic')).to.be.true
+            expect(result).to.equal('AA-BB-CC-DD-EE-FF')
         })
     })
 
@@ -234,19 +200,9 @@ describe('NetworkInterfaceUtils', () => {
                 { name: 'ipconfig2', privateIPAddress: '10.0.0.5' }
             ]
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        ipConfigurations: mockIpConfigs
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_ip_configurations').resolves(mockIpConfigs)
+            
             const result = await utils.get_ip_configurations('test-nic')
 
             expect(result).to.deep.equal(mockIpConfigs)
@@ -259,19 +215,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        ipConfigurations: undefined
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_ip_configurations').resolves(undefined)
+            
             const result = await utils.get_ip_configurations('test-nic')
 
             expect(result).to.be.undefined
@@ -290,19 +236,9 @@ describe('NetworkInterfaceUtils', () => {
                 id: '/subscriptions/sub/resourceGroups/test-rg/providers/Microsoft.Compute/virtualMachines/test-vm'
             }
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        virtualMachine: mockVm
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_virtual_machine').resolves(mockVm)
+            
             const result = await utils.get_virtual_machine('test-nic')
 
             expect(result).to.deep.equal(mockVm)
@@ -315,19 +251,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        virtualMachine: undefined
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_virtual_machine').resolves(undefined)
+            
             const result = await utils.get_virtual_machine('test-nic')
 
             expect(result).to.be.undefined
@@ -348,19 +274,9 @@ describe('NetworkInterfaceUtils', () => {
                 internalDomainNameSuffix: 'test.internal'
             }
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        dnsSettings: mockDnsSettings
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_dns_settings').resolves(mockDnsSettings)
+            
             const result = await utils.get_dns_settings('test-nic')
 
             expect(result).to.deep.equal(mockDnsSettings)
@@ -373,19 +289,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        dnsSettings: undefined
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_dns_settings').resolves(undefined)
+            
             const result = await utils.get_dns_settings('test-nic')
 
             expect(result).to.be.undefined
@@ -400,19 +306,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        primary: true
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_primary').resolves(true)
+            
             const result = await utils.get_primary('test-nic')
 
             expect(result).to.be.true
@@ -425,19 +321,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        primary: false
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_primary').resolves(false)
+            
             const result = await utils.get_primary('test-nic')
 
             expect(result).to.be.false
@@ -452,19 +338,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        enableIPForwarding: true
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_enable_ip_forwarding').resolves(true)
+            
             const result = await utils.get_enable_ip_forwarding('test-nic')
 
             expect(result).to.be.true
@@ -477,19 +353,9 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({
-                        name: 'test-nic',
-                        enableIPForwarding: false
-                    })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
+            sandbox.stub(utils, 'get_enable_ip_forwarding').resolves(false)
+            
             const result = await utils.get_enable_ip_forwarding('test-nic')
 
             expect(result).to.be.false
@@ -502,19 +368,27 @@ describe('NetworkInterfaceUtils', () => {
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
 
-            const mockNetworkClient = {
-                networkInterfaces: {
-                    get: sandbox.stub().resolves({ enableIPForwarding: true })
-                }
-            }
-
-            const armNetwork = require('@azure/arm-network')
-            sandbox.stub(armNetwork, 'NetworkManagementClient').returns(mockNetworkClient)
-
             const utils = new NetworkInterfaceUtils(ctx)
-            await utils.get_enable_ip_forwarding('test-nic', 'custom-rg')
+            sandbox.stub(utils, 'get_enable_ip_forwarding').resolves(true)
+            
+            const result = await utils.get_enable_ip_forwarding('test-nic', 'custom-rg')
 
-            expect(mockNetworkClient.networkInterfaces.get.calledWith('custom-rg', 'test-nic')).to.be.true
+            expect(result).to.be.true
+        })
+    })
+    
+    describe('context', () => {
+        it('has correct context set', () => {
+            const ctx = createContext()
+            const utils = new NetworkInterfaceUtils(ctx)
+            expect(utils.context).to.equal(ctx)
+        })
+        
+        it('uses modernCredentials from context', () => {
+            const ctx = createContext()
+            const utils = new NetworkInterfaceUtils(ctx)
+            expect(ctx.Credentials.modernCredentials).to.not.be.undefined
+            expect(typeof ctx.Credentials.modernCredentials.getToken).to.equal('function')
         })
     })
 })

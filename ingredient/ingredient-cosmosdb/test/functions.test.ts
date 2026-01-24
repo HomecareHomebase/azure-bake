@@ -96,10 +96,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_key('mycosmosaccount')
 
             expect(result).to.equal('cosmos-primary-key-123')
@@ -121,10 +119,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_key('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -145,10 +141,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             await utils.get_primary_key('mycosmosaccount', 'custom-rg')
 
             expect(mockCosmosClient.databaseAccounts.listKeys.calledWith('custom-rg', 'mycosmosaccount')).to.be.true
@@ -169,10 +163,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             await utils.get_primary_key('mycosmosaccount', null)
 
             expect(mockCosmosClient.databaseAccounts.listKeys.calledWith('auto-resolved-rg', 'mycosmosaccount')).to.be.true
@@ -196,10 +188,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_key('mycosmosaccount')
 
             expect(result).to.equal('cosmos-secondary-key-456')
@@ -221,10 +211,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_key('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -245,10 +233,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             await utils.get_secondary_key('mycosmosaccount', 'my-custom-rg')
 
             expect(mockCosmosClient.databaseAccounts.listKeys.calledWith('my-custom-rg', 'mycosmosaccount')).to.be.true
@@ -275,10 +261,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=primarykey;')
@@ -299,10 +283,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -325,10 +307,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -351,10 +331,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_primary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -377,10 +355,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             await utils.get_primary_connectionstring('mycosmosaccount', 'custom-rg')
 
             expect(mockCosmosClient.databaseAccounts.listConnectionStrings.calledWith('custom-rg', 'mycosmosaccount')).to.be.true
@@ -407,10 +383,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('AccountEndpoint=https://myaccount.documents.azure.com:443/;AccountKey=secondarykey;')
@@ -431,10 +405,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -457,10 +429,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -483,10 +453,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             const result = await utils.get_secondary_connectionstring('mycosmosaccount')
 
             expect(result).to.equal('')
@@ -509,10 +477,8 @@ describe('CosmosUtility', () => {
                 }
             }
 
-            const armCosmosdb = require('@azure/arm-cosmosdb')
-            sandbox.stub(armCosmosdb, 'CosmosDBManagementClient').returns(mockCosmosClient)
-
             const utils = new CosmosUtility(ctx)
+            sandbox.stub(utils as any, 'createClient').returns(mockCosmosClient)
             await utils.get_secondary_connectionstring('mycosmosaccount', 'another-rg')
 
             expect(mockCosmosClient.databaseAccounts.listConnectionStrings.calledWith('another-rg', 'mycosmosaccount')).to.be.true

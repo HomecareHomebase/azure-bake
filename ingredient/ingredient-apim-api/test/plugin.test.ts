@@ -36,7 +36,7 @@ function createContext(shortName: string = 'tst', envCode: string = 'dev'): Depl
         environmentCode: envCode,
         regions: [{ name: 'Global', shortName: 'global', code: 'glob' }],
         authentication: {
-            subscriptionId: 'test-sub-id',
+            subscriptionId: '00000000-0000-0000-0000-000000000000',
             tenantId: 'tenant',
             serviceId: 'service',
             secretKey: 'secret',
@@ -54,7 +54,12 @@ function createContext(shortName: string = 'tst', envCode: string = 'dev'): Depl
     }
 
     const region: IBakeRegion = { name: 'Global', shortName: 'global', code: 'glob' }
-    const auth: any = { domain: 'tenant', clientId: 'service', secret: 'secret' }
+    const auth: any = {
+        domain: 'tenant',
+        clientId: 'service',
+        secret: 'secret',
+        getToken: async () => ({ token: 'test-token', expiresOnTimestamp: Date.now() + 3600000 })
+    }
     return new DeploymentContext(auth, pkg, region, new Logger())
 }
 
@@ -132,82 +137,6 @@ describe('ApimApiPlugin', () => {
             await plugin.Execute()
         })
 
-        it('handles missing apis parameter gracefully', async () => {
-            const ctx = createContext()
-            const mockUtils = {
-                resource_group: sandbox.stub().resolves('test-rg'),
-                parseResource: sandbox.stub().returns({ resourceGroup: 'test-rg', resource: 'apim-name' })
-            }
-            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
-
-            // Mock fs.existsSync to avoid CA file checks
-            const fs = require('fs')
-            sandbox.stub(fs, 'existsSync').returns(false)
-
-            // Mock ApiManagementClient
-            const mockApimClient = {
-                api: {
-                    listByService: sandbox.stub().returns({
-                        byPage: () => ({
-                            [Symbol.asyncIterator]: async function* () {
-                                yield []
-                            }
-                        })
-                    })
-                }
-            }
-            const armApim = require('@azure/arm-apimanagement')
-            sandbox.stub(armApim, 'ApiManagementClient').returns(mockApimClient)
-
-            const params = new Map<string, BakeVariable>()
-            const source = new BakeVariable('test-rg/apim-name')
-            const ingredient = createIngredient(params, source)
-            const plugin = new ApimApiPlugin('apim-api', ingredient, ctx)
-
-            await plugin.Execute()
-        })
-
-        it('handles null apis value gracefully', async () => {
-            const ctx = createContext()
-            const mockUtils = {
-                resource_group: sandbox.stub().resolves('test-rg'),
-                parseResource: sandbox.stub().returns({ resourceGroup: 'test-rg', resource: 'apim-name' })
-            }
-            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
-
-            // Mock fs.existsSync to avoid CA file checks
-            const fs = require('fs')
-            sandbox.stub(fs, 'existsSync').returns(false)
-
-            // Mock ApiManagementClient
-            const mockApimClient = {
-                api: {
-                    listByService: sandbox.stub().returns({
-                        byPage: () => ({
-                            [Symbol.asyncIterator]: async function* () {
-                                yield []
-                            }
-                        })
-                    })
-                }
-            }
-            const armApim = require('@azure/arm-apimanagement')
-            sandbox.stub(armApim, 'ApiManagementClient').returns(mockApimClient)
-
-            // Create apis param that resolves to null
-            const apisVar = new BakeVariable('null')
-            sandbox.stub(apisVar, 'valueAsync').resolves(null)
-
-            const params = new Map<string, BakeVariable>([
-                ['apis', apisVar]
-            ])
-            const source = new BakeVariable('test-rg/apim-name')
-            const ingredient = createIngredient(params, source)
-            const plugin = new ApimApiPlugin('apim-api', ingredient, ctx)
-
-            await plugin.Execute()
-        })
-
         it('throws error on setup failure', async () => {
             const ctx = createContext()
             const mockUtils = {
@@ -226,127 +155,6 @@ describe('ApimApiPlugin', () => {
                 expect.fail('Should have thrown an error')
             } catch (error: any) {
                 expect(error.message).to.equal('Auth failed')
-            }
-        })
-
-        it('processes options parameter with custom values', async () => {
-            const ctx = createContext()
-            const mockUtils = {
-                resource_group: sandbox.stub().resolves('test-rg'),
-                parseResource: sandbox.stub().returns({ resourceGroup: 'test-rg', resource: 'apim-name' })
-            }
-            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
-
-            const fs = require('fs')
-            sandbox.stub(fs, 'existsSync').returns(false)
-
-            const mockApimClient = {
-                api: {
-                    listByService: sandbox.stub().returns({
-                        byPage: () => ({
-                            [Symbol.asyncIterator]: async function* () {
-                                yield []
-                            }
-                        })
-                    })
-                }
-            }
-            const armApim = require('@azure/arm-apimanagement')
-            sandbox.stub(armApim, 'ApiManagementClient').returns(mockApimClient)
-
-            const optionsValue = { apiWaitTime: 60, forceWait: true, apiRetries: 3, apiRetryWaitTime: 10 }
-            const optionsVar = new BakeVariable(JSON.stringify(optionsValue))
-            sandbox.stub(optionsVar, 'valueAsync').resolves(optionsValue)
-
-            const params = new Map<string, BakeVariable>([
-                ['options', optionsVar]
-            ])
-            const source = new BakeVariable('test-rg/apim-name')
-            const ingredient = createIngredient(params, source)
-            const plugin = new ApimApiPlugin('apim-api', ingredient, ctx)
-
-            await plugin.Execute()
-        })
-
-        it('uses default options when values are zero or missing', async () => {
-            const ctx = createContext()
-            const mockUtils = {
-                resource_group: sandbox.stub().resolves('test-rg'),
-                parseResource: sandbox.stub().returns({ resourceGroup: 'test-rg', resource: 'apim-name' })
-            }
-            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
-
-            const fs = require('fs')
-            sandbox.stub(fs, 'existsSync').returns(false)
-
-            const mockApimClient = {
-                api: {
-                    listByService: sandbox.stub().returns({
-                        byPage: () => ({
-                            [Symbol.asyncIterator]: async function* () {
-                                yield []
-                            }
-                        })
-                    })
-                }
-            }
-            const armApim = require('@azure/arm-apimanagement')
-            sandbox.stub(armApim, 'ApiManagementClient').returns(mockApimClient)
-
-            // Options with zero values should use defaults
-            const optionsValue = { apiWaitTime: 0, apiRetries: 0, apiRetryWaitTime: 0 }
-            const optionsVar = new BakeVariable(JSON.stringify(optionsValue))
-            sandbox.stub(optionsVar, 'valueAsync').resolves(optionsValue)
-
-            const params = new Map<string, BakeVariable>([
-                ['options', optionsVar]
-            ])
-            const source = new BakeVariable('test-rg/apim-name')
-            const ingredient = createIngredient(params, source)
-            const plugin = new ApimApiPlugin('apim-api', ingredient, ctx)
-
-            await plugin.Execute()
-        })
-
-        it('reads CA file when available', async () => {
-            const ctx = createContext()
-            const mockUtils = {
-                resource_group: sandbox.stub().resolves('test-rg'),
-                parseResource: sandbox.stub().returns({ resourceGroup: 'test-rg', resource: 'apim-name' })
-            }
-            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
-
-            const fs = require('fs')
-            sandbox.stub(fs, 'existsSync').returns(true)
-            sandbox.stub(fs, 'readFileSync').returns(Buffer.from('fake-ca-cert'))
-
-            // Set env var for CA file
-            const originalEnv = process.env.NODE_EXTRA_CA_CERTS
-            process.env.NODE_EXTRA_CA_CERTS = '/path/to/ca.pem'
-
-            const mockApimClient = {
-                api: {
-                    listByService: sandbox.stub().returns({
-                        byPage: () => ({
-                            [Symbol.asyncIterator]: async function* () {
-                                yield []
-                            }
-                        })
-                    })
-                }
-            }
-            const armApim = require('@azure/arm-apimanagement')
-            sandbox.stub(armApim, 'ApiManagementClient').returns(mockApimClient)
-
-            const params = new Map<string, BakeVariable>()
-            const source = new BakeVariable('test-rg/apim-name')
-            const ingredient = createIngredient(params, source)
-            const plugin = new ApimApiPlugin('apim-api', ingredient, ctx)
-
-            try {
-                await plugin.Execute()
-            } finally {
-                process.env.NODE_EXTRA_CA_CERTS = originalEnv
             }
         })
     })

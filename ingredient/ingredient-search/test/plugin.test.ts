@@ -13,6 +13,7 @@ import {
     Logger,
     BakeVariable
 } from '@azbake/core'
+import { SearchManagementClient } from '@azure/arm-search'
 
 import { SearchPlugIn } from '../src/plugin'
 import { SearchUtils } from '../src/functions'
@@ -70,6 +71,10 @@ function createIngredient(params: Map<string, BakeVariable>, source?: BakeVariab
         dependsOn: [],
         pluginVersion: '0.0.0'
     }
+}
+
+function stubSearchSendOperation(sandbox: sinon.SinonSandbox, response: any) {
+    return sandbox.stub(SearchManagementClient.prototype, 'sendOperationRequest').resolves(response)
 }
 
 describe('ingredient-search index exports', () => {
@@ -623,6 +628,7 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('test-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            stubSearchSendOperation(sandbox, { primaryKey: 'primary-key' })
             
             const utils = new SearchUtils(ctx)
             const result = utils.get_primary_admin_key('test-search')
@@ -638,18 +644,17 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('default-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            const sendOperationStub = stubSearchSendOperation(sandbox, { primaryKey: 'primary-key' })
 
             const utils = new SearchUtils(ctx)
 
-            // This will fail on Azure SDK call but tests the branch
-            try {
-                await utils.get_primary_admin_key('test-search', 'custom-rg')
-            } catch (e) {
-                // Expected to fail on Azure SDK
-            }
+            const result = await utils.get_primary_admin_key('test-search', 'custom-rg')
 
             // resource_group should NOT have been called since we provided rg
             expect(mockUtils.resource_group.called).to.be.false
+            expect(sendOperationStub.firstCall.args[0].resourceGroupName).to.equal('custom-rg')
+            expect(sendOperationStub.firstCall.args[0].searchServiceName).to.equal('test-search')
+            expect(result).to.equal('primary-key')
         })
 
         it('falls back to resource_group() when rg is null', async () => {
@@ -658,17 +663,17 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('resolved-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            const sendOperationStub = stubSearchSendOperation(sandbox, { primaryKey: 'primary-key' })
 
             const utils = new SearchUtils(ctx)
 
-            try {
-                await utils.get_primary_admin_key('test-search', null)
-            } catch (e) {
-                // Expected to fail on Azure SDK
-            }
+            const result = await utils.get_primary_admin_key('test-search', null)
 
             // resource_group should have been called
             expect(mockUtils.resource_group.called).to.be.true
+            expect(sendOperationStub.firstCall.args[0].resourceGroupName).to.equal('resolved-rg')
+            expect(sendOperationStub.firstCall.args[0].searchServiceName).to.equal('test-search')
+            expect(result).to.equal('primary-key')
         })
 
         it('returns empty string when response is null', async () => {
@@ -677,15 +682,12 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('test-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            stubSearchSendOperation(sandbox, null)
 
             const utils = new SearchUtils(ctx)
 
-            // Test will fail on credential creation but exercises code paths
-            try {
-                await utils.get_primary_admin_key('test-search')
-            } catch (e) {
-                // Expected
-            }
+            const result = await utils.get_primary_admin_key('test-search')
+            expect(result).to.equal('')
         })
     })
 
@@ -702,6 +704,7 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('test-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            stubSearchSendOperation(sandbox, { secondaryKey: 'secondary-key' })
             
             const utils = new SearchUtils(ctx)
             const result = utils.get_secondary_admin_key('test-search')
@@ -717,17 +720,17 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('default-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            const sendOperationStub = stubSearchSendOperation(sandbox, { secondaryKey: 'secondary-key' })
 
             const utils = new SearchUtils(ctx)
 
-            try {
-                await utils.get_secondary_admin_key('test-search', 'custom-rg')
-            } catch (e) {
-                // Expected to fail on Azure SDK
-            }
+            const result = await utils.get_secondary_admin_key('test-search', 'custom-rg')
 
             // resource_group should NOT have been called since we provided rg
             expect(mockUtils.resource_group.called).to.be.false
+            expect(sendOperationStub.firstCall.args[0].resourceGroupName).to.equal('custom-rg')
+            expect(sendOperationStub.firstCall.args[0].searchServiceName).to.equal('test-search')
+            expect(result).to.equal('secondary-key')
         })
 
         it('falls back to resource_group() when rg is null', async () => {
@@ -736,17 +739,17 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('resolved-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            const sendOperationStub = stubSearchSendOperation(sandbox, { secondaryKey: 'secondary-key' })
 
             const utils = new SearchUtils(ctx)
 
-            try {
-                await utils.get_secondary_admin_key('test-search', null)
-            } catch (e) {
-                // Expected to fail on Azure SDK
-            }
+            const result = await utils.get_secondary_admin_key('test-search', null)
 
             // resource_group should have been called
             expect(mockUtils.resource_group.called).to.be.true
+            expect(sendOperationStub.firstCall.args[0].resourceGroupName).to.equal('resolved-rg')
+            expect(sendOperationStub.firstCall.args[0].searchServiceName).to.equal('test-search')
+            expect(result).to.equal('secondary-key')
         })
 
         it('returns empty string when response primaryKey is null', async () => {
@@ -755,15 +758,12 @@ describe('SearchUtils', () => {
                 resource_group: sandbox.stub().resolves('test-rg')
             }
             sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+            stubSearchSendOperation(sandbox, null)
 
             const utils = new SearchUtils(ctx)
 
-            // Test will fail on credential creation but exercises code paths
-            try {
-                await utils.get_secondary_admin_key('test-search')
-            } catch (e) {
-                // Expected
-            }
+            const result = await utils.get_secondary_admin_key('test-search')
+            expect(result).to.equal('')
         })
     })
 })

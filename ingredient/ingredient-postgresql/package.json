@@ -20,13 +20,11 @@
   },
   "peerDependencies": {
     "@azbake/core": "*",
-    "@azbake/ingredient-utils": "*",
-    "@azure/ms-rest-nodeauth": "*"
+    "@azbake/ingredient-utils": "*"
   },
   "devDependencies": {
     "@azbake/core": "^0.1.108",
     "@azbake/ingredient-utils": "^0.1.113",
-    "@azure/ms-rest-nodeauth": "^3.0.0",
     "@types/node": "^22.13.0",
         "@types/chai": "^4.3.11",
         "@types/mocha": "^10.0.6",
@@ -41,9 +39,9 @@
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112",
-    "@azure/arm-network": "^26.0.0",
-    "@azure/arm-privatedns": "^3.0.0",
-    "@azure/identity": "^2.0.4",
+    "@azure/arm-network": "^35.0.0",
+    "@azure/arm-privatedns": "^3.3.0",
+    "@azure/identity": "^4.13.0",
     "typescript": "^5.9.3"
   },
   "publishConfig": {

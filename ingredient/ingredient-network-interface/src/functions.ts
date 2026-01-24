@@ -15,7 +15,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                              
         return response;
     }
@@ -24,7 +24,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.macAddress;
     }   
@@ -33,7 +33,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.ipConfigurations;
     }   
@@ -43,7 +43,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.virtualMachine;
     }   
@@ -53,7 +53,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.dnsSettings;
     }   
@@ -63,7 +63,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.primary;
     }  
@@ -73,7 +73,7 @@ export class NetworkInterfaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new NetworkManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);                
+        const client = new NetworkManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
         let response = await client.networkInterfaces.get( resource_group, nicName)                      
         return response.enableIPForwarding;
     } 

@@ -9,7 +9,7 @@ export class ServiceBusNamespace extends BaseIngredient {
     constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
         super(name, ingredient, ctx);
 
-        this._sbmClient = new ServiceBusManagementClient(this._ctx.AuthToken, this._ctx.Environment.authentication.subscriptionId);
+        this._sbmClient = new ServiceBusManagementClient(this._ctx.Credentials.modernCredentials, this._ctx.Environment.authentication.subscriptionId);
     }
 
     private readonly _sbmClient: ServiceBusManagementClient;

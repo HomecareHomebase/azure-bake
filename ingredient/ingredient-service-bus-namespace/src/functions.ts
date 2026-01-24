@@ -14,7 +14,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new ServiceBusManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.get(resource_group, nsName);
         // client.namespaces.listKeys(resource_group,)
@@ -27,7 +27,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new ServiceBusManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
 
@@ -39,7 +39,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new ServiceBusManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
 
@@ -51,7 +51,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new ServiceBusManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
 
@@ -63,7 +63,7 @@ export class ServiceBusNamespaceUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
         let resource_group = rg || await util.resource_group();
 
-        const client = new ServiceBusManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
+        const client = new ServiceBusManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.namespaces.listKeys(resource_group, nsName, authRuleName);
 

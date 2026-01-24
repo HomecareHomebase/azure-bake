@@ -219,12 +219,11 @@ describe('AcsUtils', () => {
                 primaryConnectionString: 'Endpoint=https://myacs.communication.azure.com/;AccessKey=xxx'
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_primary_connectionstring('myacs')
 
             expect(result).to.equal('Endpoint=https://myacs.communication.azure.com/;AccessKey=xxx')
@@ -242,12 +241,11 @@ describe('AcsUtils', () => {
                 primaryConnectionString: 'Endpoint=https://myacs.communication.azure.com/;AccessKey=xxx'
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_primary_connectionstring('myacs', 'custom-rg')
 
             expect(result).to.equal('Endpoint=https://myacs.communication.azure.com/;AccessKey=xxx')
@@ -266,12 +264,11 @@ describe('AcsUtils', () => {
                 primaryConnectionString: undefined
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_primary_connectionstring('myacs')
 
             expect(result).to.equal('')
@@ -288,12 +285,11 @@ describe('AcsUtils', () => {
                 primaryConnectionString: null
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_primary_connectionstring('myacs')
 
             expect(result).to.equal('')
@@ -312,12 +308,11 @@ describe('AcsUtils', () => {
                 secondaryConnectionString: 'Endpoint=https://myacs.communication.azure.com/;AccessKey=yyy'
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_secondary_connectionstring('myacs')
 
             expect(result).to.equal('Endpoint=https://myacs.communication.azure.com/;AccessKey=yyy')
@@ -335,12 +330,11 @@ describe('AcsUtils', () => {
                 secondaryConnectionString: 'Endpoint=https://myacs.communication.azure.com/;AccessKey=yyy'
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_secondary_connectionstring('myacs', 'custom-rg')
 
             expect(result).to.equal('Endpoint=https://myacs.communication.azure.com/;AccessKey=yyy')
@@ -359,12 +353,11 @@ describe('AcsUtils', () => {
                 secondaryConnectionString: undefined
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_secondary_connectionstring('myacs')
 
             expect(result).to.equal('')
@@ -381,12 +374,11 @@ describe('AcsUtils', () => {
                 secondaryConnectionString: null
             })
 
-            const armCommunication = require('@azure/arm-communication')
-            sandbox.stub(armCommunication, 'CommunicationServiceManagementClient').returns({
-                communicationService: { listKeys: mockListKeys }
+            const clientFactory = sandbox.stub().returns({
+                communicationServices: { listKeys: mockListKeys }
             })
 
-            const utils = new AcsUtils(ctx)
+            const utils = new AcsUtils(ctx, clientFactory as any)
             const result = await utils.get_secondary_connectionstring('myacs')
 
             expect(result).to.equal('')

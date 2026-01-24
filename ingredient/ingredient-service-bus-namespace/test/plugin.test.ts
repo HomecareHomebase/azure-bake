@@ -174,6 +174,24 @@ describe('ServiceBusNamespaceUtils', () => {
             expect(mockNamespacesGet.calledWith('test-rg', 'myns')).to.be.true
         })
 
+        it('uses modern credentials and subscription id', async () => {
+            const ctx = createContext()
+            const mockUtils = {
+                resource_group: sandbox.stub().resolves('test-rg')
+            }
+            sandbox.stub(IngredientManager, 'getIngredientFunction').returns(mockUtils)
+
+            const ServiceBusModule = require('@azure/arm-servicebus')
+            const clientStub = sandbox.stub(ServiceBusModule, 'ServiceBusManagementClient').returns({
+                namespaces: { get: sandbox.stub().resolves({ serviceBusEndpoint: '' }) }
+            })
+
+            const utils = new ServiceBusNamespaceUtils(ctx)
+            await utils.get_endpoint('myns')
+
+            expect(clientStub.calledWith(ctx.Credentials.modernCredentials, 'test-sub-id')).to.be.true
+        })
+
         it('returns service bus endpoint using custom resource group', async () => {
             const ctx = createContext()
             const mockUtils = {

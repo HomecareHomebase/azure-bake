@@ -247,14 +247,12 @@ describe('Authenticator', () => {
     describe('Authenticate', () => {
         it('returns access token on successful authentication', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: 'mock-access-token' })
+                getToken: sandbox.stub().resolves({ token: 'mock-access-token' })
             }
-            
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').resolves(mockCredentials)
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             const result = await authenticator.Authenticate('client-id', 'client-secret', 'domain', 'resource')
 
@@ -263,10 +261,12 @@ describe('Authenticator', () => {
 
         it('throws error when Azure AD login fails', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').rejects(new Error('Azure AD login failed'))
+            const mockCredentials = {
+                getToken: sandbox.stub().rejects(new Error('Azure AD login failed'))
+            }
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             try {
                 await authenticator.Authenticate('client-id', 'client-secret', 'domain', 'resource')
@@ -278,14 +278,12 @@ describe('Authenticator', () => {
 
         it('throws error when access token is empty', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: '' })
+                getToken: sandbox.stub().resolves({ token: '' })
             }
-            
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').resolves(mockCredentials)
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             try {
                 await authenticator.Authenticate('client-id', 'client-secret', 'domain', 'resource')
@@ -297,14 +295,12 @@ describe('Authenticator', () => {
 
         it('throws error when access token is null', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: null })
+                getToken: sandbox.stub().resolves({ token: null })
             }
-            
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').resolves(mockCredentials)
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             try {
                 await authenticator.Authenticate('client-id', 'client-secret', 'domain', 'resource')
@@ -314,22 +310,19 @@ describe('Authenticator', () => {
             }
         })
 
-        it('uses correct token audience in options', async () => {
+        it('uses correct scope for token request', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: 'token' })
+                getToken: sandbox.stub().resolves({ token: 'token' })
             }
-            
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            const loginStub = sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').resolves(mockCredentials)
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             await authenticator.Authenticate('client-id', 'client-secret', 'domain', 'https://my-resource.com')
 
-            expect(loginStub.calledOnce).to.be.true
-            const options = loginStub.firstCall.args[3]
-            expect(options.tokenAudience).to.equal('https://my-resource.com')
+            expect(credentialFactory.calledOnce).to.be.true
+            expect(mockCredentials.getToken.calledOnceWithExactly('https://my-resource.com/.default')).to.be.true
         })
     })
 })
@@ -363,14 +356,17 @@ describe('PropertyServicePlugIn', () => {
         it('calls authenticator with correct parameters', async () => {
             const context = createContext(undefined, 'test-token')
             const ingredient = createIngredient()
-            const plugin = new PropertyServicePlugIn('test-plugin', ingredient, context)
-
-            const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: 'auth-token' })
-            }
-            
-            const msRestNodeAuth = require('@azure/ms-rest-nodeauth')
-            sandbox.stub(msRestNodeAuth, 'loginWithServicePrincipalSecret').resolves(mockCredentials)
+            const authenticateStub = sandbox.stub().resolves('auth-token')
+            const authenticator = {
+                Authenticate: authenticateStub
+            } as unknown as Authenticator
+            const authenticatorFactory = sandbox.stub().returns(authenticator)
+            const plugin = new PropertyServicePlugIn(
+                'test-plugin',
+                ingredient,
+                context,
+                authenticatorFactory as unknown as (logger: Logger) => Authenticator
+            )
 
             sandbox.stub(clientModule.PropertyServiceSource, 'Parse').resolves({
                 baseUrl: 'https://api.example.com',
@@ -389,6 +385,13 @@ describe('PropertyServicePlugIn', () => {
             const result = await plugin.Auth(auth)
 
             expect(result).to.equal('auth-token')
+            expect(authenticatorFactory.calledOnce).to.equal(true)
+            expect(authenticateStub.calledOnceWithExactly(
+                'service-id',
+                'secret-key',
+                'tenant-id',
+                'https://resource.example.com'
+            )).to.equal(true)
         })
     })
 

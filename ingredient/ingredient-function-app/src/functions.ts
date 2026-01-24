@@ -12,9 +12,9 @@ export class FunctionAppUtils extends BaseUtility {
 
     public async get_host_name(name: string): Promise<string> {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        const token: any = this.context.AuthToken
+        const credentials = this.context.Credentials.modernCredentials
 
-        let client = new ResourceManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        let client = new ResourceManagementClient(credentials, this.context.Environment.authentication.subscriptionId);
 
         let faResource = await client.resources.get(await util.resource_group(), "Microsoft.Web", "", "sites", name, "2018-11-01");
         const properties = faResource.properties as { hostNames: string[] };

@@ -456,19 +456,19 @@ Proceed in this order. Each item must be completed (tests green + progress updat
 | 18 | ingredient-databricks | arm-sql | Completed | DatabricksUpg | npx lerna run compile --scope @azbake/ingredient-databricks; npx lerna run test --scope @azbake/ingredient-databricks | Bumped @azure/arm-sql to ^10.0.0 and removed unused @azure/ms-rest-nodeauth; no runtime changes required. |
 | 19 | ingredient-datafactoryv2 | arm-sql | Completed | DataFactoryUpg | npx lerna run compile --scope @azbake/ingredient-datafactoryv2; npx lerna run test --scope @azbake/ingredient-datafactoryv2 | Bumped @azure/arm-sql to ^10.0.0; removed unused @azure/ms-rest-nodeauth. |
 | 20 | ingredient-event-hub-namespace | arm-eventhub | Completed | EventHubNsUpg | npx lerna run compile --scope @azbake/ingredient-event-hub-namespace; npx lerna run test --scope @azbake/ingredient-event-hub-namespace | Switched to TokenCredential (modernCredentials), updated arm-eventhub to 5.2.0 + identity 4.13.0, removed ms-rest-nodeauth; tests green. |
-| 21 | ingredient-event-hub | arm-eventhub | Not started |  |  |  |
-| 22 | ingredient-function-app | arm-resources | Not started |  |  |  |
-| 23 | ingredient-functions | ms-rest-nodeauth | Not started |  |  |  |
-| 24 | ingredient-host-names | ms-rest-nodeauth | Not started |  |  |  |
-| 25 | ingredient-key-vault | ms-rest-nodeauth | Not started |  |  |  |
-| 26 | ingredient-kubernetes | ms-rest-nodeauth | Not started |  |  |  |
-| 27 | ingredient-metric-alert | arm-resources | Not started |  |  |  |
-| 28 | ingredient-network-interface | arm-network | Not started |  |  |  |
-| 29 | ingredient-null | ms-rest-nodeauth | Not started |  |  |  |
-| 30 | ingredient-postgresql | arm-network, arm-privatedns | Not started |  |  |  |
-| 31 | ingredient-property-service | ms-rest-nodeauth | Not started |  |  |  |
-| 32 | ingredient-search | arm-search | Not started |  |  |  |
-| 33 | ingredient-service-bus-namespace | arm-servicebus | Not started |  |  |  |
+| 21 | ingredient-event-hub | arm-eventhub | Completed | EventHubUpg | npx lerna run compile --scope @azbake/ingredient-event-hub; npx lerna run test --scope @azbake/ingredient-event-hub | Switched to TokenCredential (modernCredentials), updated arm-eventhub to 5.2.0 + identity 4.13.0, removed ms-rest-nodeauth + deep model import. |
+| 22 | ingredient-function-app | arm-resources | Completed | FunctionAppUpg | npx lerna run compile --scope @azbake/ingredient-function-app; npx lerna run test --scope @azbake/ingredient-function-app | Updated ResourceManagementClient to use modernCredentials; bumped arm-resources/identity; removed ms-rest-nodeauth. |
+| 23 | ingredient-functions | ms-rest-nodeauth | Completed | FunctionsUpg | npx lerna run compile --scope @azbake/ingredient-functions; npx lerna run test --scope @azbake/ingredient-functions | Removed unused @azure/ms-rest-nodeauth from package manifest; no runtime changes. |
+| 24 | ingredient-host-names | ms-rest-nodeauth | Completed | HostNamesUpg | npx lerna run compile --scope @azbake/ingredient-host-names; npx lerna run test --scope @azbake/ingredient-host-names | Removed unused @azure/ms-rest-nodeauth from manifest; no runtime changes. |
+| 25 | ingredient-key-vault | ms-rest-nodeauth | Completed | KeyVaultUpg | npx lerna run compile --scope @azbake/ingredient-key-vault; npx lerna run test --scope @azbake/ingredient-key-vault | Removed unused @azure/ms-rest-nodeauth from manifest; no runtime changes. |
+| 26 | ingredient-kubernetes | ms-rest-nodeauth | Completed | K8sUpg | npx lerna run compile --scope @azbake/ingredient-kubernetes; npx lerna run test --scope @azbake/ingredient-kubernetes | Removed unused @azure/ms-rest-nodeauth from package manifest. |
+| 27 | ingredient-metric-alert | arm-resources | Completed | MetricAlertUpg | npx lerna run compile --scope @azbake/ingredient-metric-alert; npx lerna run test --scope @azbake/ingredient-metric-alert | Updated deps to @azure/arm-resources ^7.0.0 + @azure/identity ^4.13.0; removed ms-rest-nodeauth. |
+| 28 | ingredient-network-interface | arm-network | Completed | NetIfUpg | npx lerna run compile --scope @azbake/ingredient-network-interface; npx lerna run test --scope @azbake/ingredient-network-interface | Switched to TokenCredential (modernCredentials), bumped arm-network/identity, updated tests for modern credential usage. |
+| 29 | ingredient-null | ms-rest-nodeauth | Completed | NullUpg | npx lerna run compile --scope @azbake/ingredient-null; npx lerna run test --scope @azbake/ingredient-null | Removed unused @azure/ms-rest-nodeauth dependency. |
+| 30 | ingredient-postgresql | arm-network, arm-privatedns | Completed | PgUpg | npx lerna run compile --scope @azbake/ingredient-postgresql; npx lerna run test --scope @azbake/ingredient-postgresql | Switched to modernCredentials; updated arm-network/privatedns/identity versions; hardened not-found handling. |
+| 31 | ingredient-property-service | @azure/identity | Completed | PropSvcUpg | npx lerna run compile --scope @azbake/ingredient-property-service; npx lerna run test --scope @azbake/ingredient-property-service | Replaced ms-rest-nodeauth auth flow with ClientSecretCredential + v2 scopes; removed ms-rest-nodeauth dependency. |
+| 32 | ingredient-search | arm-search | Completed | SearchUpg | npx lerna run compile --scope @azbake/ingredient-search; npx lerna run test --scope @azbake/ingredient-search | Updated arm-search/identity deps; switched SearchUtils to modernCredentials and stubs sendOperationRequest in tests. |
+| 33 | ingredient-service-bus-namespace | arm-servicebus | Completed | SvcBusNsUpg | npx lerna run compile --scope @azbake/ingredient-service-bus-namespace; npx lerna run test --scope @azbake/ingredient-service-bus-namespace | Completed 2026-01-24. Switched to modernCredentials; bumped arm-servicebus/identity; removed ms-rest-nodeauth. |
 | 34 | ingredient-service-bus-queue | ms-rest-nodeauth | Not started |  |  |  |
 | 35 | ingredient-sql-dwh | arm-sql | Not started |  |  |  |
 | 36 | ingredient-sqldb | arm-sql | Not started |  |  |  |

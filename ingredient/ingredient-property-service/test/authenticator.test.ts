@@ -3,7 +3,6 @@ import 'mocha'
 import * as sinon from 'sinon'
 
 import { Logger } from '@azbake/core'
-import * as nodeauth from '@azure/ms-rest-nodeauth'
 
 import { Authenticator } from '../src/client/authenticator'
 
@@ -33,14 +32,12 @@ describe('Authenticator', () => {
     describe('Authenticate', () => {
         it('returns access token on successful authentication', async () => {
             const { logger, logs } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: 'test-token-12345' })
+                getToken: sandbox.stub().resolves({ token: 'test-token-12345' })
             }
-            sandbox.stub(nodeauth, 'loginWithServicePrincipalSecret').resolves(
-                mockCredentials as unknown as nodeauth.ApplicationTokenCredentials
-            )
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             const result = await authenticator.Authenticate(
                 'client-id',
@@ -53,12 +50,15 @@ describe('Authenticator', () => {
             expect(logs.some(msg => msg.includes('Authentication to Azure AD was successful'))).to.equal(true)
         })
 
-        it('throws error when loginWithServicePrincipalSecret fails', async () => {
+        it('throws error when getToken fails', async () => {
             const { logger, errors } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const authError = new Error('Invalid credentials')
-            sandbox.stub(nodeauth, 'loginWithServicePrincipalSecret').rejects(authError)
+            const mockCredentials = {
+                getToken: sandbox.stub().rejects(authError)
+            }
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             let caughtError: Error | null = null
             try {
@@ -79,14 +79,12 @@ describe('Authenticator', () => {
 
         it('throws error when access token is null', async () => {
             const { logger, errors } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: null })
+                getToken: sandbox.stub().resolves({ token: null })
             }
-            sandbox.stub(nodeauth, 'loginWithServicePrincipalSecret').resolves(
-                mockCredentials as unknown as nodeauth.ApplicationTokenCredentials
-            )
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             let caughtError: Error | null = null
             try {
@@ -107,14 +105,12 @@ describe('Authenticator', () => {
 
         it('throws error when access token is empty string', async () => {
             const { logger, errors } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: '' })
+                getToken: sandbox.stub().resolves({ token: '' })
             }
-            sandbox.stub(nodeauth, 'loginWithServicePrincipalSecret').resolves(
-                mockCredentials as unknown as nodeauth.ApplicationTokenCredentials
-            )
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             let caughtError: Error | null = null
             try {
@@ -132,16 +128,14 @@ describe('Authenticator', () => {
             expect(caughtError?.message).to.contain('access token is null or empty')
         })
 
-        it('passes correct token options to loginWithServicePrincipalSecret', async () => {
+        it('requests token with the expected scope', async () => {
             const { logger } = createLogger()
-            const authenticator = new Authenticator(logger)
 
             const mockCredentials = {
-                getToken: sandbox.stub().resolves({ accessToken: 'test-token' })
+                getToken: sandbox.stub().resolves({ token: 'test-token' })
             }
-            const loginStub = sandbox.stub(nodeauth, 'loginWithServicePrincipalSecret').resolves(
-                mockCredentials as unknown as nodeauth.ApplicationTokenCredentials
-            )
+            const credentialFactory = sandbox.stub().returns(mockCredentials)
+            const authenticator = new Authenticator(logger, credentialFactory)
 
             await authenticator.Authenticate(
                 'my-client-id',
@@ -150,12 +144,12 @@ describe('Authenticator', () => {
                 'https://my-resource.azure.net'
             )
 
-            expect(loginStub.calledOnce).to.equal(true)
-            const [clientId, clientSecret, domain, tokenOptions] = loginStub.firstCall.args
+            expect(credentialFactory.calledOnce).to.equal(true)
+            const [tenantId, clientId, clientSecret] = credentialFactory.firstCall.args
+            expect(tenantId).to.equal('my-tenant-id')
             expect(clientId).to.equal('my-client-id')
             expect(clientSecret).to.equal('my-client-secret')
-            expect(domain).to.equal('my-tenant-id')
-            expect(tokenOptions).to.deep.include({ tokenAudience: 'https://my-resource.azure.net' })
+            expect(mockCredentials.getToken.calledOnceWithExactly('https://my-resource.azure.net/.default')).to.equal(true)
         })
     })
 })

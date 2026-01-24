@@ -1,5 +1,4 @@
 import { BaseUtility, IngredientManager } from '@azbake/core'
-import { ClientSecretCredential } from '@azure/identity';
 import { SearchManagementClient } from '@azure/arm-search'
 
 export class SearchUtils extends BaseUtility {
@@ -18,9 +17,9 @@ export class SearchUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
+        const credential = this.context.Credentials.modernCredentials;
 
-        const client = new SearchManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        const client = new SearchManagementClient(credential, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.adminKeys.get(resource_group, name)
 
@@ -41,9 +40,9 @@ export class SearchUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const token = new ClientSecretCredential(this.context.AuthToken.domain, this.context.AuthToken.clientId, this.context.AuthToken.secret);
+        const credential = this.context.Credentials.modernCredentials;
 
-        const client = new SearchManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        const client = new SearchManagementClient(credential, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.adminKeys.get(resource_group, name)
 

@@ -1,4 +1,4 @@
-import { DeploymentContext, IIngredient, BaseIngredient, IBakeAuthentication } from '@azbake/core'
+import { DeploymentContext, IIngredient, BaseIngredient, IBakeAuthentication, Logger } from '@azbake/core'
 
 import { ConfigurationProvider, ConfigurationValueResolver, PropertyServiceConfiguration } from './configuration';
 import { ClientFactory, Authenticator, PropertyServiceSource } from './client';
@@ -9,18 +9,20 @@ export class PropertyServicePlugIn extends BaseIngredient {
 
     private readonly _valueResolver: ConfigurationValueResolver;
     private readonly _configurationProvider: ConfigurationProvider;
+    private readonly _authenticatorFactory: (logger: Logger) => Authenticator;
 
-    constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext) {
+    constructor(name: string, ingredient: IIngredient, ctx: DeploymentContext, authenticatorFactory?: (logger: Logger) => Authenticator) {
         super(name, ingredient, ctx)
 
         this._valueResolver = new ConfigurationValueResolver(this._logger, this._ctx, this._ingredient);
         this._configurationProvider = new ConfigurationProvider(this._logger, this._valueResolver);
+        this._authenticatorFactory = authenticatorFactory ?? ((logger) => new Authenticator(logger));
     }
 
     public async Auth(auth: IBakeAuthentication): Promise<string | null> {
 
         const source: PropertyServiceSource = await PropertyServiceSource.Parse(this._ctx);
-        const authenticator: Authenticator = new Authenticator(this._logger)
+        const authenticator: Authenticator = this._authenticatorFactory(this._logger)
 
         return await authenticator.Authenticate(auth.serviceId, auth.secretKey, auth.tenantId, source.resourceUrl)
     }

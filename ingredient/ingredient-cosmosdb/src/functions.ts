@@ -1,5 +1,5 @@
 import { BaseUtility, IngredientManager } from '@azbake/core'
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
+import cosmosdb = require("@azure/arm-cosmosdb");
 
 
 export class CosmosUtility extends BaseUtility {
@@ -11,12 +11,19 @@ export class CosmosUtility extends BaseUtility {
         const name = util.create_resource_name("cosms", null, true);
         return name;
     }
+    protected createClient(): cosmosdb.CosmosDBManagementClient {
+        return new cosmosdb.CosmosDBManagementClient(
+            this.context.Credentials.modernCredentials,
+            this.context.Environment.authentication.subscriptionId
+        )
+    }
+
     public async get_primary_key(name: string, rg: string | null = null) : Promise<string> {
      
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this.createClient()
 
         let response = await client.databaseAccounts.listKeys(resource_group, name)
 
@@ -32,7 +39,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this.createClient()
 
         let response = await client.databaseAccounts.listKeys(resource_group, name)
 
@@ -49,7 +56,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
   
-        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this.createClient()
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""
@@ -71,7 +78,7 @@ export class CosmosUtility extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
   
-        const client = new CosmosDBManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this.createClient()
         let response = await client.databaseAccounts.listConnectionStrings(resource_group,name)
 
         let connectionString : string =""

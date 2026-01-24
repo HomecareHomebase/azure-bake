@@ -1,6 +1,18 @@
 import { BaseUtility, IngredientManager } from '@azbake/core'
 import { CommunicationServiceManagementClient } from '@azure/arm-communication'
+
+type CommunicationClientFactory = (credentials: any, subscriptionId: string) => CommunicationServiceManagementClient;
+
 export class AcsUtils extends BaseUtility {
+
+    private readonly _clientFactory: CommunicationClientFactory;
+
+    constructor(ctx: any, clientFactory?: CommunicationClientFactory) {
+        super(ctx);
+        this._clientFactory = clientFactory ?? ((credentials, subscriptionId) => {
+            return new CommunicationServiceManagementClient(credentials, subscriptionId);
+        });
+    }
 
     public create_resource_name(): string {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
@@ -14,9 +26,9 @@ export class AcsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CommunicationServiceManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this._clientFactory(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
-        let response = await client.communicationService.listKeys(resource_group, name)
+        let response = await client.communicationServices.listKeys(resource_group, name)
 
         let key: string = ""
         if (response.primaryConnectionString)
@@ -31,9 +43,9 @@ export class AcsUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const client = new CommunicationServiceManagementClient(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
+        const client = this._clientFactory(this.context.Credentials.modernCredentials, this.context.Environment.authentication.subscriptionId);
 
-        let response = await client.communicationService.listKeys(resource_group, name)
+        let response = await client.communicationServices.listKeys(resource_group, name)
 
         let key: string = ""
         if (response.secondaryConnectionString)

@@ -1,6 +1,6 @@
 import { BaseUtility, IngredientManager } from '@azbake/core'
 import { EventHubManagementClient } from '@azure/arm-eventhub'
-import { EventHubsListKeysResponse } from '@azure/arm-eventhub/esm/models';
+import type { EventHubsListKeysResponse } from '@azure/arm-eventhub'
 
 export class EventHubUtils extends BaseUtility {
 
@@ -58,8 +58,8 @@ export class EventHubUtils extends BaseUtility {
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
         let resource_group = rg || await util.resource_group()
 
-        const token : any = this.context.AuthToken // TODO: need to update arm-eventhub once they update to use v3 auth
-        const client = new EventHubManagementClient(token, this.context.Environment.authentication.subscriptionId);
+        const credential = this.context.Credentials.modernCredentials
+        const client = new EventHubManagementClient(credential, this.context.Environment.authentication.subscriptionId);
 
         let response = await client.eventHubs.listKeys(resource_group, eventHubNamespaceName, eventHubName, policyName)
 
