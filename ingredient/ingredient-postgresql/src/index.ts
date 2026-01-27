@@ -1,6 +1,8 @@
 // index.ts
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+// Build trigger: 2026-01-27
+
 try {
   const nodeCrypto = require('crypto');
   const base: any = nodeCrypto.webcrypto ?? {};
