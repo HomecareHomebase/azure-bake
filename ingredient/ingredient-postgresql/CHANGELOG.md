@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.20](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.19...@azbake/ingredient-postgresql@0.1.20) (2026-01-30)
+
+
+### Bug Fixes
+
+* add build trigger comments ([#336](https://github.com/HomecareHomebase/azure-bake/issues/336)) ([cfd98bc](https://github.com/HomecareHomebase/azure-bake/commit/cfd98bc25813a94cd46e6fcb7d763d7f35c67c4a))
+
+
+
+
+
 ## [0.1.19](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-postgresql@0.1.18...@azbake/ingredient-postgresql@0.1.19) (2026-01-19)
 
 
