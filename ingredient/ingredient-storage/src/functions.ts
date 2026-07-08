@@ -195,16 +195,57 @@ export class StorageUtils extends BaseUtility {
         {
             const mgmtClient = new StorageManagementClient(this.context.AuthToken, this.context.Environment.authentication.subscriptionId);
 
-            // ensure the policies are tied to the container via filters
+            // A storage account has a single lifecycle management policy (a rules array).
+            // createOrUpdate REPLACES that policy, so we must merge our rules into whatever
+            // already exists, otherwise we would wipe out rules created by other containers
+            // or by other repositories that share this global storage account.
+
+            // Scope each incoming rule to this container unless the caller already supplied a
+            // prefix filter. Only defaulting when absent lets callers target paths/tags explicitly.
             if (policy.rules) {
-                for(let i=0; i < policy.rules.length; ++i){
+                for (let i = 0; i < policy.rules.length; ++i) {
                     let rule = policy.rules[i]
-                    
-                    rule.definition.filters!.prefixMatch = [container + "/"]
+
+                    if (!rule.definition.filters) {
+                        rule.definition.filters = { blobTypes: ["blockBlob"] }
+                    }
+
+                    if (!rule.definition.filters.prefixMatch || rule.definition.filters.prefixMatch.length === 0) {
+                        rule.definition.filters.prefixMatch = [container + "/"]
+                    }
                 }
             }
 
-            await mgmtClient.managementPolicies.createOrUpdate(account.rg, account.name, policy);    
+            // Read the account's existing policy so rules owned by other containers/repos are preserved.
+            let existingRules: ManagementPolicyRule[] = []
+            try {
+                const existing = await mgmtClient.managementPolicies.get(account.rg, account.name)
+                if (existing.policy && existing.policy.rules) {
+                    existingRules = existing.policy.rules
+                }
+            } catch (e: any) {
+                // A 404 simply means no policy has been created on the account yet; any other
+                // error is unexpected and should surface.
+                const statusCode = (e && (e.statusCode || (e.response && e.response.status)))
+                if (statusCode !== 404) {
+                    throw e
+                }
+            }
+
+            // Upsert our rules by name so re-running a deployment updates in place rather than duplicating.
+            const mergedRules: ManagementPolicyRule[] = existingRules.slice()
+            if (policy.rules) {
+                for (let rule of policy.rules) {
+                    const idx = mergedRules.findIndex(r => r.name === rule.name)
+                    if (idx >= 0) {
+                        mergedRules[idx] = rule
+                    } else {
+                        mergedRules.push(rule)
+                    }
+                }
+            }
+
+            await mgmtClient.managementPolicies.createOrUpdate(account.rg, account.name, { rules: mergedRules });
         }
 
 
