@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.6...@azbake/ingredient-storage@0.2.8) (2026-07-08)
+
+
+### Bug Fixes
+
+* Merge lifecycle management policy rules to preserve existing configurations ([#337](https://github.com/HomecareHomebase/azure-bake/issues/337)) ([c83fc89](https://github.com/HomecareHomebase/azure-bake/commit/c83fc89c81010a6a6e0a52a6bf92007916e2cb95))
+
+
+
+
+
 ## [0.2.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.6...@azbake/ingredient-storage@0.2.7) (2026-07-08)
 
 
