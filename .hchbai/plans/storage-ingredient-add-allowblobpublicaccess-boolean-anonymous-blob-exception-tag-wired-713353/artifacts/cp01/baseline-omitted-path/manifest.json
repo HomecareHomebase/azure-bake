@@ -1,0 +1,27 @@
+{
+  "storyId": 713353,
+  "checkpoint": "CP01",
+  "title": "Baseline And Tag Contract Setup",
+  "kind": "omitted-path-template-baseline",
+  "capturedUtc": "2026-07-10T19:29:54.9779422Z",
+  "routes": [
+    {
+      "route": "storage",
+      "template": "ingredient/ingredient-storage/src/storage.json",
+      "templateSha256": "699a9a8cec761edfd24608ff30bfe5bdbf242a066c1a22e4533488fd10c99496",
+      "snapshotFile": ".hchbai/plans/storage-ingredient-add-allowblobpublicaccess-boolean-anonymous-blob-exception-tag-wired-713353/artifacts/cp01/baseline-omitted-path/storage.template.baseline.json"
+    },
+    {
+      "route": "storageNetwork",
+      "template": "ingredient/ingredient-storage/src/storageNetwork.json",
+      "templateSha256": "c2195f27db7642cef89e592548f4650a66430aff7bd3d2a8941de4ce5e48bd39",
+      "snapshotFile": ".hchbai/plans/storage-ingredient-add-allowblobpublicaccess-boolean-anonymous-blob-exception-tag-wired-713353/artifacts/cp01/baseline-omitted-path/storageNetwork.template.baseline.json"
+    },
+    {
+      "route": "storageDatalake",
+      "template": "ingredient/ingredient-storage/src/storageDatalake.json",
+      "templateSha256": "427edbd562b5ef0a9b1797df2b1ce6a9abc41b3e074668955abb473b8460b2e7",
+      "snapshotFile": ".hchbai/plans/storage-ingredient-add-allowblobpublicaccess-boolean-anonymous-blob-exception-tag-wired-713353/artifacts/cp01/baseline-omitted-path/storageDatalake.template.baseline.json"
+    }
+  ]
+}

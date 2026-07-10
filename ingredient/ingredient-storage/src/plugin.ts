@@ -11,6 +11,9 @@ import * as fs from 'fs';
 
 const path = require("path")
 
+const ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY = "allow-anonymous-blob-access"
+const ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_VALUE = "true"
+
 export class StoragePlugIn extends BaseIngredient {
     
     private resourceGroup: string = ""
@@ -45,6 +48,8 @@ export class StoragePlugIn extends BaseIngredient {
             delete params["container"]
             delete params["uploadPath"]
             delete params["unzip"]
+
+            this.ApplyAnonymousBlobExceptionTag(params)
 
             // begin deployment
             if(deploy) 
@@ -161,6 +166,51 @@ export class StoragePlugIn extends BaseIngredient {
 
         //Post blob service properties back to Azure
         await blobClient.setProperties(serviceProperties)
+    }
+
+    private ApplyAnonymousBlobExceptionTag(params: any): void {
+        const allowBlobPublicAccess = this.GetBooleanParamValue(params["allowBlobPublicAccess"])
+        if (!allowBlobPublicAccess) {
+            return
+        }
+
+        const tagsParam = params["tags"]
+        const existingTags = this.GetTagMap(tagsParam)
+        const mergedTags = {
+            ...existingTags,
+            [ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY]: ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_VALUE
+        }
+
+        if (tagsParam && typeof tagsParam === "object" && "value" in tagsParam) {
+            tagsParam.value = mergedTags
+            return
+        }
+
+        params["tags"] = { value: mergedTags }
+    }
+
+    private GetBooleanParamValue(param: any): boolean {
+        if (param && typeof param === "object" && "value" in param) {
+            return param.value === true
+        }
+
+        return param === true
+    }
+
+    private GetTagMap(tagsParam: any): { [key: string]: string } {
+        if (!tagsParam) {
+            return {}
+        }
+
+        const tagValue = tagsParam && typeof tagsParam === "object" && "value" in tagsParam
+            ? tagsParam.value
+            : tagsParam
+
+        if (!tagValue || typeof tagValue !== "object" || Array.isArray(tagValue)) {
+            return {}
+        }
+
+        return tagValue
     }
 
     private async DeploySource(source: any, container: string, uploadPath: string, unzip: boolean, params: any) {
