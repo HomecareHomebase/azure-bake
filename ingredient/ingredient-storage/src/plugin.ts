@@ -49,6 +49,7 @@ export class StoragePlugIn extends BaseIngredient {
             delete params["uploadPath"]
             delete params["unzip"]
 
+            this.NormalizeAllowBlobPublicAccessParam(params)
             this.ApplyAnonymousBlobExceptionTag(params)
 
             // begin deployment
@@ -169,8 +170,8 @@ export class StoragePlugIn extends BaseIngredient {
     }
 
     private ApplyAnonymousBlobExceptionTag(params: any): void {
-        const allowBlobPublicAccess = this.GetBooleanParamValue(params["allowBlobPublicAccess"])
-        if (!allowBlobPublicAccess) {
+        const allowBlobPublicAccess = this.GetExplicitBooleanParamValue(params["allowBlobPublicAccess"])
+        if (allowBlobPublicAccess !== true) {
             return
         }
 
@@ -189,12 +190,36 @@ export class StoragePlugIn extends BaseIngredient {
         params["tags"] = { value: mergedTags }
     }
 
-    private GetBooleanParamValue(param: any): boolean {
-        if (param && typeof param === "object" && "value" in param) {
-            return param.value === true
+    private NormalizeAllowBlobPublicAccessParam(params: any): void {
+        const allowBlobPublicAccess = this.GetExplicitBooleanParamValue(params["allowBlobPublicAccess"])
+        if (allowBlobPublicAccess === undefined) {
+            delete params["allowBlobPublicAccess"]
+            return
         }
 
-        return param === true
+        const allowBlobPublicAccessParam = params["allowBlobPublicAccess"]
+        if (allowBlobPublicAccessParam && typeof allowBlobPublicAccessParam === "object" && "value" in allowBlobPublicAccessParam) {
+            allowBlobPublicAccessParam.value = allowBlobPublicAccess
+            return
+        }
+
+        params["allowBlobPublicAccess"] = allowBlobPublicAccess
+    }
+
+    private GetExplicitBooleanParamValue(param: any): boolean | undefined {
+        if (param && typeof param === "object" && "value" in param) {
+            if (param.value === true || param.value === false) {
+                return param.value
+            }
+
+            return undefined
+        }
+
+        if (param === true || param === false) {
+            return param
+        }
+
+        return undefined
     }
 
     private GetTagMap(tagsParam: any): { [key: string]: string } {

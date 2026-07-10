@@ -43,7 +43,7 @@
 1. No raw key/value literals are used in decision logic for this feature.
 2. Existing route selection behavior remains unchanged.
 
-### T003 - Implement explicit boolean forwarding semantics for allowBlobPublicAccess
+### [x] T003 - Implement explicit boolean forwarding semantics for allowBlobPublicAccess
 - Activity: Development
 - Goal: Forward only explicit boolean values; omitted remains absent.
 - Actions:
@@ -59,7 +59,7 @@
 1. Omitted path has no outgoing allowBlobPublicAccess parameter.
 2. False and true paths both pass explicit value to templates.
 
-### T004 - Add plugin tag merge behavior for true-path exception tag
+### [x] T004 - Add plugin tag merge behavior for true-path exception tag
 - Activity: Development
 - Goal: Add exception tag only when allowBlobPublicAccess is true and preserve existing tags.
 - Actions:
