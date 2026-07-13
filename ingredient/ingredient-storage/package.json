@@ -11,7 +11,7 @@
     "compile": "tsc -p .",
     "watch": "tsc -w -p .",
     "baseline": "node test/baseline.js",
-    "test": "node test/baseline.js --check"
+    "test": "node test/baseline.js --check && node test/run-tests.js"
   },
   "directories": {
     "lib": "dist"

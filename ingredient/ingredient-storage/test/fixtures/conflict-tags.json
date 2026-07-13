@@ -1,0 +1,12 @@
+{
+    "description": "CP04 T012 conflict-fixture inputs. customTags carries only user tags for the false-path regression. customTagsWithConflict additionally pre-sets the exception key to a conflicting 'false' value so the true-path regression can prove the plugin forces it to 'true' while preserving the user's other tags.",
+    "customTags": {
+        "team": "payments",
+        "env": "prod"
+    },
+    "customTagsWithConflict": {
+        "team": "payments",
+        "env": "prod",
+        "allow-anonymous-blob-access": "false"
+    }
+}

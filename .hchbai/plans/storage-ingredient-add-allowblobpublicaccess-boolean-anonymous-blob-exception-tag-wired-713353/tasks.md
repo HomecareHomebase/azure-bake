@@ -120,7 +120,7 @@
 2. Metrics remains present in each matrix case.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S8
 
-### [ ] T008 - Add plugin unit tests for omitted, false, and true forwarding behavior
+### [x] T008 - Add plugin unit tests for omitted, false, and true forwarding behavior
 - Type: Testing
 - Depends on: T003, T004
 - Targets:
@@ -136,7 +136,7 @@
 2. Tests fail if exception tag appears on omitted/false paths.
 - Coverage: AC1, AC2, AC3, AC5; S1, S2, S3, S9
 
-### [ ] T009 - Add default-route component tests (storage.json)
+### [x] T009 - Add default-route component tests (storage.json)
 - Type: Testing
 - Depends on: T001, T005
 - Targets:
@@ -153,7 +153,7 @@
 2. Omitted baseline equivalence passes.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S4, S5, S6
 
-### [ ] T010 - Add network-route component tests (storageNetwork.json)
+### [x] T010 - Add network-route component tests (storageNetwork.json)
 - Type: Testing
 - Depends on: T001, T006
 - Targets:
@@ -170,7 +170,7 @@
 2. Omitted equivalence and tag invariants pass.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S7
 
-### [ ] T011 - Add datalake-route component tests (storageDatalake.json)
+### [x] T011 - Add datalake-route component tests (storageDatalake.json)
 - Type: Testing
 - Depends on: T001, T007
 - Targets:
@@ -187,7 +187,7 @@
 2. Omitted equivalence and tag invariants pass.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S8
 
-### [ ] T012 - Add conflict-fixture regression test for tag precedence and preservation
+### [x] T012 - Add conflict-fixture regression test for tag precedence and preservation
 - Type: Testing
 - Depends on: T004, T008, T009
 - Targets:
