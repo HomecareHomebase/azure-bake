@@ -8,8 +8,8 @@
 //
 // Scenario coverage: S8.
 
-const { test, assert } = require("./lib/harness")
-const { buildRouteCase } = require("./lib/route-case")
+const { test, assert } = require("./helpers/harness")
+const { buildRouteCase } = require("./helpers/route-case")
 
 const TEMPLATE = "storageDatalake.json"
 const BASELINE = "datalake"

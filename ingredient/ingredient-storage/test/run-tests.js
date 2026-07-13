@@ -3,7 +3,7 @@
 // failure. Invoked after the baseline check by the `npm test` script so the full suite
 // runs deterministically with Node built-ins and no external dependencies.
 
-const { runAll } = require("./lib/harness")
+const { runAll } = require("./helpers/harness")
 
 require("./plugin.test")
 require("./route-default.test")

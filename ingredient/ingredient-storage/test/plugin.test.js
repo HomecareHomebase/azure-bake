@@ -1,7 +1,7 @@
 // T008 + T012 - Plugin-contract unit tests.
 //
 // These exercise the pure-Node mirror of the plugin's normalization/tag-merge contract
-// (test/lib/plugin-contract.js), which reproduces the TypeScript plugin's private
+// (test/helpers/plugin-contract.js), which reproduces the TypeScript plugin's private
 // methods verbatim because the plugin cannot be compiled in this un-bootstrapped repo.
 // The invariants asserted here are exactly the invariants plugin.ts implements.
 //
@@ -13,18 +13,18 @@
 
 const fs = require("fs")
 const path = require("path")
-const { test, assert } = require("./lib/harness")
+const { test, assert } = require("./helpers/harness")
 const {
     ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY,
     applyPluginContract,
     getExplicitBooleanParamValue,
     getExceptionTagValue
-} = require("./lib/plugin-contract")
+} = require("./helpers/plugin-contract")
 const {
     loadTemplate,
     selectStorageAccountResource,
     resourceUnionsMetricsTag
-} = require("./lib/template-route")
+} = require("./helpers/template-route")
 
 const CONFLICT_FIXTURE = JSON.parse(
     fs.readFileSync(path.join(__dirname, "fixtures", "conflict-tags.json"), "utf8"))

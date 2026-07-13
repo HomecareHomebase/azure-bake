@@ -7,8 +7,8 @@
 //
 // Scenario coverage: S4, S5, S6.
 
-const { test, assert } = require("./lib/harness")
-const { buildRouteCase } = require("./lib/route-case")
+const { test, assert } = require("./helpers/harness")
+const { buildRouteCase } = require("./helpers/route-case")
 
 const TEMPLATE = "storage.json"
 const BASELINE = "default"
