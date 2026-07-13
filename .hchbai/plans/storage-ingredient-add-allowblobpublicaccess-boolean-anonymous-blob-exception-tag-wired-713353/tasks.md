@@ -75,7 +75,7 @@
 1. Exception tag appears only on true-path payload.
 2. Existing custom tags (if present) are not dropped.
 
-### T005 - Update storage.json for conditional property emission and tag merge
+### [x] T005 - Update storage.json for conditional property emission and tag merge
 - Activity: Development
 - Goal: Support omitted/false/true behavior while preserving Metrics tag.
 - Actions:
@@ -92,7 +92,7 @@
 2. False/true paths emit exact boolean value.
 3. Metrics tag remains present after merge.
 
-### T006 - Update storageNetwork.json for parity with default template behavior
+### [x] T006 - Update storageNetwork.json for parity with default template behavior
 - Activity: Development
 - Goal: Apply identical behavioral contract for network template route.
 - Actions:
@@ -107,7 +107,7 @@
 1. Omitted/false/true matrix passes for network route.
 2. Metrics retained across all matrix runs.
 
-### T007 - Update storageDatalake.json for parity with default template behavior
+### [x] T007 - Update storageDatalake.json for parity with default template behavior
 - Activity: Development
 - Goal: Apply identical behavioral contract for datalake template route.
 - Actions:

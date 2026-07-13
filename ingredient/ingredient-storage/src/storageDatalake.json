@@ -59,6 +59,17 @@
             "metadata": {
                 "description": "Enables Hierchael namespace for Datalake"
             }
+        },
+        "allowBlobPublicAccess": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Allows anonymous public read access for blobs/containers when set to true."
+            }
+        },
+        "tags": {
+            "type": "object",
+            "defaultValue": {}
         }
         
     },
@@ -66,6 +77,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('storageAccountName')]",
+            "condition": "[contains(deployment().properties.parameters, 'allowBlobPublicAccess')]",
             "location": "[parameters('location')]",
             "apiVersion": "2018-02-01",
             "sku": {
@@ -76,11 +88,28 @@
           "properties": {
             "accessTier": "[parameters('storageAccessTier')]",
             "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
-            "isHnsEnabled" : "[parameters('IsHnsEnabled')]"
+                        "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
+                        "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]"
           },
-          "tags": {
-            "Metrics": "*"
-          }
+                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+                },
+                {
+                        "type": "Microsoft.Storage/storageAccounts",
+                        "name": "[parameters('storageAccountName')]",
+                        "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
+                        "location": "[parameters('location')]",
+                        "apiVersion": "2018-02-01",
+                        "sku": {
+                                "name": "[parameters('storageAccountType')]",
+                                "tier": "[parameters('storageTier')]"                
+                        },
+                        "kind": "[parameters('storageKind')]",
+                    "properties": {
+                        "accessTier": "[parameters('storageAccessTier')]",
+                        "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
+                        "isHnsEnabled" : "[parameters('IsHnsEnabled')]"
+                    },
+                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
         }
     ]
 }

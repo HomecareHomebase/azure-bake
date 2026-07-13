@@ -59,12 +59,43 @@
         {
             "type":"object",
             "defaultValue": {}
+        },
+        "allowBlobPublicAccess": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Allows anonymous public read access for blobs/containers when set to true."
+            }
+        },
+        "tags": {
+            "type": "object",
+            "defaultValue": {}
         }
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('storageAccountName')]",
+            "condition": "[contains(deployment().properties.parameters, 'allowBlobPublicAccess')]",
+            "location": "[parameters('location')]",
+            "apiVersion": "2020-08-01-preview",
+            "sku": {
+                "name": "[parameters('storageAccountType')]",
+                "tier": "[parameters('storageTier')]"                
+            },
+            "kind": "[parameters('storageKind')]",
+            "properties": {
+                "accessTier": "[parameters('storageAccessTier')]",
+                "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",
+                "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+                "minimumTlsVersion": "TLS1_2"
+            },
+            "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('storageAccountName')]",
+            "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
             "location": "[parameters('location')]",
             "apiVersion": "2020-08-01-preview",
             "sku": {
@@ -77,9 +108,7 @@
                 "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",
                 "minimumTlsVersion": "TLS1_2"
             },
-            "tags": {
-                "Metrics": "*"
-            }
+            "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
         },
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
