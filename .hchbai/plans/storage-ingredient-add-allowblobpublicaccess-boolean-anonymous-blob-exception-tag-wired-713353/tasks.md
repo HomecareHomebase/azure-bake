@@ -42,7 +42,7 @@
 2. Constant usage is centralized and referenced by plugin behavior.
 - Coverage: AC4; supports S3 and S9
 
-### [ ] T003 - Wire plugin boolean normalization and omit-when-unset forwarding behavior
+### [x] T003 - Wire plugin boolean normalization and omit-when-unset forwarding behavior
 - Type: Development
 - Depends on: T002
 - Targets:
@@ -58,7 +58,7 @@
 3. True path forwards true.
 - Coverage: AC1, AC2, AC3, AC7; S1, S2, S3
 
-### [ ] T004 - Implement plugin tag merge logic for true-path exception stamp
+### [x] T004 - Implement plugin tag merge logic for true-path exception stamp
 - Type: Development
 - Depends on: T002, T003
 - Targets:
