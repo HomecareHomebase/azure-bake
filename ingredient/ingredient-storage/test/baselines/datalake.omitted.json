@@ -1,0 +1,24 @@
+{
+  "route": "datalake",
+  "template": "storageDatalake.json",
+  "apiVersion": "2018-02-01",
+  "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
+  "resource": {
+    "type": "Microsoft.Storage/storageAccounts",
+    "name": "[parameters('storageAccountName')]",
+    "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
+    "location": "[parameters('location')]",
+    "apiVersion": "2018-02-01",
+    "sku": {
+      "name": "[parameters('storageAccountType')]",
+      "tier": "[parameters('storageTier')]"
+    },
+    "kind": "[parameters('storageKind')]",
+    "properties": {
+      "accessTier": "[parameters('storageAccessTier')]",
+      "supportsHttpsTrafficOnly": "[parameters('IsHttpsTrafficOnly')]",
+      "isHnsEnabled": "[parameters('IsHnsEnabled')]"
+    },
+    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+  }
+}

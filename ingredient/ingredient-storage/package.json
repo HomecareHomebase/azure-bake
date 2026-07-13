@@ -9,7 +9,9 @@
   "scripts": {
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
-    "watch": "tsc -w -p ."
+    "watch": "tsc -w -p .",
+    "baseline": "node test/baseline.js",
+    "test": "node test/baseline.js --check"
   },
   "directories": {
     "lib": "dist"

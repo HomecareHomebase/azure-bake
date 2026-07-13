@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "checkpoints": [
+    {
+      "id": "CP01",
+      "title": "Baseline And Constants Setup",
+      "taskCodes": ["T001", "T002"]
+    },
+    {
+      "id": "CP02",
+      "title": "Plugin Wiring And Tag Merge",
+      "taskCodes": ["T003", "T004"]
+    },
+    {
+      "id": "CP03",
+      "title": "Template Route Parity Updates",
+      "taskCodes": ["T005", "T006", "T007"]
+    },
+    {
+      "id": "CP04",
+      "title": "Plugin And Route Test Matrix",
+      "taskCodes": ["T008", "T009", "T010", "T011", "T012"]
+    },
+    {
+      "id": "CP05",
+      "title": "Documentation Update",
+      "taskCodes": ["T013"]
+    },
+    {
+      "id": "CP06",
+      "title": "Validation And Evidence Collection",
+      "taskCodes": ["T014"]
+    }
+  ]
+}

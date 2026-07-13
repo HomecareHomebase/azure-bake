@@ -1,0 +1,24 @@
+{
+  "route": "default",
+  "template": "storage.json",
+  "apiVersion": "2020-08-01-preview",
+  "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
+  "resource": {
+    "type": "Microsoft.Storage/storageAccounts",
+    "name": "[parameters('storageAccountName')]",
+    "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
+    "location": "[parameters('location')]",
+    "apiVersion": "2020-08-01-preview",
+    "sku": {
+      "name": "[parameters('storageAccountType')]",
+      "tier": "[parameters('storageTier')]"
+    },
+    "kind": "[parameters('storageKind')]",
+    "properties": {
+      "accessTier": "[parameters('storageAccessTier')]",
+      "supportsHttpsTrafficOnly": "[parameters('IsHttpsTrafficOnly')]",
+      "minimumTlsVersion": "TLS1_2"
+    },
+    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+  }
+}
