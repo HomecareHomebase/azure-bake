@@ -73,7 +73,7 @@
 2. Existing tags are preserved across omitted/false/true flows.
 - Coverage: AC3, AC5; S3, S9
 
-### [ ] T005 - Update default template route for conditional property emission
+### [x] T005 - Update default template route for conditional property emission
 - Type: Development
 - Depends on: T003
 - Targets:
@@ -90,7 +90,7 @@
 3. Metrics remains present post-merge.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S4, S5, S6
 
-### [ ] T006 - Update network template route for parity with default behavior
+### [x] T006 - Update network template route for parity with default behavior
 - Type: Development
 - Depends on: T003
 - Targets:
@@ -105,7 +105,7 @@
 2. Metrics remains present in each matrix case.
 - Coverage: AC1, AC2, AC3, AC5, AC6, AC7; S7
 
-### [ ] T007 - Update datalake template route for parity with default behavior
+### [x] T007 - Update datalake template route for parity with default behavior
 - Type: Development
 - Depends on: T003
 - Targets:
