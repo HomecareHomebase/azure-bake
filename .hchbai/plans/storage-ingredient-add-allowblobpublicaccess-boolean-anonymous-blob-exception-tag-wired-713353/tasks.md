@@ -204,7 +204,7 @@
 2. True-path exception-tag value enforcement is proven.
 - Coverage: AC3, AC5; S9
 
-### [ ] T013 - Update README for feature semantics and usage guidance
+### [x] T013 - Update README for feature semantics and usage guidance
 - Type: Documentation
 - Depends on: T003, T004, T005, T006, T007
 - Targets:

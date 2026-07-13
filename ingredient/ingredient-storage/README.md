@@ -49,6 +49,7 @@ recipe:
 | location | no | Parent resource group geographic location | The location for this resource |
 | storageAccountType | no | | The type for the storage account See [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/2018-11-01/storageaccounts) |
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
+| allowBlobPublicAccess | no | | Optional boolean controlling anonymous (public) blob access. When omitted the property is not written and the account keeps its current value. `false` disables public blob access. `true` enables public blob access **and** automatically stamps the `allow-anonymous-blob-access = true` tag. See [Anonymous blob access](#anonymous-blob-access-allowblobpublicaccess) below. |
 | container | yes (when `source` is populated) |  | Container to upload the specific `source` to. Only used when `source` is specified. |
 | uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
@@ -65,6 +66,48 @@ recipe:
 | blobDiagnosticLoggingRetentionDays | 10 | "true" | Data retention of diagnostic logs in Storage Analytics |
 
 *** Please note that the only value required for creation of this resource is the `storageAccountName`
+
+## Anonymous Blob Access (`allowBlobPublicAccess`)
+
+The optional `allowBlobPublicAccess` parameter controls whether anonymous (public) access to blobs is permitted on the storage account. It behaves as follows:
+
+| value | behavior |
+|-------|----------|
+| omitted | The property is **not written** to the deployment. Azure keeps the account's current/default value. This is a non-breaking, backward-compatible no-op. |
+| `false` | Deploys with `properties.allowBlobPublicAccess = false`, disabling anonymous blob access. |
+| `true` | Deploys with `properties.allowBlobPublicAccess = true` **and** automatically stamps the `allow-anonymous-blob-access = true` tag on the account. |
+
+Existing default tags (such as `Metrics`) and any user-supplied tags are preserved and merged with the automatically applied tag.
+
+> **Do NOT set the `allow-anonymous-blob-access` tag manually.** This exception tag is a canonical Bake constant that is applied automatically whenever `allowBlobPublicAccess` is `true`. Recipe authors should only set the `allowBlobPublicAccess` parameter and let Bake stamp the tag.
+
+### Recipe example
+```yaml
+name: My package
+shortName: mypkg
+version: 0.0.1
+ingredients:
+  - "@azbake/ingredient-storage@~0"
+parallelRegions: false
+resourceGroup: true
+recipe:
+  mypkg-storage:
+    properties:
+      type: "@azbake/ingredient-storage"
+      source: ""
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        # Disable anonymous blob access
+        allowBlobPublicAccess: false
+```
+
+Setting `allowBlobPublicAccess: true` instead enables anonymous blob access and automatically applies the `allow-anonymous-blob-access = true` tag — no manual tag entry is required:
+```yaml
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        # Enable anonymous blob access (also stamps the allow-anonymous-blob-access tag)
+        allowBlobPublicAccess: true
+```
 
 ## Uploading Files to Blob Storage
 
