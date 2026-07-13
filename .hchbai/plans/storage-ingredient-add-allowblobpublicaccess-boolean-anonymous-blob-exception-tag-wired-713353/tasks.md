@@ -221,7 +221,7 @@
 2. README explicitly describes true-path exception tag side effect.
 - Coverage: AC8
 
-### [ ] T014 - Execute validation suite and collect story evidence
+### [x] T014 - Execute validation suite and collect story evidence
 - Type: Verification
 - Depends on: T008, T009, T010, T011, T012, T013
 - Targets:
