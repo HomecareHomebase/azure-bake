@@ -7,6 +7,7 @@ import { StorageUtils } from "./functions.js";
 import { StorageSharedKeyCredential, BlobServiceClient, ContainerClient } from "@azure/storage-blob"
 import ARMTemplateNetwork from "./storageNetwork.json"
 import ARMTemplateDataLake from "./storageDatalake.json"
+import { ALLOW_PUBLIC_NETWORK_ACCESS_TAG_KEY, ALLOW_PUBLIC_NETWORK_ACCESS_TAG_VALUE } from "./constants"
 import * as fs from 'fs';
 
 const path = require("path")
@@ -14,6 +15,9 @@ const path = require("path")
 export class StoragePlugIn extends BaseIngredient {
     
     private resourceGroup: string = ""
+    private readonly allowPublicNetworkAccessTag: Readonly<Record<string, string>> = {
+        [ALLOW_PUBLIC_NETWORK_ACCESS_TAG_KEY]: ALLOW_PUBLIC_NETWORK_ACCESS_TAG_VALUE
+    }
 
     public async Execute(): Promise<void> {
         try {
@@ -49,6 +53,9 @@ export class StoragePlugIn extends BaseIngredient {
             // begin deployment
             if(deploy) 
             {
+                // CP01 baseline: constants are wired for upcoming template tag merge work.
+                this._logger.debug(`public-network tag constant: ${Object.keys(this.allowPublicNetworkAccessTag)[0]}=${this.allowPublicNetworkAccessTag[ALLOW_PUBLIC_NETWORK_ACCESS_TAG_KEY]}`)
+
                 if(params['NetworkAcls'])
                 {
                     await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, this.resourceGroup)

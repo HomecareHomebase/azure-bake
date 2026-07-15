@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "checkpoints": [
+    {
+      "id": "CP01",
+      "title": "Baseline Analysis and Constants Setup",
+      "taskCodes": ["T001", "T002"]
+    },
+    {
+      "id": "CP02",
+      "title": "Input Handling and Deployment Parameter Safety",
+      "taskCodes": ["T003", "T004"]
+    },
+    {
+      "id": "CP03",
+      "title": "Template Tag Mutation and Pass-1 Guardrails",
+      "taskCodes": ["T005", "T006"]
+    },
+    {
+      "id": "CP04",
+      "title": "Automated Validation Coverage",
+      "taskCodes": ["T007", "T008"]
+    },
+    {
+      "id": "CP05",
+      "title": "Documentation and Final Verification Evidence",
+      "taskCodes": ["T009", "T010"]
+    }
+  ]
+}
