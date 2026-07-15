@@ -25,7 +25,7 @@ Implement pass-1 support for optional `allowPublicNetworkAccess` in Storage ingr
 1. Tag key/value are sourced from constants only.
 2. No duplicated hard-coded tag literals remain in updated storage plugin path.
 
-### T003 — Implement optional input normalization for allowPublicNetworkAccess
+### [x] T003 — Implement optional input normalization for allowPublicNetworkAccess
 - Owner/Scope: Storage ingredient implementation
 - Actions:
 1. Parse `allowPublicNetworkAccess` as optional input from ingredient parameters.
@@ -35,7 +35,7 @@ Implement pass-1 support for optional `allowPublicNetworkAccess` in Storage ingr
 1. True/false/omitted branches are explicit in code.
 2. Invalid input behavior is deterministic and testable.
 
-### T004 — Strip allowPublicNetworkAccess from ARM params payload
+### [x] T004 — Strip allowPublicNetworkAccess from ARM params payload
 - Owner/Scope: Storage ingredient implementation
 - Actions:
 1. Ensure `allowPublicNetworkAccess` is removed from params passed to ARM deploy calls in all template branches.

@@ -19,6 +19,33 @@ export class StoragePlugIn extends BaseIngredient {
         [ALLOW_PUBLIC_NETWORK_ACCESS_TAG_KEY]: ALLOW_PUBLIC_NETWORK_ACCESS_TAG_VALUE
     }
 
+    private async normalizeOptionalAllowPublicNetworkAccess(): Promise<boolean | undefined> {
+        const allowPublicNetworkAccessParam = this._ingredient.properties.parameters.get("allowPublicNetworkAccess")
+        if (!allowPublicNetworkAccessParam) {
+            return undefined
+        }
+
+        const rawValue = await allowPublicNetworkAccessParam.valueAsync(this._ctx)
+        if (typeof rawValue === "boolean") {
+            return rawValue
+        }
+
+        if (typeof rawValue === "string") {
+            const normalizedString = rawValue.trim().toLowerCase()
+            if (normalizedString === "true") {
+                return true
+            }
+
+            if (normalizedString === "false") {
+                return false
+            }
+
+            throw new Error("Parameter 'allowPublicNetworkAccess' must be one of: true, false, 'true', or 'false'.")
+        }
+
+        throw new Error("Parameter 'allowPublicNetworkAccess' must be one of: true, false, 'true', or 'false'.")
+    }
+
     public async Execute(): Promise<void> {
         try {
             let util = IngredientManager.getIngredientFunction("coreutils", this._ctx)
@@ -27,6 +54,11 @@ export class StoragePlugIn extends BaseIngredient {
             const helper = new ARMHelper(this._ctx);
             
             let params = await helper.BakeParamsToARMParamsAsync(this._name, this._ingredient.properties.parameters)
+
+            const normalizedAllowPublicNetworkAccess = await this.normalizeOptionalAllowPublicNetworkAccess()
+            if (normalizedAllowPublicNetworkAccess !== undefined) {
+                this._logger.debug(`allowPublicNetworkAccess normalized to '${normalizedAllowPublicNetworkAccess}'.`)
+            }
             
             // define resource group
             let rgOverrideParam  = this._ingredient.properties.parameters.get('rgOverride')
@@ -49,6 +81,7 @@ export class StoragePlugIn extends BaseIngredient {
             delete params["container"]
             delete params["uploadPath"]
             delete params["unzip"]
+            delete params["allowPublicNetworkAccess"]
 
             // begin deployment
             if(deploy) 
