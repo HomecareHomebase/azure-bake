@@ -61,10 +61,15 @@
             }
         },
         "allowBlobPublicAccess": {
-            "type": "bool",
-            "defaultValue": false,
+            "type": "string",
+            "defaultValue": "unset",
+            "allowedValues": [
+                "unset",
+                "true",
+                "false"
+            ],
             "metadata": {
-                "description": "Allows anonymous public read access for blobs/containers when set to true."
+                "description": "Tri-state control for the storage account's allowBlobPublicAccess property. 'unset' (default) omits the property entirely, preserving current behavior. 'true' or 'false' explicitly sets allowBlobPublicAccess on the storage account."
             }
         },
         "tags": {
@@ -89,7 +94,7 @@
             "accessTier": "[parameters('storageAccessTier')]",
             "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
                         "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
-                        "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]"
+                        "allowBlobPublicAccess": "[bool(parameters('allowBlobPublicAccess'))]"
           },
                     "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
                 },

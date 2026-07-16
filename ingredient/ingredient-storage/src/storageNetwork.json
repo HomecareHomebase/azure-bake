@@ -64,10 +64,15 @@
             "defaultvalue" : { "bypass": "None" , "defaultAction": "Allow","ipRules" : [],"virtualNetworkRules" : []  }
         },
         "allowBlobPublicAccess": {
-            "type": "bool",
-            "defaultValue": false,
+            "type": "string",
+            "defaultValue": "unset",
+            "allowedValues": [
+                "unset",
+                "true",
+                "false"
+            ],
             "metadata": {
-                "description": "Allows anonymous public read access for blobs/containers when set to true."
+                "description": "Tri-state control for the storage account's allowBlobPublicAccess property. 'unset' (default) omits the property entirely, preserving current behavior. 'true' or 'false' explicitly sets allowBlobPublicAccess on the storage account."
             }
         },
         "tags": {
@@ -91,7 +96,7 @@
             "accessTier": "[parameters('storageAccessTier')]",
             "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
             "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",            
-                        "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+                        "allowBlobPublicAccess": "[bool(parameters('allowBlobPublicAccess'))]",
             "networkAcls": {
                             "bypass": "[parameters('NetworkAcls').bypass]",
                             "defaultAction": "Deny",

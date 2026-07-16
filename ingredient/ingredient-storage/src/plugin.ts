@@ -170,8 +170,8 @@ export class StoragePlugIn extends BaseIngredient {
     }
 
     private ApplyAnonymousBlobExceptionTag(params: any): void {
-        const allowBlobPublicAccess = this.GetExplicitBooleanParamValue(params["allowBlobPublicAccess"])
-        if (allowBlobPublicAccess !== true) {
+        const allowBlobPublicAccess = this.ResolveAllowBlobPublicAccessTriState(params["allowBlobPublicAccess"])
+        if (allowBlobPublicAccess !== "true") {
             return
         }
 
@@ -191,7 +191,7 @@ export class StoragePlugIn extends BaseIngredient {
     }
 
     private NormalizeAllowBlobPublicAccessParam(params: any): void {
-        const allowBlobPublicAccess = this.GetExplicitBooleanParamValue(params["allowBlobPublicAccess"])
+        const allowBlobPublicAccess = this.ResolveAllowBlobPublicAccessTriState(params["allowBlobPublicAccess"])
         if (allowBlobPublicAccess === undefined) {
             delete params["allowBlobPublicAccess"]
             return
@@ -206,17 +206,19 @@ export class StoragePlugIn extends BaseIngredient {
         params["allowBlobPublicAccess"] = allowBlobPublicAccess
     }
 
-    private GetExplicitBooleanParamValue(param: any): boolean | undefined {
-        if (param && typeof param === "object" && "value" in param) {
-            if (param.value === true || param.value === false) {
-                return param.value
-            }
+    // Resolves the allowBlobPublicAccess bake parameter to the ARM tri-state string:
+    //   "true" / "false" when explicitly set (accepts legacy booleans or their string form)
+    //   undefined for the omitted/"unset" case, signalling the param should not be forwarded
+    //   so the template default ("unset") omits the property entirely.
+    private ResolveAllowBlobPublicAccessTriState(param: any): "true" | "false" | undefined {
+        const value = param && typeof param === "object" && "value" in param ? param.value : param
 
-            return undefined
+        if (value === true || value === "true") {
+            return "true"
         }
 
-        if (param === true || param === false) {
-            return param
+        if (value === false || value === "false") {
+            return "false"
         }
 
         return undefined
