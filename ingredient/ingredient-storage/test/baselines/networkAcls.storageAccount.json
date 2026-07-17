@@ -1,0 +1,18 @@
+{
+  "route": "networkAcls",
+  "template": "storageNetwork.json",
+  "apiVersion": "2019-06-01",
+  "resource": {
+    "type": "Microsoft.Storage/storageAccounts",
+    "name": "[parameters('storageAccountName')]",
+    "location": "[parameters('location')]",
+    "apiVersion": "2019-06-01",
+    "sku": {
+      "name": "[parameters('storageAccountType')]",
+      "tier": "[parameters('storageTier')]"
+    },
+    "kind": "[parameters('storageKind')]",
+    "properties": "[union(createObject('accessTier', parameters('storageAccessTier'), 'isHnsEnabled', parameters('IsHnsEnabled'), 'supportsHttpsTrafficOnly', parameters('IsHttpsTrafficOnly'), 'networkAcls', variables('networkAcls'), 'azureFilesIdentityBasedAuthentication', createObject('directoryServiceOptions', 'None')), variables('allowBlobPublicAccessProperty'))]",
+    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+  }
+}

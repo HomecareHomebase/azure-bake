@@ -1,12 +1,11 @@
-// Establishes deterministic omitted-path baselines for the storage ingredient ARM
-// templates. Each storage template carries a conditional dual-resource pattern: one
-// resource that emits allowBlobPublicAccess (explicit path) and one that omits it
-// (omitted path). These baselines capture the omitted-path resource for each route so
-// later tests can assert that omitting allowBlobPublicAccess stays byte-equivalent to
-// the pre-feature output.
+// Establishes deterministic baselines for the storage ingredient ARM templates. The
+// dual-resource switch was collapsed into a single storage account resource per template
+// whose properties union() in a conditional allowBlobPublicAccess fragment. These
+// baselines capture that single resource for each route so accidental template edits are
+// caught as byte-level drift.
 //
 // Usage:
-//   node test/baseline.js          Regenerate the omitted-path baseline fixtures.
+//   node test/baseline.js          Regenerate the baseline fixtures.
 //   node test/baseline.js --check  Verify on-disk baselines match regenerated output.
 //
 // Uses only Node built-ins so it introduces no new dependencies.
@@ -14,7 +13,7 @@
 const fs = require("fs")
 const path = require("path")
 
-const OMITTED_PATH_CONDITION_MARKER = "not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))"
+const STORAGE_ACCOUNT_TYPE = "Microsoft.Storage/storageAccounts"
 
 const ROUTES = [
     { name: "default", template: "storage.json" },
@@ -25,29 +24,26 @@ const ROUTES = [
 const SRC_DIR = path.join(__dirname, "..", "src")
 const BASELINE_DIR = path.join(__dirname, "baselines")
 
-function findOmittedPathResource(template, templateFile) {
+function findStorageAccountResource(template, templateFile) {
     const resources = Array.isArray(template.resources) ? template.resources : []
-    const match = resources.find(resource =>
-        typeof resource.condition === "string" &&
-        resource.condition.includes(OMITTED_PATH_CONDITION_MARKER))
+    const matches = resources.filter(resource => resource.type === STORAGE_ACCOUNT_TYPE)
 
-    if (!match) {
-        throw new Error(`Unable to locate omitted-path (allowBlobPublicAccess absent) resource in ${templateFile}`)
+    if (matches.length !== 1) {
+        throw new Error(`Expected exactly one ${STORAGE_ACCOUNT_TYPE} resource in ${templateFile}, found ${matches.length}`)
     }
 
-    return match
+    return matches[0]
 }
 
 function buildBaseline(route) {
     const templatePath = path.join(SRC_DIR, route.template)
     const template = JSON.parse(fs.readFileSync(templatePath, "utf8"))
-    const resource = findOmittedPathResource(template, route.template)
+    const resource = findStorageAccountResource(template, route.template)
 
     return {
         route: route.name,
         template: route.template,
         apiVersion: resource.apiVersion,
-        condition: resource.condition,
         resource
     }
 }
@@ -57,7 +53,7 @@ function serialize(baseline) {
 }
 
 function baselinePath(route) {
-    return path.join(BASELINE_DIR, `${route.name}.omitted.json`)
+    return path.join(BASELINE_DIR, `${route.name}.storageAccount.json`)
 }
 
 function generate() {
@@ -66,7 +62,7 @@ function generate() {
     for (const route of ROUTES) {
         const contents = serialize(buildBaseline(route))
         fs.writeFileSync(baselinePath(route), contents)
-        console.log(`Wrote omitted-path baseline for '${route.name}' route -> ${path.relative(process.cwd(), baselinePath(route))}`)
+        console.log(`Wrote storage account baseline for '${route.name}' route -> ${path.relative(process.cwd(), baselinePath(route))}`)
     }
 }
 
@@ -91,11 +87,11 @@ function check() {
     }
 
     if (drift) {
-        console.error("Omitted-path baselines are out of date. Run 'npm run baseline' to regenerate.")
+        console.error("Storage account baselines are out of date. Run 'npm run baseline' to regenerate.")
         process.exit(1)
     }
 
-    console.log("All omitted-path baselines are up to date.")
+    console.log("All storage account baselines are up to date.")
 }
 
 if (process.argv.includes("--check")) {

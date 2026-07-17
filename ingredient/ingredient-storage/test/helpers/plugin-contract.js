@@ -3,30 +3,37 @@
 // this environment (no bootstrap, no build tooling, no node_modules), so these helpers
 // faithfully reproduce the exact semantics of the plugin's private methods:
 //
-//   - GetExplicitBooleanParamValue  -> getExplicitBooleanParamValue
-//   - GetTagMap                     -> getTagMap
-//   - NormalizeAllowBlobPublicAccessParam -> normalizeAllowBlobPublicAccessParam
-//   - ApplyAnonymousBlobExceptionTag      -> applyAnonymousBlobExceptionTag
+//   - ResolveAllowBlobPublicAccessTriState -> resolveAllowBlobPublicAccessTriState
+//   - GetTagMap                            -> getTagMap
+//   - NormalizeAllowBlobPublicAccessParam  -> normalizeAllowBlobPublicAccessParam
+//   - ApplyAnonymousBlobExceptionTag       -> applyAnonymousBlobExceptionTag
+//
+// allowBlobPublicAccess is a tri-state STRING parameter ("unset" | "true" | "false").
+// The plugin resolves the bake input (legacy boolean, its string form, or "unset"/
+// omitted) to the canonical tri-state and forwards only "true"/"false" to ARM; the
+// "unset" case is dropped so the template default ("unset") omits the property entirely.
 //
 // applyPluginContract() invokes normalize() then applyTag() in the same order as
 // StoragePlugIn.Execute(). The unit tests in this suite assert the invariants of that
-// contract (omitted -> param absent + no tag; false -> false + no tag; true -> true +
+// contract (omitted -> param absent + no tag; false -> "false" + no tag; true -> "true" +
 // exception tag; existing/user tags preserved; conflicting exception value forced to
 // "true"). Keep this file in lockstep with plugin.ts if the plugin logic changes.
 
 const ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY = "allow-anonymous-blob-access"
 const ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_VALUE = "true"
 
-function getExplicitBooleanParamValue(param) {
-    if (param && typeof param === "object" && "value" in param) {
-        if (param.value === true || param.value === false) {
-            return param.value
-        }
-        return undefined
+// Mirrors StoragePlugIn.ResolveAllowBlobPublicAccessTriState: resolves the bake input to
+// the ARM tri-state string "true"/"false" (accepting legacy booleans or their string
+// form) or undefined for the omitted/"unset" case.
+function resolveAllowBlobPublicAccessTriState(param) {
+    const value = param && typeof param === "object" && "value" in param ? param.value : param
+
+    if (value === true || value === "true") {
+        return "true"
     }
 
-    if (param === true || param === false) {
-        return param
+    if (value === false || value === "false") {
+        return "false"
     }
 
     return undefined
@@ -49,7 +56,7 @@ function getTagMap(tagsParam) {
 }
 
 function normalizeAllowBlobPublicAccessParam(params) {
-    const allowBlobPublicAccess = getExplicitBooleanParamValue(params["allowBlobPublicAccess"])
+    const allowBlobPublicAccess = resolveAllowBlobPublicAccessTriState(params["allowBlobPublicAccess"])
     if (allowBlobPublicAccess === undefined) {
         delete params["allowBlobPublicAccess"]
         return
@@ -65,8 +72,8 @@ function normalizeAllowBlobPublicAccessParam(params) {
 }
 
 function applyAnonymousBlobExceptionTag(params) {
-    const allowBlobPublicAccess = getExplicitBooleanParamValue(params["allowBlobPublicAccess"])
-    if (allowBlobPublicAccess !== true) {
+    const allowBlobPublicAccess = resolveAllowBlobPublicAccessTriState(params["allowBlobPublicAccess"])
+    if (allowBlobPublicAccess !== "true") {
         return
     }
 
@@ -86,7 +93,8 @@ function applyAnonymousBlobExceptionTag(params) {
 }
 
 // Mirrors the ordering in StoragePlugIn.Execute(): normalize first (which may delete the
-// param), then stamp the exception tag only when the value resolved to explicit true.
+// param or rewrite its value to the canonical tri-state string), then stamp the exception
+// tag only when the value resolved to "true".
 function applyPluginContract(params) {
     normalizeAllowBlobPublicAccessParam(params)
     applyAnonymousBlobExceptionTag(params)
@@ -102,7 +110,7 @@ function getExceptionTagValue(params) {
 module.exports = {
     ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY,
     ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_VALUE,
-    getExplicitBooleanParamValue,
+    resolveAllowBlobPublicAccessTriState,
     getTagMap,
     normalizeAllowBlobPublicAccessParam,
     applyAnonymousBlobExceptionTag,

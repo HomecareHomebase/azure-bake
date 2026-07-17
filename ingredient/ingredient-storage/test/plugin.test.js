@@ -3,12 +3,13 @@
 // These exercise the pure-Node mirror of the plugin's normalization/tag-merge contract
 // (test/helpers/plugin-contract.js), which reproduces the TypeScript plugin's private
 // methods verbatim because the plugin cannot be compiled in this un-bootstrapped repo.
-// The invariants asserted here are exactly the invariants plugin.ts implements.
+// The invariants asserted here are exactly the invariants plugin.ts implements for the
+// tri-state STRING allowBlobPublicAccess parameter ("unset" | "true" | "false").
 //
 // Scenario coverage:
-//   S1 - omitted allowBlobPublicAccess is not forwarded and stamps no exception tag.
-//   S2 - explicit false is forwarded as false and stamps no exception tag.
-//   S3 - explicit true is forwarded as true and stamps the exception tag.
+//   S1 - omitted / "unset" allowBlobPublicAccess is not forwarded and stamps no tag.
+//   S2 - explicit false (boolean or "false") is forwarded as "false" and stamps no tag.
+//   S3 - explicit true (boolean or "true") is forwarded as "true" and stamps the tag.
 //   S9 - existing/user tags survive the merge; conflicting exception values are enforced.
 
 const fs = require("fs")
@@ -17,12 +18,12 @@ const { test, assert } = require("./helpers/harness")
 const {
     ALLOW_ANONYMOUS_BLOB_ACCESS_TAG_KEY,
     applyPluginContract,
-    getExplicitBooleanParamValue,
+    resolveAllowBlobPublicAccessTriState,
     getExceptionTagValue
 } = require("./helpers/plugin-contract")
 const {
     loadTemplate,
-    selectStorageAccountResource,
+    getStorageAccountResource,
     resourceUnionsMetricsTag
 } = require("./helpers/template-route")
 
@@ -44,37 +45,45 @@ test("T008 S1 omitted allowBlobPublicAccess is not forwarded and stamps no excep
     assert.strictEqual(getExceptionTagValue(params), undefined, "omitted path must not stamp the exception tag")
 })
 
-// S1 - non-explicit values (string, null, undefined-value) are treated as omitted.
-test("T008 S1 non-explicit allowBlobPublicAccess values are treated as omitted", () => {
-    for (const raw of [{ value: "true" }, { value: null }, { value: 1 }, {}, null]) {
+// S1 - "unset" and other non-tri-state values are treated as omitted.
+test("T008 S1 non-tri-state allowBlobPublicAccess values are treated as omitted", () => {
+    for (const raw of [{ value: "unset" }, { value: null }, { value: 1 }, {}, null]) {
         const params = { storageAccountName: { value: "acct" }, allowBlobPublicAccess: raw }
         applyPluginContract(params)
         assert.strictEqual(hasAllowBlobKey(params), false,
-            `non-explicit value ${JSON.stringify(raw)} must be dropped, not forwarded`)
+            `non-tri-state value ${JSON.stringify(raw)} must be dropped, not forwarded`)
         assert.strictEqual(getExceptionTagValue(params), undefined,
-            `non-explicit value ${JSON.stringify(raw)} must not stamp the exception tag`)
+            `non-tri-state value ${JSON.stringify(raw)} must not stamp the exception tag`)
     }
 })
 
-// S2 - explicit false is forwarded (=false); exception tag absent.
-test("T008 S2 explicit false is forwarded as false and stamps no exception tag", () => {
-    const params = { storageAccountName: { value: "acct" }, allowBlobPublicAccess: { value: false } }
-    applyPluginContract(params)
+// S2 - explicit false (boolean or "false" string) is forwarded as "false"; no tag.
+test("T008 S2 explicit false is forwarded as 'false' and stamps no exception tag", () => {
+    for (const raw of [{ value: false }, { value: "false" }]) {
+        const params = { storageAccountName: { value: "acct" }, allowBlobPublicAccess: raw }
+        applyPluginContract(params)
 
-    assert.strictEqual(hasAllowBlobKey(params), true, "false must be forwarded")
-    assert.strictEqual(getExplicitBooleanParamValue(params.allowBlobPublicAccess), false, "value must remain false")
-    assert.strictEqual(getExceptionTagValue(params), undefined, "false path must not stamp the exception tag")
+        assert.strictEqual(hasAllowBlobKey(params), true, "false must be forwarded")
+        assert.strictEqual(params.allowBlobPublicAccess.value, "false", "value must be normalized to 'false'")
+        assert.strictEqual(resolveAllowBlobPublicAccessTriState(params.allowBlobPublicAccess), "false",
+            "resolved tri-state must be 'false'")
+        assert.strictEqual(getExceptionTagValue(params), undefined, "false path must not stamp the exception tag")
+    }
 })
 
-// S3 - explicit true is forwarded (=true); exception tag present with canonical value.
-test("T008 S3 explicit true is forwarded as true and stamps the exception tag", () => {
-    const params = { storageAccountName: { value: "acct" }, allowBlobPublicAccess: { value: true } }
-    applyPluginContract(params)
+// S3 - explicit true (boolean or "true" string) is forwarded as "true"; tag present.
+test("T008 S3 explicit true is forwarded as 'true' and stamps the exception tag", () => {
+    for (const raw of [{ value: true }, { value: "true" }]) {
+        const params = { storageAccountName: { value: "acct" }, allowBlobPublicAccess: raw }
+        applyPluginContract(params)
 
-    assert.strictEqual(hasAllowBlobKey(params), true, "true must be forwarded")
-    assert.strictEqual(getExplicitBooleanParamValue(params.allowBlobPublicAccess), true, "value must remain true")
-    assert.strictEqual(getExceptionTagValue(params), "true",
-        "true path must stamp allow-anonymous-blob-access=true")
+        assert.strictEqual(hasAllowBlobKey(params), true, "true must be forwarded")
+        assert.strictEqual(params.allowBlobPublicAccess.value, "true", "value must be normalized to 'true'")
+        assert.strictEqual(resolveAllowBlobPublicAccessTriState(params.allowBlobPublicAccess), "true",
+            "resolved tri-state must be 'true'")
+        assert.strictEqual(getExceptionTagValue(params), "true",
+            "true path must stamp allow-anonymous-blob-access=true")
+    }
 })
 
 // S9 - existing user tags survive the merge on the true path.
@@ -109,8 +118,8 @@ test("T012 S9 false path preserves custom tags and Metrics without an exception 
         "false path must not stamp the exception tag")
 
     // Metrics is unioned by the template, not the plugin; confirm the deployed resource
-    // still carries the Metrics union expression on the false (explicit) path.
-    const resource = selectStorageAccountResource(loadTemplate("storage.json"), hasAllowBlobKey(params))
+    // still carries the Metrics union expression.
+    const resource = getStorageAccountResource(loadTemplate("storage.json"))
     assert.strictEqual(resourceUnionsMetricsTag(resource), true, "Metrics tag must be preserved by the template")
 })
 
@@ -134,6 +143,6 @@ test("T012 S9 true path enforces exception tag to 'true' and preserves custom ta
     assert.strictEqual(getExceptionTagValue(params), "true",
         "conflicting exception value must be enforced to 'true'")
 
-    const resource = selectStorageAccountResource(loadTemplate("storage.json"), hasAllowBlobKey(params))
+    const resource = getStorageAccountResource(loadTemplate("storage.json"))
     assert.strictEqual(resourceUnionsMetricsTag(resource), true, "Metrics tag must be preserved by the template")
 })

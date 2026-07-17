@@ -49,7 +49,7 @@ recipe:
 | location | no | Parent resource group geographic location | The location for this resource |
 | storageAccountType | no | | The type for the storage account See [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/2018-11-01/storageaccounts) |
 | storageAccessTier | no | | Selects **Hot** or *Cold* tiers for the storage account. See [documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers) |
-| allowBlobPublicAccess | no | | Optional boolean controlling anonymous (public) blob access. When omitted the property is not written and the account keeps its current value. `false` disables public blob access. `true` enables public blob access **and** automatically stamps the `allow-anonymous-blob-access = true` tag. See [Anonymous blob access](#anonymous-blob-access-allowblobpublicaccess) below. |
+| allowBlobPublicAccess | no | `unset` | Optional tri-state **string** (`unset` / `true` / `false`) controlling anonymous (public) blob access. `unset` (the default, or when the parameter is omitted) does not write the property, so the account keeps its current value. `false` disables public blob access. `true` enables public blob access **and** automatically stamps the `allow-anonymous-blob-access = true` tag. Legacy boolean `true`/`false` values are still accepted and normalized to their string form. See [Anonymous blob access](#anonymous-blob-access-allowblobpublicaccess) below. |
 | container | yes (when `source` is populated) |  | Container to upload the specific `source` to. Only used when `source` is specified. |
 | uploadPath | yes (when `source` is populated) |  | Path within the specified container to upload the `source` to. Only used when `source` is specified. |
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
@@ -69,13 +69,15 @@ recipe:
 
 ## Anonymous Blob Access (`allowBlobPublicAccess`)
 
-The optional `allowBlobPublicAccess` parameter controls whether anonymous (public) access to blobs is permitted on the storage account. It behaves as follows:
+The optional `allowBlobPublicAccess` parameter controls whether anonymous (public) access to blobs is permitted on the storage account. It is a tri-state **string** parameter (`unset` / `true` / `false`); legacy boolean `true`/`false` values are also accepted and normalized. It behaves as follows:
 
 | value | behavior |
 |-------|----------|
-| omitted | The property is **not written** to the deployment. Azure keeps the account's current/default value. This is a non-breaking, backward-compatible no-op. |
+| omitted / `unset` | The property is **not written** to the deployment. Azure keeps the account's current/default value. This is a non-breaking, backward-compatible no-op. |
 | `false` | Deploys with `properties.allowBlobPublicAccess = false`, disabling anonymous blob access. |
 | `true` | Deploys with `properties.allowBlobPublicAccess = true` **and** automatically stamps the `allow-anonymous-blob-access = true` tag on the account. |
+
+The storage account templates assemble the account `properties` with a single ARM `union()` merge: a conditional variable contributes the `allowBlobPublicAccess` property only when the value is `true`/`false`, and yields an empty object on `unset`. This keeps the property optional without duplicating the storage account resource behind deploy-time conditions.
 
 Existing default tags (such as `Metrics`) and any user-supplied tags are preserved and merged with the automatically applied tag.
 

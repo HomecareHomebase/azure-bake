@@ -78,11 +78,13 @@
         }
         
     },
+    "variables": {
+        "allowBlobPublicAccessProperty": "[if(equals(parameters('allowBlobPublicAccess'), 'unset'), createObject(), createObject('allowBlobPublicAccess', bool(if(equals(parameters('allowBlobPublicAccess'), 'unset'), 'false', parameters('allowBlobPublicAccess')))))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('storageAccountName')]",
-            "condition": "[contains(deployment().properties.parameters, 'allowBlobPublicAccess')]",
             "location": "[parameters('location')]",
             "apiVersion": "2018-02-01",
             "sku": {
@@ -90,31 +92,8 @@
                 "tier": "[parameters('storageTier')]"                
             },
             "kind": "[parameters('storageKind')]",
-          "properties": {
-            "accessTier": "[parameters('storageAccessTier')]",
-            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
-                        "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
-                        "allowBlobPublicAccess": "[bool(parameters('allowBlobPublicAccess'))]"
-          },
-                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
-                },
-                {
-                        "type": "Microsoft.Storage/storageAccounts",
-                        "name": "[parameters('storageAccountName')]",
-                        "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
-                        "location": "[parameters('location')]",
-                        "apiVersion": "2018-02-01",
-                        "sku": {
-                                "name": "[parameters('storageAccountType')]",
-                                "tier": "[parameters('storageTier')]"                
-                        },
-                        "kind": "[parameters('storageKind')]",
-                    "properties": {
-                        "accessTier": "[parameters('storageAccessTier')]",
-                        "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]" ,
-                        "isHnsEnabled" : "[parameters('IsHnsEnabled')]"
-                    },
-                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+            "properties": "[union(createObject('accessTier', parameters('storageAccessTier'), 'supportsHttpsTrafficOnly', parameters('IsHttpsTrafficOnly'), 'isHnsEnabled', parameters('IsHnsEnabled')), variables('allowBlobPublicAccessProperty'))]",
+            "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
         }
     ]
 }

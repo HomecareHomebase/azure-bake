@@ -80,11 +80,37 @@
             "defaultValue": {}
         }    
     },
+    "variables": {
+        "copy": [
+            {
+                "name": "networkAclsIpRules",
+                "count": "[length(parameters('NetworkAcls').ipRules)]",
+                "input": {
+                    "value": "[parameters('NetworkAcls').ipRules[copyIndex('networkAclsIpRules')].value]",
+                    "action": "[parameters('NetworkAcls').ipRules[copyIndex('networkAclsIpRules')].action]"
+                }
+            },
+            {
+                "name": "networkAclsVirtualNetworkRules",
+                "count": "[length(parameters('NetworkAcls').virtualNetworkRules)]",
+                "input": {
+                    "id": "[resourceId(subscription().subscriptionId,parameters('NetworkAcls').virtualNetworkRules[copyIndex('networkAclsVirtualNetworkRules')].vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', parameters('NetworkAcls').virtualNetworkRules[copyIndex('networkAclsVirtualNetworkRules')].vnetName, parameters('NetworkAcls').virtualNetworkRules[copyIndex('networkAclsVirtualNetworkRules')].subnetName)]",
+                    "action": "[parameters('NetworkAcls').virtualNetworkRules[copyIndex('networkAclsVirtualNetworkRules')].action]"
+                }
+            }
+        ],
+        "networkAcls": {
+            "bypass": "[parameters('NetworkAcls').bypass]",
+            "defaultAction": "Deny",
+            "ipRules": "[variables('networkAclsIpRules')]",
+            "virtualNetworkRules": "[variables('networkAclsVirtualNetworkRules')]"
+        },
+        "allowBlobPublicAccessProperty": "[if(equals(parameters('allowBlobPublicAccess'), 'unset'), createObject(), createObject('allowBlobPublicAccess', bool(if(equals(parameters('allowBlobPublicAccess'), 'unset'), 'false', parameters('allowBlobPublicAccess')))))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('storageAccountName')]",
-            "condition": "[contains(deployment().properties.parameters, 'allowBlobPublicAccess')]",
             "location": "[parameters('location')]",
             "apiVersion": "2019-06-01",
             "sku": {
@@ -92,81 +118,8 @@
                 "tier": "[parameters('storageTier')]"                            
             },
             "kind": "[parameters('storageKind')]",
-          "properties": {
-            "accessTier": "[parameters('storageAccessTier')]",
-            "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
-            "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",            
-                        "allowBlobPublicAccess": "[bool(parameters('allowBlobPublicAccess'))]",
-            "networkAcls": {
-                            "bypass": "[parameters('NetworkAcls').bypass]",
-                            "defaultAction": "Deny",
-                            "copy" : [{
-                                "name" : "ipRules",
-                                "count" : "[length(parameters('NetworkAcls').ipRules)]",                                
-                                "input" : {
-                                    "value": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].value]",
-                                    "action": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].action]"
-                                    }
-                            },
-                            {
-                                    "name" : "virtualNetworkRules",
-                                    "count" : "[length(parameters('NetworkAcls').virtualNetworkRules)]",
-                                    "input" : {
-                                                "id": "[resourceId(subscription().subscriptionId,parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetName, parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnetName)]",
-                                                "action": "[parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].action]"
-                                    }
-                                }                            
-                            ]                                          
-                        },
-            "azureFilesIdentityBasedAuthentication": {
-            "directoryServiceOptions": "None"
-            }
-                    
-          },
-                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
-                },
-                {
-                        "type": "Microsoft.Storage/storageAccounts",
-                        "name": "[parameters('storageAccountName')]",
-                        "condition": "[not(contains(deployment().properties.parameters, 'allowBlobPublicAccess'))]",
-                        "location": "[parameters('location')]",
-                        "apiVersion": "2019-06-01",
-                        "sku": {
-                                "name": "[parameters('storageAccountType')]",
-                                "tier": "[parameters('storageTier')]"                            
-                        },
-                        "kind": "[parameters('storageKind')]",
-                    "properties": {
-                        "accessTier": "[parameters('storageAccessTier')]",
-                        "isHnsEnabled" : "[parameters('IsHnsEnabled')]",
-                        "supportsHttpsTrafficOnly" : "[parameters('IsHttpsTrafficOnly')]",            
-                        "networkAcls": {
-                                                        "bypass": "[parameters('NetworkAcls').bypass]",
-                                                        "defaultAction": "Deny",
-                                                        "copy" : [{
-                                                                "name" : "ipRules",
-                                                                "count" : "[length(parameters('NetworkAcls').ipRules)]",                                
-                                                                "input" : {
-                                                                        "value": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].value]",
-                                                                        "action": "[parameters('NetworkAcls').ipRules[copyIndex('ipRules')].action]"
-                                                                        }
-                                                        },
-                                                        {
-                                                                        "name" : "virtualNetworkRules",
-                                                                        "count" : "[length(parameters('NetworkAcls').virtualNetworkRules)]",
-                                                                        "input" : {
-                                                                                                "id": "[resourceId(subscription().subscriptionId,parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].vnetName, parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].subnetName)]",
-                                                                                                "action": "[parameters('NetworkAcls').virtualNetworkRules[copyIndex('virtualNetworkRules')].action]"
-                                                                        }
-                                                                }                            
-                                                        ]                                          
-                                                },
-                        "azureFilesIdentityBasedAuthentication": {
-                        "directoryServiceOptions": "None"
-                        }
-                    
-                    },
-                    "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
+            "properties": "[union(createObject('accessTier', parameters('storageAccessTier'), 'isHnsEnabled', parameters('IsHnsEnabled'), 'supportsHttpsTrafficOnly', parameters('IsHttpsTrafficOnly'), 'networkAcls', variables('networkAcls'), 'azureFilesIdentityBasedAuthentication', createObject('directoryServiceOptions', 'None')), variables('allowBlobPublicAccessProperty'))]",
+            "tags": "[union(parameters('tags'), createObject('Metrics', '*'))]"
         }        
     ]
 }
