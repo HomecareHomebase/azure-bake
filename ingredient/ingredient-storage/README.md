@@ -54,6 +54,7 @@ recipe:
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
 | unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 | rgOverride | no | | Specifics a resource group override for the storage account if different from the main resource group of the bake recipe. |
+| allowBlobPublicAccess | no | *(unset — property not written)* | Optional. When omitted, the account's anonymous public blob access is left unchanged (backward compatible). When `false`, deploys the account with anonymous public blob access disabled. When `true`, enables it AND stamps the approved-exception tag `allow-anonymous-blob-access = true`. |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
@@ -65,6 +66,26 @@ recipe:
 | blobDiagnosticLoggingRetentionDays | 10 | "true" | Data retention of diagnostic logs in Storage Analytics |
 
 *** Please note that the only value required for creation of this resource is the `storageAccountName`
+
+### Anonymous public blob access
+
+The optional `allowBlobPublicAccess` parameter controls whether the storage account permits **anonymous** (unauthenticated) public read access to blob data.
+
+- **Omitted (default):** the property is not written to the ARM template, so the account's current anonymous-access setting is left unchanged. Existing recipes and deployments are unaffected — this is fully backward compatible.
+- **`false`:** deploys the account with anonymous public blob access **disabled**. This blocks only anonymous readers; it never affects applications that authenticate with an account key, SAS token, or Azure AD (AAD) identity — those continue to work exactly as before.
+- **`true`:** allows anonymous public blob access to be configured (actual anonymous reads still depend on each container's public-access level) **and** stamps the approved-exception tag `allow-anonymous-blob-access = true` on the account, marking it as a sanctioned exception to the anonymous-blob deny policy. Existing tags (such as `Metrics`) are preserved.
+
+```yaml
+recipe:
+  mypkg-storage:
+    properties:
+      type: "@azbake/ingredient-storage"
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        allowBlobPublicAccess: false   # disable anonymous blob access (no tag)
+```
+
+> **Datalake caveat:** the datalake template (`storageDatalake.json`) pins apiVersion `2018-02-01`, which predates the GA of `allowBlobPublicAccess` (`2019-04-01`); on a datalake (`IsHnsEnabled`) recipe the property may be ignored by ARM while the tag still stamps — verify on the target apiVersion before relying on it for datalake accounts.
 
 ## Uploading Files to Blob Storage
 

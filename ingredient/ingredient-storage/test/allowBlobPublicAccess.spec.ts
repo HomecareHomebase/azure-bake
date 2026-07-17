@@ -212,3 +212,34 @@ describe("ANON_BLOB_ACCESS_EXCEPTION_TAG — AC4 constant contract", () => {
         expect(account.tags[ANON_BLOB_ACCESS_EXCEPTION_TAG.name]).to.equal(ANON_BLOB_ACCESS_EXCEPTION_TAG.value);
     });
 });
+
+// T026 — coverage: applyAllowBlobPublicAccess throws when no storage-account resource exists
+describe("applyAllowBlobPublicAccess — missing storage-account resource throws", () => {
+    it("throws an Error naming the Microsoft.Storage/storageAccounts type on an explicit value", () => {
+        let error: Error | undefined;
+        try {
+            applyAllowBlobPublicAccess({ resources: [] }, true);
+        } catch (e) {
+            error = e as Error;
+        }
+        expect(error, "expected an Error to be thrown").to.be.instanceOf(Error);
+        expect(error!.message).to.contain(STORAGE_ACCOUNT_TYPE);
+    });
+});
+
+// T026 — coverage: defensive properties/tags fallbacks materialize on a bare account resource
+describe("applyAllowBlobPublicAccess — bare account resource gets properties and tags created", () => {
+    it("creates properties and tags when true is applied to an account lacking both", () => {
+        const template = { resources: [{ type: STORAGE_ACCOUNT_TYPE }] };
+        const account = findStorageAccount(applyAllowBlobPublicAccess(template, true));
+        expect(account.properties.allowBlobPublicAccess).to.equal(true);
+        expect(account.tags[EXCEPTION_TAG_KEY]).to.equal("true");
+    });
+
+    it("creates properties without a tag when false is applied to an account lacking both", () => {
+        const template = { resources: [{ type: STORAGE_ACCOUNT_TYPE }] };
+        const account = findStorageAccount(applyAllowBlobPublicAccess(template, false));
+        expect(account.properties.allowBlobPublicAccess).to.equal(false);
+        expect(hasOwn(account, "tags")).to.equal(false);
+    });
+});
