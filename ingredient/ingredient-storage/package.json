@@ -9,8 +9,7 @@
   "scripts": {
     "upload": "tsc -p . && npm --no-git-tag-version version patch && npm publish --access public",
     "compile": "tsc -p .",
-    "watch": "tsc -w -p .",
-    "test": "mocha --timeout 30000 -r ts-node/register test/**/*.ts"
+    "watch": "tsc -w -p ."
   },
   "directories": {
     "lib": "dist"
@@ -22,12 +21,7 @@
   "devDependencies": {
     "@azbake/core": "^0.1.108",
     "@azure/ms-rest-nodeauth": "^3.0.0",
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.18",
-    "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "ts-node": "^7.0.1"
+    "@types/node": "^10.12.18"
   },
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112",
