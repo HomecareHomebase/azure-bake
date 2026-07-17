@@ -7,6 +7,7 @@ import { StorageUtils } from "./functions.js";
 import { StorageSharedKeyCredential, BlobServiceClient, ContainerClient } from "@azure/storage-blob"
 import ARMTemplateNetwork from "./storageNetwork.json"
 import ARMTemplateDataLake from "./storageDatalake.json"
+import { applyAllowBlobPublicAccess } from "./allowBlobPublicAccess"
 import * as fs from 'fs';
 
 const path = require("path")
@@ -46,21 +47,30 @@ export class StoragePlugIn extends BaseIngredient {
             delete params["uploadPath"]
             delete params["unzip"]
 
+            // allowBlobPublicAccess is applied to the ARM template directly (it is NOT an ARM
+            // template parameter), so capture its raw recipe value and strip it from the ARM params.
+            let allowBlobPublicAccessRaw =
+                params['allowBlobPublicAccess'] === undefined ? undefined : params['allowBlobPublicAccess'].value;
+            delete params["allowBlobPublicAccess"];
+            if (allowBlobPublicAccessRaw !== undefined) {
+                this._logger.debug('allowBlobPublicAccess applied: ' + allowBlobPublicAccessRaw)
+            }
+
             // begin deployment
             if(deploy) 
             {
                 if(params['NetworkAcls'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyAllowBlobPublicAccess(ARMTemplateNetwork, allowBlobPublicAccessRaw), params, this.resourceGroup)
                     //there is a limitation around the copy function in the current architecture
                 }
                 else if(params['IsHnsEnabled'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyAllowBlobPublicAccess(ARMTemplateDataLake, allowBlobPublicAccessRaw), params, this.resourceGroup)
                 }
                 else
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplate, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyAllowBlobPublicAccess(ARMTemplate, allowBlobPublicAccessRaw), params, this.resourceGroup)
                 }
     
                 try 
