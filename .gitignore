@@ -22,3 +22,6 @@ azdevops/**/*.js
 .env
 /.devcontainer
 /_ReSharper.Caches
+
+# HCHB AI planning artifacts (kept local; this is a public repo)
+.hchbai/
