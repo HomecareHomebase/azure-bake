@@ -55,6 +55,7 @@ recipe:
 | unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 | rgOverride | no | | Specifics a resource group override for the storage account if different from the main resource group of the bake recipe. |
 | allowBlobPublicAccess | no | *(unset — property not written)* | Optional. When omitted, the account's anonymous public blob access is left unchanged (backward compatible). When `false`, deploys the account with anonymous public blob access disabled. When `true`, enables it AND stamps the approved-exception tag `allow-anonymous-blob-access = true`. |
+| allowPublicNetworkAccess | no | *(unset — tag-only stub, property not written)* | Optional (Pass-1 stub). When `true`, stamps the approved-exception tag `allow-public-network-access = true`; the `publicNetworkAccess` property itself is **not** written in this pass. When `false` or omitted, no tag and no property are written. See [Public network access](#public-network-access-pass-1-stub--tag-only). |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
@@ -86,6 +87,26 @@ recipe:
 ```
 
 > **Datalake caveat:** the datalake template (`storageDatalake.json`) pins apiVersion `2018-02-01`, which predates the GA of `allowBlobPublicAccess` (`2019-04-01`); on a datalake (`IsHnsEnabled`) recipe the property may be ignored by ARM while the tag still stamps — verify on the target apiVersion before relying on it for datalake accounts.
+
+### Public network access (Pass-1 stub — tag only)
+
+The optional `allowPublicNetworkAccess` parameter is a **forward-compatible stub**. In this pass it stamps an approved-exception tag only; it deliberately does **not** write the storage account's `publicNetworkAccess` property, so no network behavior changes yet.
+
+- **Omitted (default):** nothing is written — no tag, no property. Fully backward compatible.
+- **`false`:** no tag is stamped and no property is written (Pass-1 stub — the `publicNetworkAccess` property is deferred).
+- **`true`:** stamps the approved-exception tag `allow-public-network-access = true` on the account, marking it as a sanctioned exception to the public-network-access deny policy. Existing tags (such as `Metrics`) are preserved, and this tag co-exists with `allow-anonymous-blob-access` (the CDN case).
+
+> **Deferred enforcement:** the boolean will later map to `publicNetworkAccess` `Enabled`/`Disabled` (with private endpoints) in Feature 698027, behind the NetOps private-DNS gate (Feature 701425) — with no further recipe edit required. Setting the property before that DNS enabler exists would sever connectivity, which is why Pass 1 is tag-only.
+
+```yaml
+recipe:
+  mypkg-storage:
+    properties:
+      type: "@azbake/ingredient-storage"
+      parameters:
+        storageAccountName: "[storage.create_resource_name()]"
+        allowPublicNetworkAccess: true   # stamp the exception tag only (no property yet)
+```
 
 ## Uploading Files to Blob Storage
 
