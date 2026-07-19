@@ -9,7 +9,14 @@ export class SecretCreateConfiguration extends CreateConfiguratrionBaseValidator
 
         this.ruleFor('value')
             .notNull()
-            .notEmpty();
+            .notEmpty()
+            .when(model => !model.connectionStringFrom);
+    }
+
+    // When a connection string source is supplied the name is derived and the value is
+    // pulled at deploy time, so neither is required in the recipe.
+    protected nameRequired(model: ISecretCreateConfiguration): boolean {
+        return !model.connectionStringFrom;
     }
 }
 

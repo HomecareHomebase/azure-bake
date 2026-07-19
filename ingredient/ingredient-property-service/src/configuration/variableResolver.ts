@@ -71,11 +71,21 @@ export class VariableResolver {
         for (let propertyName of propertyNames) {
 
             const objectValue: any = instance[propertyName];
-            if (!objectValue || typeof objectValue != 'string') {
+            if (!objectValue) {
                 continue;
             }
 
-            const stringValue: string = instance[propertyName].trim();
+            // Recurse into nested objects (e.g. connectionStringFrom) so their bake expressions resolve too.
+            if (typeof objectValue == 'object' && !(objectValue instanceof Date)) {
+                await this._resolveBakeVariable(index, type, objectValue);
+                continue;
+            }
+
+            if (typeof objectValue != 'string') {
+                continue;
+            }
+
+            const stringValue: string = objectValue.trim();
             if (!stringValue || !stringValue.startsWith('[') || !stringValue.endsWith(']')) {
                 continue;
             }

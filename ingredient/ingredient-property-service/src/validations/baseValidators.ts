@@ -20,7 +20,8 @@ export abstract class CreateConfiguratrionBaseValidator<TConfiguration extends I
 
         this.ruleFor('name')
             .notNull()
-            .notEmpty();
+            .notEmpty()
+            .when(model => this.nameRequired(model));
 
         this.ruleFor('expirationDate')
             .must(Validations.BeFutureDate)
@@ -31,6 +32,12 @@ export abstract class CreateConfiguratrionBaseValidator<TConfiguration extends I
             .must((date, model) => Validations.BeLessThenExpiration(date, model.expirationDate))
             .withMessage('The active date must be less then or equal the expiration date.')
             .when(model => model.expirationDate != undefined && model.expirationDate != null && model.activeDate != undefined && model.activeDate != null);
+    }
+
+    // Allows a subclass to make the name rule conditional. Defaults to always required so
+    // existing configurations are validated exactly as before.
+    protected nameRequired(model: TConfiguration): boolean {
+        return true;
     }
 }
 

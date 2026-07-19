@@ -1,4 +1,4 @@
-import { Logger } from "@azbake/core";
+import { Logger, DeploymentContext } from "@azbake/core";
 
 import { OperationBase, PropertyOperation, SecretOperation } from ".";//, EncryptionKeyOperation, CertificateOperation } from ".";
 import { ClientFactory } from "../client";
@@ -8,10 +8,12 @@ export class OperationFactory {
 
     private readonly _logger: Logger;
     private readonly _clientFactory: ClientFactory;
+    private readonly _ctx: DeploymentContext;
 
-    public constructor(logger: Logger, clientFactory: ClientFactory) {
+    public constructor(logger: Logger, clientFactory: ClientFactory, ctx: DeploymentContext) {
         this._logger = logger;
         this._clientFactory = clientFactory;
+        this._ctx = ctx;
     }
 
     public CreateOperations(configuration: PropertyServiceConfiguration): Array<OperationBase<any, any, any>> {
@@ -24,7 +26,7 @@ export class OperationFactory {
         }
 
         if (configuration.SecretConfiguration) {
-            operations.push(new SecretOperation(this._logger, this._clientFactory.CreateSecretClient(), configuration.SecretConfiguration));
+            operations.push(new SecretOperation(this._logger, this._clientFactory.CreateSecretClient(), configuration.SecretConfiguration, this._ctx));
             this._logger.log('Loaded secret operation');
         }
 

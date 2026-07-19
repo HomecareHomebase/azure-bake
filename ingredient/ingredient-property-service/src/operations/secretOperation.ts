@@ -1,20 +1,22 @@
-import { Logger } from "@azbake/core";
+import { Logger, DeploymentContext, IngredientManager } from "@azbake/core";
 
 import { Secret, PropertyAttributes } from "../client/generated-client/models";
 
 import { OperationBase } from ".";
-import { ISecretCreateConfiguration, ISecretUpdateConfiguration, ISecretDeleteConfiguration, ISecretConfiguration } from "../configuration";
+import { ISecretCreateConfiguration, ISecretUpdateConfiguration, ISecretDeleteConfiguration, ISecretConfiguration, IConnectionStringSource } from "../configuration";
 import { SecretClient } from "../client";
 import { PropertyType } from "../propertyTypes";
 
 export class SecretOperation extends OperationBase<ISecretCreateConfiguration, ISecretUpdateConfiguration, ISecretDeleteConfiguration> {
 
     private readonly _client: SecretClient;
+    private readonly _ctx: DeploymentContext;
 
-    constructor(logger: Logger, client: SecretClient, configuration: ISecretConfiguration) {
+    constructor(logger: Logger, client: SecretClient, configuration: ISecretConfiguration, ctx: DeploymentContext) {
         super(logger, configuration)
 
         this._client = client;
+        this._ctx = ctx;
     }
 
     get TypeName(): string {
@@ -23,25 +25,58 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
 
     protected async Create(index: number, configuration: ISecretCreateConfiguration): Promise<void> {
 
+        const source: IConnectionStringSource | undefined = configuration.connectionStringFrom;
+
+        // Resolve the target name (derive from the connection-string source when not provided).
+        let name: string = configuration.name;
+        if ((!name || name === '') && source) {
+            name = this._resolveConnectionStringName(source);
+        }
+
         // Exists
-        const secret = await this._client.SearchSingle(configuration.name, configuration.selectors);
-        if (!secret) {
-            // Create
-            this.LogOperationMessage(true, 'Create', index, this.GetConfiguration(configuration.name, configuration.selectors), `Secret Not Found`);
-            await this._createSecret(index, configuration);
+        const secret = await this._client.SearchSingle(name, configuration.selectors);
+
+        // Seed-only secrets are idempotent: once the secret exists we never overwrite it, so a
+        // value owned by an out-of-band writer - key rotation (e.g. CyberArk) or a direct
+        // Conjur -> Property Service sync - is never clobbered. seedOnly defaults on whenever a
+        // connection-string source is used; literal secrets can opt in explicitly.
+        const seedOnly: boolean = configuration.seedOnly !== undefined ? configuration.seedOnly : !!source;
+        if (secret && seedOnly) {
+            this.LogOperationMessage(true, 'Create', index, this.GetIdentifier(secret.name, secret.id, secret.version), 'Secret Exists - Skipped');
             return;
         }
 
-        // Update
+        // Resolve the value, lazily pulling the connection string only when we need to write.
+        let value: string | undefined = configuration.value;
+        if (source) {
+            value = await this._resolveConnectionStringValue(source);
+            if (!value || value === '') {
+                // Non-fatal: the source resource may not exist yet (e.g. a consumer deploying
+                // ahead of the resource owner). Skip rather than fail the deployment.
+                this.LogOperationMessage(false, 'Create', index, this.GetConfiguration(name, configuration.selectors), 'Connection String Source Unavailable - Skipped');
+                return;
+            }
+        }
+
+        const resolved: ISecretCreateConfiguration = { ...configuration, name: name, value: value };
+
+        if (!secret) {
+            // Create
+            this.LogOperationMessage(true, 'Create', index, this.GetConfiguration(name, configuration.selectors), `Secret Not Found`);
+            await this._createSecret(index, resolved);
+            return;
+        }
+
+        // Update (only reached when seedOnly has been explicitly disabled)
         this.LogOperationMessage(true, 'Create', index, this.GetIdentifier(secret.name, secret.id, secret.version), 'Secret Found');
 
         const updateConfiguration: ISecretUpdateConfiguration = {
             target: {
-                name: configuration.name,
+                name: name,
                 selectors: configuration.selectors
             },
-            name: configuration.name,
-            value: configuration.value,
+            name: name,
+            value: value,
             selectors: configuration.selectors,
             contentType: configuration.contentType,
             activeDate: configuration.activeDate,
@@ -49,6 +84,31 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
         };
 
         await this._updateSecret(index, updateConfiguration, secret, 'Create');
+    }
+
+    private _resolveConnectionStringName(source: IConnectionStringSource): string {
+        const util = this._getConnectionStringUtil(source.type);
+        return util.get_connectionstring_property_name(source.account);
+    }
+
+    private async _resolveConnectionStringValue(source: IConnectionStringSource): Promise<string> {
+        const util = this._getConnectionStringUtil(source.type);
+        try {
+            return await util.get_primary_connectionstring(source.account, source.resourceGroup || null);
+        }
+        catch (error) {
+            this._logger.error(`Failed to pull connection string for '${source.account}': ${error}`);
+            return '';
+        }
+    }
+
+    private _getConnectionStringUtil(type: string): any {
+        const ns: string = type === 'cosmos' ? 'cosmosdbutils' : 'storage';
+        const util = IngredientManager.getIngredientFunction(ns, this._ctx);
+        if (!util) {
+            throw new Error(`Unable to resolve ingredient util '${ns}' for connection string seeding`);
+        }
+        return util;
     }
 
     protected async Update(index: number, configuration: ISecretUpdateConfiguration): Promise<void> {
@@ -94,7 +154,7 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
 
         const newSecret: Secret = {
             name: configuration.name,
-            value: configuration.value,
+            value: configuration.value || '',
             selectors: configuration.selectors,
             contentType: configuration.contentType,
             attributes: {
