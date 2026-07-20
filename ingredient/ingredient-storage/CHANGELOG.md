@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.8...@azbake/ingredient-storage@0.3.0) (2026-07-20)
+
+
+### Features
+
+* **ingredient-storage:** add opt-in allowBlobPublicAccess & allowPublicNetworkAccess exception-tag options ([#342](https://github.com/HomecareHomebase/azure-bake/issues/342)) ([29663f7](https://github.com/HomecareHomebase/azure-bake/commit/29663f72432e74d49fdb8b92a9ba7ac28de76ca1))
+
+
+
+
+
 ## [0.2.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.2.6...@azbake/ingredient-storage@0.2.8) (2026-07-08)
 
 
