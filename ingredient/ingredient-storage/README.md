@@ -54,8 +54,8 @@ recipe:
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
 | unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 | rgOverride | no | | Specifics a resource group override for the storage account if different from the main resource group of the bake recipe. |
-| allowBlobPublicAccess | no | *(unset — property not written)* | Optional. When omitted, the account's anonymous public blob access is left unchanged (backward compatible). When `false`, deploys the account with anonymous public blob access disabled. When `true`, enables it AND stamps the approved-exception tag `allow-anonymous-blob-access = true`. |
-| allowPublicNetworkAccess | no | *(unset — tag-only stub, property not written)* | Optional (Pass-1 stub). When `true`, stamps the approved-exception tag `allow-public-network-access = true`; the `publicNetworkAccess` property itself is **not** written in this pass. When `false` or omitted, no tag and no property are written. See [Public network access](#public-network-access-pass-1-stub--tag-only). |
+| allowBlobPublicAccess | no | *(unset — property not written)* | Optional. When omitted, the account's anonymous public blob access is left unchanged (backward compatible). When `false`, deploys the account with anonymous public blob access disabled. When `true`, enables it AND stamps the approved-exception tag `hchb-policy-exempt-anon-blob = true`. |
+| allowPublicNetworkAccess | no | *(unset — tag-only stub, property not written)* | Optional (Pass-1 stub). When `true`, stamps the approved-exception tag `hchb-policy-exempt-public-network = true`; the `publicNetworkAccess` property itself is **not** written in this pass. When `false` or omitted, no tag and no property are written. See [Public network access](#public-network-access-pass-1-stub--tag-only). |
 
 | variable |required|default|description|
 |---------|--------|-----------|-----------|
@@ -74,7 +74,7 @@ The optional `allowBlobPublicAccess` parameter controls whether the storage acco
 
 - **Omitted (default):** the property is not written to the ARM template, so the account's current anonymous-access setting is left unchanged. Existing recipes and deployments are unaffected — this is fully backward compatible.
 - **`false`:** deploys the account with anonymous public blob access **disabled**. This blocks only anonymous readers; it never affects applications that authenticate with an account key, SAS token, or Azure AD (AAD) identity — those continue to work exactly as before.
-- **`true`:** allows anonymous public blob access to be configured (actual anonymous reads still depend on each container's public-access level) **and** stamps the approved-exception tag `allow-anonymous-blob-access = true` on the account, marking it as a sanctioned exception to the anonymous-blob deny policy. Existing tags (such as `Metrics`) are preserved.
+- **`true`:** allows anonymous public blob access to be configured (actual anonymous reads still depend on each container's public-access level) **and** stamps the approved-exception tag `hchb-policy-exempt-anon-blob = true` on the account, marking it as a sanctioned exception to the anonymous-blob deny policy. Existing tags (such as `Metrics`) are preserved.
 
 ```yaml
 recipe:
@@ -94,7 +94,7 @@ The optional `allowPublicNetworkAccess` parameter is a **forward-compatible stub
 
 - **Omitted (default):** nothing is written — no tag, no property. Fully backward compatible.
 - **`false`:** no tag is stamped and no property is written (Pass-1 stub — the `publicNetworkAccess` property is deferred).
-- **`true`:** stamps the approved-exception tag `allow-public-network-access = true` on the account, marking it as a sanctioned exception to the public-network-access deny policy. Existing tags (such as `Metrics`) are preserved, and this tag co-exists with `allow-anonymous-blob-access` (the CDN case).
+- **`true`:** stamps the approved-exception tag `hchb-policy-exempt-public-network = true` on the account, marking it as a sanctioned exception to the public-network-access deny policy. Existing tags (such as `Metrics`) are preserved, and this tag co-exists with `hchb-policy-exempt-anon-blob` (the CDN case).
 
 > **Deferred enforcement:** the boolean will later map to `publicNetworkAccess` `Enabled`/`Disabled` (with private endpoints) in Feature 698027, behind the NetOps private-DNS gate (Feature 701425) — with no further recipe edit required. Setting the property before that DNS enabler exists would sever connectivity, which is why Pass 1 is tag-only.
 
