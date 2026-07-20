@@ -7,6 +7,7 @@ import { StorageUtils } from "./functions.js";
 import { StorageSharedKeyCredential, BlobServiceClient, ContainerClient } from "@azure/storage-blob"
 import ARMTemplateNetwork from "./storageNetwork.json"
 import ARMTemplateDataLake from "./storageDatalake.json"
+import { extractStorageTemplateOptions, applyStorageTemplateOptions } from "./storageTemplateOptions"
 import * as fs from 'fs';
 
 const path = require("path")
@@ -46,21 +47,27 @@ export class StoragePlugIn extends BaseIngredient {
             delete params["uploadPath"]
             delete params["unzip"]
 
+            // Template-applied options (tags/properties set on the ARM template directly
+            // rather than passed as ARM parameters). Capture and strip them from the ARM
+            // params so they don't trip ARM's "parameter not defined in template" validation.
+            let templateOptions = extractStorageTemplateOptions(params);
+            templateOptions.forEach((raw, param) => this._logger.debug(`${param} applied: ${raw}`));
+
             // begin deployment
             if(deploy) 
             {
                 if(params['NetworkAcls'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateNetwork, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyStorageTemplateOptions(ARMTemplateNetwork, templateOptions), params, this.resourceGroup)
                     //there is a limitation around the copy function in the current architecture
                 }
                 else if(params['IsHnsEnabled'])
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplateDataLake, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyStorageTemplateOptions(ARMTemplateDataLake, templateOptions), params, this.resourceGroup)
                 }
                 else
                 {
-                    await helper.DeployTemplate(this._name, ARMTemplate, params, this.resourceGroup)
+                    await helper.DeployTemplate(this._name, applyStorageTemplateOptions(ARMTemplate, templateOptions), params, this.resourceGroup)
                 }
     
                 try 
