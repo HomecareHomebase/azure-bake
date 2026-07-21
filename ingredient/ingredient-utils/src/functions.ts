@@ -144,38 +144,17 @@ export class CoreUtils extends BaseUtility {
         return this._create_resource_name(resType, name, rgn, suffix)
     }
 
-    // Returns the environment/region independent form of a resource name by stripping the
-    // leading environment code (and region code when useRegionCode is true) that
-    // create_resource_name prepends. The strip is guarded with startsWith so names that do
-    // not follow the bake naming convention are returned unchanged.
-    public canonical_resource_name(resourceName: string, useRegionCode: boolean = true): string {
+    // Returns the environment-independent form of a resource name by stripping the leading
+    // environment code that create_resource_name prepends. Any region code is intentionally
+    // retained so per-region resources (e.g. active/active or active/passive accounts) map to
+    // distinct names instead of colliding on one. The strip is guarded with startsWith so names
+    // that do not follow the bake naming convention are returned unchanged.
+    public canonical_resource_name(resourceName: string): string {
         const env = (this.context.Environment.environmentCode || "").toLocaleLowerCase()
         let name = (resourceName || "").toLocaleLowerCase()
 
         if (env && name.startsWith(env))
             name = name.substring(env.length)
-
-        if (useRegionCode) {
-            // Strip whichever of the environment's region codes this name carries - not just the
-            // region currently deploying - so the canonical name is identical regardless of which
-            // region runs the operation. The current region is tried first (the common case, an
-            // exact match) and the rest are ordered longest-first, so a shorter code that is a
-            // prefix of another (e.g. "eus" vs "eusc") never causes a partial strip.
-            const current = (this.context.Region.code || "").toLocaleLowerCase()
-            const others = (this.context.Environment.regions || [])
-                .map(r => (r.code || "").toLocaleLowerCase())
-                .filter(c => c.length > 0 && c !== current)
-                .sort((a, b) => b.length - a.length)
-
-            const codes = current ? [current, ...others] : others
-
-            for (const code of codes) {
-                if (name.startsWith(code)) {
-                    name = name.substring(code.length)
-                    break
-                }
-            }
-        }
 
         return name
     }

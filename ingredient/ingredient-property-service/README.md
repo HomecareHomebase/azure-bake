@@ -565,10 +565,13 @@ the value. Supply a `connectionStringFrom` source:
 
 Behavior:
 
-* The secret **name** is derived from the account name and is **environment/region independent**
-  (the `dev`/`prd` prefix and any region code are stripped), so every consumer of the same
-  account - and any rotation automation - agree on a single name such as `stexpl-connectionstring`.
-  You may still supply an explicit `name` to override this.
+* The secret **name** is derived from the account name and is **environment independent** (the
+  `dev`/`prd` prefix is stripped), so every consumer of the same account - and any rotation
+  automation - agree on a single name such as `stexpl-connectionstring`. Any **region code in the
+  account name is retained**, so per-region accounts (e.g. active/active or active/passive) map to
+  **distinct** secrets (`euscosmsexpl-connectionstring`, `wuscosmsexpl-connectionstring`) rather
+  than colliding on one. You may still supply an explicit `name` to override the derived name -
+  for example to converge a single globally-distributed account onto one region-independent name.
 * Because it is a `seed`, once the secret exists the operation is a **no-op** - the key is never
   re-read and an existing value (for example one managed by a rotation process) is never
   overwritten. The first deployment seeds it; later deployments, including those of other
@@ -576,6 +579,12 @@ Behavior:
 * The connection string is pulled **lazily**, only when the secret needs to be seeded. If the
   source account cannot be read yet (for example a consumer deploying ahead of the resource
   owner), the operation is skipped rather than failing the deployment.
+
+The example below gates the seed with `condition: "[coreutils.current_region_primary()]"`, so it
+runs once from the primary region for a single account. For **active/active or active/passive**
+topologies with a separate account per region, **omit that condition** so the seed runs in each
+region - each region seeds its own account under its own region-qualified name, keeping both
+connection strings available.
 
 ~~~yaml
 name: Package Example
