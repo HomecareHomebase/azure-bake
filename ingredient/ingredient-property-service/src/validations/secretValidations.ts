@@ -34,6 +34,14 @@ export class SecretSeedConfiguration extends CreateConfiguratrionBaseValidator<I
             .must(source => !source || source.type === 'storage' || source.type === 'cosmos')
             .withMessage("connectionStringFrom.type must be 'storage' or 'cosmos'.")
             .when(model => !!model.connectionStringFrom);
+
+        // The account is required to derive the secret name and pull the connection string.
+        // Without it the name derives to a meaningless value and the seed silently skips, so
+        // fail validation with a clear message instead.
+        this.ruleFor('connectionStringFrom')
+            .must(source => !source || (typeof source.account === 'string' && source.account.trim().length > 0))
+            .withMessage('connectionStringFrom.account is required.')
+            .when(model => !!model.connectionStringFrom);
     }
 
     // When a connection string source is supplied the name is derived and the value is

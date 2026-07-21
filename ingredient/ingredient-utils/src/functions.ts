@@ -158,12 +158,16 @@ export class CoreUtils extends BaseUtility {
         if (useRegionCode) {
             // Strip whichever of the environment's region codes this name carries - not just the
             // region currently deploying - so the canonical name is identical regardless of which
-            // region runs the operation. Longest code first avoids a partial strip when one code
-            // is a prefix of another (e.g. "eus" vs "eus2").
-            const codes = (this.context.Environment.regions || [])
+            // region runs the operation. The current region is tried first (the common case, an
+            // exact match) and the rest are ordered longest-first, so a shorter code that is a
+            // prefix of another (e.g. "eus" vs "eusc") never causes a partial strip.
+            const current = (this.context.Region.code || "").toLocaleLowerCase()
+            const others = (this.context.Environment.regions || [])
                 .map(r => (r.code || "").toLocaleLowerCase())
-                .filter(c => c.length > 0)
+                .filter(c => c.length > 0 && c !== current)
                 .sort((a, b) => b.length - a.length)
+
+            const codes = current ? [current, ...others] : others
 
             for (const code of codes) {
                 if (name.startsWith(code)) {
