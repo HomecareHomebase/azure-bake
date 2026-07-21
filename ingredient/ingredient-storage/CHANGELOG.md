@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.4.0...@azbake/ingredient-storage@0.5.0) (2026-07-21)
+
+
+### Features
+
+* **property-service:** add keyFrom seed source for storage/cosmos primary keys ([#344](https://github.com/HomecareHomebase/azure-bake/issues/344)) ([2250c0d](https://github.com/HomecareHomebase/azure-bake/commit/2250c0d24a29e1efbcc109d55f0cca0ec541e67e))
+
+
+
+
+
 # [0.4.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.3.0...@azbake/ingredient-storage@0.4.0) (2026-07-21)
 
 
