@@ -5,10 +5,16 @@ export interface IConnectionStringSource {
     account: string,
     resourceGroup?: string
 }
+export interface IKeySource {
+    type: 'storage' | 'cosmos',
+    account: string,
+    resourceGroup?: string
+}
 export interface ISecretCreateConfiguration extends ICreateConfiguration {
     value?: string,
     contentType?: string,
-    connectionStringFrom?: IConnectionStringSource
+    connectionStringFrom?: IConnectionStringSource,
+    keyFrom?: IKeySource
 }
 export interface ISecretUpdateConfiguration extends IUpdateConfiguration {
     value?: string,

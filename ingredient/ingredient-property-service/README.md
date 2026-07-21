@@ -548,8 +548,9 @@ direct `Conjur -> Property Service` sync.
 
 `seed` accepts the same fields as `create` (`name`, `value`, `selectors`, `contentType`,
 `expirationDate`, `activeDate`), so a literal value can be seeded in the standard way. It also
-supports `connectionStringFrom` (secret only) for sourcing a Storage or Cosmos connection string.
-`connectionStringFrom` is valid only under `seed`, not `create`.
+supports `connectionStringFrom` and `keyFrom` (secret only) for sourcing a Storage or Cosmos
+connection string or primary key. Both are valid only under `seed`, not `create`, and are
+mutually exclusive on a single entry.
 
 #### Seeding a Storage or Cosmos Connection String
 
@@ -620,6 +621,32 @@ recipe:
               # name auto-derives to stexpl-connectionstring
     dependsOn:
       - expl-storage
+~~~
+
+#### Seeding a Storage or Cosmos Primary Key
+
+When a consumer needs the raw account **primary key** rather than a full connection string, use
+`keyFrom` instead of `connectionStringFrom`. It behaves identically - the name is derived, the
+value is pulled lazily, and the seed is a non-clobbering no-op once the secret exists - but the
+seeded value is the account's primary key (`storage.get_primary_key` / `cosmosdbutils.get_primary_key`).
+
+| Property        | Data Type | Required | Description |
+|-----------------|:----------|:--------:|:------------------------------------------------------|
+| `type`          | String    | X        | `storage` or `cosmos`. |
+| `account`       | String    | X        | The account resource name (e.g. the value of `storage.create_resource_name()`). |
+| `resourceGroup` | String    |          | Optional resource group override for the account. |
+
+The derived secret **name** is the environment-independent account name with a `-key` suffix
+(e.g. `stexpl-key`), following the same env-strip / region-retain rules as `connectionStringFrom`.
+`connectionStringFrom` and `keyFrom` are mutually exclusive on a single `seed` entry.
+
+~~~yaml
+        secrets:
+          seed:
+            - keyFrom:
+                type: storage
+                account: "[coreutils.variable('storageAccountName')]"
+              # name auto-derives to stexpl-key
 ~~~
 
 #### Seeding a Conjur-backed Pipeline Secret

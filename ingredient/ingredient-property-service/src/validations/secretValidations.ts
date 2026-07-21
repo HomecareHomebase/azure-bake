@@ -15,6 +15,11 @@ export class SecretCreateConfiguration extends CreateConfiguratrionBaseValidator
         this.ruleFor('connectionStringFrom')
             .must(source => source == null || source == undefined)
             .withMessage("connectionStringFrom is only supported under 'seed'.");
+
+        // keyFrom is seed-once by nature and is only supported under 'seed'.
+        this.ruleFor('keyFrom')
+            .must(source => source == null || source == undefined)
+            .withMessage("keyFrom is only supported under 'seed'.");
     }
 }
 
@@ -25,7 +30,14 @@ export class SecretSeedConfiguration extends CreateConfiguratrionBaseValidator<I
         this.ruleFor('value')
             .notNull()
             .notEmpty()
-            .when(model => !model.connectionStringFrom);
+            .when(model => !model.connectionStringFrom && !model.keyFrom);
+
+        // A seed entry sources its value from at most one place. connectionStringFrom and
+        // keyFrom are mutually exclusive - both set would be ambiguous.
+        this.ruleFor('keyFrom')
+            .must((source, model) => !(model.connectionStringFrom && model.keyFrom))
+            .withMessage("Specify only one of 'connectionStringFrom' or 'keyFrom'.")
+            .when(model => !!model.keyFrom);
 
         // When a connection string source is supplied, its type must be a supported kind. TS
         // guards recipe authors, but this catches YAML typos with an actionable error instead
@@ -42,12 +54,23 @@ export class SecretSeedConfiguration extends CreateConfiguratrionBaseValidator<I
             .must(source => !source || (typeof source.account === 'string' && source.account.trim().length > 0))
             .withMessage('connectionStringFrom.account is required.')
             .when(model => !!model.connectionStringFrom);
+
+        // Same guards for keyFrom: supported type and a non-empty account.
+        this.ruleFor('keyFrom')
+            .must(source => !source || source.type === 'storage' || source.type === 'cosmos')
+            .withMessage("keyFrom.type must be 'storage' or 'cosmos'.")
+            .when(model => !!model.keyFrom);
+
+        this.ruleFor('keyFrom')
+            .must(source => !source || (typeof source.account === 'string' && source.account.trim().length > 0))
+            .withMessage('keyFrom.account is required.')
+            .when(model => !!model.keyFrom);
     }
 
-    // When a connection string source is supplied the name is derived and the value is
+    // When a connection string or key source is supplied the name is derived and the value is
     // pulled at deploy time, so neither is required in the recipe.
     protected nameRequired(model: ISecretCreateConfiguration): boolean {
-        return !model.connectionStringFrom;
+        return !model.connectionStringFrom && !model.keyFrom;
     }
 }
 
