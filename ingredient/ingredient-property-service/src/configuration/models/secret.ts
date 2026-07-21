@@ -1,8 +1,14 @@
 import { ICreateConfiguration, IDeleteVersionedConfiguration, IUpdateConfiguration, IOperationConfiguration } from './baseConfigurations';
 
+export interface IConnectionStringSource {
+    type: 'storage' | 'cosmos',
+    account: string,
+    resourceGroup?: string
+}
 export interface ISecretCreateConfiguration extends ICreateConfiguration {
-    value: string,
-    contentType?: string
+    value?: string,
+    contentType?: string,
+    connectionStringFrom?: IConnectionStringSource
 }
 export interface ISecretUpdateConfiguration extends IUpdateConfiguration {
     value?: string,

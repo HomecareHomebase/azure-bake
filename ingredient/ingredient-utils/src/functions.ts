@@ -144,6 +144,21 @@ export class CoreUtils extends BaseUtility {
         return this._create_resource_name(resType, name, rgn, suffix)
     }
 
+    // Returns the environment-independent form of a resource name by stripping the leading
+    // environment code that create_resource_name prepends. Any region code is intentionally
+    // retained so per-region resources (e.g. active/active or active/passive accounts) map to
+    // distinct names instead of colliding on one. The strip is guarded with startsWith so names
+    // that do not follow the bake naming convention are returned unchanged.
+    public canonical_resource_name(resourceName: string): string {
+        const env = (this.context.Environment.environmentCode || "").toLocaleLowerCase()
+        let name = (resourceName || "").toLocaleLowerCase()
+
+        if (env && name.startsWith(env))
+            name = name.substring(env.length)
+
+        return name
+    }
+
     private _create_resource_name(resType: string, name: string | null = null, rgn: string, suffix: string = ""): string {
         let env = this.context.Environment.environmentCode
         let pkg = this.context.Config.shortName

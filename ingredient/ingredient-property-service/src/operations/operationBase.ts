@@ -16,14 +16,28 @@ export abstract class OperationBase<TCreate extends ICreateConfiguration, TUpdat
     abstract get TypeName(): string
 
     public async Execute(): Promise<void> {
+        await this._seedImpl()
         await this._createImpl()
         await this._updateImpl()
         await this._deleteImpl()
     }
 
+    protected abstract Seed(index: number, configuration: TCreate): Promise<void>
     protected abstract Create(index: number, configuration: TCreate): Promise<void>
     protected abstract Update(index: number, configuration: TUpdate): Promise<void>
     protected abstract Delete(index: number, configuration: TDelete): Promise<void>
+
+    private async _seedImpl(): Promise<void> {
+
+        const config: TCreate[] | undefined = this._configuration.seed;
+
+        if (!config || config.length == 0) {
+            return;
+        }
+        for (let index = 0; index < config.length; index++) {
+            await this.Seed(index, config[index]);
+        }
+    }
 
     private async _createImpl(): Promise<void> {
 

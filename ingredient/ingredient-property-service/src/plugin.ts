@@ -52,7 +52,7 @@ export class PropertyServicePlugIn extends BaseIngredient {
 
         this._logger.log('Begin loading operations'.cyan);
 
-        const operationFactory: OperationFactory = new OperationFactory(this._logger, clientFactory);
+        const operationFactory: OperationFactory = new OperationFactory(this._logger, clientFactory, this._ctx);
         const operations: Array<OperationBase<any, any, any>> = operationFactory.CreateOperations(configuration);
 
         if (operations.length == 0) {

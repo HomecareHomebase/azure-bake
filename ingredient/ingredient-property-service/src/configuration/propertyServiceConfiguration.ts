@@ -40,7 +40,10 @@ export class PropertyServiceConfiguration {
     }
 
     public get PropertyCount(): number {
-        return this.PropertyCreateCount + this.PropertyUpdateCount + this.PropertyDeleteCount
+        return this.PropertySeedCount + this.PropertyCreateCount + this.PropertyUpdateCount + this.PropertyDeleteCount
+    }
+    public get PropertySeedCount(): number {
+        return (this._properties == null || this._properties.seed == null) ? 0 : this._properties.seed.length;
     }
     public get PropertyCreateCount(): number {
         return (this._properties == null || this._properties.create == null) ? 0 : this._properties.create.length;
@@ -53,7 +56,10 @@ export class PropertyServiceConfiguration {
     }
 
     public get SecretCount(): number {
-        return this.SecretCreateCount + this.SecretUpdateCount + this.SecretDeleteCount
+        return this.SecretSeedCount + this.SecretCreateCount + this.SecretUpdateCount + this.SecretDeleteCount
+    }
+    public get SecretSeedCount(): number {
+        return (this._secrets == null || this._secrets.seed == null) ? 0 : this._secrets.seed.length;
     }
     public get SecretCreateCount(): number {
         return (this._secrets == null || this._secrets.create == null) ? 0 : this._secrets.create.length;

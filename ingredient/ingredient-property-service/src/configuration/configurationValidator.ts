@@ -55,6 +55,9 @@ export class ConfigurationValidator {
             return false;
         }
 
+        if (errors.seed) {
+            this._logger.error(`${StringUtils.ToTitleCase(type)} seed configuration: Errors: ${JSON.stringify(errors.seed)}`)
+        }
         if (errors.create) {
             this._logger.error(`${StringUtils.ToTitleCase(type)} create configuration: Errors: ${JSON.stringify(errors.create)}`)
         }

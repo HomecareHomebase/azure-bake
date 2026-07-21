@@ -23,6 +23,14 @@ export class StorageUtils extends BaseUtility {
         return st_profile;
     }
 
+    // Environment-independent Property Service secret name for a storage account connection
+    // string. Storage account names carry no region code, so the canonical name is simply the
+    // account name with the environment prefix stripped.
+    public get_connectionstring_property_name(account: string): string {
+        let util = IngredientManager.getIngredientFunction("coreutils", this.context)
+        return util.canonical_resource_name(account) + "-connectionstring"
+    }
+
     public async get_primary_key(name: string, rg: string | null = null) : Promise<string> {
      
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)

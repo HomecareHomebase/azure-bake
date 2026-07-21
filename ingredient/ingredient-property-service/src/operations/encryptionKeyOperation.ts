@@ -20,6 +20,18 @@
 //         return 'EncryptionKey';
 //     }
 
+//     protected async Seed(index: number, configuration: IEncryptionKeyCreateConfiguration): Promise<void> {
+
+//         // Seed writes once: create only when the encryptionkey does not already exist.
+//         let encryptionKey = await this._client.SearchSingle(configuration.name, configuration.selectors);
+//         if (encryptionKey) {
+//             this.LogOperationMessage(true, 'Seed', index, this.GetIdentifier(encryptionKey.name, encryptionKey.id, encryptionKey.version), 'The encryptionkey already exists.');
+//             return;
+//         }
+
+//         await this._createEncryptionKey(index, configuration);
+//     }
+
 //     protected async Create(index: number, configuration: IEncryptionKeyCreateConfiguration): Promise<void> {
 
 //         // Exists

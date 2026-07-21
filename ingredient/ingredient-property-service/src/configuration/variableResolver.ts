@@ -22,12 +22,14 @@ export class VariableResolver {
         this._logger.log('Begin resolving bake variables'.cyan);
 
         if (configuration.PropertyConfiguration) {
+            await this._enumerateAndResolveBakeVariables('properties.seed', configuration.PropertyConfiguration.seed);
             await this._enumerateAndResolveBakeVariables('properties.create', configuration.PropertyConfiguration.create);
             await this._enumerateAndResolveBakeVariables('properties.update', configuration.PropertyConfiguration.update);
             await this._enumerateAndResolveBakeVariables('properties.delete', configuration.PropertyConfiguration.delete);
         }
 
         if (configuration.SecretConfiguration) {
+            await this._enumerateAndResolveBakeVariables('secrets.seed', configuration.SecretConfiguration.seed);
             await this._enumerateAndResolveBakeVariables('secrets.create', configuration.SecretConfiguration.create);
             await this._enumerateAndResolveBakeVariables('secrets.update', configuration.SecretConfiguration.update);
             await this._enumerateAndResolveBakeVariables('secrets.delete', configuration.SecretConfiguration.delete);
@@ -71,11 +73,21 @@ export class VariableResolver {
         for (let propertyName of propertyNames) {
 
             const objectValue: any = instance[propertyName];
-            if (!objectValue || typeof objectValue != 'string') {
+            if (!objectValue) {
                 continue;
             }
 
-            const stringValue: string = instance[propertyName].trim();
+            // Recurse into nested objects (e.g. connectionStringFrom) so their bake expressions resolve too.
+            if (typeof objectValue == 'object' && !(objectValue instanceof Date)) {
+                await this._resolveBakeVariable(index, type, objectValue);
+                continue;
+            }
+
+            if (typeof objectValue != 'string') {
+                continue;
+            }
+
+            const stringValue: string = objectValue.trim();
             if (!stringValue || !stringValue.startsWith('[') || !stringValue.endsWith(']')) {
                 continue;
             }

@@ -17,6 +17,8 @@
 //         return 'Certificate';
 //     }
 
+//     protected async Seed(index: number, configuration: ICertificateCreateConfiguration): Promise<void> {
+//     }
 //     protected async Create(index: number, configuration: ICertificateCreateConfiguration): Promise<void> {
 //     }
 //     protected async Update(index: number, configuration: ICertificateUpdateConfiguration): Promise<void> {
