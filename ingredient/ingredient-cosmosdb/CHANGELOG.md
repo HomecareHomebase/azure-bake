@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.13...@azbake/ingredient-cosmosdb@0.1.0) (2026-07-21)
+
+
+### Features
+
+* **property-service:** seed storage/cosmos connection strings via connectionStringFrom (seed-only, canonical name) ([#343](https://github.com/HomecareHomebase/azure-bake/issues/343)) ([780ec8b](https://github.com/HomecareHomebase/azure-bake/commit/780ec8b7f9de9f828d6e115fb5139c560dcefebe))
+
+
+
+
+
 ## [0.0.13](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.0.12...@azbake/ingredient-cosmosdb@0.0.13) (2024-07-25)
 
 **Note:** Version bump only for package @azbake/ingredient-cosmosdb
