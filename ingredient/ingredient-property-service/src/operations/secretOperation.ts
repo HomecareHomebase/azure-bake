@@ -3,7 +3,7 @@ import { Logger, DeploymentContext, IngredientManager } from "@azbake/core";
 import { Secret, PropertyAttributes } from "../client/generated-client/models";
 
 import { OperationBase } from ".";
-import { ISecretCreateConfiguration, ISecretUpdateConfiguration, ISecretDeleteConfiguration, ISecretConfiguration, IConnectionStringSource } from "../configuration";
+import { ISecretCreateConfiguration, ISecretUpdateConfiguration, ISecretDeleteConfiguration, ISecretConfiguration, IConnectionStringSource, IKeySource } from "../configuration";
 import { SecretClient } from "../client";
 import { PropertyType } from "../propertyTypes";
 
@@ -25,12 +25,20 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
 
     protected async Seed(index: number, configuration: ISecretCreateConfiguration): Promise<void> {
 
-        const source: IConnectionStringSource | undefined = configuration.connectionStringFrom;
+        // A seed entry may source its value from a resource: a full connection string
+        // (connectionStringFrom) or the account's primary key (keyFrom). At most one is set.
+        const connectionStringSource: IConnectionStringSource | undefined = configuration.connectionStringFrom;
+        const keySource: IKeySource | undefined = configuration.keyFrom;
 
-        // Resolve the target name (derive from the connection-string source when not provided).
+        // Resolve the target name (derive from the source when not provided).
         let name: string = configuration.name;
-        if ((!name || name === '') && source) {
-            name = this._resolveConnectionStringName(source);
+        if (!name || name === '') {
+            if (connectionStringSource) {
+                name = this._resolveConnectionStringName(connectionStringSource);
+            }
+            else if (keySource) {
+                name = this._resolveKeyName(keySource);
+            }
         }
 
         // Seed is idempotent: once the secret exists we never overwrite it, so a value owned by
@@ -43,14 +51,17 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
             return;
         }
 
-        // Resolve the value, lazily pulling the connection string only when we need to write.
+        // Resolve the value, lazily pulling from the source only when we need to write.
         let value: string | undefined = configuration.value;
-        if (source) {
-            value = await this._resolveConnectionStringValue(source);
+        if (connectionStringSource || keySource) {
+            const label: string = keySource ? 'Key' : 'Connection String';
+            value = connectionStringSource
+                ? await this._resolveConnectionStringValue(connectionStringSource)
+                : await this._resolveKeyValue(keySource!);
             if (!value || value === '') {
                 // Non-fatal: the source resource may not exist yet (e.g. a consumer deploying
                 // ahead of the resource owner). Skip rather than fail the deployment.
-                this.LogOperationMessage(false, 'Seed', index, this.GetConfiguration(name, configuration.selectors), 'Connection String Source Unavailable - Skipped');
+                this.LogOperationMessage(false, 'Seed', index, this.GetConfiguration(name, configuration.selectors), `${label} Source Unavailable - Skipped`);
                 return;
             }
         }
@@ -93,12 +104,12 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
     }
 
     private _resolveConnectionStringName(source: IConnectionStringSource): string {
-        const util = this._getConnectionStringUtil(source.type);
+        const util = this._getSourceUtil(source.type);
         return util.get_connectionstring_property_name(source.account);
     }
 
     private async _resolveConnectionStringValue(source: IConnectionStringSource): Promise<string> {
-        const util = this._getConnectionStringUtil(source.type);
+        const util = this._getSourceUtil(source.type);
         try {
             return await util.get_primary_connectionstring(source.account, source.resourceGroup || null);
         }
@@ -108,7 +119,23 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
         }
     }
 
-    private _getConnectionStringUtil(type: string): any {
+    private _resolveKeyName(source: IKeySource): string {
+        const util = this._getSourceUtil(source.type);
+        return util.get_key_property_name(source.account);
+    }
+
+    private async _resolveKeyValue(source: IKeySource): Promise<string> {
+        const util = this._getSourceUtil(source.type);
+        try {
+            return await util.get_primary_key(source.account, source.resourceGroup || null);
+        }
+        catch (error) {
+            this._logger.error(`Failed to pull primary key for '${source.account}': ${error}`);
+            return '';
+        }
+    }
+
+    private _getSourceUtil(type: string): any {
         const ns: string = type === 'cosmos' ? 'cosmosdbutils' : 'storage';
         const util = IngredientManager.getIngredientFunction(ns, this._ctx);
         if (!util) {
