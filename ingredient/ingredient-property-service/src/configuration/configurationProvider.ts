@@ -41,13 +41,13 @@ export class ConfigurationProvider {
         if (configuration.PropertyConfiguration && configuration.PropertyConfiguration.delete) {
             this._resolveSearchOperator(configuration.PropertyConfiguration.delete);
         }
-        this._logger.log(`Loaded Property Configuration: [${configuration.PropertyCount}] Create: ${configuration.PropertyCreateCount}, Update: ${configuration.PropertyUpdateCount},  Delete: ${configuration.PropertyDeleteCount}`);
+        this._logger.log(`Loaded Property Configuration: [${configuration.PropertyCount}] Seed: ${configuration.PropertySeedCount}, Create: ${configuration.PropertyCreateCount}, Update: ${configuration.PropertyUpdateCount},  Delete: ${configuration.PropertyDeleteCount}`);
 
         configuration.SecretConfiguration = await this._resolver.GetPropertyByType<ISecretConfiguration>('secrets');
         if (configuration.SecretConfiguration && configuration.SecretConfiguration.delete) {
             this._resolveSearchOperator(configuration.SecretConfiguration.delete);
         }
-        this._logger.log(`Loaded Secret Configuration: [${configuration.SecretCount}] Create: ${configuration.SecretCreateCount}, Update: ${configuration.SecretUpdateCount},  Delete: ${configuration.SecretDeleteCount}`);
+        this._logger.log(`Loaded Secret Configuration: [${configuration.SecretCount}] Seed: ${configuration.SecretSeedCount}, Create: ${configuration.SecretCreateCount}, Update: ${configuration.SecretUpdateCount},  Delete: ${configuration.SecretDeleteCount}`);
 
         // configuration.EncryptionKeyConfiguration = await this._resolver.GetPropertyByType<IEncryptionKeyConfiguration>('encryptionKeys');
         // if (configuration.EncryptionKeyConfiguration && configuration.EncryptionKeyConfiguration.delete) {

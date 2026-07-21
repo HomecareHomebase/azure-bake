@@ -32,6 +32,9 @@ export interface IDeleteVersionedConfiguration extends IDeleteConfiguration {
 
 export interface IOperationConfiguration<TCreate extends ICreateConfiguration,
     TUpdate extends IUpdateConfiguration, TDelete extends IDeleteConfiguration> {
+    // Seed writes a value once and is a no-op on every later deployment. It shares the create
+    // configuration shape, so name/value/selectors/contentType/dates all apply.
+    seed?: Array<TCreate>
     create?: Array<TCreate>
     update?: Array<TUpdate>
     delete?: Array<TDelete>

@@ -8,8 +8,7 @@ export interface IConnectionStringSource {
 export interface ISecretCreateConfiguration extends ICreateConfiguration {
     value?: string,
     contentType?: string,
-    connectionStringFrom?: IConnectionStringSource,
-    seedOnly?: boolean
+    connectionStringFrom?: IConnectionStringSource
 }
 export interface ISecretUpdateConfiguration extends IUpdateConfiguration {
     value?: string,

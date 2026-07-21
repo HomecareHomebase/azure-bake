@@ -22,12 +22,14 @@ export class VariableResolver {
         this._logger.log('Begin resolving bake variables'.cyan);
 
         if (configuration.PropertyConfiguration) {
+            await this._enumerateAndResolveBakeVariables('properties.seed', configuration.PropertyConfiguration.seed);
             await this._enumerateAndResolveBakeVariables('properties.create', configuration.PropertyConfiguration.create);
             await this._enumerateAndResolveBakeVariables('properties.update', configuration.PropertyConfiguration.update);
             await this._enumerateAndResolveBakeVariables('properties.delete', configuration.PropertyConfiguration.delete);
         }
 
         if (configuration.SecretConfiguration) {
+            await this._enumerateAndResolveBakeVariables('secrets.seed', configuration.SecretConfiguration.seed);
             await this._enumerateAndResolveBakeVariables('secrets.create', configuration.SecretConfiguration.create);
             await this._enumerateAndResolveBakeVariables('secrets.update', configuration.SecretConfiguration.update);
             await this._enumerateAndResolveBakeVariables('secrets.delete', configuration.SecretConfiguration.delete);

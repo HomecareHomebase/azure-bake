@@ -9,6 +9,21 @@ export class SecretCreateConfiguration extends CreateConfiguratrionBaseValidator
 
         this.ruleFor('value')
             .notNull()
+            .notEmpty();
+
+        // connectionStringFrom is seed-once by nature and is only supported under 'seed'.
+        this.ruleFor('connectionStringFrom')
+            .must(source => source == null || source == undefined)
+            .withMessage("connectionStringFrom is only supported under 'seed'.");
+    }
+}
+
+export class SecretSeedConfiguration extends CreateConfiguratrionBaseValidator<ISecretCreateConfiguration> {
+    constructor() {
+        super();
+
+        this.ruleFor('value')
+            .notNull()
             .notEmpty()
             .when(model => !model.connectionStringFrom);
     }
@@ -36,6 +51,7 @@ export class SecretConfigurationValidator extends Validator<ISecretConfiguration
     constructor() {
         super();
 
+        this.ruleForEach('seed').setValidator(() => new SecretSeedConfiguration())
         this.ruleForEach('create').setValidator(() => new SecretCreateConfiguration())
         this.ruleForEach('update').setValidator(() => new SecretUpdateConfiguration());
         this.ruleForEach('delete').setValidator(() => new SecretDeleteConfiguration());

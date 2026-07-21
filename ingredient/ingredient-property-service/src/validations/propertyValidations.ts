@@ -29,6 +29,7 @@ export class PropertyConfigurationValidator extends Validator<IPropertyConfigura
     constructor() {
         super();
 
+        this.ruleForEach('seed').setValidator(() => new PropertyCreateConfiguration())
         this.ruleForEach('create').setValidator(() => new PropertyCreateConfiguration())
         this.ruleForEach('update').setValidator(() => new PropertyUpdateConfiguration());
         this.ruleForEach('delete').setValidator(() => new PropertyDeleteConfiguration());

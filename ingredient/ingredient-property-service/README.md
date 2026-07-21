@@ -472,7 +472,7 @@ While the `selectors` are optional, You will likely want to define selectors for
 
 You would not define `selectors` when you have a value that does not change from entity to entity. Another use case for not defining `selectors` is to use that secret as the default secret, were you create a default secret and if an entity needs to override the default you create a secret specific to said entity.
 
-Within the `secrets` parameter you define what operations to execute. The `secrets` parameter supports executing `create`, `update`, or `delete` operations.
+Within the `secrets` parameter you define what operations to execute. The `secrets` parameter supports executing `seed`, `create`, `update`, or `delete` operations.
 
 ### Secret Create Operation
 
@@ -486,15 +486,12 @@ The `create` operation allows you to create a secret. If the secret already exis
 | `contentType`    | String            |          | The content-type of the  secret value. |
 | `expirationDate` | Date              |          | The expiration date of the secret in UTC. |
 | `activeDate`     | Date              |          | The active date of the secret in UTC. |
-| `seedOnly`       | Boolean           |          | When `true`, the secret is only created if it does not already exist and existing values are never overwritten (seed-once). Defaults to `true` when `connectionStringFrom` is used, otherwise `false` (upsert). |
 
  _NOTE:_ The `name` and `selectors` combination must be unique.
 
- _NOTE:_ Instead of a literal `value`, a secret can source its value from a Storage or Cosmos
- account connection string. See [Seeding a Storage or Cosmos Connection String](#seeding-a-storage-or-cosmos-connection-string).
-
- _NOTE:_ Use `seedOnly` to seed a secret once without overwriting it on later deployments - see
- [Seeding a Conjur-backed Pipeline Secret](#seeding-a-conjur-backed-pipeline-secret).
+ _NOTE:_ To write a value **once** without overwriting it on later deployments - including
+ seeding a Storage/Cosmos connection string via `connectionStringFrom` - use the
+ [Secret Seed Operation](#secret-seed-operation) instead of `create`.
 
 #### Secret Create Validation
 
@@ -542,11 +539,23 @@ recipe:
               activeDate: 2020-06-20 11:00:00
 ~~~
 
+### Secret Seed Operation
+
+The `seed` operation writes a secret **once**. Once the secret exists, every later deployment is
+a **no-op** - the value is never overwritten. Use it for any secret whose value is owned by an
+out-of-band writer after the first deployment, such as a rotation process (e.g. CyberArk) or a
+direct `Conjur -> Property Service` sync.
+
+`seed` accepts the same fields as `create` (`name`, `value`, `selectors`, `contentType`,
+`expirationDate`, `activeDate`), so a literal value can be seeded in the standard way. It also
+supports `connectionStringFrom` (secret only) for sourcing a Storage or Cosmos connection string.
+`connectionStringFrom` is valid only under `seed`, not `create`.
+
 #### Seeding a Storage or Cosmos Connection String
 
-A `create` operation can seed a Storage account or Cosmos account connection string into the
-Property Service without you having to look up the key or hard-code the value. Instead of a
-`value`, supply a `connectionStringFrom` source:
+Instead of a literal `value`, a `seed` entry can source a Storage account or Cosmos account
+connection string into the Property Service without you having to look up the key or hard-code
+the value. Supply a `connectionStringFrom` source:
 
 | Property        | Data Type | Required | Description |
 |-----------------|:----------|:--------:|:------------------------------------------------------|
@@ -560,10 +569,10 @@ Behavior:
   (the `dev`/`prd` prefix and any region code are stripped), so every consumer of the same
   account - and any rotation automation - agree on a single name such as `stexpl-connectionstring`.
   You may still supply an explicit `name` to override this.
-* `seedOnly` defaults to `true` whenever `connectionStringFrom` is used. Once the secret
-  exists the operation is a **no-op** - the key is never re-read and an existing value (for
-  example one managed by a rotation process) is never overwritten. The first deployment seeds
-  it; later deployments, including those of other services that share the account, do nothing.
+* Because it is a `seed`, once the secret exists the operation is a **no-op** - the key is never
+  re-read and an existing value (for example one managed by a rotation process) is never
+  overwritten. The first deployment seeds it; later deployments, including those of other
+  services that share the account, do nothing.
 * The connection string is pulled **lazily**, only when the secret needs to be seeded. If the
   source account cannot be read yet (for example a consumer deploying ahead of the resource
   owner), the operation is skipped rather than failing the deployment.
@@ -595,37 +604,35 @@ recipe:
         resourceUrl: https://azure.onmicrosoft.com/00000000-0000-0000-0000-000000000000
       parameters:
         secrets:
-          create:
+          seed:
             - connectionStringFrom:
                 type: storage
                 account: "[coreutils.variable('storageAccountName')]"
-              # name auto-derives to stexpl-connectionstring; seedOnly defaults to true
+              # name auto-derives to stexpl-connectionstring
     dependsOn:
       - expl-storage
 ~~~
 
 #### Seeding a Conjur-backed Pipeline Secret
 
-Secrets whose value comes from the pipeline (an ADO secret variable) follow the same seed
-pattern. By default a `create` with a literal `value` is an **upsert** - it heals the Property
-Service back to the declared value on every deployment, which is what you want when the pipeline
-is the **sole** source of truth for that secret.
+Secrets whose value comes from the pipeline (an ADO secret variable) can be seeded the same way.
+Use `create` when the pipeline is the **sole** source of truth - it heals the Property Service
+back to the declared value on every deployment.
 
 If the same secret is also written to the Property Service out-of-band - for example a direct
 `Conjur -> Property Service` sync that can update faster than the `Conjur -> ADO` variable sync -
-then an upsert risks overwriting the fresher value with a lagging pipeline value. Set
-`seedOnly: true` so bake seeds the secret once and leaves ongoing updates to that writer:
+then an upsert risks overwriting the fresher value with a lagging pipeline value. Put it under
+`seed` so bake writes the secret once and leaves ongoing updates to that writer:
 
 ~~~yaml
         secrets:
-          create:
+          seed:
             - name: my-conjur-secret
               value: "[coreutils.variable('MY_ADO_SECRET_VAR')]"
-              seedOnly: true
 ~~~
 
-Use the default (omit `seedOnly`) for pipeline-only config that has no other writer; use
-`seedOnly: true` for any secret an external process keeps current in the Property Service.
+Use `create` for pipeline-only config that has no other writer; use `seed` for any secret an
+external process keeps current in the Property Service.
 
 ### Secret Update Operations
 

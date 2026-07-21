@@ -23,7 +23,7 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
         return PropertyType.Secret;
     }
 
-    protected async Create(index: number, configuration: ISecretCreateConfiguration): Promise<void> {
+    protected async Seed(index: number, configuration: ISecretCreateConfiguration): Promise<void> {
 
         const source: IConnectionStringSource | undefined = configuration.connectionStringFrom;
 
@@ -33,16 +33,13 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
             name = this._resolveConnectionStringName(source);
         }
 
-        // Exists
+        // Seed is idempotent: once the secret exists we never overwrite it, so a value owned by
+        // an out-of-band writer - key rotation (e.g. CyberArk) or a direct Conjur -> Property
+        // Service sync - is never clobbered. The first deployment seeds it; every later
+        // deployment, including those of other services that share the account, is a no-op.
         const secret = await this._client.SearchSingle(name, configuration.selectors);
-
-        // Seed-only secrets are idempotent: once the secret exists we never overwrite it, so a
-        // value owned by an out-of-band writer - key rotation (e.g. CyberArk) or a direct
-        // Conjur -> Property Service sync - is never clobbered. seedOnly defaults on whenever a
-        // connection-string source is used; literal secrets can opt in explicitly.
-        const seedOnly: boolean = configuration.seedOnly !== undefined ? configuration.seedOnly : !!source;
-        if (secret && seedOnly) {
-            this.LogOperationMessage(true, 'Create', index, this.GetIdentifier(secret.name, secret.id, secret.version), 'Secret Exists - Skipped');
+        if (secret) {
+            this.LogOperationMessage(true, 'Seed', index, this.GetIdentifier(secret.name, secret.id, secret.version), 'Secret Exists - Skipped');
             return;
         }
 
@@ -53,30 +50,39 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
             if (!value || value === '') {
                 // Non-fatal: the source resource may not exist yet (e.g. a consumer deploying
                 // ahead of the resource owner). Skip rather than fail the deployment.
-                this.LogOperationMessage(false, 'Create', index, this.GetConfiguration(name, configuration.selectors), 'Connection String Source Unavailable - Skipped');
+                this.LogOperationMessage(false, 'Seed', index, this.GetConfiguration(name, configuration.selectors), 'Connection String Source Unavailable - Skipped');
                 return;
             }
         }
 
         const resolved: ISecretCreateConfiguration = { ...configuration, name: name, value: value };
 
+        this.LogOperationMessage(true, 'Seed', index, this.GetConfiguration(name, configuration.selectors), `Secret Not Found`);
+        await this._createSecret(index, resolved);
+    }
+
+    protected async Create(index: number, configuration: ISecretCreateConfiguration): Promise<void> {
+
+        // Exists
+        const secret = await this._client.SearchSingle(configuration.name, configuration.selectors);
+
         if (!secret) {
             // Create
-            this.LogOperationMessage(true, 'Create', index, this.GetConfiguration(name, configuration.selectors), `Secret Not Found`);
-            await this._createSecret(index, resolved);
+            this.LogOperationMessage(true, 'Create', index, this.GetConfiguration(configuration.name, configuration.selectors), `Secret Not Found`);
+            await this._createSecret(index, configuration);
             return;
         }
 
-        // Update (only reached when seedOnly has been explicitly disabled)
+        // Update (heal back to the declared value on every deployment)
         this.LogOperationMessage(true, 'Create', index, this.GetIdentifier(secret.name, secret.id, secret.version), 'Secret Found');
 
         const updateConfiguration: ISecretUpdateConfiguration = {
             target: {
-                name: name,
+                name: configuration.name,
                 selectors: configuration.selectors
             },
-            name: name,
-            value: value,
+            name: configuration.name,
+            value: configuration.value,
             selectors: configuration.selectors,
             contentType: configuration.contentType,
             activeDate: configuration.activeDate,

@@ -21,6 +21,20 @@ export class PropertyOperation extends OperationBase<IPropertyCreateConfiguratio
         return PropertyType.Property;
     }
 
+    protected async Seed(index: number, configuration: IPropertyCreateConfiguration): Promise<void> {
+
+        // Seed writes once. If the property already exists this is a no-op, so an existing value
+        // is never overwritten on later deployments.
+        const property = await this._client.SearchSingle(configuration.name, configuration.selectors);
+        if (property) {
+            this.LogOperationMessage(true, 'Seed', index, this.GetIdentifier(property.name, property.id), 'Property Exists - Skipped');
+            return;
+        }
+
+        this.LogOperationMessage(true, 'Seed', index, this.GetConfiguration(configuration.name, configuration.selectors), `Property Not Found`);
+        await this._createProperty(index, configuration);
+    }
+
     protected async Create(index: number, configuration: IPropertyCreateConfiguration): Promise<void> {
         // Exists
         const property = await this._client.SearchSingle(configuration.name, configuration.selectors);
