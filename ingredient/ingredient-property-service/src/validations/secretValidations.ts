@@ -26,6 +26,14 @@ export class SecretSeedConfiguration extends CreateConfiguratrionBaseValidator<I
             .notNull()
             .notEmpty()
             .when(model => !model.connectionStringFrom);
+
+        // When a connection string source is supplied, its type must be a supported kind. TS
+        // guards recipe authors, but this catches YAML typos with an actionable error instead
+        // of silently falling back to the storage util at deploy time.
+        this.ruleFor('connectionStringFrom')
+            .must(source => !source || source.type === 'storage' || source.type === 'cosmos')
+            .withMessage("connectionStringFrom.type must be 'storage' or 'cosmos'.")
+            .when(model => !!model.connectionStringFrom);
     }
 
     // When a connection string source is supplied the name is derived and the value is

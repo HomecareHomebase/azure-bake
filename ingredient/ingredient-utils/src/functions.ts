@@ -150,14 +150,28 @@ export class CoreUtils extends BaseUtility {
     // not follow the bake naming convention are returned unchanged.
     public canonical_resource_name(resourceName: string, useRegionCode: boolean = true): string {
         const env = (this.context.Environment.environmentCode || "").toLocaleLowerCase()
-        const rgn = (this.context.Region.code || "").toLocaleLowerCase()
         let name = (resourceName || "").toLocaleLowerCase()
 
         if (env && name.startsWith(env))
             name = name.substring(env.length)
 
-        if (useRegionCode && rgn && name.startsWith(rgn))
-            name = name.substring(rgn.length)
+        if (useRegionCode) {
+            // Strip whichever of the environment's region codes this name carries - not just the
+            // region currently deploying - so the canonical name is identical regardless of which
+            // region runs the operation. Longest code first avoids a partial strip when one code
+            // is a prefix of another (e.g. "eus" vs "eus2").
+            const codes = (this.context.Environment.regions || [])
+                .map(r => (r.code || "").toLocaleLowerCase())
+                .filter(c => c.length > 0)
+                .sort((a, b) => b.length - a.length)
+
+            for (const code of codes) {
+                if (name.startsWith(code)) {
+                    name = name.substring(code.length)
+                    break
+                }
+            }
+        }
 
         return name
     }
