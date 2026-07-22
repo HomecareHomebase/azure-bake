@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.2.0...@azbake/ingredient-utils@0.2.1) (2026-07-22)
+
+**Note:** Version bump only for package @azbake/ingredient-utils
+
+
+
+
+
 # [0.2.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-utils@0.1.113...@azbake/ingredient-utils@0.2.0) (2026-07-21)
 
 
