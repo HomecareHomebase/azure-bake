@@ -104,8 +104,7 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
     }
 
     private _resolveConnectionStringName(source: IConnectionStringSource): string {
-        const util = this._getSourceUtil(source.type);
-        return util.get_connectionstring_property_name(source.account);
+        return this._getCoreUtil().canonical_connectionstring_name(source.account);
     }
 
     private async _resolveConnectionStringValue(source: IConnectionStringSource): Promise<string> {
@@ -120,8 +119,7 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
     }
 
     private _resolveKeyName(source: IKeySource): string {
-        const util = this._getSourceUtil(source.type);
-        return util.get_key_property_name(source.account);
+        return this._getCoreUtil().canonical_key_name(source.account);
     }
 
     private async _resolveKeyValue(source: IKeySource): Promise<string> {
@@ -133,6 +131,14 @@ export class SecretOperation extends OperationBase<ISecretCreateConfiguration, I
             this._logger.error(`Failed to pull primary key for '${source.account}': ${error}`);
             return '';
         }
+    }
+
+    private _getCoreUtil(): any {
+        const util = IngredientManager.getIngredientFunction("coreutils", this._ctx);
+        if (!util) {
+            throw new Error(`Unable to resolve ingredient util 'coreutils' for property name derivation`);
+        }
+        return util;
     }
 
     private _getSourceUtil(type: string): any {

@@ -17,21 +17,6 @@ export class CosmosUtility extends BaseUtility {
         return name;
     }
 
-    // Environment-independent Property Service secret name for a cosmos account connection
-    // string. The account's region code is retained so per-region accounts (active/active or
-    // active/passive) map to distinct secrets rather than colliding on a single name.
-    public get_connectionstring_property_name(account: string): string {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        return util.canonical_resource_name(account) + "-connectionstring";
-    }
-
-    // Environment-independent Property Service secret name for a cosmos account primary key.
-    // The account's region code is retained so per-region accounts (active/active or
-    // active/passive) map to distinct secrets rather than colliding on a single name.
-    public get_key_property_name(account: string): string {
-        let util = IngredientManager.getIngredientFunction("coreutils", this.context);
-        return util.canonical_resource_name(account) + "-key";
-    }
     public async get_primary_key(name: string, rg: string | null = null) : Promise<string> {
      
         let util = IngredientManager.getIngredientFunction("coreutils", this.context)
