@@ -159,6 +159,20 @@ export class CoreUtils extends BaseUtility {
         return name
     }
 
+    // Environment-independent canonical name for a resource connection string. The full naming
+    // rule (environment strip + "-connectionstring" suffix) lives here so every ingredient and
+    // recipe derives the same name for a given account.
+    public canonical_connectionstring_name(account: string): string {
+        return this.canonical_resource_name(account) + "-connectionstring"
+    }
+
+    // Environment-independent canonical name for a resource primary key. The full naming rule
+    // (environment strip + "-key" suffix) lives here so every ingredient and recipe derives the
+    // same name for a given account.
+    public canonical_key_name(account: string): string {
+        return this.canonical_resource_name(account) + "-key"
+    }
+
     private _create_resource_name(resType: string, name: string | null = null, rgn: string, suffix: string = ""): string {
         let env = this.context.Environment.environmentCode
         let pkg = this.context.Config.shortName
