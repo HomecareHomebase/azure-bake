@@ -54,7 +54,7 @@ recipe:
 | deploy | no | true | Flag to determine whether or not to deploy the service account. Useful for skipping deployment when just adding context to a container via `source` |
 | unzip | no | false | Flag to determine whether or not to unzip and upload if a zip file is encountered in the specified path. |
 | rgOverride | no | | Specifics a resource group override for the storage account if different from the main resource group of the bake recipe. |
-| allowBlobPublicAccess | no | *(unset — property not written)* | Optional. When omitted, the account's anonymous public blob access is left unchanged (backward compatible). When `false`, deploys the account with anonymous public blob access disabled. When `true`, enables it AND stamps the approved-exception tag `hchb-policy-exempt-anon-blob = true`. |
+| allowBlobPublicAccess | no | `false` *(secure-by-default baseline flip)* | Optional. When omitted or `false`, deploys the account with anonymous public blob access **disabled**. When `true`, enables it AND stamps the approved-exception tag `hchb-policy-exempt-anon-blob = true`. **BREAKING CHANGE:** As of this version, the baseline is explicit `false` (property is written); prior versions left the property unwritten (backward compatible with nothing). Recipes relying on the account to maintain its existing anonymous-access state after redeployment must now explicitly set `allowBlobPublicAccess: true` if that state is `true`. |
 | allowPublicNetworkAccess | no | *(unset — tag-only stub, property not written)* | Optional (Pass-1 stub). When `true`, stamps the approved-exception tag `hchb-policy-exempt-public-network = true`; the `publicNetworkAccess` property itself is **not** written in this pass. When `false` or omitted, no tag and no property are written. See [Public network access](#public-network-access-pass-1-stub--tag-only). |
 
 | variable |required|default|description|
@@ -72,8 +72,14 @@ recipe:
 
 The optional `allowBlobPublicAccess` parameter controls whether the storage account permits **anonymous** (unauthenticated) public read access to blob data.
 
-- **Omitted (default):** the property is not written to the ARM template, so the account's current anonymous-access setting is left unchanged. Existing recipes and deployments are unaffected — this is fully backward compatible.
-- **`false`:** deploys the account with anonymous public blob access **disabled**. This blocks only anonymous readers; it never affects applications that authenticate with an account key, SAS token, or Azure AD (AAD) identity — those continue to work exactly as before.
+> **BASELINE FLIP (Breaking Change):**
+> As of this version, the secure-by-default baseline has changed:
+> - **Old behavior (Pass-1):** Omitting `allowBlobPublicAccess` left the property unwritten, preserving the account's existing anonymous-access state.
+> - **New behavior (Pass-2):** Omitting `allowBlobPublicAccess` now writes an **explicit `false`**, disabling anonymous public blob access by default.
+>
+> **Impact:** If your recipe redeploys an existing storage account and relies on maintaining its current anonymous-access state (if `true`), you must now explicitly set `allowBlobPublicAccess: true` in the recipe to preserve that state.
+
+- **Omitted or `false`:** deploys the account with anonymous public blob access **disabled**. No exception tag is applied. This is the new secure-by-default baseline.
 - **`true`:** allows anonymous public blob access to be configured (actual anonymous reads still depend on each container's public-access level) **and** stamps the approved-exception tag `hchb-policy-exempt-anon-blob = true` on the account, marking it as a sanctioned exception to the anonymous-blob deny policy. Existing tags (such as `Metrics`) are preserved.
 
 ```yaml
@@ -83,10 +89,14 @@ recipe:
       type: "@azbake/ingredient-storage"
       parameters:
         storageAccountName: "[storage.create_resource_name()]"
-        allowBlobPublicAccess: false   # disable anonymous blob access (no tag)
+        allowBlobPublicAccess: false   # disable anonymous blob access (secure baseline)
+        # OR omit allowBlobPublicAccess entirely—it defaults to false
 ```
 
-> **Datalake caveat:** the datalake template (`storageDatalake.json`) pins apiVersion `2018-02-01`, which predates the GA of `allowBlobPublicAccess` (`2019-04-01`); on a datalake (`IsHnsEnabled`) recipe the property may be ignored by ARM while the tag still stamps — verify on the target apiVersion before relying on it for datalake accounts.
+> **ARM Template Compatibility:**
+> - `storage.json` uses apiVersion `2020-08-01-preview` — ✓ fully supports `allowBlobPublicAccess`
+> - `storageNetwork.json` uses apiVersion `2019-06-01` — ✓ supports `allowBlobPublicAccess` (GA'd in 2019-04-01)
+> - `storageDatalake.json` uses apiVersion `2018-02-01` — ⚠️ predates `allowBlobPublicAccess` (2019-04-01); the property may be silently ignored by ARM, though the tag still stamps. For datalake accounts (`IsHnsEnabled`), verify deployment behavior on the target Azure environment before relying on the property being enforced.
 
 ### Public network access (Pass-1 stub — tag only)
 
