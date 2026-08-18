@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [Unreleased]
+
+### ⚠️ BREAKING CHANGES
+
+* **ingredient-storage:** `allowBlobPublicAccess` baseline flip — omitted parameter now defaults to explicit `false` ([#713356](https://github.com/HomecareHomebase/azure-bake/issues/713356))
+  - **What changed:** In previous versions (Pass-1), omitting the `allowBlobPublicAccess` parameter left the property unwritten in the ARM template, preserving the storage account's current anonymous-access state (backward compatible with nothing).
+  - **New behavior (Pass-2):** Omitting `allowBlobPublicAccess` now writes an explicit `false` value, disabling anonymous public blob access by default. This is a secure-by-default baseline.
+  - **Migration:** If your recipe redeploys an existing storage account and currently relies on it maintaining its anonymous-access state (if `true`), you must now explicitly set `allowBlobPublicAccess: true` in the recipe to preserve that behavior.
+  - **Details:** When `allowBlobPublicAccess = false` (explicit or omitted), anonymous public blob access is disabled. When `allowBlobPublicAccess = true`, the feature is enabled and the approved-exception tag `hchb-policy-exempt-anon-blob = true` is stamped on the account.
+
 ## [0.5.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.5.0...@azbake/ingredient-storage@0.5.1) (2026-07-22)
 
 **Note:** Version bump only for package @azbake/ingredient-storage
