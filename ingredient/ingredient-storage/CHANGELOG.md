@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.5.1...@azbake/ingredient-storage@0.6.0) (2026-08-18)
+
+
+* implement allowBlobPublicAccess baseline flip (#713356) (#346) ([1870c83](https://github.com/HomecareHomebase/azure-bake/commit/1870c8302847a614c1d6cd15c7785ffa1706251b)), closes [#713356](https://github.com/HomecareHomebase/azure-bake/issues/713356) [#346](https://github.com/HomecareHomebase/azure-bake/issues/346) [US#713356](https://github.com/US/issues/713356)
+
+
+### BREAKING CHANGES
+
+* Recipes relying on previous 'property not written' behavior
+must now explicitly set allowBlobPublicAccess: true to preserve anonymous access.
+
+* fix(ingredient-storage): remove Jest test infrastructure to follow project pattern and fix lerna build type conflicts
+
+
+
+
+
 ## [Unreleased]
 
 ### ⚠️ BREAKING CHANGES
