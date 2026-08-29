@@ -87,7 +87,7 @@ Note: There are several environment variables for azure authentication and envir
 | BAKE_ENV_NAME | Full name of the environment this deployment is for |
 | BAKE_ENV_CODE | 4 letter environment code, used for naming of resources/resource groups|
 | BAKE_ENV_REGIONS | JSON array of region objects that the recipe should deploy to |
-| BAKE_VARIABLES | JSON of bake variables that the recipe can access |
+| BAKE_VARIABLES | Path to YAML file of bake variables that the recipe can access |
 | BAKE_LOG_LEVEL | Log levels include debug, info (default if unspecified), warn, and error |
 
 *note: read the section on Environment for a deeper explanation of environment/regions/variables*
@@ -123,16 +123,16 @@ To setup an environment you must define a few items:
 # setting regions to both east and west US
 set BAKE_ENV_REGIONS='[{"name":"East US","code":"eus","shortName":"eastus"},{"name":"West US","code":"wus","shortName":"westus"}]'
 ```
-* BAKE_VARIABLES: JSON of name/value pair variables that the recipe can access. These are typically used as environment wide/specific settings to configure recipes per environment (i.e. enviroment specific secret keys, etc.)
+* BAKE_VARIABLES: Path to YAML file of name/value pair variables that the recipe can access. These are typically used as environment wide/specific settings to configure recipes per environment (i.e. enviroment specific secret keys, etc.)
 
-**JSON structure**
-```json
-'storage_key': 'secret'
-'env_type': 'prod'
+**YAML structure**
+```yaml
+storage_key: "secret"
+env_type: "prod"
 ```
 
 ```bash
-set BAKE_VARIABLEs='{ ''storage_key'': ''secret'', ''env_type'':''prod'' }'
+set BAKE_VARIABLES='/path/to/your/envVars.yml'
 ```
 
 ### Azure resource groups
