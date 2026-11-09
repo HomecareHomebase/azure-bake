@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.7...@azbake/ingredient-acs@0.0.8) (2026-11-09)
+
+
+### Bug Fixes
+
+* pin ts-http-runtime and core-rest-pipeline for Node 16 runtime ([#347](https://github.com/HomecareHomebase/azure-bake/issues/347)) ([d7e1559](https://github.com/HomecareHomebase/azure-bake/commit/d7e1559223ef3804cf3bedb448ec522fefbc8822))
+
+
+
+
+
 ## [0.0.7](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-acs@0.0.6...@azbake/ingredient-acs@0.0.7) (2024-07-25)
 
 **Note:** Version bump only for package @azbake/ingredient-acs

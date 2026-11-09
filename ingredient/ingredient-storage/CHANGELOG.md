@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.6.0...@azbake/ingredient-storage@0.6.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* pin ts-http-runtime and core-rest-pipeline for Node 16 runtime ([#347](https://github.com/HomecareHomebase/azure-bake/issues/347)) ([d7e1559](https://github.com/HomecareHomebase/azure-bake/commit/d7e1559223ef3804cf3bedb448ec522fefbc8822))
+
+
+
+
+
 # [0.6.0](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-storage@0.5.1...@azbake/ingredient-storage@0.6.0) (2026-08-18)
 
 

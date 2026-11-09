@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.2.1...@azbake/ingredient-cosmosdb@0.2.2) (2026-11-09)
+
+
+### Bug Fixes
+
+* pin ts-http-runtime and core-rest-pipeline for Node 16 runtime ([#347](https://github.com/HomecareHomebase/azure-bake/issues/347)) ([d7e1559](https://github.com/HomecareHomebase/azure-bake/commit/d7e1559223ef3804cf3bedb448ec522fefbc8822))
+
+
+
+
+
 ## [0.2.1](https://github.com/HomecareHomebase/azure-bake/compare/@azbake/ingredient-cosmosdb@0.2.0...@azbake/ingredient-cosmosdb@0.2.1) (2026-07-22)
 
 **Note:** Version bump only for package @azbake/ingredient-cosmosdb
