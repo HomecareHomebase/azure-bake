@@ -26,7 +26,9 @@
   "dependencies": {
     "@azbake/arm-helper": "^0.1.112",
     "@azure/arm-storage": "^15.1.0",
+    "@azure/core-rest-pipeline": "1.25.0",
     "@azure/storage-blob": "^12.2.1",
+    "@typespec/ts-http-runtime": "0.3.9",
     "adm-zip": "^0.5.5"
   },
   "gitHead": "52ca8597196977c0da9e973aab7cdaf689833606"
