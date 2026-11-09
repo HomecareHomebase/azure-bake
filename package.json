@@ -12,7 +12,7 @@
     "load:build": "lerna bootstrap --hoist && lerna run compile",
     "load:ingredients": "lerna run link:ingredients",
     "build": "lerna bootstrap --hoist && lerna run compile",
-    "publish": "npm run clean:build && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes"
+    "publish": "npm run clean:build && lerna publish from-package --yes && lerna publish -m 'chore: Publish [skip ci]' --no-git-reset --conventional-commits --yes"
   },
   "dependencies": {
     "@azure/arm-compute": "^10.0.0",
